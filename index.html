@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LeMatic Studio</title>
-<link rel="icon" type="image/png" href="img/logo.png">
+<link rel="icon" type="image/png" href="logo.png">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
@@ -47,7 +47,7 @@ ul,ol{list-style:none}
 .app{display:grid;grid-template-columns:252px minmax(0,1fr);gap:20px;padding:20px;max-width:1580px;margin:0 auto;min-height:100vh}
 .sidebar{position:sticky;top:20px;height:calc(100vh - 40px);display:flex;flex-direction:column;padding:18px 14px;overflow:auto}
 .brand{display:flex;align-items:center;gap:12px;padding:6px 8px 22px}
-.mark{width:40px;height:40px;border-radius:12px;background:var(--brand);color:var(--yellow);display:grid;place-items:center;font-weight:800;font-size:19px}
+.mark{width:40px;height:40px;border-radius:12px;background:var(--brand);color:var(--yellow);display:grid;place-items:center;font-weight:800;font-size:19px;overflow:hidden;flex:none}
 .brand strong{display:block;font-size:15px;letter-spacing:-.01em}
 .brand span{font-size:12px;color:var(--ink-2)}
 .nav{display:flex;flex-direction:column;gap:2px}
@@ -501,6 +501,16 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 .syncbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;font-size:12px;color:var(--ink-2);flex-wrap:wrap}
 .syncbar span{display:flex;align-items:center;gap:6px}
 .syncbar .i{color:var(--ok-dot)}
+
+/* Speicher-Übersicht */
+.stobar{display:flex;flex-direction:column;gap:14px}
+.strow{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:14px;align-items:center}
+.strow .stlabel{font-size:13px;font-weight:600}
+.strow .stlabel small{display:block;font-size:11px;color:var(--ink-2);font-weight:500}
+.strow .stnum{font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.strow .stnum b{font-weight:600}
+.stneed{margin-top:4px;padding:12px 14px;border-radius:14px;background:rgba(10,132,255,.07);font-size:13px;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start}
+.stneed b{color:var(--ink);font-weight:600}
 
 /* Archiv */
 .drivegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -963,7 +973,8 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
             <div class="fl full">Art
               <div class="seg" role="group" aria-label="Art der Rechnung" id="invKind">
                 <button type="button" aria-pressed="true" data-kind="Eingang">Eingang und Belege</button>
-                <button type="button" aria-pressed="false" data-kind="Ausgang">Ausgangsrechnung</button>
+                <button type="button" aria-pressed="false" data-kind="Ausgang">Rechnung</button>
+                <button type="button" aria-pressed="false" data-kind="Angebot">Angebot</button>
               </div>
             </div>
             <label class="full"><span id="partyLabel">Kunde</span><input class="input" id="invParty" list="partyList" placeholder="Zum Beispiel Mammutmarsch"></label>
@@ -1023,6 +1034,10 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
         </div>
       </header>
       <div class="grid">
+        <section class="glass panel c12" aria-labelledby="stov-title">
+          <div class="panel-head"><div><h2 id="stov-title">Speicher gesamt</h2><p>Alle Laufwerke zusammen, nach Bauart getrennt</p></div></div>
+          <div class="stobar" id="storageOverview"></div>
+        </section>
         <section class="glass panel c7" aria-label="Laufwerke">
           <div class="panel-head"><div><h2>Laufwerke</h2><p id="archSub"></p></div></div>
           <div class="drivegrid" id="driveGrid"></div>
@@ -1512,11 +1527,11 @@ function loadState(){
 
 /* Eigene Fotos: hier später echte Bild-Adressen eintragen (z.B. 'img/lennart.jpg'),
    dann ersetzen sie automatisch Kürzel und Logo-Buchstabe. Leer = wie bisher. */
-const PHOTOS={LP:'',MS:'',logo:'img/logo.png'};
+const PHOTOS={LP:'',MS:'',logo:'logo.png'};
 function applyBranding(){
   if(PHOTOS.logo){
     document.querySelectorAll('.mark').forEach(el=>{
-      el.innerHTML=`<img src="${PHOTOS.logo}" alt="LeMatic" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;
+      el.innerHTML=`<img src="${PHOTOS.logo}" alt="LeMatic" style="display:block;width:82%;height:82%;object-fit:contain;object-position:center;margin:auto">`;
     });
   }
 }
@@ -1805,7 +1820,9 @@ const driveUrl=id=>'https://drive.google.com/drive/folders/'+id;
 const DRIVE_ROOT_URL=driveUrl('15uyD_DLz6-oqzXeP1UoOBtXvzjpk4Z7E');            // LeMatic
 const RECHNUNGEN_ROOT_URL=driveUrl('1e2POXqZfgyM1y2486tV3RudWlHW2cbp8');       // 02_Rechnungen_und_Finanzen
 const AUSGANG_ROOT_URL=driveUrl('1-kzpckiM_dFJz0Jj5YmNOIxhJxHdAcJ0');          // .../Ausgangsrechnungen
-const EINGANG_ROOT_URL=driveUrl('1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O');          // .../Eingangsrechnungen
+const EINGANG_ROOT_URL=driveUrl('1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O');
+const ANGEBOT_ID='1uYGj_BbbCq42LplCGem8XB1cbEwkRNAY';
+const ANGEBOT_URL=driveUrl(ANGEBOT_ID);          // .../Eingangsrechnungen
 /* Bekannte Kunden-Unterordner unter Ausgangsrechnungen. Neue Kunden hier ergänzen, sobald ein Ordner existiert. */
 const AUSGANG_FOLDERS={
   'Mammutmarsch':{name:'08_Mammutmarsch_UG',id:'1pR2zA1VLvWArFLBjUIpbxW9AGmluqLfq'},
@@ -1820,6 +1837,7 @@ const EINGANG_FOLDERS={
 };
 const PARTY_SUGGEST={
   Ausgang:['Mammutmarsch','Felix Michalski','Dynabeat Festival','Fairground Festival'],
+  Angebot:['Mammutmarsch','Felix Michalski','Dynabeat Festival','Fairground Festival'],
   Eingang:['Freelancer Kamera B','Equipment','Adobe','sevDesk']
 };
 document.querySelectorAll('[data-drivetest]').forEach(a=>a.href=DRIVE_ROOT_URL);
@@ -2249,13 +2267,13 @@ function renderHome(){
   const rev=INVOICES.filter(i=>i.kind==='Ausgang'&&i.date.startsWith('2026')).reduce((a,i)=>a+i.amount,0);
   const signed=INVOICES.filter(i=>i.kind==='Angebot'&&i.status==='unterschrieben').reduce((a,i)=>a+i.amount,0);
   const openSum=INVOICES.filter(i=>i.kind==='Ausgang'&&i.status!=='bezahlt').reduce((a,i)=>a+i.amount,0);
-  const pct=Math.min(100,(rev+signed)/GOAL*100);
+  const pct=Math.min(100,rev/GOAL*100);
   const toFull=diffDays('2027-01-01',TODAY);
   document.getElementById('homeGoal').innerHTML=`
-    <div class="goal-amount"><strong>${eur(rev+signed)}</strong><span>von ${eur(GOAL)}</span></div>
+    <div class="goal-amount"><strong>${eur(rev)}</strong><span>von ${eur(GOAL)}</span></div>
     <div class="gbar" role="progressbar" aria-valuenow="${Math.round(pct)}" aria-valuemin="0" aria-valuemax="100" aria-label="Umsatzziel 2026"><b style="width:${pct.toFixed(1)}%"></b></div>
-    <div class="goal-meta"><span>${Math.round(pct)} % erreicht</span><span>Noch ${eur(Math.max(0,GOAL-rev-signed))}</span></div>
-    <div class="goal-grid"><div><strong>${eur(rev)}</strong><span>Berechnet</span></div><div><strong>${eur(signed)}</strong><span>Unterschrieben, offen</span></div></div>
+    <div class="goal-meta"><span>${Math.round(pct)} % erreicht</span><span>Noch ${eur(Math.max(0,GOAL-rev))}</span></div>
+    <div class="goal-grid"><div><strong>${eur(openSum)}</strong><span>Offene Rechnungen</span></div><div><strong>${eur(signed)}</strong><span>Angebote unterschrieben, zählt nicht mit</span></div></div>
     <div class="fulltime"><div><span>Bis zur Vollzeit-Selbstständigkeit</span></div><div><strong>${toFull}</strong> <span>Tage</span></div></div>`;
   updateBadges();
 }
@@ -2268,6 +2286,7 @@ document.addEventListener('change',e=>{
   const t=TASKS.find(x=>x.id==c.dataset.task);t.done=c.checked;
   if(t.done)toast('Erledigt: '+t.t);
   renderHome();renderTasks();
+  if(t.nid)notionUpdate('aufgaben',t.nid,{'Status':{status:{name:t.done?'Erledigt':'Nicht begonnen'}}}).catch(err=>toast('Lokal gesetzt, aber Notion-Update fehlgeschlagen: '+err.message));
 });
 
 /* ---------- Kalender ---------- */
@@ -2363,10 +2382,11 @@ const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ß/g,'s
 function setKind(k){
   invKind=k;
   document.querySelectorAll('#invKind button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.kind===k));
-  document.getElementById('partyLabel').textContent=k==='Ausgang'?'Kunde':'Lieferant oder Freelancer';
+  document.getElementById('partyLabel').textContent=k==='Eingang'?'Lieferant oder Freelancer':'Kunde';
   document.getElementById('invNo').value=k==='Ausgang'?nextNo():'';
+  document.getElementById('invNo').placeholder=k==='Angebot'?'Zum Beispiel LM-2026-0012, falls schon vergeben':(k==='Ausgang'?'':'Nummer auf dem Beleg, falls vorhanden');
   document.getElementById('invNo').placeholder=k==='Ausgang'?'':'Nummer auf dem Beleg, falls vorhanden';
-  document.getElementById('kindNote').textContent=k==='Ausgang'?'Rechnung in sevDesk schreiben, als PDF exportieren und hier hochladen — landet automatisch im richtigen Kundenordner.':'Belege von Freelancern, Equipment oder Reisen. Landen hier im Drive, in sevDesk tragt ihr sie separat ein.';
+  document.getElementById('kindNote').textContent=k==='Ausgang'?'Rechnung in sevDesk schreiben, als PDF exportieren und hier hochladen — landet automatisch im richtigen Kundenordner.':k==='Angebot'?'Landet im Ordner Angebote_und_Kostenvoranschlaege und als Eintrag in Rechnungen & Angebote. Zählt nicht ins Umsatzziel.':'Belege von Freelancern, Equipment oder Reisen. Landen hier im Drive, in sevDesk tragt ihr sie separat ein.';
   document.getElementById('catField').hidden=k!=='Eingang';
   document.getElementById('partyList').innerHTML=PARTY_SUGGEST[k].map(v=>`<option value="${esc(v)}">`).join('');
   updatePath();
@@ -2378,7 +2398,10 @@ function updatePath(){
   const no=document.getElementById('invNo').value.trim();
   const ext=invFile?(invFile.name.split('.').pop()||'pdf').toLowerCase():'pdf';
   let parts,note='';
-  if(invKind==='Ausgang'){
+  if(invKind==='Angebot'){
+    parts=['LeMatic','02_Rechnungen_und_Finanzen','Angebote_und_Kostenvoranschlaege'];
+    invTargetUrl=ANGEBOT_URL;invTargetId=ANGEBOT_ID;
+  }else if(invKind==='Ausgang'){
     const hitKey=Object.keys(AUSGANG_FOLDERS).find(k=>party&&party.toLowerCase().includes(k.toLowerCase()));
     const f=hitKey?AUSGANG_FOLDERS[hitKey]:null;
     parts=['LeMatic','02_Rechnungen_und_Finanzen','Ausgangsrechnungen',f?f.name:null].filter(Boolean);
@@ -2432,10 +2455,19 @@ document.getElementById('invSave').addEventListener('click',async()=>{
     }
     btn.disabled=false;btn.lastChild.textContent='Hochladen und ablegen';
   }
-  const inv={id:Date.now(),kind:invKind,no:document.getElementById('invNo').value.trim(),party,note:fname,date,amount,status:invKind==='Ausgang'?'offen':'bezahlt',p:$('invProj').value,drive:driveLink,driveFileId,fresh:true};
+  const localStatus=invKind==='Eingang'?'bezahlt':'offen';
+  const inv={id:Date.now(),kind:invKind,no:document.getElementById('invNo').value.trim(),party,note:fname,date,amount,status:localStatus,p:$('invProj').value,drive:driveLink,driveFileId,fresh:true};
   INVOICES.unshift(inv);
   toast(realUpload?'In Drive abgelegt: '+invPathParts.join(' / '):'Demo: nicht wirklich hochgeladen, dafür mit Google anmelden');
   if(realUpload)loadDriveFiles();
+  if(realUpload&&(invKind==='Ausgang'||invKind==='Angebot')){
+    const notionStatus=invKind==='Angebot'?'Offen':'Offen';
+    notionCreateRechnung({
+      no:inv.no,art:invKind==='Angebot'?'Angebot':'Rechnung',status:notionStatus,
+      betrag:amount,leistung:party+(inv.note?': '+fname:''),datum:date,datei:driveLink
+    }).then(r=>{inv.nid=r.id;toast('Auch in Notion angelegt: '+party)})
+      .catch(e=>toast('In Drive abgelegt, aber Notion-Eintrag fehlgeschlagen: '+e.message));
+  }
   invFile=null;fileIn.value='';dz.classList.remove('has');
   document.getElementById('dzTitle').textContent='Datei hierher ziehen';
   document.getElementById('dzSub').textContent='oder klicken zum Auswählen';
@@ -2453,9 +2485,9 @@ function renderInvoices(){
   const signed=INVOICES.filter(i=>i.kind==='Angebot'&&i.status==='unterschrieben').reduce((a,i)=>a+i.amount,0);
   document.getElementById('invStats').innerHTML=`
     <div><strong>${eur(rev)}</strong><span>Berechnet ${y}</span></div>
-    <div><strong>${eur(signed)}</strong><span>unterschrieben, noch nicht berechnet</span></div>
+    <div><strong>${eur(signed)}</strong><span>Angebote unterschrieben, zählt nicht mit</span></div>
     <div><strong>${eur(open.reduce((a,i)=>a+i.amount,0))}</strong><span>${open.length} offen beim Kunden</span></div>
-    <div><strong>${Math.round((rev+signed)/GOAL*100)} %</strong><span>vom Ziel ${eur(GOAL)}</span></div>`;
+    <div><strong>${Math.round(rev/GOAL*100)} %</strong><span>vom Ziel ${eur(GOAL)}</span></div>`;
   const list=INVOICES.filter(i=>invF==='all'||i.kind===invF).sort((a,b)=>b.date.localeCompare(a.date));
   document.getElementById('invRows').innerHTML=list.map(i=>{
     const [st,pc,label]=invState(i);
@@ -2478,7 +2510,12 @@ function renderInvoices(){
   const rows=$('invRows');if(!rows)return;
   rows.addEventListener('click',e=>{
     const pay=e.target.closest('[data-pay]');
-    if(pay){const i=INVOICES.find(x=>x.id==pay.dataset.pay);if(i){i.status='bezahlt';renderInvoices();renderHome();toast(i.party+': als bezahlt markiert')}return}
+    if(pay){
+      const i=INVOICES.find(x=>x.id==pay.dataset.pay);if(!i)return;
+      i.status='bezahlt';renderInvoices();renderHome();toast(i.party+': als bezahlt markiert');
+      if(i.nid)notionUpdate('rechnungen',i.nid,{'Status':{select:{name:'Bezahlt'}}}).then(()=>toast('In Notion gespeichert: '+i.party)).catch(err=>toast('Lokal gesetzt, aber Notion-Update fehlgeschlagen: '+err.message));
+      return;
+    }
     const dr=e.target.closest('[data-rowdrive]');
     if(dr){window.open(dr.dataset.rowdrive,'_blank','noopener');return}
     const del=e.target.closest('[data-invdel]');
@@ -2912,6 +2949,25 @@ on('evGo','click',async()=>{
 let NOTION_LIVE=false;
 const NOTION_SNAPSHOT='11.09.2026';
 
+async function notionUpdate(db,pageId,properties){
+  const r=await fetch('/api/notion?db='+encodeURIComponent(db)+'&id='+encodeURIComponent(pageId),{
+    method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({properties})
+  });
+  if(!r.ok){let m='HTTP '+r.status;try{const j=await r.json();m=j.error||m}catch(_){}throw new Error(m)}
+  return r.json();
+}
+async function notionCreateRechnung({no,art,status,betrag,leistung,datum,datei}){
+  const props={
+    'Nummer':{title:[{text:{content:(no||leistung||'Ohne Nummer').slice(0,80)}}]},
+    'Art':{select:{name:art}},
+    'Status':{select:{name:status}},
+    'Betrag':{number:betrag||0},
+    'Leistung':{rich_text:[{text:{content:leistung||''}}]},
+    'Datum':{date:{start:datum}}
+  };
+  if(datei)props['Datei']={url:datei};
+  return notionCreate('rechnungen',props);
+}
 async function notionCreate(db,properties){
   const r=await fetch('/api/notion?db='+encodeURIComponent(db),{
     method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({properties})
@@ -2934,6 +2990,7 @@ function notionStatus(state,text){
   if(txt&&text)txt.textContent=text;
 }
 async function loadNotion(){
+  lastNotionLoad=Date.now();
   try{
     const [auf,rech,akq]=await Promise.all([notionGet('aufgaben'),notionGet('rechnungen'),notionGet('akquise')]);
     if(auf.length){
@@ -2972,6 +3029,13 @@ async function loadNotion(){
       : 'Nicht erreichbar ('+e.message+'). Stand vom '+NOTION_SNAPSHOT);
   }
 }
+
+let lastNotionLoad=0;
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&GAUTH&&Date.now()-lastNotionLoad>60000){
+    safe('notionRefresh',loadNotion);
+  }
+});
 
 /* ---------- Sicherung: Export und Zurücksetzen ---------- */
 function downloadFile(name,text,type){
@@ -3067,8 +3131,31 @@ function updateArchPill(){
   const d=parse(archStand);
   document.getElementById('archPill').innerHTML='<svg class="i xs"><use href="#i-drive"/></svg>Stand: '+dm(archStand)+d.getFullYear()+', manuell geprüft';
 }
+function renderStorageOverview(){
+  const el=$('storageOverview');if(!el)return;
+  const by={HDD:{cap:0,free:0},SSD:{cap:0,free:0}};
+  DRIVES.forEach(d=>{by[d.type].cap+=d.cap;by[d.type].free+=d.free});
+  const totalCap=by.HDD.cap+by.SSD.cap, totalFree=by.HDD.free+by.SSD.free;
+  const row=(label,sub,cap,free)=>{
+    const used=cap-free,pct=cap?used/cap*100:0;
+    const [state]=driveState({cap,free});
+    return `<div class="strow"><div class="stlabel">${label}<small>${sub}</small></div>
+      <div class="drivebar ${state}"><b style="width:${Math.max(3,pct).toFixed(0)}%"></b></div>
+      <div class="stnum"><b>${fmtSize(used)}</b> von ${fmtSize(cap)} · ${fmtSize(free)} frei</div></div>`;
+  };
+  const shootsLeft=EVENTS.filter(e=>e.type==='dreh'&&e.d>=TODAY).length;
+  const perDay=309; // Richtwert aus eurer Erfahrung: ca. 309 GB pro Drehtag mit 2 Kameras
+  const need=shootsLeft*perDay;
+  const fitsSsd=need<=by.SSD.free;
+  el.innerHTML=
+    row('Gesamt','7 Laufwerke',totalCap,totalFree)+
+    row('HDDs','Archiv-Platten',by.HDD.cap,by.HDD.free)+
+    row('SSDs','Arbeitsplatten',by.SSD.cap,by.SSD.free)+
+    `<p class="stneed"><svg class="i sm"><use href="#i-warn"/></svg><span>Für die <b>${shootsLeft} bekannten Drehtage</b> in den nächsten Monaten: mindestens <b>${fmtSize(need)}</b>, nach eurem Richtwert von 309 GB pro Drehtag mit 2 Kameras. ${fitsSsd?'Passt aktuell noch auf die freien SSDs.':'Passt aktuell nicht mehr auf die freien SSDs — vorher etwas auf die HDDs verschieben.'}</span></p>`;
+}
 function renderDriveGrid(){
   updateArchPill();
+  safe('storageOverview',renderStorageOverview);
   document.getElementById('archSub').textContent=DRIVES.length+' Laufwerke, aus eurer Notion-Datenbank „Datenarchiv (Laufwerke)“';
   document.getElementById('driveGrid').innerHTML=DRIVES.map(d=>{
     const [state,pct]=driveState(d);
