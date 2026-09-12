@@ -793,6 +793,15 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
         </div>
       </header>
       <div class="grid">
+        <section class="glass panel c12" id="martinIntro" hidden aria-label="Kurze Einordnung">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap">
+            <div style="max-width:640px">
+              <h2 style="font-size:16px;font-weight:600">Kurz zur Einordnung, Martin</h2>
+              <p style="font-size:14px;color:var(--ink-2);margin-top:6px">Aufgaben, Rechnungen und Akquise kommen live aus unserem LeMatic OS in Notion — was ihr dort ändert, taucht auch hier auf, und umgekehrt. Fehlt dir was oder wirkt etwas komisch: unten in den Einstellungen gibt's ein Feld für Verbesserungsvorschläge, die landen direkt als Aufgabe bei uns in Notion.</p>
+            </div>
+            <button class="btn btn-glass sm" id="introDismiss">Verstanden</button>
+          </div>
+        </section>
         <section class="glass panel c12" aria-labelledby="wk-title">
           <div class="panel-head">
             <div><h2 id="wk-title">Diese Woche</h2><p id="weekRange"></p></div>
@@ -1115,6 +1124,12 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
         </div>
       </header>
       <div class="grid">
+        <section class="glass panel c12" aria-labelledby="fb-title">
+          <div class="panel-head"><div><h2 id="fb-title">Verbesserungsvorschlag</h2><p>Landet als neue Aufgabe in eurem LeMatic OS, Bereich „Feedback"</p></div></div>
+          <textarea id="fbText" class="input" style="height:90px;padding:10px 12px;resize:vertical;width:100%" placeholder="Was sollte anders sein, fehlen oder besser funktionieren?" aria-label="Verbesserungsvorschlag"></textarea>
+          <p class="form-err" id="fbErr" role="alert"></p>
+          <button class="btn btn-primary sm" id="fbSend" style="margin-top:8px">Absenden</button>
+        </section>
         <section class="glass panel c5" aria-labelledby="acc-title">
           <div class="panel-head"><div><h2 id="acc-title">Team und Zugang</h2><p>Wer sich im Tool anmelden darf</p></div><button class="btn btn-glass sm" data-toast="Einladung per E-Mail vorbereitet"><svg class="i sm"><use href="#i-plus"/></svg>Einladen</button></div>
           <div class="member"><span class="av us lg">LP</span><div><strong>Lennart Post</strong><span>Admin, Kamera und Schnitt</span></div><span class="pill ok"><i></i>Aktiv</span></div>
@@ -1322,7 +1337,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
       <p class="form-err" id="lErr" role="alert"></p>
     </div>
     <div class="setup-note" id="setupNote" hidden><b>Google-Login ist noch nicht eingerichtet.</b> Im Code fehlt die Client-ID aus der Google Cloud Console. Bis dahin lässt sich das Tool nur als Demo ansehen.</div>
-    <button class="demo-link" id="demoLogin" hidden>Als Demo ansehen, ohne Drive</button>
+    <button class="demo-link" id="demoLogin">Als Demo ansehen, ohne Drive</button>
     <p class="login-foot">Zugriff nur mit freigegebenen Google-Konten. Kunden nutzen das Kundenportal.</p>
   </div>
 </div>
@@ -1458,6 +1473,16 @@ function loadState(){
   }catch(e){console.warn('Gespeicherte Daten unlesbar',e);return false}
 }
 
+/* Eigene Fotos: hier später echte Bild-Adressen eintragen (z.B. 'img/lennart.jpg'),
+   dann ersetzen sie automatisch Kürzel und Logo-Buchstabe. Leer = wie bisher. */
+const PHOTOS={LP:'',MS:'',logo:''};
+function applyBranding(){
+  if(PHOTOS.logo){
+    document.querySelectorAll('.mark').forEach(el=>{
+      el.innerHTML=`<img src="${PHOTOS.logo}" alt="LeMatic" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;
+    });
+  }
+}
 const NAMES={LP:'Lennart',MS:'Martin'};
 const SHOOT=new Date('2026-09-26T06:00:00+02:00');
 const daysTo=()=>Math.max(0,Math.ceil((SHOOT-new Date())/864e5));
@@ -1714,7 +1739,7 @@ const dm=s=>{const d=parse(s);return pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.
 const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-const PROJ={'Akquise':'#AF52DE','Dreh':'#073D30','Schnitt':'#0A84FF','Admin/Steuern':'#8B5A2B','Technik/Gear':'#8E8E93','Website':'#1F7A37','Mammutmarsch':'#073D30','Fairground':'#0A84FF','Messe-Akquise':'#AF52DE','LeMatic':'#D4A600','Buchhaltung':'#8E8E93'};
+const PROJ={'Feedback':'#FF3B30','Akquise':'#AF52DE','Dreh':'#073D30','Schnitt':'#0A84FF','Admin/Steuern':'#8B5A2B','Technik/Gear':'#8E8E93','Website':'#1F7A37','Mammutmarsch':'#073D30','Fairground':'#0A84FF','Messe-Akquise':'#AF52DE','LeMatic':'#D4A600','Buchhaltung':'#8E8E93'};
 const TYPES={dreh:'Drehs',lieferung:'Lieferungen',meeting:'Meetings',akquise:'Akquise',frist:'Fristen',intern:'Intern'};
 const TYPE_ONE={dreh:'Dreh',lieferung:'Lieferung',meeting:'Meeting',akquise:'Akquise',frist:'Frist',intern:'Intern'};
 const TYPE_DOT={dreh:'#073D30',lieferung:'#FF9F0A',meeting:'#0A84FF',akquise:'#AF52DE',frist:'#FF3B30',intern:'#8E8E93'};
@@ -1752,7 +1777,6 @@ const onDay=(ds,filter)=>EVENTS.filter(e=>e.d<=ds&&(e.end||e.d)>=ds&&(!filter||f
 /* Aufgaben – Stand aus eurer Notion-Datenbank „Aufgaben" */
 let TASKS=[
   {id:1,t:'Dynabeat-Rechnung stellen (4.250 €) — größter offener Posten, Angebot ist unterschrieben',p:'Admin/Steuern',who:'MS',due:'2026-08-31',prio:'Hoch'},
-  {id:2,t:'500 € von Felix eintreiben (RE-1015, überfällig) — Zahlungserinnerung',p:'Admin/Steuern',who:'MS',due:'2026-08-28',prio:'Hoch'},
   {id:3,t:'GET NORD: Zielliste 20–30 Aussteller bauen',p:'Akquise',who:'MS',due:'2026-08-31',prio:'Hoch'},
   {id:4,t:'Bremen 06.–08.11.: Ausstellerlisten ReiseLust / Fisch & Feines / CARAVAN ziehen',p:'Akquise',who:'MS',due:'2026-08-31',prio:'Hoch'},
   {id:5,t:'Messe-Media-Kit + Ein-Tages-Paketpreis festlegen',p:'Akquise',who:'MS',due:'2026-09-04',prio:'Hoch'},
@@ -1771,7 +1795,7 @@ let TASKS=[
   {id:18,t:'Hamburg Open Ticket sichern (20.–21.01.) – Netzwerktermin, kein Verkauf',p:'Akquise',who:'LP',due:'2026-11-16',prio:'Niedrig'},
   {id:19,t:'GET NORD: 2–3 Stände auf eigene Kosten drehen – Messe-Referenzclip 60 s',p:'Dreh',who:'LP',due:'2026-11-21',prio:'Hoch'},
   {id:20,t:'Bremen Classic Motorshow: Restaurationsbetriebe und Händler anschreiben',p:'Akquise',who:'MS',due:'2026-11-23',prio:'Mittel'},
-  {id:21,t:'Beim Fairground eigenen Cut mitnehmen, nicht nur für Justin arbeiten',p:'Dreh',who:'LP',due:'2026-11-28',prio:'Mittel'},
+  {id:21,t:'Beim Fairground eigenen Cut mitnehmen, nicht nur für Justin arbeiten',p:'Dreh',who:'LP',due:'2026-11-28',prio:'Niedrig'},
   {id:22,t:'Recruiting-Video auf eigene Kosten drehen (Referenz fürs Corporate-Segment)',p:'Dreh',who:'LP',due:'2026-11-30',prio:'Hoch'},
   {id:23,t:'Eine Wintermesse besuchen und Aussteller-Referenzmaterial drehen',p:'Dreh',who:'LP',due:'2026-11-30',prio:'Mittel'},
   {id:24,t:'Messe-Referenzclip schneiden – muss vor der Januar-Akquise fertig sein',p:'Schnitt',who:'LP',due:'2026-11-30',prio:'Hoch'},
@@ -1780,7 +1804,7 @@ let TASKS=[
   {id:27,t:'EDIT_01 leerräumen – nur noch 14 GB frei',p:'Technik/Gear',who:'LP',due:'2026-09-25',prio:'Hoch'},
   {id:28,t:'Dynabeat-Aftermovie fertigstellen (inkl. Save-the-Date-Endcard)',p:'Schnitt',who:'LP',due:'2026-09-20',prio:'Hoch'},
   {id:29,t:'Ticket-Vorverkaufs-Reel Dynabeat 2027 (VO deutsch + englisch)',p:'Schnitt',who:'LP',due:'2026-09-22',prio:'Hoch'},
-  {id:30,t:'Fairground 28.11. – Planung mit Justin abstimmen',p:'Dreh',who:'LP',due:'2026-09-12',prio:'Hoch'},
+  {id:30,t:'Fairground 28.11. – Planung mit Justin abstimmen',p:'Dreh',who:'LP',due:'2026-09-12',prio:'Niedrig'},
   {id:31,t:'Tagessatz und Jahresumsatzziel kalkulieren',p:'Admin/Steuern',who:'LP',due:'2026-09-19',prio:'Hoch'},
   {id:32,t:'Mammutmarsch-Volumen ausbauen – neuer Anlauf statt Jahrespaket',p:'Akquise',who:'MS',due:'2026-10-07',prio:'Hoch'},
   {id:33,t:'Dock/Gehäuse für mehrere TB-HDDs aussuchen',p:'Technik/Gear',who:'LP',due:'2026-10-10',prio:'Mittel'},
@@ -1861,7 +1885,7 @@ let LEADS=[
   {id:25,n:'MS Hausverwaltung – Retainer',note:'Sieben Einzelrechnungen in zwei Jahren. In eine Monatspauschale umbauen.',val:4800,stage:0,who:'MS',seg:'Corporate',saison:'Herbst 26'},
   {id:26,n:'Nordstil Winter 2027 (Messe Frankfurt)',note:'Aussteller einzeln anschreiben — nicht den Veranstalter.',val:4500,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
   {id:27,n:'Bremen November-Trio (06.–08.11.)',note:'Drei Publikumsmessen parallel, eine Anfahrt. Nur noch 10 Wochen.',val:4000,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
-  {id:28,n:'Hydrogen + Carbon Capture Expo (20.–22.10.)',note:'SOFORT anrufen. Ziel: vier Zusagen auf drei Messetage.',val:3500,stage:0,who:'MS',seg:'Messe',saison:'Herbst 26'},
+  {id:28,n:'Hydrogen + Carbon Capture Expo (20.–22.10.)',note:'Aktuell zurückgestellt, kein akuter Anruf nötig. Ziel bleibt: vier Zusagen auf drei Messetage.',val:3500,stage:0,who:'MS',seg:'Messe',saison:'Herbst 26'},
   {id:29,n:'Frauen-Hindernislauf Horner Rennbahn',note:'Visuell dankbar und nah an der Mammutmarsch-Bildsprache.',val:3500,stage:0,who:'MS',seg:'Sport/Outdoor',saison:'Winter 26/27'},
   {id:30,n:'Implant expo 2026 (27.–28.11., CCH)',note:'ACHTUNG Terminkonflikt: Fairground am 28.11. – nur Ein-Tages-Pakete anbieten.',val:3000,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
   {id:31,n:'GSIS Security Summit (09.–10.12.)',note:'Restriktive Drehgenehmigungen, keine Referenz im Sektor. Als Nachrücker behandeln.',val:3000,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
@@ -1922,7 +1946,6 @@ function loginError(msg){document.getElementById('lErr').textContent=msg}
 async function initGoogle(){
   if(!GOOGLE_CLIENT_ID){
     document.getElementById('setupNote').hidden=false;
-    document.getElementById('demoLogin').hidden=false;
     document.getElementById('gLogin').disabled=true;
     return;
   }
@@ -1973,7 +1996,11 @@ function initials(name){return (name||'?').split(/\s+/).filter(Boolean).slice(0,
 function enterGoogle(me){
   GAUTH=true;
   USER=(me.given_name||(me.name||'').split(' ')[0]||'du');
-  document.getElementById('uAv').textContent=initials(me.name||me.email);
+  const codeGuess=/martin/i.test(USER)?'MS':'LP';
+  const avEl=document.getElementById('uAv');
+  if(me.picture){avEl.innerHTML=`<img src="${me.picture}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;avEl.style.padding='0';}
+  else avEl.textContent=initials(me.name||me.email);
+  if(!PHOTOS[codeGuess]&&me.picture)PHOTOS[codeGuess]=me.picture;
   document.getElementById('uName').textContent=me.name||me.email;
   document.getElementById('uMail').textContent=me.email||'';
   document.getElementById('setLoginInfo').textContent='Angemeldet als '+me.email;
@@ -1982,6 +2009,7 @@ function enterGoogle(me){
   if(!location.hash.startsWith('#/'))location.hash='#/heute';else go(location.hash.slice(2));
   toast('Angemeldet als '+me.email);
   safe('driveCheck',checkDrive);safe('driveFiles',loadDriveFiles);safe('media',loadMedia);
+  safe('intro',checkMartinIntro);
 }
 async function checkDrive(){
   const pill=document.getElementById('setDrivePill'),txt=document.getElementById('setDriveText');
@@ -1995,6 +2023,15 @@ async function checkDrive(){
     txt.textContent='Dieses Google-Konto sieht den LeMatic-Ordner nicht ('+e.message+')';
   }
 }
+function checkMartinIntro(){
+  const el=$('martinIntro');if(!el)return;
+  let seen=false;try{seen=localStorage.getItem('martin_intro_seen')==='1'}catch(_){}
+  el.hidden=!(/martin/i.test(USER)&&!seen);
+}
+on('introDismiss','click',()=>{
+  try{localStorage.setItem('martin_intro_seen','1')}catch(_){}
+  const el=$('martinIntro');if(el)el.hidden=true;
+});
 document.getElementById('gLogin').addEventListener('click',()=>{
   loginError('');
   if(!tokenClient){loginError('Google-Login lädt noch, bitte kurz warten.');return}
@@ -2004,6 +2041,7 @@ document.getElementById('demoLogin').addEventListener('click',()=>{
   login.hidden=true;
   if(!location.hash.startsWith('#/'))location.hash='#/heute';else go(location.hash.slice(2));
   toast('Demo ohne Google-Login, Uploads gehen nicht wirklich nach Drive');
+  safe('intro',checkMartinIntro);
 });
 document.getElementById('logout').addEventListener('click',()=>{
   if(accessToken&&window.google)google.accounts.oauth2.revoke(accessToken,()=>{});
@@ -2713,6 +2751,13 @@ document.addEventListener('keydown',e=>{
 let NOTION_LIVE=false;
 const NOTION_SNAPSHOT='11.09.2026';
 
+async function notionCreate(db,properties){
+  const r=await fetch('/api/notion?db='+encodeURIComponent(db),{
+    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({properties})
+  });
+  if(!r.ok){let m='HTTP '+r.status;try{const j=await r.json();m=j.error||m}catch(_){}throw new Error(m)}
+  return r.json();
+}
 async function notionGet(db){
   const r=await fetch('/api/notion?db='+encodeURIComponent(db));
   if(!r.ok){
@@ -2904,6 +2949,25 @@ document.getElementById('archRefresh').addEventListener('click',()=>{
 });
 renderDriveGrid();
 
+on('fbSend','click',async()=>{
+  const el=$('fbText'),err=$('fbErr'),btn=$('fbSend');
+  const text=(el.value||'').trim();
+  if(!text){err.textContent='Bitte kurz eintragen, worum es geht.';el.focus();return}
+  err.textContent='';btn.disabled=true;btn.textContent='Wird gesendet …';
+  try{
+    await notionCreate('aufgaben',{
+      'Aufgabe':{title:[{text:{content:'Feedback von '+USER+': '+text}}]},
+      'Bereich':{select:{name:'Feedback'}},
+      'Status':{status:{name:'Nicht begonnen'}},
+      'Prio':{select:{name:'Mittel'}}
+    });
+    el.value='';toast('Danke — landet als Aufgabe in eurem LeMatic OS');
+  }catch(e){
+    err.textContent='Konnte nicht gesendet werden: '+e.message;
+  }
+  btn.disabled=false;btn.textContent='Absenden';
+});
+
 /* Start: erst gespeicherte Daten laden, dann alles rendern. Jeder Teil einzeln abgesichert,
    damit ein Fehler an einer Stelle nie die ganze Seite unbenutzbar macht. */
 (function start(){
@@ -2916,6 +2980,7 @@ renderDriveGrid();
   safe('leads',renderLeads);
   safe('drives',renderDriveGrid);
   safe('home',renderHome);
+  safe('branding',applyBranding);
   safe('route',()=>{if(location.hash.startsWith('#/'))go(location.hash.slice(2))});
   safe('google',initGoogle);
   safe('notion',loadNotion);
