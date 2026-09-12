@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LeMatic Studio – Interne Ansicht Mammutmarsch (Designvorschlag)</title>
+<title>LeMatic Studio</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
   --canvas:#EEF1EF;
@@ -535,9 +536,98 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 .dup-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--warn);background:rgba(255,159,10,.12);padding:2px 7px;border-radius:999px;margin-top:5px}
 @media (max-width:600px){.drivegrid{grid-template-columns:1fr}}
 
+/* Google-Login */
+.g-btn{display:flex;align-items:center;justify-content:center;gap:10px;height:48px;font-size:15px}
+.g-btn .g-dot{width:18px;height:18px;border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--brand);font-weight:800;font-size:12px}
+.setup-note{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--yellow-soft);color:var(--brand);font-size:13px;text-align:left}
+.setup-note b{font-weight:700}
+.demo-link{margin-top:10px;border:0;background:transparent;color:var(--ink-2);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer}
+.drivefiles .dfile{display:grid;grid-template-columns:36px minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:10px 0}
+.drivefiles .dfile+.dfile{border-top:1px solid var(--line)}
+.drivefiles .dfile .ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.8);border:1px solid var(--stroke);color:var(--brand)}
+.drivefiles .dfile strong{display:block;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drivefiles .dfile span{font-size:12px;color:var(--ink-2)}
+.drivefiles .dfile time{font-size:12px;color:var(--ink-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.btn[disabled]{opacity:.6;cursor:progress}
+@media (max-width:600px){.drivefiles .dfile{grid-template-columns:36px minmax(0,1fr) auto}.drivefiles .dfile time{display:none}}
+
+/* Medien */
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px}
+.mtile{position:relative;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.85);display:flex;flex-direction:column}
+.mthumb{aspect-ratio:4/3;background:rgba(29,29,31,.05);display:grid;place-items:center;overflow:hidden;position:relative}
+.mthumb img{width:100%;height:100%;object-fit:cover;display:block}
+.mthumb .i{width:26px;height:26px;color:var(--ink-3)}
+.mthumb.tp{background:repeating-conic-gradient(rgba(29,29,31,.06) 0 25%,transparent 0 50%) 50%/14px 14px}
+.mbody{padding:9px 10px;display:flex;align-items:center;gap:6px;min-width:0}
+.mbody div{min-width:0;flex:1}
+.mbody strong{display:block;font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mbody span{font-size:11px;color:var(--ink-2)}
+.mact{display:flex;gap:2px}
+.mact .icon-btn{width:26px;height:26px}
+.dz-lg{border:1.5px dashed rgba(7,61,48,.3);border-radius:18px;padding:26px;text-align:center;background:rgba(255,255,255,.45);cursor:pointer;display:block;transition:background .15s,border-color .15s}
+.dz-lg:hover{background:rgba(255,255,255,.75)}
+.dz-lg.over{background:var(--yellow-soft);border-color:var(--yellow);border-style:solid}
+.dz-lg .i{width:26px;height:26px;color:var(--brand);margin-bottom:6px}
+.dz-lg b{display:block;font-size:14px}
+.dz-lg span{font-size:12px;color:var(--ink-2)}
+.uplist{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.uprow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13px;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.6)}
+.uprow span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uprow em{font-style:normal;font-size:12px;color:var(--ink-2);white-space:nowrap}
+.uprow.err em{color:#B3261E}
+.uprow.ok em{color:var(--ok)}
+
+/* Akquise */
+.lboard{display:grid;grid-template-columns:repeat(5,minmax(190px,1fr));gap:12px;overflow-x:auto;padding-bottom:4px}
+.lead{background:rgba(255,255,255,.88);border:1px solid #fff;border-radius:14px;padding:12px;box-shadow:0 1px 2px rgba(20,45,38,.06),0 8px 18px -12px rgba(20,45,38,.22);cursor:grab}
+.lead+.lead{margin-top:8px}
+.lead.dragging{opacity:.4}
+.lead strong{display:block;font-size:13px;font-weight:600;line-height:1.3}
+.lead p{font-size:12px;color:var(--ink-2);margin-top:2px}
+.lead .lf{display:flex;align-items:center;gap:6px;margin-top:9px;font-size:12px;color:var(--ink-2)}
+.lead .val{margin-left:auto;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.lead .next{width:26px;height:26px;border-radius:8px;border:0;background:rgba(29,29,31,.05);display:grid;place-items:center;cursor:pointer;color:var(--ink-2)}
+.lead .next:hover{background:var(--brand);color:#fff}
+.lstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.lstats div{padding:14px;border-radius:16px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8)}
+.lstats strong{display:block;font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lstats span{font-size:12px;color:var(--ink-2)}
+.add-lead{display:grid;grid-template-columns:minmax(0,1fr) 150px 120px auto;gap:8px;padding:12px;border-radius:18px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.8);margin-bottom:16px}
+
+/* Suche */
+.pal-wrap{position:fixed;inset:0;z-index:70;background:rgba(238,241,239,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:none;justify-content:center;align-items:flex-start;padding:12vh 16px 0}
+.pal-wrap.show{display:flex}
+.pal{width:min(600px,100%);padding:10px;background:rgba(255,255,255,.86);animation:rise .2s cubic-bezier(.2,.8,.2,1)}
+.pal-in{display:flex;align-items:center;gap:10px;padding:6px 10px}
+.pal-in input{flex:1;border:0;background:transparent;font:inherit;font-size:17px;outline:none;padding:6px 0}
+.pal-res{max-height:52vh;overflow:auto;margin-top:6px;border-top:1px solid var(--line);padding-top:6px}
+.pal-res button{width:100%;display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 10px;border:0;background:transparent;border-radius:10px;text-align:left;cursor:pointer;font:inherit}
+.pal-res button.sel,.pal-res button:hover{background:rgba(7,61,48,.09)}
+.pal-res .pi{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(255,255,255,.9);border:1px solid var(--stroke);color:var(--ink-2)}
+.pal-res b{display:block;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pal-res small{font-size:12px;color:var(--ink-2)}
+.pal-res .k{font-size:11px;color:var(--ink-3);white-space:nowrap}
+.pal-empty{padding:20px 12px;font-size:14px;color:var(--ink-2);text-align:center}
+.search-trigger{display:flex;align-items:center;gap:8px;height:38px;padding:0 12px;border-radius:999px;background:var(--glass-hi);border:1px solid var(--stroke);color:var(--ink-2);font-size:14px;cursor:pointer;min-width:150px}
+.search-trigger .kbd{margin-left:auto;font-size:11px;border:1px solid rgba(29,29,31,.14);border-radius:6px;padding:1px 5px}
+
+/* Bestätigen */
+.confirm .sheet{width:min(420px,100%);text-align:left}
+.confirm h2{font-size:18px}
+.confirm p{font-size:14px;color:var(--ink-2);margin-top:6px}
+.btn-danger{background:#B3261E;color:#fff}
+.btn-danger:hover{background:#8E1F18}
+
+@media (max-width:600px){
+  .lboard{grid-template-columns:repeat(5,84%)}
+  .lstats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .add-lead{grid-template-columns:1fr}
+  .mgrid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+}
+
 /* Mobile Tab-Leiste */
 .tabbar{display:none}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sr{position:absolute;left:0;top:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;margin:-1px;padding:0;border:0}
 
 @media (max-width:1240px){
   .c7,.c5{grid-column:span 12}
@@ -594,6 +684,10 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
   .dow{padding:6px 4px;text-align:center}
   .add-task{grid-template-columns:1fr}
   .inv .hide-sm{display:none}
+  .tscroll{max-width:100%}
+  .tscroll .inv{min-width:0;width:100%;table-layout:fixed}
+  .tscroll .inv td,.tscroll .inv th{white-space:normal;word-break:break-word;padding-left:5px;padding-right:5px}
+  .tscroll .inv td.num{white-space:nowrap}
   .deliv{grid-template-columns:minmax(0,1fr) auto}
   .deliv .pill{grid-column:1}
 }
@@ -634,6 +728,12 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
   <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4.5H6.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H14"/><path d="M10 12h10m0 0-3.5-3.5M20 12l-3.5 3.5"/></symbol>
   <symbol id="i-chevl" viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></symbol>
   <symbol id="i-drive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 14h18"/><path d="M12 18h5"/><circle cx="7.3" cy="18" r="0.7" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-doc2" viewBox="0 0 24 24"><path d="M7 3h7l5 5v12a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><circle cx="8.5" cy="10" r="1.6"/><path d="m4 17 4.5-4.5 3 3 3.5-3.5L20 16"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 6.5h15M9.5 6.5V5a1.5 1.5 0 0 1 1.5-1.5h2A1.5 1.5 0 0 1 14.5 5v1.5"/><path d="M6.5 6.5 7.4 19a1.5 1.5 0 0 0 1.5 1.4h6.2a1.5 1.5 0 0 0 1.5-1.4l.9-12.5"/><path d="M10.5 10v6.5M13.5 10v6.5"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M5.5 4.5h10L19.5 8v11a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 19V6a1.5 1.5 0 0 1 1-1.5z"/><path d="M8.5 4.5v5h6v-5M8.5 20.5v-5h7v5"/></symbol>
   <symbol id="i-warn" viewBox="0 0 24 24"><path d="M10.3 4.3 2.9 17.5A2 2 0 0 0 4.6 20.5h14.8a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17h.01"/></symbol>
   <symbol id="i-open" viewBox="0 0 24 24"><path d="M14 4.5h5.5V10M19.5 4.5 11 13"/><path d="M17.5 14v4a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h4"/></symbol>
 </svg>
@@ -655,7 +755,9 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
       <a href="#/kalender" data-route="kalender"><svg class="i"><use href="#i-cal"/></svg>Kalender</a>
       <a href="#/aufgaben" data-route="aufgaben"><svg class="i"><use href="#i-tasks"/></svg>Aufgaben<span class="count num" id="navTasks" hidden>0</span></a>
       <a href="#/rechnungen" data-route="rechnungen"><svg class="i"><use href="#i-receipt"/></svg>Rechnungen<span class="count num" id="navInv" hidden>0</span></a>
+      <a href="#/medien" data-route="medien"><svg class="i"><use href="#i-image"/></svg>Medien</a>
       <a href="#/archiv" data-route="archiv"><svg class="i"><use href="#i-drive"/></svg>Archiv</a>
+      <a href="#/akquise" data-route="akquise"><svg class="i"><use href="#i-target"/></svg>Akquise</a>
       <a href="#/kunden" data-route="kunden"><svg class="i"><use href="#i-users"/></svg>Kunden</a>
     </nav>
     <p class="side-label">Aktive Kunden</p>
@@ -685,6 +787,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
           <p class="summary" id="hSummary"></p>
         </div>
         <div class="actions">
+          <button class="search-trigger" data-opensearch><svg class="i sm"><use href="#i-search"/></svg><span class="label">Suchen</span><span class="kbd">⌘K</span></button>
           <a class="btn btn-glass" href="#/rechnungen"><svg class="i sm"><use href="#i-receipt"/></svg><span class="label">Rechnung hochladen</span></a>
           <a class="btn btn-primary" href="#/aufgaben"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Aufgabe anlegen</span></a>
         </div>
@@ -873,14 +976,24 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
             <div><h2 id="inv-title">Alle Rechnungen</h2><p>Status per Klick auf bezahlt setzen</p></div>
             <div class="seg" role="group" aria-label="Rechnungen filtern" id="invFilter">
               <button aria-pressed="true" data-f="all">Alle</button>
-              <button aria-pressed="false" data-f="Ausgang">Ausgang</button>
+              <button aria-pressed="false" data-f="Ausgang">Rechnungen</button>
+              <button aria-pressed="false" data-f="Angebot">Angebote</button>
               <button aria-pressed="false" data-f="Eingang">Eingang</button>
             </div>
           </div>
+          <div class="tscroll">
           <table class="mods inv">
-            <thead><tr><th scope="col">Datum</th><th scope="col">Kunde oder Lieferant</th><th scope="col" class="hide-sm">Nr.</th><th scope="col" class="r">Betrag</th><th scope="col">Status</th><th scope="col"><span class="sr">Drive</span></th></tr></thead>
+            <thead><tr><th scope="col">Datum</th><th scope="col">Kunde oder Lieferant</th><th scope="col" class="hide-sm">Nr.</th><th scope="col" class="r">Betrag</th><th scope="col">Status</th><th scope="col" aria-label="Aktionen"></th></tr></thead>
             <tbody id="invRows"></tbody>
           </table>
+          </div>
+        </section>
+        <section class="glass panel c12" aria-labelledby="df-title">
+          <div class="panel-head">
+            <div><h2 id="df-title">Zuletzt in Drive abgelegt</h2><p id="dfSub">Echte Dateien aus Ausgangs- und Eingangsrechnungen</p></div>
+            <button class="btn btn-glass sm" id="dfRefresh"><svg class="i sm"><use href="#i-check"/></svg>Aktualisieren</button>
+          </div>
+          <div class="drivefiles" id="driveFiles"><p class="empty">Nach dem Google-Login erscheinen hier eure echten Dateien.</p></div>
         </section>
       </div>
     </section>
@@ -905,6 +1018,70 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
           <div class="drivegrid" id="driveGrid"></div>
         </section>
         <section class="glass panel c5" id="driveDetail" aria-live="polite" aria-label="Laufwerk-Details"></section>
+      </div>
+    </section>
+
+    <!-- ===== Medien ===== -->
+    <section class="view" data-view="medien" aria-label="Medien">
+      <header class="topbar">
+        <div>
+          <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
+          <h1>Medien</h1>
+          <p class="summary">Logos, Bilder und Vorlagen. Alles landet direkt im passenden Ordner in eurem Drive.</p>
+        </div>
+        <div class="actions">
+          <button class="search-trigger" data-opensearch><svg class="i sm"><use href="#i-search"/></svg><span class="label">Suchen</span><span class="kbd">⌘K</span></button>
+          <a class="btn btn-glass" id="medOpenDrive" href="#" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-folder"/></svg><span class="label">In Drive öffnen</span></a>
+        </div>
+      </header>
+      <div class="grid">
+        <section class="glass panel c4" aria-labelledby="med-up">
+          <div class="panel-head"><div><h2 id="med-up">Hochladen</h2><p>Mehrere Dateien auf einmal möglich</p></div></div>
+          <label class="fl" style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--ink-2);margin-bottom:12px">Zielordner
+            <select class="input" id="medFolder"></select>
+          </label>
+          <label class="dz-lg" id="medDz">
+            <input type="file" id="medFile" multiple hidden>
+            <svg class="i"><use href="#i-upload"/></svg>
+            <b>Dateien hierher ziehen</b>
+            <span>oder klicken zum Auswählen</span>
+          </label>
+          <p class="dc-note" id="medHint" style="margin-top:10px"><svg class="i xs"><use href="#i-warn"/></svg>Bilder, Logos, LUTs und Vorlagen bis 100 MB. Rohmaterial gehört weiter auf die Festplatten.</p>
+          <div class="uplist" id="medUploads"></div>
+        </section>
+        <section class="glass panel c8" aria-labelledby="med-list">
+          <div class="panel-head">
+            <div><h2 id="med-list">Im Ordner</h2><p id="medSub">Nach dem Google-Login erscheinen hier eure Dateien</p></div>
+            <button class="btn btn-glass sm" id="medRefresh"><svg class="i sm"><use href="#i-check"/></svg>Aktualisieren</button>
+          </div>
+          <div class="mgrid" id="medGrid"></div>
+        </section>
+      </div>
+    </section>
+
+    <!-- ===== Akquise ===== -->
+    <section class="view" data-view="akquise" aria-label="Akquise">
+      <header class="topbar">
+        <div>
+          <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
+          <h1>Akquise</h1>
+          <p class="summary" id="lSummary"></p>
+        </div>
+        <div class="actions">
+          <button class="search-trigger" data-opensearch><svg class="i sm"><use href="#i-search"/></svg><span class="label">Suchen</span><span class="kbd">⌘K</span></button>
+        </div>
+      </header>
+      <div class="grid">
+        <section class="glass panel c12" aria-label="Akquise-Pipeline">
+          <div class="lstats" id="lStats"></div>
+          <form class="add-lead" id="addLead">
+            <input class="input" id="alName" placeholder="Neuer Kontakt, zum Beispiel: Aussteller Halle B" aria-label="Name des Kontakts">
+            <input class="input" id="alNote" placeholder="Notiz" aria-label="Notiz">
+            <input class="input" id="alVal" inputmode="decimal" placeholder="Wert in €" aria-label="Möglicher Auftragswert">
+            <button class="btn btn-primary" type="submit"><svg class="i sm"><use href="#i-plus"/></svg>Anlegen</button>
+          </form>
+          <div class="lboard" id="lBoard"></div>
+        </section>
       </div>
     </section>
 
@@ -942,17 +1119,18 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
           <div class="panel-head"><div><h2 id="acc-title">Team und Zugang</h2><p>Wer sich im Tool anmelden darf</p></div><button class="btn btn-glass sm" data-toast="Einladung per E-Mail vorbereitet"><svg class="i sm"><use href="#i-plus"/></svg>Einladen</button></div>
           <div class="member"><span class="av us lg">LP</span><div><strong>Lennart Post</strong><span>Admin, Kamera und Schnitt</span></div><span class="pill ok"><i></i>Aktiv</span></div>
           <div class="member"><span class="av us lg">MS</span><div><strong>Martin Schmick</strong><span>Admin, Akquise und Buchhaltung</span></div><span class="pill ok"><i></i>Aktiv</span></div>
-          <div class="setting"><span>Anmeldung per E-Mail und Passwort<small>Der Weg, bis Google Workspace steht</small></span><input type="checkbox" class="tgl" checked aria-label="Anmeldung per E-Mail und Passwort"></div>
-          <div class="setting"><span>Anmeldung mit Google-Konto<small>Ab Google Workspace mit euren @lematic.de-Adressen</small></span><input type="checkbox" class="tgl" aria-label="Anmeldung mit Google-Konto"></div>
-          <div class="setting"><span>Zwei-Faktor-Bestätigung<small>Empfohlen, weil hier Rechnungen liegen</small></span><input type="checkbox" class="tgl" aria-label="Zwei-Faktor-Bestätigung"></div>
+          
+          <div class="setting"><span>Anmeldung mit Google-Konto<small id="setLoginInfo">Nicht angemeldet</small></span><span class="pill done" id="setLoginPill"><i></i>Aus</span></div>
+          <div class="setting"><span>Zwei-Faktor-Bestätigung<small>Läuft über eure Google-Konten, dort bitte aktivieren</small></span><span class="pill info"><i></i>Google</span></div>
+          <div class="setting"><span>Lokale Sicherung<small id="setSaveInfo">Aufgaben, Rechnungen und Akquise bleiben in diesem Browser erhalten</small></span><span style="display:flex;gap:6px"><button class="btn btn-glass sm" id="expJson"><svg class="i sm"><use href="#i-save"/></svg>Export</button><button class="btn btn-glass sm" id="resetState">Zurücksetzen</button></span></div>
         </section>
         <section class="glass panel c7" aria-labelledby="set-conn-title">
           <div class="panel-head"><div><h2 id="set-conn-title">Verbindungen</h2><p>Woher das Tool seine Daten holt und wohin es ablegt</p></div></div>
-          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-folder"/></svg></span><div><strong>Google Drive</strong><span>Ordner „LeMatic“, echte Struktur, Rechnungen und Kundenprojekte</span></div><a class="btn btn-glass sm" data-drivetest href="#" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>Öffnen</a></div>
+          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-folder"/></svg></span><div><strong>Google Drive</strong><span id="setDriveText">Ordner „LeMatic“, erst nach dem Google-Login verbunden</span></div><span style="display:flex;gap:6px;align-items:center"><span class="pill done" id="setDrivePill"><i></i>Nicht verbunden</span><a class="btn btn-glass sm" data-drivetest href="#" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>Öffnen</a></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-mail"/></svg></span><div><strong>Mails</strong><span id="setGmailText">Aktuell IONOS (info@lematic.de), Gmail nach dem Umstieg auf Google Workspace</span></div><span id="setGmail"><span class="pill done"><i></i>Später</span></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-cal"/></svg></span><div><strong>Google Calendar</strong><span>LeMatic, Lennart und Martin</span></div><span class="pill ok"><i></i>Verbunden</span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-receipt"/></svg></span><div><strong>sevDesk</strong><span>Kein API-Zugang, Buchhaltung Pro war es nicht wert — Export und Upload statt Automatik</span></div><span class="pill done"><i></i>Manuell</span></div>
-          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-table"/></svg></span><div><strong>Notion</strong><span>Aufgaben, Status und Anfragen</span></div><span class="pill ok"><i></i>Verbunden</span></div>
+          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-table"/></svg></span><div><strong>Notion — LeMatic OS</strong><span id="setNotionText">Daten aus Aufgaben, Rechnungen und Akquise-Pipeline</span></div><span id="setNotionPill"><span class="pill warn"><i></i>Prüfe …</span></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-ticket"/></svg></span><div><strong>Ticketshop-Tracking Mammutmarsch</strong><span>Nötig für echte Ticketzahlen</span></div><button class="btn btn-glass sm" data-toast="Anfrage an Alex vorbereitet">Zugang anfragen</button></div>
           <p class="warn-box"><svg class="i sm"><use href="#i-warn"/></svg><span>Der Ordner „LeMatic“ ist aktuell über einen Link erreichbar. Das Tool braucht diese Freigabe nicht, es greift über euren Google-Login zu. Stellt sie auf „Eingeschränkt“, sobald ihr wirklich Rechnungen darin ablegt.</span></p>
         </section>
@@ -1138,23 +1316,40 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
   <div class="glass login-card" role="dialog" aria-modal="true" aria-labelledby="login-title">
     <div class="mark" aria-hidden="true">L</div>
     <h1 id="login-title">LeMatic Studio</h1>
-    <p>Melde dich mit deiner E-Mail-Adresse an</p>
-    <form class="login-form" id="loginForm" novalidate>
-      <label>E-Mail<input class="input" type="email" id="lEmail" autocomplete="username" placeholder="name@lematic.de" required></label>
-      <label>Passwort<input class="input" type="password" id="lPass" autocomplete="current-password" placeholder="••••••••" required></label>
+    <p>Melde dich mit deinem Google-Konto an. Danach greift das Tool direkt auf euren LeMatic-Ordner in Drive zu.</p>
+    <div class="login-form">
+      <button class="btn btn-primary g-btn" type="button" id="gLogin"><span class="g-dot" aria-hidden="true">G</span>Mit Google anmelden</button>
       <p class="form-err" id="lErr" role="alert"></p>
-      <button class="btn btn-primary" type="submit">Anmelden</button>
-      <div class="or">oder</div>
-      <button class="btn btn-glass" type="button" id="lGoogle">Mit Google-Konto anmelden</button>
-    </form>
-    <p class="login-foot">Nur für freigegebene LeMatic-Adressen. Kunden nutzen das Kundenportal.</p>
+    </div>
+    <div class="setup-note" id="setupNote" hidden><b>Google-Login ist noch nicht eingerichtet.</b> Im Code fehlt die Client-ID aus der Google Cloud Console. Bis dahin lässt sich das Tool nur als Demo ansehen.</div>
+    <button class="demo-link" id="demoLogin" hidden>Als Demo ansehen, ohne Drive</button>
+    <p class="login-foot">Zugriff nur mit freigegebenen Google-Konten. Kunden nutzen das Kundenportal.</p>
+  </div>
+</div>
+
+<!-- Suche -->
+<div class="pal-wrap" id="palWrap" aria-hidden="true">
+  <div class="glass pal" role="dialog" aria-modal="true" aria-label="Suche">
+    <div class="pal-in"><svg class="i"><use href="#i-search"/></svg>
+      <input id="palQ" type="text" placeholder="Aufgaben, Rechnungen, Kunden, Termine, Kontakte" autocomplete="off" aria-label="Suchen">
+    </div>
+    <div class="pal-res" id="palRes"></div>
+  </div>
+</div>
+
+<!-- Bestätigen -->
+<div class="modal-wrap confirm" id="confirmWrap" aria-hidden="true">
+  <div class="glass sheet" role="dialog" aria-modal="true" aria-labelledby="cf-title">
+    <h2 id="cf-title">Wirklich löschen?</h2>
+    <p id="cfText"></p>
+    <div class="sheet-actions"><button class="btn btn-glass sm" id="cfNo">Abbrechen</button><button class="btn btn-danger sm" id="cfYes">Löschen</button></div>
   </div>
 </div>
 
 <!-- Mobile Tab-Leiste -->
 <nav class="tabbar glass" aria-label="Navigation">
   <a href="#/heute" data-route="heute"><svg class="i"><use href="#i-home"/></svg>Heute</a>
-  <a href="#/mails" data-route="mails"><svg class="i"><use href="#i-mail"/></svg>Mails</a>
+  <a href="#/medien" data-route="medien"><svg class="i"><use href="#i-image"/></svg>Medien</a>
   <a href="#/kalender" data-route="kalender"><svg class="i"><use href="#i-cal"/></svg>Kalender</a>
   <a href="#/aufgaben" data-route="aufgaben"><svg class="i"><use href="#i-tasks"/></svg>Aufgaben</a>
   <a href="#/rechnungen" data-route="rechnungen"><svg class="i"><use href="#i-receipt"/></svg>Rechnungen</a>
@@ -1214,6 +1409,54 @@ document.addEventListener('click',e=>{
   const t=e.target.closest('[data-toast]');
   if(t){e.preventDefault();toast(t.dataset.toast)}
 });
+
+/* Sicherer Zugriff auf Elemente, damit ein fehlendes Element nie die ganze Seite lahmlegt */
+const $=id=>document.getElementById(id);
+function on(id,ev,fn){const el=$(id);if(el)el.addEventListener(ev,fn);return el}
+function setText(id,t){const el=$(id);if(el)el.textContent=t}
+function setHTML(id,h){const el=$(id);if(el)el.innerHTML=h}
+function safe(label,fn){try{return fn()}catch(e){console.error(label,e);return null}}
+
+/* Bestätigen-Dialog */
+let cfAction=null,cfLast=null;
+function askConfirm(text,fn,label){
+  cfAction=fn;cfLast=document.activeElement;
+  setText('cfText',text);
+  const y=$('cfYes');if(y)y.textContent=label||'Löschen';
+  const w=$('confirmWrap');if(!w)return;
+  w.classList.add('show');w.setAttribute('aria-hidden','false');
+  setTimeout(()=>{const b=$('cfNo');if(b)b.focus()},20);
+}
+function closeConfirm(){
+  const w=$('confirmWrap');if(!w)return;
+  w.classList.remove('show');w.setAttribute('aria-hidden','true');
+  cfAction=null;if(cfLast&&cfLast.focus)cfLast.focus();
+}
+on('cfNo','click',closeConfirm);
+on('cfYes','click',()=>{const fn=cfAction;closeConfirm();if(fn)fn()});
+const cw=$('confirmWrap');if(cw)cw.addEventListener('click',e=>{if(e.target===cw)closeConfirm()});
+
+/* Lokale Speicherung, damit nichts verloren geht, solange Notion noch nicht dranhängt */
+const LS_KEY='lematic_studio_v1';
+let stateReady=false;
+function saveState(){
+  if(!stateReady)return;
+  try{
+    localStorage.setItem(LS_KEY,JSON.stringify({v:1,TASKS,INVOICES,LEADS,archStand,savedAt:new Date().toISOString()}));
+    const el=$('setSaveInfo');if(el)el.textContent='Zuletzt lokal gesichert: '+new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+  }catch(e){console.warn('Speichern nicht möglich',e)}
+}
+function loadState(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);if(!raw)return false;
+    const j=JSON.parse(raw);if(!j||j.v!==1)return false;
+    if(Array.isArray(j.TASKS))TASKS=j.TASKS;
+    if(Array.isArray(j.INVOICES))INVOICES=j.INVOICES;
+    if(Array.isArray(j.LEADS))LEADS=j.LEADS;
+    if(typeof j.archStand==='string')archStand=j.archStand;
+    return true;
+  }catch(e){console.warn('Gespeicherte Daten unlesbar',e);return false}
+}
 
 const NAMES={LP:'Lennart',MS:'Martin'};
 const SHOOT=new Date('2026-09-26T06:00:00+02:00');
@@ -1471,7 +1714,7 @@ const dm=s=>{const d=parse(s);return pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.
 const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-const PROJ={'Mammutmarsch':'#073D30','Messe-Akquise':'#AF52DE','Fairground':'#0A84FF','LeMatic':'#D4A600','Buchhaltung':'#8E8E93'};
+const PROJ={'Akquise':'#AF52DE','Dreh':'#073D30','Schnitt':'#0A84FF','Admin/Steuern':'#8B5A2B','Technik/Gear':'#8E8E93','Website':'#1F7A37','Mammutmarsch':'#073D30','Fairground':'#0A84FF','Messe-Akquise':'#AF52DE','LeMatic':'#D4A600','Buchhaltung':'#8E8E93'};
 const TYPES={dreh:'Drehs',lieferung:'Lieferungen',meeting:'Meetings',akquise:'Akquise',frist:'Fristen',intern:'Intern'};
 const TYPE_ONE={dreh:'Dreh',lieferung:'Lieferung',meeting:'Meeting',akquise:'Akquise',frist:'Frist',intern:'Intern'};
 const TYPE_DOT={dreh:'#073D30',lieferung:'#FF9F0A',meeting:'#0A84FF',akquise:'#AF52DE',frist:'#FF3B30',intern:'#8E8E93'};
@@ -1506,35 +1749,77 @@ let EVENTS=[
 for(let d='2026-09-07';d<='2026-12-28';d=addDays(d,7))EVENTS.push({d,time:'09:00',t:'Wochenplanung',type:'intern',p:'LeMatic'});
 const onDay=(ds,filter)=>EVENTS.filter(e=>e.d<=ds&&(e.end||e.d)>=ds&&(!filter||filter.has(e.type))).sort((a,b)=>(a.time||'00:00').localeCompare(b.time||'00:00'));
 
-/* Aufgaben (Platzhalter) */
+/* Aufgaben – Stand aus eurer Notion-Datenbank „Aufgaben" */
 let TASKS=[
-  {id:1,t:'Freelancer-Vertrag Hannover unterschreiben lassen',p:'Mammutmarsch',who:'MS',due:'2026-09-12'},
-  {id:2,t:'Kurzporträt aus Bremen schneiden',p:'Mammutmarsch',who:'LP',due:'2026-09-15'},
-  {id:3,t:'Aussteller-Liste Hydrogen Expo recherchieren',p:'Messe-Akquise',who:'MS',due:'2026-09-13'},
-  {id:4,t:'Akkus, Karten und Hotspot für Hannover vorbereiten',p:'Mammutmarsch',who:'LP',due:'2026-09-25'},
-  {id:5,t:'Termin mit Justin für Fairground abstimmen',p:'Fairground',who:'LP',due:'2026-09-09'},
-  {id:6,t:'Imagefilm-Material für die Website sammeln',p:'LeMatic',who:'LP',due:'2026-09-20'},
-  {id:7,t:'Belege September in sevDesk',p:'Buchhaltung',who:'MS',due:'2026-09-30'},
-  {id:8,t:'Messe-Referenzclip planen',p:'Messe-Akquise',who:'LP',due:'2026-10-09'},
-  {id:9,t:'Ticket-Sales-Creative Oktober, 3 Varianten',p:'Mammutmarsch',who:'LP',due:'2026-09-30'},
-  {id:10,t:'Crew-Shirts bestellen',p:'LeMatic',who:'MS',due:'2026-10-15'},
-  {id:11,t:'Pitch Content-System 2027 fertigstellen',p:'Mammutmarsch',who:'LP',due:'2026-09-08',done:true},
-  {id:12,t:'Rechnung Mammutmarsch Bremen schreiben',p:'Buchhaltung',who:'MS',due:'2026-09-06',done:true}
+  {id:1,t:'Dynabeat-Rechnung stellen (4.250 €) — größter offener Posten, Angebot ist unterschrieben',p:'Admin/Steuern',who:'MS',due:'2026-08-31',prio:'Hoch'},
+  {id:2,t:'500 € von Felix eintreiben (RE-1015, überfällig) — Zahlungserinnerung',p:'Admin/Steuern',who:'MS',due:'2026-08-28',prio:'Hoch'},
+  {id:3,t:'GET NORD: Zielliste 20–30 Aussteller bauen',p:'Akquise',who:'MS',due:'2026-08-31',prio:'Hoch'},
+  {id:4,t:'Bremen 06.–08.11.: Ausstellerlisten ReiseLust / Fisch & Feines / CARAVAN ziehen',p:'Akquise',who:'MS',due:'2026-08-31',prio:'Hoch'},
+  {id:5,t:'Messe-Media-Kit + Ein-Tages-Paketpreis festlegen',p:'Akquise',who:'MS',due:'2026-09-04',prio:'Hoch'},
+  {id:6,t:'Implant expo + Cruise Ship Interiors: Zielliste und Erstkontakt starten',p:'Akquise',who:'MS',due:'2026-09-14',prio:'Mittel'},
+  {id:7,t:'Rollenverteilung mit Martin festlegen (Akquise / Dreh / Schnitt / Buchhaltung)',p:'Admin/Steuern',who:'LP',due:'2026-09-15',prio:'Hoch'},
+  {id:8,t:'GET NORD: Erstkontakt-Welle raus (Mail + Telefon Martin)',p:'Akquise',who:'MS',due:'2026-09-18',prio:'Hoch'},
+  {id:9,t:'Freelancer-Tagessatz festlegen — ohne die Zahl ist keine Marge rechenbar',p:'Admin/Steuern',who:'LP',due:'2026-09-30',prio:'Mittel'},
+  {id:10,t:'15 Sport-/Outdoor-Veranstalter Norddeutschland listen',p:'Akquise',who:'MS',due:'2026-10-15',prio:'Mittel'},
+  {id:11,t:'30 Corporate-/Recruiting-Leads listen (Basis: aktive Stellenanzeigen)',p:'Akquise',who:'MS',due:'2026-10-15',prio:'Hoch'},
+  {id:12,t:'Nordstil: Ausstellerverzeichnis ziehen, Zielliste bauen',p:'Akquise',who:'MS',due:'2026-10-19',prio:'Mittel'},
+  {id:13,t:'Messekalender Winter 26/27 (HH, HB, H) durchgehen + Ausstellerlisten ziehen',p:'Akquise',who:'MS',due:'2026-10-20',prio:'Mittel'},
+  {id:14,t:'GET NORD: Abschluss-Deadline – danach ist das Standbudget verplant',p:'Akquise',who:'MS',due:'2026-10-22',prio:'Hoch'},
+  {id:15,t:'Steuerberatergespräch: Umsatzsteuerpflicht ab 2027 + Rechtsform',p:'Admin/Steuern',who:'LP',due:'2026-10-31',prio:'Hoch'},
+  {id:16,t:'Media-Kit-Varianten für Corporate und Messe bauen',p:'Akquise',who:'MS',due:'2026-10-31',prio:'Mittel'},
+  {id:17,t:'hanseBAU Bremen: Ausstellerliste ziehen + Erstkontakt',p:'Akquise',who:'MS',due:'2026-11-09',prio:'Mittel'},
+  {id:18,t:'Hamburg Open Ticket sichern (20.–21.01.) – Netzwerktermin, kein Verkauf',p:'Akquise',who:'LP',due:'2026-11-16',prio:'Niedrig'},
+  {id:19,t:'GET NORD: 2–3 Stände auf eigene Kosten drehen – Messe-Referenzclip 60 s',p:'Dreh',who:'LP',due:'2026-11-21',prio:'Hoch'},
+  {id:20,t:'Bremen Classic Motorshow: Restaurationsbetriebe und Händler anschreiben',p:'Akquise',who:'MS',due:'2026-11-23',prio:'Mittel'},
+  {id:21,t:'Beim Fairground eigenen Cut mitnehmen, nicht nur für Justin arbeiten',p:'Dreh',who:'LP',due:'2026-11-28',prio:'Mittel'},
+  {id:22,t:'Recruiting-Video auf eigene Kosten drehen (Referenz fürs Corporate-Segment)',p:'Dreh',who:'LP',due:'2026-11-30',prio:'Hoch'},
+  {id:23,t:'Eine Wintermesse besuchen und Aussteller-Referenzmaterial drehen',p:'Dreh',who:'LP',due:'2026-11-30',prio:'Mittel'},
+  {id:24,t:'Messe-Referenzclip schneiden – muss vor der Januar-Akquise fertig sein',p:'Schnitt',who:'LP',due:'2026-11-30',prio:'Hoch'},
+  {id:25,t:'Alle Januar-Abschlüsse (Nordstil, hanseBAU) müssen stehen',p:'Akquise',who:'MS',due:'2026-12-18',prio:'Hoch'},
+  {id:26,t:'Angebots- und Preisvorlagen auf Nettopreise plus USt. umstellen',p:'Admin/Steuern',who:'MS',due:'2026-12-31',prio:'Mittel'},
+  {id:27,t:'EDIT_01 leerräumen – nur noch 14 GB frei',p:'Technik/Gear',who:'LP',due:'2026-09-25',prio:'Hoch'},
+  {id:28,t:'Dynabeat-Aftermovie fertigstellen (inkl. Save-the-Date-Endcard)',p:'Schnitt',who:'LP',due:'2026-09-20',prio:'Hoch'},
+  {id:29,t:'Ticket-Vorverkaufs-Reel Dynabeat 2027 (VO deutsch + englisch)',p:'Schnitt',who:'LP',due:'2026-09-22',prio:'Hoch'},
+  {id:30,t:'Fairground 28.11. – Planung mit Justin abstimmen',p:'Dreh',who:'LP',due:'2026-09-12',prio:'Hoch'},
+  {id:31,t:'Tagessatz und Jahresumsatzziel kalkulieren',p:'Admin/Steuern',who:'LP',due:'2026-09-19',prio:'Hoch'},
+  {id:32,t:'Mammutmarsch-Volumen ausbauen – neuer Anlauf statt Jahrespaket',p:'Akquise',who:'MS',due:'2026-10-07',prio:'Hoch'},
+  {id:33,t:'Dock/Gehäuse für mehrere TB-HDDs aussuchen',p:'Technik/Gear',who:'LP',due:'2026-10-10',prio:'Mittel'},
+  {id:34,t:'Event↔Werbung-Schalter auf lematic.de umsetzen',p:'Website',who:'LP',due:'2026-10-24',prio:'Mittel'},
+  {id:35,t:'Motorsport-Bereich für lematic.de aufbauen',p:'Akquise',who:'LP',due:'2026-11-14',prio:'Mittel'},
+  {id:36,t:'Neue Nischen prüfen: Messen, Motorsport, Radiosender',p:'Akquise',who:'MS',due:'2026-10-02',prio:'Mittel'},
+  {id:37,t:'LeMatic Media-/Crew-Shirts bestellen',p:'Technik/Gear',who:'MS',due:'2026-08-20',prio:'Niedrig',done:true},
+  {id:38,t:'REC-/Run-Stop-Kabel Komodo-X → RS 3 Pro beschaffen',p:'Technik/Gear',who:'LP',due:'2026-08-15',prio:'Mittel',done:true},
+  {id:39,t:'Startseiten-Headline entschärfen (zu konfrontativ)',p:'Website',who:'LP',due:'2026-08-10',prio:'Mittel',done:true}
 ];
 const endOfWeek=()=>{const d=parse(TODAY);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()+(6-dow));return iso(d)};
 const startOfWeek=()=>{const d=parse(TODAY);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return iso(d)};
 
-/* Rechnungen (Platzhalter bis auf die Mammutmarsch-Beträge) */
+/* Rechnungen und Angebote – Stand aus eurer Notion-Datenbank „Rechnungen & Angebote" */
 let INVOICES=[
-  {id:1,kind:'Ausgang',src:'sevDesk',no:'RE-2026-013',party:'Mammutmarsch',note:'Dreh Bremen',date:'2026-09-06',amount:4500,status:'offen',p:'Mammutmarsch'},
-  {id:2,kind:'Eingang',no:'',party:'Freelancer Kamera B',note:'Dreh Bremen',date:'2026-09-07',amount:500,status:'offen',p:'Mammutmarsch'},
-  {id:3,kind:'Ausgang',src:'sevDesk',no:'RE-2026-012',party:'Dynabeat Festival',note:'Media Lead, 2 Tage',date:'2026-08-14',amount:2800,status:'bezahlt',p:'LeMatic'},
-  {id:4,kind:'Eingang',no:'',party:'Freelancer Dynabeat',note:'2 Drehtage',date:'2026-08-10',amount:1000,status:'bezahlt',p:'LeMatic'},
-  {id:5,kind:'Ausgang',src:'sevDesk',no:'RE-2026-011',party:'Mammutmarsch',note:'Event Juni',date:'2026-06-22',amount:4500,status:'bezahlt',p:'Mammutmarsch'},
-  {id:6,kind:'Eingang',no:'',party:'Equipment',note:'Gimbal-Zubehör',date:'2026-08-21',amount:289,status:'bezahlt',p:'LeMatic'}
+  {id:1,kind:'Ausgang',src:'notion',no:'RE-1015',party:'Felix Michalski',note:'Dreharbeiten Airbeat One, 08.–12.07.',date:'2026-07-15',amount:500,status:'bezahlt',p:'Dreh'},
+  {id:2,kind:'Angebot',src:'notion',no:'LM-2605-0005',party:'Radio NRJ',note:'Energy Live Recap, von 3.000 auf 1.900 gedrückt',date:'2026-07-13',amount:1900,status:'abgelehnt',p:'Akquise'},
+  {id:3,kind:'Ausgang',src:'notion',no:'RE-1014',party:'MS Hausverwaltung',note:'Objektbilder Neuenfelder Straße 95',date:'2026-07-01',amount:300,status:'bezahlt',p:'Dreh'},
+  {id:4,kind:'Angebot',src:'notion',no:'LM-2026-0007',party:'Mammutmarsch',note:'2 Drehtage Bremen und Hannover, 15–20 Reels',date:'2026-06-29',amount:9168,status:'unterschrieben',p:'Mammutmarsch'},
+  {id:5,kind:'Angebot',src:'notion',no:'LM-2605-0004',party:'Resident Studios',note:'Dynabeat: Aftermovie, Recap, Fotografie',date:'2026-05-19',amount:4250,status:'unterschrieben',p:'Dreh'},
+  {id:6,kind:'Ausgang',src:'notion',no:'RE-1013',party:'MS Hausverwaltung',note:'Objektbilder Saseler Stieg 6',date:'2026-05-10',amount:300,status:'bezahlt',p:'Dreh'},
+  {id:7,kind:'Ausgang',src:'notion',no:'RE-1012',party:'MS Hausverwaltung',note:'Objektbilder außen, Ostpreußenweg 25',date:'2026-05-10',amount:150,status:'bezahlt',p:'Dreh'},
+  {id:8,kind:'Ausgang',src:'notion',no:'RE-1011',party:'Mammutmarsch',note:'15–20 Reels 9:16 plus Rohdaten',date:'2026-04-08',amount:4560,status:'bezahlt',p:'Mammutmarsch'},
+  {id:9,kind:'Ausgang',src:'notion',no:'RE-1010',party:'MS Hausverwaltung',note:'Objektbilder KI, Ostpreußenweg 25',date:'2026-02-20',amount:50,status:'bezahlt',p:'Dreh'},
+  {id:10,kind:'Ausgang',src:'notion',no:'RE-1009',party:'—',note:'Videoschnitt und Bearbeitung von Fremdmaterial',date:'2026-02-20',amount:100,status:'bezahlt',p:'Schnitt'},
+  {id:11,kind:'Ausgang',src:'notion',no:'RE-1008',party:'MS Hausverwaltung',note:'Objektbilder Ellerneck 13a',date:'2026-02-16',amount:350,status:'bezahlt',p:'Dreh'},
+  {id:12,kind:'Ausgang',src:'notion',no:'RE-1007',party:'MS Hausverwaltung',note:'Objektbilder Ostpreußenweg 25',date:'2026-02-11',amount:300,status:'bezahlt',p:'Dreh'},
+  {id:13,kind:'Ausgang',src:'notion',no:'RE-1006',party:'W2-Hamburg',note:'4 Reels, Innenaufnahmen, 12 h Post (Zusatz geschenkt)',date:'2026-01-07',amount:1000,status:'bezahlt',p:'Dreh'},
+  {id:14,kind:'Ausgang',src:'notion',no:'RE-1005',party:'—',note:'5× Flyer-Gestaltung',date:'2026-01-01',amount:250,status:'bezahlt',p:'Website'}
 ];
-const GOAL=25000;
-const invState=i=>{if(i.status==='bezahlt')return['bezahlt','ok','Bezahlt'];if(i.kind==='Eingang')return['offen','info','Zu zahlen'];if(diffDays(TODAY,i.date)>14)return['over','warn','Überfällig'];return['offen','done','Offen']};
+const GOAL=25000; /* Umsatzziel 2026, aus eurem Umsatzplan */
+const invState=i=>{
+  if(i.status==='bezahlt')return['bezahlt','ok','Bezahlt'];
+  if(i.status==='unterschrieben')return['ok2','ok','Unterschrieben'];
+  if(i.status==='abgelehnt')return['abgelehnt','done','Abgelehnt'];
+  if(i.kind==='Eingang')return['offen','info','Zu zahlen'];
+  if(diffDays(TODAY,i.date)>14)return['over','warn','Überfällig'];
+  return['offen','done','Offen'];
+};
 
 /* Kunden */
 const CLIENTS=[
@@ -1546,41 +1831,229 @@ const CLIENTS=[
   {n:'Ferdinands Feld',s:'Akquise',pill:'info',d:'Warmer Kontakt über Manuel.',next:'Neuer Anlauf im Herbst'}
 ];
 
+/* ---------- Akquise – Stand aus eurer Notion-Datenbank „Akquise-Pipeline" ---------- */
+const LSTAGES=['Nicht begonnen','In Bearbeitung','Erledigt'];
+let LEADS=[
+  {id:1,n:'Marathon Hamburg Veranstaltungs GmbH',note:'Sechs bis acht Events pro Jahr bei einem Veranstalter — idealer Retainer. Budgets 2027 laufen im Herbst.',val:25000,stage:0,who:'MS',seg:'Sport/Outdoor',saison:'Herbst 26'},
+  {id:2,n:'Mammutmarsch 2027 – Jahresvertrag',note:'Jahrespaket wurde einmal abgelehnt — mit den 2026er-Ergebnissen neu verhandeln.',val:20000,stage:0,who:'MS',seg:'Sport/Outdoor',saison:'Winter 26/27'},
+  {id:3,n:'Corporate / Recruiting-Filme Metropolregion HH',note:'Winterfüller unter der Woche. Handwerk, Logistik, Mittelstand.',val:15000,stage:0,who:'MS',seg:'Corporate',saison:'Winter 26/27'},
+  {id:4,n:'Recruiting-Video Handwerk/Logistik HH',note:'30 Betriebe mit aktiven Stellenanzeigen listen — die Leadliste schreibt sich selbst.',val:15000,stage:0,who:'MS',seg:'Corporate',saison:'Winter 26/27'},
+  {id:5,n:'Laufveranstalter Norddeutschland',note:'10 Veranstalter listen. Mammutmarsch ist die perfekte Referenz.',val:12000,stage:0,who:'MS',seg:'Sport/Outdoor',saison:'Winter 26/27'},
+  {id:6,n:'Bassmassage / Resident Studios – Retainer',note:'Über Helmut und Roman läuft mehr als Dynabeat. Monatlicher Retainer statt einmal im Jahr.',val:12000,stage:0,who:'LP',seg:'Festival',saison:'Herbst 26'},
+  {id:7,n:'Fjul (Agentur, Hamburg) – Auftragskanal',note:'Planbare Auslastung ohne eigene Akquise. Verbindung über Tamaris besteht schon.',val:10000,stage:0,who:'MS',seg:'Corporate',saison:'ganzjährig'},
+  {id:8,n:'Lidl Workwear / Nürburgring 24h',note:'Kontakt von Markus reaktivieren, Cut vom 24h-Rennen 2025 als Referenz.',val:8000,stage:0,who:'MS',seg:'Motorsport',saison:'Frühjahr 27'},
+  {id:9,n:'INTERNORGA, 12.–16.03.2027',note:'Größte Chance im Messesegment: ca. 1.200 Aussteller. Budgets werden im Januar gemacht.',val:8000,stage:0,who:'MS',seg:'Messe',saison:'Frühjahr 27'},
+  {id:10,n:'GET NORD 2026 (19.–21.11., Hamburg)',note:'Wichtigster Termin des Winters: ~650 Aussteller, nur alle 2 Jahre. Abschluss-Deadline 22.10.',val:8000,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
+  {id:11,n:'SOUNDBOKS und andere Festivalsponsoren',note:'Markenvariante des Media Kits liegt vor. Eigene Budgets, unabhängig vom Veranstalterzyklus.',val:8000,stage:0,who:'MS',seg:'Marke/Sponsor',saison:'ganzjährig'},
+  {id:12,n:'Indoor-/Winterfestivals und Clubs',note:'Fairground im November beweist, dass Winter geht. Weitere Indoor-Veranstalter listen.',val:8000,stage:0,who:'LP',seg:'Festival',saison:'Winter 26/27'},
+  {id:13,n:'HYROX Hamburg',note:'Sehr social-affine Zielgruppe — exakt euer Reel-Format. Serie läuft über mehrere Städte.',val:7000,stage:0,who:'MS',seg:'Sport/Outdoor',saison:'Winter 26/27'},
+  {id:14,n:'Nordstil 2027 – Aussteller (09.–11.01.)',note:'Beste Januar-Chance. Zielliste 19.10., Abschluss bis 11.12. – nicht auf Januar schieben.',val:7000,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
+  {id:15,n:'Glücksgefühle Festival',note:'Hatten positiv auf den Media-Kit-Outreach reagiert, seitdem nichts Konkretes. Nachfassen.',val:7000,stage:1,who:'MS',seg:'Festival',saison:'Herbst 26'},
+  {id:16,n:'Pangea Festival',note:'Zweiter Anlauf nach der Saison, mit den Dynabeat-Zahlen als Beleg.',val:6000,stage:1,who:'MS',seg:'Festival',saison:'Herbst 26'},
+  {id:17,n:'W2-Hamburg GmbH – Reaktivierung',note:'Bekam beim letzten Auftrag viel geschenkt. Jetzt sauber bepreistes Monatspaket.',val:6000,stage:0,who:'MS',seg:'Corporate',saison:'Herbst 26'},
+  {id:18,n:'NLS / VLN Nürburgring – Rennteams',note:'Sponsoren wollen Bewegtbild, Teams haben keins.',val:6000,stage:0,who:'MS',seg:'Motorsport',saison:'Frühjahr 27'},
+  {id:19,n:'Ferdinands Feld',note:'Herbstanfrage an Manuel, diesmal mit Vorlauf. Personalisiertes Deck.',val:6000,stage:0,who:'LP',seg:'Festival',saison:'Herbst 26'},
+  {id:20,n:'IRONMAN Hamburg / Triathlon',note:'Realistisch als Zulieferer für die beauftragte Produktionsfirma.',val:6000,stage:0,who:'MS',seg:'Sport/Outdoor',saison:'Winter 26/27'},
+  {id:21,n:'hanseboot / FreizeitWelt (3.–7.02.2027)',note:'Caravan- und Boots-Händler: visuelles Produkt, hohe Bereitschaft für Bewegtbild.',val:5000,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
+  {id:22,n:'Bremen Classic Motorshow 2027',note:'Der realistische Motorsport-Einstieg – über Restaurationsbetriebe statt Rennteams.',val:5000,stage:0,who:'MS',seg:'Motorsport',saison:'Winter 26/27'},
+  {id:23,n:'hanseBAU Bremen (22.–24.01.2027)',note:'Ausstellerliste ist zugleich Recruiting-Leadliste. Zielliste 02.11.',val:5000,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
+  {id:24,n:'Cruise Ship Interiors Expo (02.–03.12.)',note:'Designaffin, hohe Bildansprüche, spielt dem Komodo in die Hände.',val:5000,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
+  {id:25,n:'MS Hausverwaltung – Retainer',note:'Sieben Einzelrechnungen in zwei Jahren. In eine Monatspauschale umbauen.',val:4800,stage:0,who:'MS',seg:'Corporate',saison:'Herbst 26'},
+  {id:26,n:'Nordstil Winter 2027 (Messe Frankfurt)',note:'Aussteller einzeln anschreiben — nicht den Veranstalter.',val:4500,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
+  {id:27,n:'Bremen November-Trio (06.–08.11.)',note:'Drei Publikumsmessen parallel, eine Anfahrt. Nur noch 10 Wochen.',val:4000,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
+  {id:28,n:'Hydrogen + Carbon Capture Expo (20.–22.10.)',note:'SOFORT anrufen. Ziel: vier Zusagen auf drei Messetage.',val:3500,stage:0,who:'MS',seg:'Messe',saison:'Herbst 26'},
+  {id:29,n:'Frauen-Hindernislauf Horner Rennbahn',note:'Visuell dankbar und nah an der Mammutmarsch-Bildsprache.',val:3500,stage:0,who:'MS',seg:'Sport/Outdoor',saison:'Winter 26/27'},
+  {id:30,n:'Implant expo 2026 (27.–28.11., CCH)',note:'ACHTUNG Terminkonflikt: Fairground am 28.11. – nur Ein-Tages-Pakete anbieten.',val:3000,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
+  {id:31,n:'GSIS Security Summit (09.–10.12.)',note:'Restriktive Drehgenehmigungen, keine Referenz im Sektor. Als Nachrücker behandeln.',val:3000,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
+  {id:32,n:'Radio Energy – zweiter Anlauf 2027',note:'Nicht runterhandeln lassen. Nur als fertiges 1.500-€-Paket.',val:1500,stage:0,who:'MS',seg:'Radio/Medien',saison:'Frühjahr 27'},
+  {id:33,n:'Bramfelder Halbmarathon (Okt.)',note:'Kleines Budget, aber günstiger Einstieg mit Referenzwert. Eher als Füller.',val:1500,stage:0,who:'MS',seg:'Sport/Outdoor',saison:'Herbst 26'},
+  {id:34,n:'Hamburg Messe und Congress',note:'Aussteller-Recap als Produkt pitchen. Erst eine Referenz auf eigene Kosten drehen.',val:0,stage:0,who:'MS',seg:'Messe',saison:'Winter 26/27'},
+  {id:35,n:'Hamburg Open 2027 (20.–21.01., CCH)',note:'KEIN Verkaufsziel. Nur Ticket im November sichern und hingehen.',val:0,stage:0,who:'LP',seg:'Messe',saison:'Winter 26/27'}
+];
+
+/* ---------- Medien: echte Drive-Ordner ---------- */
+const MEDIA_FOLDERS=[
+  {n:'Logos und CI von Kunden',id:'1EUZVoU9HIIQVG1lNBDbWR3slFf4BEVZP'},
+  {n:'Eigenes Branding',id:'1df094-XrYyB04yPkNCYEjLvMV0I7SKUW'},
+  {n:'Templates',id:'1oohvOPidEIlE-Djcx6wNbeYIqlJHwXI9'},
+  {n:'LUTs und Presets',id:'1kgalBq1Q6N6251hW2PFGzjDm87ywUtTz'},
+  {n:'Musik und SFX',id:'1gYrnzjW4L4D7KBtvy7mEAzQMxWYXefWf'},
+  {n:'Mammutmarsch Assets',id:'1KJL5nDMWotTLHgck6BcU0o3YXKwiRAmS'}
+];
+const MAX_UPLOAD_MB=100;
+
 /* ---------- Router ---------- */
 const views=document.querySelectorAll('.view');
 function go(route){
   const v=[...views].some(x=>x.dataset.view===route)?route:'heute';
   views.forEach(x=>x.classList.toggle('active',x.dataset.view===v));
   document.querySelectorAll('[data-route]').forEach(a=>a.classList.toggle('active',a.dataset.route===v));
-  if(v==='kalender')renderCal();
-  if(v==='heute')renderHome();
+  if(v==='kalender')safe('cal',renderCal);
+  if(v==='heute')safe('home',renderHome);
+  if(v==='akquise')safe('leads',renderLeads);
+  if(v==='medien')safe('media',()=>{if(!GAUTH||!medLoadedOnce)loadMedia()});
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#/'))go(location.hash.slice(2))});
 
-/* ---------- Login ---------- */
+/* ---------- Google-Login ---------- */
+/* Client-ID aus der Google Cloud Console eintragen (endet auf .apps.googleusercontent.com). Die ID ist nicht geheim. */
+const GOOGLE_CLIENT_ID='';
+/* Erlaubte Google-Adressen, z. B. ['vorname@gmail.com']. Leer = jedes Konto, das Zugriff auf den Drive-Ordner hat. */
+const ALLOWED_EMAILS=[];
+const DRIVE_SCOPE='https://www.googleapis.com/auth/drive';
+const GOOGLE_SCOPES='openid email profile '+DRIVE_SCOPE;
+const DRIVE_ROOT_ID='15uyD_DLz6-oqzXeP1UoOBtXvzjpk4Z7E';
+
 const login=document.getElementById('login');
-function enter(email){
-  const isMartin=/^martin/i.test(email);
-  document.getElementById('uAv').textContent=isMartin?'MS':'LP';
-  document.getElementById('uName').textContent=isMartin?'Martin Schmick':'Lennart Post';
-  document.getElementById('uMail').textContent=email;
-  USER=isMartin?'Martin':'Lennart';
+let USER='Lennart',GAUTH=false,tokenClient=null,accessToken=null,tokenExpiry=0,tokenWaiters=[];
+
+function waitForGis(ms=8000){
+  return new Promise(res=>{
+    const t0=Date.now();
+    (function poll(){
+      if(window.google&&google.accounts&&google.accounts.oauth2)return res(true);
+      if(Date.now()-t0>ms)return res(false);
+      setTimeout(poll,120);
+    })();
+  });
+}
+function loginError(msg){document.getElementById('lErr').textContent=msg}
+async function initGoogle(){
+  if(!GOOGLE_CLIENT_ID){
+    document.getElementById('setupNote').hidden=false;
+    document.getElementById('demoLogin').hidden=false;
+    document.getElementById('gLogin').disabled=true;
+    return;
+  }
+  const ok=await waitForGis();
+  if(!ok){loginError('Google-Login konnte nicht geladen werden. Internetverbindung oder Werbeblocker prüfen.');return}
+  tokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:GOOGLE_CLIENT_ID,
+    scope:GOOGLE_SCOPES,
+    callback:onToken,
+    error_callback:e=>{
+      const msg=e&&e.type==='popup_closed'?'Anmeldefenster wurde geschlossen.':'Google-Anmeldung nicht möglich'+(e&&e.type?' ('+e.type+')':'')+'.';
+      loginError(msg);flushWaiters(new Error(msg));
+    }
+  });
+}
+function flushWaiters(err){const w=tokenWaiters;tokenWaiters=[];w.forEach(p=>err?p.reject(err):p.resolve(accessToken))}
+async function onToken(resp){
+  if(resp.error){loginError('Anmeldung abgebrochen: '+resp.error);flushWaiters(new Error(resp.error));return}
+  if(!google.accounts.oauth2.hasGrantedAllScopes(resp,DRIVE_SCOPE)){
+    loginError('Ohne Drive-Zugriff funktioniert das Tool nicht. Bitte bei der Anmeldung den Haken für Google Drive setzen.');
+    flushWaiters(new Error('drive scope missing'));return;
+  }
+  accessToken=resp.access_token;tokenExpiry=Date.now()+((+resp.expires_in||3600)-60)*1000;
+  flushWaiters();
+  if(GAUTH)return;
+  try{
+    const me=await (await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+accessToken}})).json();
+    if(ALLOWED_EMAILS.length&&!ALLOWED_EMAILS.map(x=>x.toLowerCase()).includes((me.email||'').toLowerCase())){
+      google.accounts.oauth2.revoke(accessToken,()=>{});accessToken=null;
+      loginError(me.email+' ist für LeMatic Studio nicht freigegeben.');return;
+    }
+    enterGoogle(me);
+  }catch(e){loginError('Profil konnte nicht geladen werden: '+e.message)}
+}
+function getToken(){
+  if(accessToken&&Date.now()<tokenExpiry)return Promise.resolve(accessToken);
+  if(!tokenClient)return Promise.reject(new Error('Nicht mit Google angemeldet'));
+  return new Promise((resolve,reject)=>{tokenWaiters.push({resolve,reject});tokenClient.requestAccessToken({prompt:''})});
+}
+async function gfetch(url,opts={},retry=true){
+  const t=await getToken();
+  const r=await fetch(url,{...opts,headers:{...(opts.headers||{}),Authorization:'Bearer '+t}});
+  if(r.status===401&&retry){accessToken=null;return gfetch(url,opts,false)}
+  if(!r.ok){let m='HTTP '+r.status;try{const j=await r.json();m=(j.error&&j.error.message)||m}catch(_){}throw new Error(m)}
+  return r;
+}
+function initials(name){return (name||'?').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')}
+function enterGoogle(me){
+  GAUTH=true;
+  USER=(me.given_name||(me.name||'').split(' ')[0]||'du');
+  document.getElementById('uAv').textContent=initials(me.name||me.email);
+  document.getElementById('uName').textContent=me.name||me.email;
+  document.getElementById('uMail').textContent=me.email||'';
+  document.getElementById('setLoginInfo').textContent='Angemeldet als '+me.email;
+  const lp=document.getElementById('setLoginPill');lp.className='pill ok';lp.innerHTML='<i></i>Aktiv';
   login.hidden=true;
   if(!location.hash.startsWith('#/'))location.hash='#/heute';else go(location.hash.slice(2));
-  toast('Angemeldet als '+email);
+  toast('Angemeldet als '+me.email);
+  safe('driveCheck',checkDrive);safe('driveFiles',loadDriveFiles);safe('media',loadMedia);
 }
-let USER='Lennart';
-document.getElementById('loginForm').addEventListener('submit',e=>{
-  e.preventDefault();
-  const m=document.getElementById('lEmail').value.trim(),p=document.getElementById('lPass').value;
-  const err=document.getElementById('lErr');
-  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)){err.textContent='Bitte eine gültige E-Mail-Adresse eingeben.';return}
-  if(p.length<4){err.textContent='Bitte das Passwort eingeben.';return}
-  err.textContent='';enter(m);
+async function checkDrive(){
+  const pill=document.getElementById('setDrivePill'),txt=document.getElementById('setDriveText');
+  try{
+    const r=await gfetch('https://www.googleapis.com/drive/v3/files/'+DRIVE_ROOT_ID+'?fields=id,name&supportsAllDrives=true');
+    const j=await r.json();
+    pill.className='pill ok';pill.innerHTML='<i></i>Verbunden';
+    txt.textContent='Ordner „'+j.name+'“, Zugriff bestätigt';
+  }catch(e){
+    pill.className='pill warn';pill.innerHTML='<i></i>Kein Zugriff';
+    txt.textContent='Dieses Google-Konto sieht den LeMatic-Ordner nicht ('+e.message+')';
+  }
+}
+document.getElementById('gLogin').addEventListener('click',()=>{
+  loginError('');
+  if(!tokenClient){loginError('Google-Login lädt noch, bitte kurz warten.');return}
+  tokenClient.requestAccessToken({prompt:'select_account'});
 });
-document.getElementById('lGoogle').addEventListener('click',()=>enter('lennart@lematic.de'));
-document.getElementById('logout').addEventListener('click',()=>{login.hidden=false;document.getElementById('lPass').value='';document.getElementById('lEmail').focus()});
+document.getElementById('demoLogin').addEventListener('click',()=>{
+  login.hidden=true;
+  if(!location.hash.startsWith('#/'))location.hash='#/heute';else go(location.hash.slice(2));
+  toast('Demo ohne Google-Login, Uploads gehen nicht wirklich nach Drive');
+});
+document.getElementById('logout').addEventListener('click',()=>{
+  if(accessToken&&window.google)google.accounts.oauth2.revoke(accessToken,()=>{});
+  accessToken=null;tokenExpiry=0;GAUTH=false;
+  const lp=document.getElementById('setLoginPill');lp.className='pill done';lp.innerHTML='<i></i>Aus';
+  document.getElementById('setLoginInfo').textContent='Nicht angemeldet';
+  const dp=document.getElementById('setDrivePill');dp.className='pill done';dp.innerHTML='<i></i>Nicht verbunden';
+  medLoadedOnce=false;safe('media',loadMedia);safe('driveFiles',loadDriveFiles);
+  login.hidden=false;
+});
+
+/* ---------- Drive: Upload und Dateiliste ---------- */
+async function driveUpload(file,name,parentId){
+  if(!file)throw new Error('Keine Datei');
+  if(file.size!=null&&file.size>MAX_UPLOAD_MB*1048576)throw new Error('Datei größer als '+MAX_UPLOAD_MB+' MB');
+  if(!parentId)throw new Error('Kein Zielordner');
+  const form=new FormData();
+  form.append('metadata',new Blob([JSON.stringify({name,parents:[parentId]})],{type:'application/json'}));
+  form.append('file',file);
+  const r=await gfetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink',{method:'POST',body:form});
+  return r.json();
+}
+async function loadDriveFiles(){
+  const el=document.getElementById('driveFiles');
+  if(!GAUTH){el.innerHTML='<p class="empty">Nach dem Google-Login erscheinen hier eure echten Dateien.</p>';return}
+  el.innerHTML='<p class="empty">Wird aus Drive geladen …</p>';
+  const folders={};
+  folders['1-kzpckiM_dFJz0Jj5YmNOIxhJxHdAcJ0']='Ausgangsrechnungen';
+  folders['1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O']='Eingangsrechnungen';
+  Object.values(AUSGANG_FOLDERS).forEach(x=>folders[x.id]='Ausgang / '+x.name);
+  Object.values(EINGANG_FOLDERS).forEach(x=>folders[x.id]='Eingang / '+x.name);
+  const q='('+Object.keys(folders).map(id=>`'${id}' in parents`).join(' or ')+") and trashed=false and mimeType!='application/vnd.google-apps.folder'";
+  try{
+    const url='https://www.googleapis.com/drive/v3/files?'+new URLSearchParams({q,orderBy:'modifiedTime desc',pageSize:'15',fields:'files(id,name,modifiedTime,webViewLink,parents)',supportsAllDrives:'true',includeItemsFromAllDrives:'true'});
+    const j=await (await gfetch(url)).json();
+    const files=j.files||[];
+    document.getElementById('dfSub').textContent=files.length?files.length+' neueste Dateien aus Ausgangs- und Eingangsrechnungen':'Echte Dateien aus Ausgangs- und Eingangsrechnungen';
+    el.innerHTML=files.length?files.map(fl=>{
+      const where=(fl.parents||[]).map(p=>folders[p]).find(Boolean)||'Rechnungen';
+      const d=new Date(fl.modifiedTime);
+      return `<div class="dfile"><span class="ic"><svg class="i sm"><use href="#i-receipt"/></svg></span>
+        <div style="min-width:0"><strong>${esc(fl.name)}</strong><span>${esc(where)}</span></div>
+        <time>${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}</time>
+        <a class="icon-btn" href="${fl.webViewLink}" target="_blank" rel="noopener" aria-label="${esc(fl.name)} in Drive öffnen"><svg class="i sm"><use href="#i-open"/></svg></a></div>`;
+    }).join(''):'<p class="empty">In den Rechnungsordnern liegen noch keine Dateien.</p>';
+  }catch(e){
+    el.innerHTML='<p class="empty">Dateien konnten nicht geladen werden: '+esc(e.message)+'</p>';
+  }
+}
+document.getElementById('dfRefresh').addEventListener('click',loadDriveFiles);
 
 /* ---------- Heute ---------- */
 function legendHTML(active){
@@ -1632,15 +2105,15 @@ function renderHome(){
     return `<div class="deliv"><div><h3>${esc(e.t)}</h3><span class="proj"><i style="background:${PROJ[e.p]}"></i>${esc(e.p)}</span></div><span class="pill ${pc}"><i></i>${st}</span><span class="when">${wd(e.d)}, ${dm(e.d)}${e.time?', '+e.time:''}</span></div>`;
   }).join('');
   const rev=INVOICES.filter(i=>i.kind==='Ausgang'&&i.date.startsWith('2026')).reduce((a,i)=>a+i.amount,0);
-  const cost=INVOICES.filter(i=>i.kind==='Eingang'&&i.date.startsWith('2026')).reduce((a,i)=>a+i.amount,0);
+  const signed=INVOICES.filter(i=>i.kind==='Angebot'&&i.status==='unterschrieben').reduce((a,i)=>a+i.amount,0);
   const openSum=INVOICES.filter(i=>i.kind==='Ausgang'&&i.status!=='bezahlt').reduce((a,i)=>a+i.amount,0);
-  const pct=Math.min(100,rev/GOAL*100);
+  const pct=Math.min(100,(rev+signed)/GOAL*100);
   const toFull=diffDays('2027-01-01',TODAY);
   document.getElementById('homeGoal').innerHTML=`
-    <div class="goal-amount"><strong>${eur(rev)}</strong><span>von ${eur(GOAL)}</span></div>
+    <div class="goal-amount"><strong>${eur(rev+signed)}</strong><span>von ${eur(GOAL)}</span></div>
     <div class="gbar" role="progressbar" aria-valuenow="${Math.round(pct)}" aria-valuemin="0" aria-valuemax="100" aria-label="Umsatzziel 2026"><b style="width:${pct.toFixed(1)}%"></b></div>
-    <div class="goal-meta"><span>${Math.round(pct)} % erreicht</span><span>Noch ${eur(Math.max(0,GOAL-rev))}</span></div>
-    <div class="goal-grid"><div><strong>${eur(openSum)}</strong><span>Offene Rechnungen</span></div><div><strong>${eur(cost)}</strong><span>Ausgaben 2026</span></div></div>
+    <div class="goal-meta"><span>${Math.round(pct)} % erreicht</span><span>Noch ${eur(Math.max(0,GOAL-rev-signed))}</span></div>
+    <div class="goal-grid"><div><strong>${eur(rev)}</strong><span>Berechnet</span></div><div><strong>${eur(signed)}</strong><span>Unterschrieben, offen</span></div></div>
     <div class="fulltime"><div><span>Bis zur Vollzeit-Selbstständigkeit</span></div><div><strong>${toFull}</strong> <span>Tage</span></div></div>`;
   updateBadges();
 }
@@ -1723,7 +2196,8 @@ function renderTasks(){
   const html=groups.filter(g=>g[1].length).map(g=>`<p class="grp">${g[0]} <span>${g[1].length}</span></p>${g[1].map(taskRow).join('')}`).join('');
   document.getElementById('taskGroups').innerHTML=html||'<p class="empty">Keine Aufgaben mit diesem Filter.</p>';
   const open=TASKS.filter(t=>!t.done);
-  document.getElementById('tSummary').innerHTML=`<b>${open.length} offen</b>, ${open.filter(t=>t.who==='LP').length} bei Lennart, ${open.filter(t=>t.who==='MS').length} bei Martin. Kundenanfragen aus dem Portal landen automatisch hier.`;
+  saveState();
+  document.getElementById('tSummary').innerHTML=`<b>${open.length} offen</b> von ${TASKS.length} aus eurem LeMatic OS${NOTION_LIVE?' (live)':' (Stand '+NOTION_SNAPSHOT+')'}.`;
   updateBadges();
 }
 document.getElementById('addTask').addEventListener('submit',e=>{
@@ -1755,7 +2229,7 @@ function setKind(k){
   document.getElementById('partyList').innerHTML=PARTY_SUGGEST[k].map(v=>`<option value="${esc(v)}">`).join('');
   updatePath();
 }
-let invTargetUrl=RECHNUNGEN_ROOT_URL,invPathParts=[];
+let invTargetUrl=RECHNUNGEN_ROOT_URL,invTargetId='1e2POXqZfgyM1y2486tV3RudWlHW2cbp8',invPathParts=[];
 function updatePath(){
   const date=document.getElementById('invDate').value||TODAY;
   const party=document.getElementById('invParty').value.trim();
@@ -1766,13 +2240,13 @@ function updatePath(){
     const hitKey=Object.keys(AUSGANG_FOLDERS).find(k=>party&&party.toLowerCase().includes(k.toLowerCase()));
     const f=hitKey?AUSGANG_FOLDERS[hitKey]:null;
     parts=['LeMatic','02_Rechnungen_und_Finanzen','Ausgangsrechnungen',f?f.name:null].filter(Boolean);
-    invTargetUrl=f?driveUrl(f.id):AUSGANG_ROOT_URL;
+    invTargetUrl=f?driveUrl(f.id):AUSGANG_ROOT_URL;invTargetId=f?f.id:'1-kzpckiM_dFJz0Jj5YmNOIxhJxHdAcJ0';
     if(party&&!f)note='Noch kein Ordner für „'+party+'“ gefunden — landet oben in Ausgangsrechnungen, Unterordner bitte einmal von Hand anlegen.';
   }else{
     const cat=document.getElementById('invCat').value;
     const f=EINGANG_FOLDERS[cat];
     parts=['LeMatic','02_Rechnungen_und_Finanzen','Eingangsrechnungen',f?f.name:null].filter(Boolean);
-    invTargetUrl=f?driveUrl(f.id):EINGANG_ROOT_URL;
+    invTargetUrl=f?driveUrl(f.id):EINGANG_ROOT_URL;invTargetId=f?f.id:'1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O';
     if(!f)note='Für „Sonstiges“ gibt es noch keinen eigenen Unterordner — landet oben in Eingangsrechnungen.';
   }
   invPathParts=parts;
@@ -1793,7 +2267,7 @@ fileIn.addEventListener('change',()=>setFile(fileIn.files[0]));
 ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('over')}));
 ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('over')}));
 dz.addEventListener('drop',e=>setFile(e.dataTransfer.files[0]));
-document.getElementById('invSave').addEventListener('click',()=>{
+document.getElementById('invSave').addEventListener('click',async()=>{
   const err=document.getElementById('invErr');
   const party=document.getElementById('invParty').value.trim();
   const amount=parseFloat(document.getElementById('invAmount').value.replace(/\./g,'').replace(',','.'));
@@ -1802,9 +2276,24 @@ document.getElementById('invSave').addEventListener('click',()=>{
   if(!(amount>0)){err.textContent='Bitte einen Betrag eintragen.';return}
   err.textContent='';
   const date=document.getElementById('invDate').value||TODAY;
-  const inv={id:Date.now(),kind:invKind,no:document.getElementById('invNo').value.trim(),party,note:invFile.name,date,amount,status:invKind==='Ausgang'?'offen':'bezahlt',p:document.getElementById('invProj').value,drive:invTargetUrl,fresh:true};
+  const fname=document.getElementById('invName').textContent;
+  let driveLink=invTargetUrl,realUpload=false,driveFileId=null;
+  const btn=document.getElementById('invSave');
+  if(GAUTH&&invFile instanceof File){
+    btn.disabled=true;btn.lastChild.textContent='Wird hochgeladen …';
+    try{
+      const up=await driveUpload(invFile,fname,invTargetId);
+      driveLink=up.webViewLink||driveLink;driveFileId=up.id||null;realUpload=true;
+    }catch(e){
+      err.textContent='Upload fehlgeschlagen: '+e.message+'. Hat dieses Google-Konto Schreibrechte auf den Ordner?';
+      btn.disabled=false;btn.lastChild.textContent='Hochladen und ablegen';return;
+    }
+    btn.disabled=false;btn.lastChild.textContent='Hochladen und ablegen';
+  }
+  const inv={id:Date.now(),kind:invKind,no:document.getElementById('invNo').value.trim(),party,note:fname,date,amount,status:invKind==='Ausgang'?'offen':'bezahlt',p:$('invProj').value,drive:driveLink,driveFileId,fresh:true};
   INVOICES.unshift(inv);
-  toast('Abgelegt in '+invPathParts.join(' / '));
+  toast(realUpload?'In Drive abgelegt: '+invPathParts.join(' / '):'Demo: nicht wirklich hochgeladen, dafür mit Google anmelden');
+  if(realUpload)loadDriveFiles();
   invFile=null;fileIn.value='';dz.classList.remove('has');
   document.getElementById('dzTitle').textContent='Datei hierher ziehen';
   document.getElementById('dzSub').textContent='oder klicken zum Auswählen';
@@ -1819,32 +2308,59 @@ function renderInvoices(){
   const y=TODAY.slice(0,4);
   const rev=INVOICES.filter(i=>i.kind==='Ausgang'&&i.date.startsWith(y)).reduce((a,i)=>a+i.amount,0);
   const open=INVOICES.filter(i=>i.kind==='Ausgang'&&i.status!=='bezahlt');
-  const cost=INVOICES.filter(i=>i.kind==='Eingang'&&i.date.startsWith(y)).reduce((a,i)=>a+i.amount,0);
+  const signed=INVOICES.filter(i=>i.kind==='Angebot'&&i.status==='unterschrieben').reduce((a,i)=>a+i.amount,0);
   document.getElementById('invStats').innerHTML=`
-    <div><strong>${eur(rev)}</strong><span>Umsatz ${y}</span></div>
+    <div><strong>${eur(rev)}</strong><span>Berechnet ${y}</span></div>
+    <div><strong>${eur(signed)}</strong><span>unterschrieben, noch nicht berechnet</span></div>
     <div><strong>${eur(open.reduce((a,i)=>a+i.amount,0))}</strong><span>${open.length} offen beim Kunden</span></div>
-    <div><strong>${eur(cost)}</strong><span>Ausgaben ${y}</span></div>
-    <div><strong>${Math.round(rev/GOAL*100)} %</strong><span>vom Ziel ${eur(GOAL)}</span></div>`;
+    <div><strong>${Math.round((rev+signed)/GOAL*100)} %</strong><span>vom Ziel ${eur(GOAL)}</span></div>`;
   const list=INVOICES.filter(i=>invF==='all'||i.kind===invF).sort((a,b)=>b.date.localeCompare(a.date));
   document.getElementById('invRows').innerHTML=list.map(i=>{
     const [st,pc,label]=invState(i);
     return `<tr class="${i.fresh?'row-new':''}">
       <td class="num">${dm(i.date)}</td>
-      <td class="party">${esc(i.party)}<small>${i.kind}${i.src?', aus sevDesk exportiert':''}, ${esc(i.note)}</small></td>
+      <td class="party">${esc(i.party)}<small>${i.kind}${i.src==='notion'?', aus Notion':i.src?', aus sevDesk exportiert':''}, ${esc(i.note)}</small></td>
       <td class="hide-sm">${esc(i.no||'Beleg')}</td>
       <td class="r num">${i.kind==='Eingang'?'−':''}${eur(i.amount)}</td>
       <td>${st==='bezahlt'?`<span class="pill ok"><i></i>${label}</span>`:`<button class="pill ${pc} pill-btn" data-pay="${i.id}" aria-label="${esc(i.party)} als bezahlt markieren"><i></i>${label}</button>`}</td>
-      <td><button class="icon-btn" data-rowdrive="${i.drive||(i.kind==='Ausgang'?AUSGANG_ROOT_URL:EINGANG_ROOT_URL)}" aria-label="Ordner von ${esc(i.party)} in Google Drive öffnen"><svg class="i sm"><use href="#i-open"/></svg></button></td>
+      <td><span style="display:flex;gap:2px;justify-content:flex-end">
+        <button class="icon-btn" data-rowdrive="${i.drive||(i.kind==='Ausgang'?AUSGANG_ROOT_URL:EINGANG_ROOT_URL)}" aria-label="${esc(i.party)} in Google Drive öffnen"><svg class="i sm"><use href="#i-open"/></svg></button>
+        <button class="icon-btn" data-invdel="${i.id}" aria-label="${esc(i.party)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button>
+      </span></td>
     </tr>`;
   }).join('');
   INVOICES.forEach(i=>i.fresh=false);
-  updateBadges();
+  updateBadges();saveState();
 }
-document.getElementById('invRows').addEventListener('click',e=>{
-  const pay=e.target.closest('[data-pay]');
-  if(pay){const i=INVOICES.find(x=>x.id==pay.dataset.pay);i.status='bezahlt';renderInvoices();renderHome();toast(i.party+': als bezahlt markiert');return}
-  const dr=e.target.closest('[data-rowdrive]');if(dr)window.open(dr.dataset.rowdrive,'_blank','noopener');
-});
+(function(){
+  const rows=$('invRows');if(!rows)return;
+  rows.addEventListener('click',e=>{
+    const pay=e.target.closest('[data-pay]');
+    if(pay){const i=INVOICES.find(x=>x.id==pay.dataset.pay);if(i){i.status='bezahlt';renderInvoices();renderHome();toast(i.party+': als bezahlt markiert')}return}
+    const dr=e.target.closest('[data-rowdrive]');
+    if(dr){window.open(dr.dataset.rowdrive,'_blank','noopener');return}
+    const del=e.target.closest('[data-invdel]');
+    if(del){
+      const i=INVOICES.find(x=>x.id==del.dataset.invdel);if(!i)return;
+      const inDrive=!!i.driveFileId;
+      askConfirm(
+        'Rechnung „'+i.party+'“ über '+eur(i.amount)+' aus der Liste entfernen'+
+        (inDrive?'. Die Datei wandert dabei auch in den Papierkorb von Google Drive und lässt sich dort 30 Tage lang wiederherstellen.':'. Eine Datei in Drive wird dabei nicht angefasst.'),
+        async()=>{
+          if(inDrive){
+            try{
+              await gfetch('https://www.googleapis.com/drive/v3/files/'+i.driveFileId+'?supportsAllDrives=true',
+                {method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({trashed:true})});
+            }catch(err){toast('Drive-Papierkorb nicht erreicht: '+err.message)}
+          }
+          INVOICES=INVOICES.filter(x=>x.id!==i.id);
+          renderInvoices();renderHome();
+          if(GAUTH)loadDriveFiles();
+          toast('Entfernt: '+i.party);
+        },'Entfernen');
+    }
+  });
+})();
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-invdrive]');if(!b)return;
   window.open(RECHNUNGEN_ROOT_URL,'_blank','noopener');
@@ -1939,6 +2455,342 @@ document.getElementById('clientMails').addEventListener('click',e=>{
   mailSel=+b.dataset.cmail;MAILS.find(m=>m.id===mailSel).unread=false;renderMails();location.hash='#/mails';
 });
 renderClientMails();
+
+
+/* ---------- Medien: Upload, Vorschau, Löschen ---------- */
+let medLoadedOnce=false,medThumbUrls=[];
+(function initMediaFolders(){
+  const sel=$('medFolder');if(!sel)return;
+  sel.innerHTML=MEDIA_FOLDERS.map((f,i)=>`<option value="${i}">${esc(f.n)}</option>`).join('');
+})();
+function currentMediaFolder(){
+  const sel=$('medFolder');
+  const i=sel?+sel.value:0;
+  return MEDIA_FOLDERS[i]||MEDIA_FOLDERS[0];
+}
+function syncMedDriveLink(){
+  const a=$('medOpenDrive');
+  if(a)a.href=driveUrl(currentMediaFolder().id);
+}
+on('medFolder','change',()=>{syncMedDriveLink();medLoadedOnce=false;loadMedia()});
+syncMedDriveLink();
+
+const isImg=t=>/^image\//.test(t||'');
+function fmtBytes(b){return b>=1048576?(b/1048576).toFixed(1).replace('.',',')+' MB':Math.max(1,Math.round(b/1024))+' KB'}
+
+function medRow(name,state,msg){
+  return `<div class="uprow ${state}"><span>${esc(name)}</span><em>${esc(msg)}</em></div>`;
+}
+async function uploadMedia(files){
+  const list=$('medUploads');if(!list)return;
+  if(!GAUTH){toast('Dafür bitte zuerst mit Google anmelden');return}
+  const folder=currentMediaFolder();
+  const arr=[...files];
+  if(!arr.length)return;
+  list.innerHTML=arr.map(f=>medRow(f.name,'','wartet …')).join('');
+  let done=0,failed=0;
+  for(let i=0;i<arr.length;i++){
+    const file=arr[i];
+    const rows=list.children;
+    if(file.size>MAX_UPLOAD_MB*1048576){
+      if(rows[i])rows[i].outerHTML=medRow(file.name,'err','zu groß, max. '+MAX_UPLOAD_MB+' MB');
+      failed++;continue;
+    }
+    if(rows[i])rows[i].outerHTML=medRow(file.name,'','wird hochgeladen …');
+    try{
+      await driveUpload(file,file.name,folder.id);
+      if(list.children[i])list.children[i].outerHTML=medRow(file.name,'ok',fmtBytes(file.size)+' abgelegt');
+      done++;
+    }catch(e){
+      if(list.children[i])list.children[i].outerHTML=medRow(file.name,'err',e.message);
+      failed++;
+    }
+  }
+  const fi=$('medFile');if(fi)fi.value='';
+  if(done)toast(done+(done===1?' Datei':' Dateien')+' in „'+folder.n+'“ abgelegt'+(failed?', '+failed+' fehlgeschlagen':''));
+  else if(failed)toast('Upload fehlgeschlagen, Details stehen in der Liste');
+  medLoadedOnce=false;loadMedia();
+}
+on('medFile','change',e=>uploadMedia(e.target.files));
+(function initMedDz(){
+  const dz=$('medDz');if(!dz)return;
+  ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('over')}));
+  ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('over')}));
+  dz.addEventListener('drop',e=>{if(e.dataTransfer&&e.dataTransfer.files)uploadMedia(e.dataTransfer.files)});
+})();
+
+function clearThumbs(){medThumbUrls.forEach(u=>{try{URL.revokeObjectURL(u)}catch(_){}});medThumbUrls=[]}
+async function loadThumb(id,el){
+  try{
+    const r=await gfetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media&supportsAllDrives=true');
+    const blob=await r.blob();
+    if(blob.size>8*1048576)return;
+    const u=URL.createObjectURL(blob);medThumbUrls.push(u);
+    if(el&&el.isConnected)el.innerHTML='<img src="'+u+'" alt="" loading="lazy">';
+  }catch(e){/* Vorschau ist optional */}
+}
+async function loadMedia(){
+  const grid=$('medGrid');if(!grid)return;
+  clearThumbs();
+  if(!GAUTH){
+    grid.innerHTML='<p class="empty">Nach dem Google-Login erscheinen hier eure Dateien.</p>';
+    setText('medSub','Nach dem Google-Login erscheinen hier eure Dateien');
+    return;
+  }
+  const folder=currentMediaFolder();
+  grid.innerHTML='<p class="empty">Wird aus Drive geladen …</p>';
+  try{
+    const url='https://www.googleapis.com/drive/v3/files?'+new URLSearchParams({
+      q:`'${folder.id}' in parents and trashed=false`,
+      orderBy:'modifiedTime desc',pageSize:'40',
+      fields:'files(id,name,mimeType,size,modifiedTime,webViewLink)',
+      supportsAllDrives:'true',includeItemsFromAllDrives:'true'});
+    const j=await (await gfetch(url)).json();
+    const files=(j.files||[]).filter(x=>x.mimeType!=='application/vnd.google-apps.folder');
+    medLoadedOnce=true;
+    setText('medSub',files.length?files.length+' Dateien in „'+folder.n+'“':'„'+folder.n+'“ ist noch leer');
+    if(!files.length){grid.innerHTML='<p class="empty">Noch nichts drin. Zieh links die ersten Dateien rein.</p>';return}
+    grid.innerHTML=files.map(fl=>`
+      <article class="mtile" data-mid="${fl.id}" data-mname="${esc(fl.name)}">
+        <div class="mthumb${isImg(fl.mimeType)?' tp':''}" data-thumb="${isImg(fl.mimeType)?fl.id:''}"><svg class="i"><use href="#${isImg(fl.mimeType)?'i-image':'i-doc2'}"/></svg></div>
+        <div class="mbody">
+          <div><strong>${esc(fl.name)}</strong><span>${fl.size?fmtBytes(+fl.size):''}</span></div>
+          <div class="mact">
+            <a class="icon-btn" href="${fl.webViewLink}" target="_blank" rel="noopener" aria-label="${esc(fl.name)} in Drive öffnen"><svg class="i sm"><use href="#i-open"/></svg></a>
+            <button class="icon-btn" data-mdel="${fl.id}" aria-label="${esc(fl.name)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button>
+          </div>
+        </div>
+      </article>`).join('');
+    grid.querySelectorAll('[data-thumb]').forEach(el=>{if(el.dataset.thumb)loadThumb(el.dataset.thumb,el)});
+  }catch(e){
+    grid.innerHTML='<p class="empty">Konnte nicht geladen werden: '+esc(e.message)+'</p>';
+  }
+}
+on('medRefresh','click',()=>{medLoadedOnce=false;loadMedia()});
+(function(){
+  const grid=$('medGrid');if(!grid)return;
+  grid.addEventListener('click',e=>{
+    const b=e.target.closest('[data-mdel]');if(!b)return;
+    const tile=b.closest('.mtile');
+    const name=tile?tile.dataset.mname:'diese Datei';
+    askConfirm('„'+name+'“ wird in den Papierkorb von Google Drive verschoben. Von dort könnt ihr sie innerhalb von 30 Tagen wiederherstellen.',async()=>{
+      try{
+        await gfetch('https://www.googleapis.com/drive/v3/files/'+b.dataset.mdel+'?supportsAllDrives=true',
+          {method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({trashed:true})});
+        toast('In den Papierkorb verschoben: '+name);
+        medLoadedOnce=false;loadMedia();
+      }catch(err){toast('Löschen fehlgeschlagen: '+err.message)}
+    });
+  });
+})();
+
+/* ---------- Akquise ---------- */
+function leadHTML(l){
+  const next=l.stage<LSTAGES.length-1?`<button class="next" data-lnext="${l.id}" aria-label="${esc(l.n)} weiterschieben"><svg class="i sm"><use href="#i-chev"/></svg></button>`:'';
+  return `<article class="lead" draggable="true" data-lid="${l.id}">
+    <strong>${esc(l.n)}</strong><p>${esc(l.note||'')}</p>
+    <div class="tags" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:7px">${l.seg?`<span class="tag">${esc(l.seg)}</span>`:''}${l.saison?`<span class="tag">${esc(l.saison)}</span>`:''}</div>
+    <div class="lf"><span class="av us sm">${l.who}</span>${l.val?`<span class="val">${eur(l.val)}</span>`:'<span class="val"></span>'}${next}
+      <button class="next" data-ldel="${l.id}" aria-label="${esc(l.n)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button></div>
+  </article>`;
+}
+function renderLeads(){
+  const board=$('lBoard');if(!board)return;
+  board.innerHTML=LSTAGES.map((name,i)=>{
+    const items=LEADS.filter(l=>l.stage===i);
+    const sum=items.reduce((a,l)=>a+(+l.val||0),0);
+    return `<div class="col" data-lstage="${i}">
+      <div class="col-head"><div>${name}<span>${items.length}</span></div><small>${sum?eur(sum):'—'}</small></div>
+      ${items.map(leadHTML).join('')}
+    </div>`;
+  }).join('');
+  const offen=LEADS.filter(l=>l.stage<2);
+  const laufend=LEADS.filter(l=>l.stage===1);
+  const gesamt=offen.reduce((a,l)=>a+(+l.val||0),0);
+  const winter=LEADS.filter(l=>l.saison==='Winter 26/27'&&l.stage<2).reduce((a,l)=>a+(+l.val||0),0);
+  setHTML('lStats',`
+    <div><strong>${LEADS.length}</strong><span>Kontakte in der Pipeline</span></div>
+    <div><strong>${laufend.length}</strong><span>in Bearbeitung</span></div>
+    <div><strong>${eur(gesamt)}</strong><span>mögliches Volumen</span></div>
+    <div><strong>${eur(winter)}</strong><span>davon Winter 26/27</span></div>`);
+  setHTML('lSummary',`<b>${LEADS.length} Kontakte</b>, davon ${laufend.length} in Bearbeitung. Mögliches Volumen ${eur(gesamt)}.`);
+  saveState();
+}
+(function(){
+  const board=$('lBoard');if(!board)return;
+  board.addEventListener('click',e=>{
+    const nx=e.target.closest('[data-lnext]');
+    if(nx){const l=LEADS.find(x=>x.id==nx.dataset.lnext);if(l&&l.stage<LSTAGES.length-1){l.stage++;renderLeads();toast(l.n+': '+LSTAGES[l.stage])}return}
+    const dl=e.target.closest('[data-ldel]');
+    if(dl){
+      const l=LEADS.find(x=>x.id==dl.dataset.ldel);if(!l)return;
+      askConfirm('„'+l.n+'“ aus der Akquise entfernen?',()=>{LEADS=LEADS.filter(x=>x.id!==l.id);renderLeads();toast('Entfernt: '+l.n)},'Entfernen');
+    }
+  });
+  let ldrag=null;
+  board.addEventListener('dragstart',e=>{const c=e.target.closest('.lead');if(!c)return;ldrag=c.dataset.lid;c.classList.add('dragging');e.dataTransfer.effectAllowed='move'});
+  board.addEventListener('dragend',e=>{const c=e.target.closest('.lead');if(c)c.classList.remove('dragging');board.querySelectorAll('.col').forEach(x=>x.classList.remove('over'))});
+  board.addEventListener('dragover',e=>{const col=e.target.closest('[data-lstage]');if(!col)return;e.preventDefault();board.querySelectorAll('.col').forEach(x=>x.classList.toggle('over',x===col))});
+  board.addEventListener('drop',e=>{
+    const col=e.target.closest('[data-lstage]');if(!col)return;e.preventDefault();
+    const l=LEADS.find(x=>x.id==ldrag);if(!l)return;
+    const st=+col.dataset.lstage;
+    if(l.stage!==st){l.stage=st;renderLeads();toast(l.n+': '+LSTAGES[st])}
+  });
+})();
+on('addLead','submit',e=>{
+  e.preventDefault();
+  const n=($('alName').value||'').trim();
+  if(!n){$('alName').focus();return}
+  const val=parseFloat(($('alVal').value||'').replace(/\./g,'').replace(',','.'))||0;
+  LEADS.push({id:Date.now(),n,note:($('alNote').value||'').trim(),val,stage:0,who:USER==='Martin'?'MS':'LP',seg:'',saison:''});
+  $('alName').value='';$('alNote').value='';$('alVal').value='';
+  renderLeads();toast('Kontakt angelegt: '+n);
+});
+
+/* ---------- Globale Suche ---------- */
+let palList=[],palSel=0,palLast=null;
+function buildIndex(){
+  const out=[];
+  TASKS.filter(t=>!t.done).forEach(t=>out.push({ic:'i-tasks',t:t.t,s:t.p+' · '+(NAMES[t.who]||''),k:'Aufgabe',go:'#/aufgaben'}));
+  INVOICES.forEach(i=>out.push({ic:'i-receipt',t:i.party+' · '+eur(i.amount),s:(i.no||'Beleg')+' · '+dm(i.date),k:'Rechnung',go:'#/rechnungen'}));
+  LEADS.forEach(l=>out.push({ic:'i-target',t:l.n,s:LSTAGES[l.stage]+(l.val?' · '+eur(l.val):''),k:'Akquise',go:'#/akquise'}));
+  CLIENTS.forEach(c=>out.push({ic:'i-users',t:c.n,s:c.next,k:'Kunde',go:c.open?'#/kunde':'#/kunden'}));
+  EVENTS.filter(e=>e.d>=TODAY).slice(0,40).forEach(e=>out.push({ic:'i-cal',t:e.t,s:wd(e.d)+', '+dm(e.d)+(e.time?' · '+e.time:''),k:'Termin',go:'#/kalender'}));
+  DRIVES.forEach(d=>out.push({ic:'i-drive',t:d.name,s:fmtSize(d.free)+' frei von '+fmtSize(d.cap),k:'Laufwerk',go:'#/archiv'}));
+  MEDIA_FOLDERS.forEach(m=>out.push({ic:'i-image',t:m.n,s:'Medienordner in Drive',k:'Medien',go:'#/medien'}));
+  return out;
+}
+function renderPal(){
+  const q=($('palQ').value||'').trim().toLowerCase();
+  const all=buildIndex();
+  palList=(q?all.filter(x=>(x.t+' '+x.s+' '+x.k).toLowerCase().includes(q)):all.slice(0,12)).slice(0,20);
+  if(palSel>=palList.length)palSel=Math.max(0,palList.length-1);
+  const el=$('palRes');
+  el.innerHTML=palList.length?palList.map((x,i)=>`
+    <button data-pi="${i}" class="${i===palSel?'sel':''}">
+      <span class="pi"><svg class="i sm"><use href="#${x.ic}"/></svg></span>
+      <span style="min-width:0"><b>${esc(x.t)}</b><small>${esc(x.s||'')}</small></span>
+      <span class="k">${x.k}</span>
+    </button>`).join(''):'<p class="pal-empty">Nichts gefunden.</p>';
+}
+function openPal(){
+  const w=$('palWrap');if(!w)return;
+  palLast=document.activeElement;palSel=0;
+  w.classList.add('show');w.setAttribute('aria-hidden','false');
+  $('palQ').value='';renderPal();
+  setTimeout(()=>$('palQ').focus(),20);
+}
+function closePal(){
+  const w=$('palWrap');if(!w)return;
+  w.classList.remove('show');w.setAttribute('aria-hidden','true');
+  if(palLast&&palLast.focus)palLast.focus();
+}
+function goPal(i){const x=palList[i];if(!x)return;closePal();location.hash=x.go}
+on('palQ','input',()=>{palSel=0;renderPal()});
+(function(){
+  const w=$('palWrap');if(!w)return;
+  w.addEventListener('click',e=>{
+    if(e.target===w){closePal();return}
+    const b=e.target.closest('[data-pi]');if(b)goPal(+b.dataset.pi);
+  });
+})();
+document.addEventListener('click',e=>{if(e.target.closest('[data-opensearch]')){e.preventDefault();openPal()}});
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();const w=$('palWrap');w&&w.classList.contains('show')?closePal():openPal();return}
+  const w=$('palWrap');if(!w||!w.classList.contains('show'))return;
+  if(e.key==='Escape')closePal();
+  if(e.key==='ArrowDown'){e.preventDefault();palSel=Math.min(palSel+1,palList.length-1);renderPal()}
+  if(e.key==='ArrowUp'){e.preventDefault();palSel=Math.max(palSel-1,0);renderPal()}
+  if(e.key==='Enter'){e.preventDefault();goPal(palSel)}
+});
+
+/* ---------- Notion ---------- */
+/* Die Notion-API lässt sich aus dem Browser nicht direkt aufrufen: Notion erlaubt kein CORS,
+   und der Token gehört nie in öffentlichen Frontend-Code. Deshalb läuft alles über die
+   Serverless-Funktion /api/notion auf Vercel, die den Token aus den Environment Variables liest.
+   Solange NOTION_TOKEN dort fehlt, arbeitet das Tool mit dem eingebauten Stand von heute. */
+let NOTION_LIVE=false;
+const NOTION_SNAPSHOT='11.09.2026';
+
+async function notionGet(db){
+  const r=await fetch('/api/notion?db='+encodeURIComponent(db));
+  if(!r.ok){
+    let msg='HTTP '+r.status;
+    try{const j=await r.json();msg=j.error||msg}catch(_){}
+    throw new Error(msg);
+  }
+  return (await r.json()).rows||[];
+}
+function notionStatus(state,text){
+  const pill=$('setNotionPill'),txt=$('setNotionText');
+  if(pill)pill.innerHTML=`<span class="pill ${state}"><i></i>${state==='ok'?'Live verbunden':state==='warn'?'Nicht verbunden':'Fehler'}</span>`;
+  if(txt&&text)txt.textContent=text;
+}
+async function loadNotion(){
+  try{
+    const [auf,rech,akq]=await Promise.all([notionGet('aufgaben'),notionGet('rechnungen'),notionGet('akquise')]);
+    if(auf.length){
+      TASKS=auf.map((r,i)=>({
+        id:'n'+i,nid:r.id,t:r['Aufgabe']||'(ohne Titel)',p:r['Bereich']||'LeMatic',
+        who:/martin/i.test(USER)?'MS':'LP',due:r['Deadline']||TODAY,
+        prio:r['Prio']||'',done:r['Status']==='Erledigt'
+      }));
+    }
+    if(akq.length){
+      const st=n=>n==='Erledigt'?2:n==='In Bearbeitung'?1:0;
+      LEADS=akq.map((r,i)=>({
+        id:'n'+i,nid:r.id,n:r['Lead']||'(ohne Titel)',note:r['Nächster Schritt']||'',
+        val:+r['Potenzial']||0,stage:st(r['Stage']),who:'MS',
+        seg:r['Segment']||'',saison:r['Saison']||''
+      }));
+    }
+    if(rech.length){
+      const kind=a=>a==='Angebot'?'Angebot':'Ausgang';
+      const stat=x=>({'Bezahlt':'bezahlt','Offen':'offen','Unterschrieben':'unterschrieben','Angenommen':'unterschrieben','Abgelehnt':'abgelehnt','Offen/unklar':'offen'}[x]||'offen');
+      INVOICES=rech.map((r,i)=>({
+        id:'n'+i,nid:r.id,src:'notion',kind:kind(r['Art']),no:r['Nummer']||'',
+        party:'—',note:(r['Leistung']||'').slice(0,80),date:r['Datum']||TODAY,
+        amount:+r['Betrag']||0,status:stat(r['Status']),p:'LeMatic',drive:r['Datei']||''
+      }));
+    }
+    NOTION_LIVE=true;
+    notionStatus('ok','Live aus dem LeMatic OS: '+auf.length+' Aufgaben, '+rech.length+' Rechnungen und Angebote, '+akq.length+' Leads');
+    safe('tasks',renderTasks);safe('inv',renderInvoices);safe('leads',renderLeads);safe('home',renderHome);
+    toast('Notion-Daten geladen');
+  }catch(e){
+    NOTION_LIVE=false;
+    const missing=/NOTION_TOKEN/.test(e.message)||/501/.test(e.message);
+    notionStatus('warn',missing
+      ? 'Noch nicht verbunden — NOTION_TOKEN in Vercel hinterlegen. Bis dahin läuft das Tool mit dem Stand vom '+NOTION_SNAPSHOT
+      : 'Nicht erreichbar ('+e.message+'). Stand vom '+NOTION_SNAPSHOT);
+  }
+}
+
+/* ---------- Sicherung: Export und Zurücksetzen ---------- */
+function downloadFile(name,text,type){
+  try{
+    const b=new Blob([text],{type:type||'application/json'});
+    const u=URL.createObjectURL(b);
+    const a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();
+    setTimeout(()=>{URL.revokeObjectURL(u);a.remove()},500);
+  }catch(e){toast('Export nicht möglich: '+e.message)}
+}
+on('expJson','click',()=>{
+  const csvEsc=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const csv=['Art;Datum;Kunde oder Lieferant;Nummer;Betrag;Status;Projekt']
+    .concat(INVOICES.map(i=>[i.kind,i.date,i.party,i.no||'',String(i.amount).replace('.',','),i.status,i.p].map(csvEsc).join(';')))
+    .join('\n');
+  downloadFile('lematic_rechnungen_'+TODAY+'.csv','\ufeff'+csv,'text/csv;charset=utf-8');
+  setTimeout(()=>downloadFile('lematic_sicherung_'+TODAY+'.json',JSON.stringify({TASKS,INVOICES,LEADS,archStand},null,2)),400);
+  toast('Rechnungen als CSV und alles als JSON exportiert');
+});
+on('resetState','click',()=>{
+  askConfirm('Alle lokal gespeicherten Aufgaben, Rechnungen und Akquise-Kontakte in diesem Browser zurücksetzen? Dateien in Google Drive bleiben unberührt.',()=>{
+    try{localStorage.removeItem(LS_KEY)}catch(e){}
+    location.reload();
+  },'Zurücksetzen');
+});
 
 /* ---------- Kunden ---------- */
 let cf='all';
@@ -2047,14 +2899,30 @@ document.getElementById('driveGrid').addEventListener('click',e=>{
   renderDriveGrid();
 });
 document.getElementById('archRefresh').addEventListener('click',()=>{
-  archStand=TODAY;updateArchPill();
+  archStand=TODAY;updateArchPill();saveState();
   toast('Als heute geprüft markiert — bitte auch eure Notion-Tabelle aktualisieren');
 });
 renderDriveGrid();
 
-setKind('Eingang');renderTasks();renderInvoices();renderClients();renderHome();
-if(location.hash.startsWith('#/'))go(location.hash.slice(2));
-setTimeout(()=>document.getElementById('lEmail').focus(),50);
+/* Start: erst gespeicherte Daten laden, dann alles rendern. Jeder Teil einzeln abgesichert,
+   damit ein Fehler an einer Stelle nie die ganze Seite unbenutzbar macht. */
+(function start(){
+  const restored=safe('load',loadState);
+  stateReady=true;
+  safe('kind',()=>setKind('Eingang'));
+  safe('tasks',renderTasks);
+  safe('invoices',renderInvoices);
+  safe('clients',renderClients);
+  safe('leads',renderLeads);
+  safe('drives',renderDriveGrid);
+  safe('home',renderHome);
+  safe('route',()=>{if(location.hash.startsWith('#/'))go(location.hash.slice(2))});
+  safe('google',initGoogle);
+  safe('notion',loadNotion);
+  if(restored)setTimeout(()=>toast('Gespeicherter Stand aus diesem Browser geladen'),600);
+})();
+window.addEventListener('error',e=>{console.error('Unerwarteter Fehler:',e.message)});
+window.addEventListener('unhandledrejection',e=>{console.error('Offener Fehler:',e.reason&&e.reason.message)});
 
 </script>
 </body>
