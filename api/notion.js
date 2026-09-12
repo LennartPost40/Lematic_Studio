@@ -3,13 +3,16 @@
 // und der Token darf niemals im öffentlichen Frontend-Code stehen.
 // Token in Vercel hinterlegen als Environment Variable: NOTION_TOKEN
 
+// Wichtig: das sind die klassischen Datenbank-IDs (nicht die neueren "Data Source"-IDs,
+// die Notion seit der Mehrfachquellen-Umstellung zusätzlich vergibt). Die Query- und
+// Page-Erstellung der REST-API (Version 2022-06-28) erwartet diese Datenbank-IDs.
 const DS = {
-  aufgaben:   'edcb60b8-7c0e-4a18-9c4e-0a2248937b9e',
-  rechnungen: 'ac9355f4-0fe7-40d3-b4b7-92fa320b7651',
-  akquise:    '2f320b55-4436-4ac4-826c-f5b7bb2771be',
-  projekte:   '7e261dcb-d497-4824-b446-8b3a5a107571',
-  kunden:     'a0139b80-1d51-4a4f-be69-856bd65a3f5f',
-  laufwerke:  '4ed4a466-6697-497c-a684-dce29a43600f'
+  aufgaben:   'cc64b42c-e0db-4186-a540-7c824cfa8bb1',
+  rechnungen: 'b1b8239b-195c-47c2-b60c-007cb5c78b3d',
+  akquise:    'c33aace4-5c10-42c7-88d6-08a9fb7af12d',
+  projekte:   'ff5a312a-562f-48bb-a320-f32ab245ba81',
+  kunden:     '1a47c61b-a5b6-416e-b4f2-d32454de35f2',
+  laufwerke:  '0bba1261-69bd-49c1-ab22-beaf50ead987'
 };
 
 const plain = p => {
