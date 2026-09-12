@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LeMatic Studio</title>
+<link rel="icon" type="image/png" href="img/logo.png">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root{
@@ -880,7 +881,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
           <p class="summary">Drehs, Lieferungen, Meetings und Akquise von Lennart und Martin in einer Ansicht</p>
         </div>
         <div class="actions">
-          <button class="btn btn-primary" data-toast="Termin wird in Google Calendar angelegt"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Termin anlegen</span></button>
+          <button class="btn btn-primary" id="openEvent"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Termin anlegen</span></button>
         </div>
       </header>
       <div class="grid">
@@ -1170,6 +1171,18 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 
     <div class="grid">
 
+      <!-- Drive-Übersicht Mammutmarsch -->
+      <section class="glass panel c12" aria-labelledby="md-title">
+        <div class="panel-head">
+          <div><h2 id="md-title">Assets in Drive</h2><p id="mdSub">Echte Dateien aus 02_Mammut_Marsch_Assets</p></div>
+          <div class="head-right">
+            <button class="btn btn-glass sm" id="mdRefresh"><svg class="i sm"><use href="#i-check"/></svg>Aktualisieren</button>
+            <a class="btn btn-glass sm" href="https://drive.google.com/drive/folders/1KJL5nDMWotTLHgck6BcU0o3YXKwiRAmS" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Drive öffnen</a>
+          </div>
+        </div>
+        <div class="mgrid" id="mdGrid"><p class="empty">Nach dem Google-Login erscheinen hier die echten Dateien.</p></div>
+      </section>
+
       <!-- Anfragen -->
       <section class="glass panel c7" id="anfragen" aria-labelledby="req-title">
         <div class="panel-head">
@@ -1336,8 +1349,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
       <button class="btn btn-primary g-btn" type="button" id="gLogin"><span class="g-dot" aria-hidden="true">G</span>Mit Google anmelden</button>
       <p class="form-err" id="lErr" role="alert"></p>
     </div>
-    <div class="setup-note" id="setupNote" hidden><b>Google-Login ist noch nicht eingerichtet.</b> Im Code fehlt die Client-ID aus der Google Cloud Console. Bis dahin lässt sich das Tool nur als Demo ansehen.</div>
-    <button class="demo-link" id="demoLogin">Als Demo ansehen, ohne Drive</button>
+    <div class="setup-note" id="setupNote" hidden><b>Google-Login ist noch nicht eingerichtet.</b> Im Code fehlt die Client-ID aus der Google Cloud Console.</div>
     <p class="login-foot">Zugriff nur mit freigegebenen Google-Konten. Kunden nutzen das Kundenportal.</p>
   </div>
 </div>
@@ -1375,18 +1387,43 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 <div class="modal-wrap" id="uploadWrap" aria-hidden="true">
   <div class="glass sheet" role="dialog" aria-modal="true" aria-labelledby="up-title">
     <h2 id="up-title">Asset hochladen</h2>
-    <p>Die Datei landet in <a href="https://drive.google.com/drive/folders/1KJL5nDMWotTLHgck6BcU0o3YXKwiRAmS" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600">02_Mammut_Marsch_Assets</a> und als Karte in der Pipeline.</p>
-    <div class="drop"><svg class="i"><use href="#i-upload"/></svg><b>Datei hierher ziehen</b>oder klicken zum Auswählen</div>
+    <p>Landet echt in <a href="https://drive.google.com/drive/folders/1KJL5nDMWotTLHgck6BcU0o3YXKwiRAmS" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600">02_Mammut_Marsch_Assets</a> und als Karte in der Pipeline.</p>
+    <label class="dz-lg" id="upDz" style="display:block">
+      <input type="file" id="upFile" hidden>
+      <svg class="i"><use href="#i-upload"/></svg>
+      <b id="upDzTitle">Datei hierher ziehen</b>
+      <span id="upDzSub">oder klicken zum Auswählen</span>
+    </label>
     <div class="fields">
-      <label class="full">Titel<input type="text" id="upTitle" value="Finish-Testimonial"></label>
+      <label class="full">Titel<input type="text" id="upTitle" placeholder="Zum Beispiel: Reel Zieleinlauf Hannover"></label>
       <label>Event<select id="upEvent"><option>Bremen</option><option selected>Hannover</option><option>Content-System 2027</option></select></label>
       <label>Format<select id="upFmt"><option>Reel 9:16</option><option>Ticket-Sales-Creative</option><option>Creator-Content</option><option>Template</option><option>Rohmaterial</option></select></label>
     </div>
     <div class="switch"><span>Direkt zur Freigabe senden<small>Alex bekommt eine Benachrichtigung</small></span><input type="checkbox" id="upSend" aria-label="Direkt zur Freigabe senden"></div>
+    <div class="switch"><span>Martin benachrichtigen<small>Legt eine Aufgabe in eurem LeMatic OS an</small></span><input type="checkbox" id="upNotify" checked aria-label="Martin benachrichtigen"></div>
     <div class="switch"><span>Tracking-Link erstellen<small>Wird nach der Freigabe aktiv</small></span><input type="checkbox" id="upTrack" checked aria-label="Tracking-Link erstellen"></div>
+    <p class="form-err" id="upErr" role="alert"></p>
     <div class="sheet-actions">
       <button class="btn btn-glass sm" id="upCancel">Abbrechen</button>
       <button class="btn btn-primary sm" id="upGo">Hochladen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Termin anlegen -->
+<div class="modal-wrap" id="eventWrap" aria-hidden="true">
+  <div class="glass sheet" role="dialog" aria-modal="true" aria-labelledby="ev-title">
+    <h2 id="ev-title">Termin anlegen</h2>
+    <p>Landet in deinem echten Google-Kalender, nur du siehst und bearbeitest ihn.</p>
+    <div class="fields">
+      <label class="full">Titel<input type="text" id="evTitle" placeholder="Zum Beispiel: Anruf Aussteller GET NORD"></label>
+      <label>Datum<input type="date" id="evDate"></label>
+      <label>Uhrzeit<input type="time" id="evTime"></label>
+    </div>
+    <p class="form-err" id="evErr" role="alert"></p>
+    <div class="sheet-actions">
+      <button class="btn btn-glass sm" id="evCancel">Abbrechen</button>
+      <button class="btn btn-primary sm" id="evGo">Anlegen</button>
     </div>
   </div>
 </div>
@@ -1475,7 +1512,7 @@ function loadState(){
 
 /* Eigene Fotos: hier später echte Bild-Adressen eintragen (z.B. 'img/lennart.jpg'),
    dann ersetzen sie automatisch Kürzel und Logo-Buchstabe. Leer = wie bisher. */
-const PHOTOS={LP:'',MS:'',logo:''};
+const PHOTOS={LP:'',MS:'',logo:'img/logo.png'};
 function applyBranding(){
   if(PHOTOS.logo){
     document.querySelectorAll('.mark').forEach(el=>{
@@ -1675,23 +1712,85 @@ function updateSummary(){
 
 /* Upload */
 const upWrap=document.getElementById('uploadWrap');let upLast=null;
-function openUp(){upLast=document.activeElement;upWrap.classList.add('show');upWrap.setAttribute('aria-hidden','false');setTimeout(()=>document.getElementById('upTitle').focus(),20)}
+let upFile=null;
+function resetUpDz(){
+  upFile=null;const fi=$('upFile');if(fi)fi.value='';
+  $('upDz').classList.remove('has');$('upDzTitle').textContent='Datei hierher ziehen';$('upDzSub').textContent='oder klicken zum Auswählen';
+}
+function setUpFile(f){
+  if(!f)return;upFile=f;$('upDz').classList.add('has');
+  $('upDzTitle').textContent=f.name;$('upDzSub').textContent=(f.size/1024).toFixed(0)+' KB, bereit zum Ablegen';
+  if(!($('upTitle').value||'').trim())$('upTitle').value=f.name.replace(/\.[^.]+$/,'');
+}
+on('upFile','change',e=>setUpFile(e.target.files[0]));
+(function(){
+  const dz=$('upDz');if(!dz)return;
+  ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('over')}));
+  ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('over')}));
+  dz.addEventListener('drop',e=>{if(e.dataTransfer&&e.dataTransfer.files)setUpFile(e.dataTransfer.files[0])});
+})();
+function openUp(){upLast=document.activeElement;resetUpDz();$('upErr').textContent='';upWrap.classList.add('show');upWrap.setAttribute('aria-hidden','false');setTimeout(()=>document.getElementById('upTitle').focus(),20)}
 function closeUp(){upWrap.classList.remove('show');upWrap.setAttribute('aria-hidden','true');if(upLast)upLast.focus()}
 document.getElementById('openUpload').addEventListener('click',openUp);
 document.getElementById('upCancel').addEventListener('click',closeUp);
 upWrap.addEventListener('click',e=>{if(e.target===upWrap)closeUp()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&upWrap.classList.contains('show'))closeUp()});
-document.getElementById('upGo').addEventListener('click',()=>{
+const MAMMUT_ASSETS_ID='1KJL5nDMWotTLHgck6BcU0o3YXKwiRAmS';
+document.getElementById('upGo').addEventListener('click',async()=>{
   const t=document.getElementById('upTitle').value.trim()||'Neues Asset';
   const ev=document.getElementById('upEvent').value,fm=document.getElementById('upFmt').value;
   const send=document.getElementById('upSend').checked;
-  const c={id:Date.now(),t,ev:ev+', '+fm,who:'LP',stage:send?2:1,fresh:true};
+  const notify=document.getElementById('upNotify').checked;
+  const err=$('upErr'),btn=$('upGo');
+  if(!GAUTH){err.textContent='Bitte zuerst mit Google anmelden.';return}
+  if(!upFile){err.textContent='Bitte zuerst eine Datei auswählen.';return}
+  err.textContent='';btn.disabled=true;btn.textContent='Wird hochgeladen …';
+  let driveLink='';
+  try{
+    const up=await driveUpload(upFile,t+' — '+upFile.name,MAMMUT_ASSETS_ID);
+    driveLink=up.webViewLink||'';
+  }catch(e){
+    err.textContent='Upload fehlgeschlagen: '+e.message;btn.disabled=false;btn.textContent='Hochladen';return;
+  }
+  btn.disabled=false;btn.textContent='Hochladen';
+  const c={id:Date.now(),t,ev:ev+', '+fm,who:/martin/i.test(USER)?'MS':'LP',stage:send?2:1,drive:driveLink,fresh:true};
   CARDS.push(c);
   if(send){WAIT.push({t,sent:new Date().toISOString().slice(0,10),seen:null});renderWait()}
   renderBoard();closeUp();
-  toast(send?t+' hochgeladen und an Mammutmarsch gesendet':t+' hochgeladen, liegt in der internen Prüfung');
+  toast(t+' in Drive abgelegt'+(send?' und an Mammutmarsch gesendet':', liegt in der internen Prüfung'));
   document.getElementById('pipeline').scrollIntoView({behavior:'smooth',block:'start'});
+  if(notify){
+    try{
+      await notionCreate('aufgaben',{
+        'Aufgabe':{title:[{text:{content:'🔔 Neues Asset von '+USER+' für Mammutmarsch: '+t}}]},
+        'Bereich':{select:{name:'Dreh'}},
+        'Status':{status:{name:'Nicht begonnen'}},
+        'Prio':{select:{name:'Niedrig'}}
+      });
+    }catch(e){toast('Hochgeladen, aber Benachrichtigung an Martin nicht möglich: '+e.message)}
+  }
+  medLoadedOnce=false;loadMammutDrive();
 });
+async function loadMammutDrive(){
+  const grid=$('mdGrid');if(!grid)return;
+  if(!GAUTH){grid.innerHTML='<p class="empty">Nach dem Google-Login erscheinen hier die echten Dateien.</p>';return}
+  grid.innerHTML='<p class="empty">Wird aus Drive geladen …</p>';
+  try{
+    const url='https://www.googleapis.com/drive/v3/files?'+new URLSearchParams({
+      q:`'${MAMMUT_ASSETS_ID}' in parents and trashed=false`,orderBy:'modifiedTime desc',pageSize:'40',
+      fields:'files(id,name,mimeType,size,modifiedTime,webViewLink)',supportsAllDrives:'true',includeItemsFromAllDrives:'true'});
+    const j=await (await gfetch(url)).json();
+    const files=(j.files||[]).filter(x=>x.mimeType!=='application/vnd.google-apps.folder');
+    setText('mdSub',files.length?files.length+' Dateien in 02_Mammut_Marsch_Assets':'Noch keine Dateien in 02_Mammut_Marsch_Assets');
+    grid.innerHTML=files.length?files.map(fl=>`
+      <article class="mtile"><div class="mthumb${isImg(fl.mimeType)?' tp':''}" data-thumb="${isImg(fl.mimeType)?fl.id:''}"><svg class="i"><use href="#${isImg(fl.mimeType)?'i-image':'i-doc2'}"/></svg></div>
+      <div class="mbody"><div><strong>${esc(fl.name)}</strong><span>${fl.size?fmtBytes(+fl.size):''}</span></div>
+      <a class="icon-btn" href="${fl.webViewLink}" target="_blank" rel="noopener" aria-label="${esc(fl.name)} öffnen"><svg class="i sm"><use href="#i-open"/></svg></a></div></article>`).join('')
+      :'<p class="empty">Noch nichts hier. Über „Asset hochladen" die ersten Dateien ablegen.</p>';
+    grid.querySelectorAll('[data-thumb]').forEach(el=>{if(el.dataset.thumb)loadThumb(el.dataset.thumb,el)});
+  }catch(e){grid.innerHTML='<p class="empty">Konnte nicht geladen werden: '+esc(e.message)+'</p>'}
+}
+on('mdRefresh','click',loadMammutDrive);
 
 /* Navigation */
 document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>{
@@ -1740,9 +1839,9 @@ const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','S
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 const PROJ={'Feedback':'#FF3B30','Akquise':'#AF52DE','Dreh':'#073D30','Schnitt':'#0A84FF','Admin/Steuern':'#8B5A2B','Technik/Gear':'#8E8E93','Website':'#1F7A37','Mammutmarsch':'#073D30','Fairground':'#0A84FF','Messe-Akquise':'#AF52DE','LeMatic':'#D4A600','Buchhaltung':'#8E8E93'};
-const TYPES={dreh:'Drehs',lieferung:'Lieferungen',meeting:'Meetings',akquise:'Akquise',frist:'Fristen',intern:'Intern'};
-const TYPE_ONE={dreh:'Dreh',lieferung:'Lieferung',meeting:'Meeting',akquise:'Akquise',frist:'Frist',intern:'Intern'};
-const TYPE_DOT={dreh:'#073D30',lieferung:'#FF9F0A',meeting:'#0A84FF',akquise:'#AF52DE',frist:'#FF3B30',intern:'#8E8E93'};
+const TYPES={dreh:'Drehs',lieferung:'Lieferungen',meeting:'Meetings',akquise:'Akquise',frist:'Fristen',intern:'Intern',privat:'Mein Kalender'};
+const TYPE_ONE={dreh:'Dreh',lieferung:'Lieferung',meeting:'Meeting',akquise:'Akquise',frist:'Frist',intern:'Intern',privat:'Google Kalender'};
+const TYPE_DOT={dreh:'#073D30',lieferung:'#FF9F0A',meeting:'#0A84FF',akquise:'#AF52DE',frist:'#FF3B30',intern:'#8E8E93',privat:'#0A9B8A'};
 
 /* Termine (Platzhalter, würden aus Google Calendar kommen) */
 let EVENTS=[
@@ -1916,6 +2015,7 @@ function go(route){
   if(v==='heute')safe('home',renderHome);
   if(v==='akquise')safe('leads',renderLeads);
   if(v==='medien')safe('media',()=>{if(!GAUTH||!medLoadedOnce)loadMedia()});
+  if(v==='kunde')safe('mammutDrive',()=>{if(GAUTH)loadMammutDrive()});
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#/'))go(location.hash.slice(2))});
@@ -1926,7 +2026,8 @@ const GOOGLE_CLIENT_ID='103865922550-oedundd8e5qet9k5j7sotgtmrs8ge8tp.apps.googl
 /* Erlaubte Google-Adressen, z. B. ['vorname@gmail.com']. Leer = jedes Konto, das Zugriff auf den Drive-Ordner hat. */
 const ALLOWED_EMAILS=[];
 const DRIVE_SCOPE='https://www.googleapis.com/auth/drive';
-const GOOGLE_SCOPES='openid email profile '+DRIVE_SCOPE;
+const CAL_SCOPE='https://www.googleapis.com/auth/calendar.events';
+const GOOGLE_SCOPES='openid email profile '+DRIVE_SCOPE+' '+CAL_SCOPE;
 const DRIVE_ROOT_ID='15uyD_DLz6-oqzXeP1UoOBtXvzjpk4Z7E';
 
 const login=document.getElementById('login');
@@ -2010,6 +2111,15 @@ function enterGoogle(me){
   toast('Angemeldet als '+me.email);
   safe('driveCheck',checkDrive);safe('driveFiles',loadDriveFiles);safe('media',loadMedia);
   safe('intro',checkMartinIntro);
+  safe('personal',()=>personalizeFor(codeGuess));
+  safe('myCal',loadMyCalendar);
+  safe('mammutDrive',()=>{if(location.hash.slice(2)==='kunde')loadMammutDrive()});
+}
+/* Persönlicher Fokus: Aufgaben defaulten auf die eingeloggte Person, ohne die andere auszublenden */
+function personalizeFor(code){
+  tWho=code;
+  document.querySelectorAll('#tWho button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.who===code));
+  safe('tasksRerender',renderTasks);
 }
 async function checkDrive(){
   const pill=document.getElementById('setDrivePill'),txt=document.getElementById('setDriveText');
@@ -2036,12 +2146,6 @@ document.getElementById('gLogin').addEventListener('click',()=>{
   loginError('');
   if(!tokenClient){loginError('Google-Login lädt noch, bitte kurz warten.');return}
   tokenClient.requestAccessToken({prompt:'select_account'});
-});
-document.getElementById('demoLogin').addEventListener('click',()=>{
-  login.hidden=true;
-  if(!location.hash.startsWith('#/'))location.hash='#/heute';else go(location.hash.slice(2));
-  toast('Demo ohne Google-Login, Uploads gehen nicht wirklich nach Drive');
-  safe('intro',checkMartinIntro);
 });
 document.getElementById('logout').addEventListener('click',()=>{
   if(accessToken&&window.google)google.accounts.oauth2.revoke(accessToken,()=>{});
@@ -2741,6 +2845,63 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowDown'){e.preventDefault();palSel=Math.min(palSel+1,palList.length-1);renderPal()}
   if(e.key==='ArrowUp'){e.preventDefault();palSel=Math.max(palSel-1,0);renderPal()}
   if(e.key==='Enter'){e.preventDefault();goPal(palSel)}
+});
+
+/* ---------- Google Kalender: eigener, echter Kalender der eingeloggten Person ---------- */
+let MY_CAL_LOADED=false;
+async function loadMyCalendar(){
+  const win=document.getElementById('legendCal');
+  try{
+    const timeMin=new Date();timeMin.setDate(timeMin.getDate()-45);
+    const timeMax=new Date();timeMax.setDate(timeMax.getDate()+150);
+    const url='https://www.googleapis.com/calendar/v3/calendars/primary/events?'+new URLSearchParams({
+      timeMin:timeMin.toISOString(),timeMax:timeMax.toISOString(),singleEvents:'true',orderBy:'startTime',maxResults:'250'
+    });
+    const j=await (await gfetch(url)).json();
+    EVENTS=EVENTS.filter(e=>e.type!=='privat');
+    (j.items||[]).forEach(it=>{
+      if(!it.start)return;
+      const allDay=!it.start.dateTime;
+      const d=(it.start.dateTime||it.start.date).slice(0,10);
+      const time=allDay?null:it.start.dateTime.slice(11,16);
+      EVENTS.push({d,time,t:it.summary||'(ohne Titel)',type:'privat',p:'LeMatic',who:/martin/i.test(USER)?'MS':'LP',gcalId:it.id});
+    });
+    MY_CAL_LOADED=true;
+    safe('cal2',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
+    safe('home2',renderHome);
+  }catch(e){
+    console.warn('Google Kalender nicht geladen:',e.message);
+  }
+}
+function openEventDialog(){
+  const w=$('eventWrap');if(!w)return;
+  $('evTitle').value='';$('evErr').textContent='';
+  $('evDate').value=selDay||TODAY;$('evTime').value='';
+  w.classList.add('show');w.setAttribute('aria-hidden','false');
+  setTimeout(()=>$('evTitle').focus(),20);
+}
+function closeEventDialog(){const w=$('eventWrap');if(!w)return;w.classList.remove('show');w.setAttribute('aria-hidden','true')}
+on('openEvent','click',()=>{if(!GAUTH){toast('Dafür bitte zuerst mit Google anmelden');return}openEventDialog()});
+on('evCancel','click',closeEventDialog);
+on('evGo','click',async()=>{
+  const title=($('evTitle').value||'').trim(),date=$('evDate').value||TODAY,time=$('evTime').value;
+  const err=$('evErr');
+  if(!title){err.textContent='Bitte einen Titel eintragen.';return}
+  err.textContent='';
+  const body=time
+    ?{summary:title,start:{dateTime:date+'T'+time+':00'},end:{dateTime:date+'T'+time+':00'}}
+    :{summary:title,start:{date},end:{date}};
+  try{
+    const r=await gfetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)
+    });
+    const j=await r.json();
+    EVENTS.push({d:date,time:time||null,t:title,type:'privat',p:'LeMatic',who:/martin/i.test(USER)?'MS':'LP',gcalId:j.id});
+    closeEventDialog();toast('Im Google-Kalender angelegt: '+title);
+    safe('calR',renderCal);safe('homeR',renderHome);
+  }catch(e){
+    err.textContent='Konnte nicht angelegt werden: '+e.message;
+  }
 });
 
 /* ---------- Notion ---------- */
