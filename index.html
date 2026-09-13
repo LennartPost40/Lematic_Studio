@@ -849,7 +849,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
       <header class="topbar">
         <div>
           <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
-          <span class="intern" id="gmailPill"><svg class="i xs"><use href="#i-mail"/></svg>Aktuell IONOS, noch nicht verbunden</span>
+          <span class="intern" id="gmailPill"><svg class="i xs"><use href="#i-mail"/></svg>Wird geprüft …</span>
           <h1>Mails</h1>
           <p class="summary" id="mSummary">Alle Mails von Lennart und Martin, automatisch den Kunden zugeordnet</p>
         </div>
@@ -859,15 +859,15 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
       </header>
       <section class="glass connect-card" id="mailConnect" aria-labelledby="gc-title">
         <div class="big-ic"><svg class="i"><use href="#i-mail"/></svg></div>
-        <h2 id="gc-title">Mails kommen mit Google Workspace</h2>
-        <p>info@lematic.de läuft aktuell über IONOS. Nach dem Umstieg auf Google Workspace verbindet ihr hier eure Postfächer, und das Tool ordnet Mails über die Absender-Adresse den Kunden zu.</p>
+        <h2 id="gc-title">Gmail noch nicht angemeldet</h2>
+        <p>info@lematic.de läuft über IONOS, ist aber als Zweitkonto in Gmail eingebunden. Meldet euch hier einmal neu mit Google an und erlaubt den Mail-Zugriff, dann erscheinen eure echten Mails.</p>
         <ul>
           <li><svg class="i sm"><use href="#i-check"/></svg>Kundenmails erscheinen direkt auf der Kundenseite</li>
           <li><svg class="i sm"><use href="#i-check"/></svg>Rechnungen im Anhang mit einem Klick ablegen</li>
           <li><svg class="i sm"><use href="#i-check"/></svg>Aus jeder Mail eine Aufgabe machen</li>
         </ul>
-        <button class="btn btn-primary" data-gconnect><svg class="i sm"><use href="#i-eye"/></svg>Vorschau mit Beispiel-Mails</button>
-        <small>Keine echte Verbindung, nur zur Ansicht</small>
+        <button class="btn btn-primary" id="gmailRetry"><svg class="i sm"><use href="#i-mail"/></svg>Erneut mit Google anmelden</button>
+        <small id="mailConnectHint">Dabei fragt Google auch nach dem Mail-Zugriff — bitte den Haken setzen.</small>
       </section>
       <div class="grid" id="mailApp" hidden>
         <section class="glass panel c5" aria-label="Posteingang">
@@ -2031,6 +2031,7 @@ function go(route){
   if(v==='heute')safe('home',renderHome);
   if(v==='akquise')safe('leads',renderLeads);
   if(v==='medien')safe('media',()=>{if(!GAUTH||!medLoadedOnce)loadMedia()});
+  if(v==='mails'&&GAUTH&&!GMAIL)safe('gmail',loadGmail);
   if(v==='kunde')safe('mammutDrive',()=>{if(GAUTH)loadMammutDrive()});
   window.scrollTo(0,0);
 }
@@ -2043,7 +2044,8 @@ const GOOGLE_CLIENT_ID='103865922550-oedundd8e5qet9k5j7sotgtmrs8ge8tp.apps.googl
 const ALLOWED_EMAILS=[];
 const DRIVE_SCOPE='https://www.googleapis.com/auth/drive';
 const CAL_SCOPE='https://www.googleapis.com/auth/calendar.events';
-const GOOGLE_SCOPES='openid email profile '+DRIVE_SCOPE+' '+CAL_SCOPE;
+const GMAIL_SCOPE='https://www.googleapis.com/auth/gmail.readonly';
+const GOOGLE_SCOPES='openid email profile '+DRIVE_SCOPE+' '+CAL_SCOPE+' '+GMAIL_SCOPE;
 const DRIVE_ROOT_ID='15uyD_DLz6-oqzXeP1UoOBtXvzjpk4Z7E';
 
 const login=document.getElementById('login');
@@ -2165,6 +2167,7 @@ function enterGoogle(me){
     toast('Angemeldet als '+me.email);
   }
   safe('driveCheck',checkDrive);safe('driveFiles',loadDriveFiles);safe('media',loadMedia);
+  safe('gmail',loadGmail);
   safe('intro',checkMartinIntro);
   safe('personal',()=>personalizeFor(codeGuess));
   safe('myCal',loadMyCalendar);
@@ -2618,95 +2621,186 @@ document.addEventListener('click',e=>{
 
 
 /* ---------- Gmail ---------- */
-let GMAIL=false,mailSel=null,mailF='all';
-const yday=addDays(TODAY,-1);
-let MAILS=[
-  {id:1,from:'Alex Zwiehoff',ini:'AZ',addr:'alex@mammutmarsch.de',client:'Mammutmarsch',d:TODAY,time:'09:12',unread:true,subj:'Re: Content-System 2027',snip:'Danke für die Präsentation. Ich gehe das mit der Geschäftsführung durch.',body:['Hi Martin, hi Lennart,','danke für die Präsentation. Ich gehe das nächste Woche mit der Geschäftsführung durch und melde mich mit Rückfragen zum Scope.','Viele Grüße, Alex'],tags:['Kunde']},
-  {id:2,from:'Freelancer Kamera B',ini:'FL',addr:'Freelancer',client:null,d:TODAY,time:'08:40',unread:true,subj:'Rechnung Dreh Bremen',snip:'Anbei meine Rechnung für den Drehtag in Bremen.',body:['Hallo zusammen,','anbei meine Rechnung für den Drehtag in Bremen. Zahlungsziel wie besprochen 14 Tage.','Beste Grüße'],attach:{name:'Rechnung_Bremen.pdf',size:184000},inv:{kind:'Eingang',party:'Freelancer Kamera B',amount:500,p:'Mammutmarsch'},tags:['Rechnung']},
-  {id:3,from:'Miri',ini:'MI',addr:'@mammutmarsch.de',client:'Mammutmarsch',d:yday,time:'16:40',unread:false,subj:'Sponsor-Cutdown für einen Partner',snip:'Könnt ihr eine 15-Sekunden-Version vom Zieleinlauf mit Partner-Logo machen?',body:['Hallo ihr beiden,','könnt ihr uns eine 15-Sekunden-Version vom Zieleinlauf mit Partner-Logo am Ende bauen? Wir bräuchten sie bis Freitag, den 18.09.','Danke und liebe Grüße, Miri'],tags:['Kunde','Anfrage']},
-  {id:4,from:'Justin Müller',ini:'JM',addr:'Fairground Festival',client:'Fairground',d:yday,time:'11:05',unread:true,subj:'Fairground 28.11., Crew und Zeiten',snip:'Lass uns kurz telefonieren wegen Crew-Plan und Ankunftszeiten.',body:['Hey Lennart,','lass uns diese Woche kurz telefonieren wegen Crew-Plan und Ankunftszeiten für den 28.11.','Gruß, Justin'],tags:['Kunde']},
-  {id:5,from:'Aussteller, Hydrogen Expo',ini:'HE',addr:'Messe-Kontakt',client:'Messe-Akquise',d:addDays(TODAY,-2),time:'14:22',unread:false,subj:'Re: Video für Ihren Messeauftritt',snip:'Klingt interessant. Schicken Sie uns gern Referenzen.',body:['Guten Tag Herr Schmick,','das klingt interessant. Schicken Sie uns gern ein paar Referenzen und eine grobe Preisvorstellung für zwei Messetage.','Mit freundlichen Grüßen'],tags:['Akquise']},
-  {id:6,from:'Dynabeat Festival',ini:'DF',addr:'Dynabeat Festival',client:'LeMatic',d:addDays(TODAY,-4),time:'10:10',unread:false,subj:'Zahlung RE-2026-012',snip:'Die Rechnung wurde heute überwiesen.',body:['Hallo,','die Rechnung RE-2026-012 wurde heute überwiesen. Danke für die starke Arbeit beim Festival.'],tags:['Rechnung']}
-];
-const mailWhen=m=>m.d===TODAY?m.time:m.d===yday?'Gestern':dm(m.d);
-function connectGmail(){
-  if(GMAIL)return;GMAIL=true;
-  document.getElementById('mailConnect').hidden=true;document.getElementById('mailApp').hidden=false;
-  document.getElementById('gmailPill').innerHTML='<svg class="i xs"><use href="#i-eye"/></svg>Vorschau mit Beispiel-Mails';
-  document.getElementById('setGmail').innerHTML='<span class="pill info"><i></i>Vorschau</span>';
-  mailSel=MAILS[0].id;MAILS[0].unread=false;
-  renderMails();renderClientMails();renderHome();toast('Vorschau mit Beispiel-Mails geladen');
+let GMAIL=false,mailSel=null,mailF='all',mailBodyCache={};
+let MAILS=[];
+
+/* Kunden anhand der Absenderdomain erkennen. Bei Bedarf hier weitere Domains ergänzen. */
+const CLIENT_DOMAINS={'mammutmarsch.de':'Mammutmarsch'};
+function clientForEmail(addr){
+  const m=/@([^\s>]+)/.exec(addr||'');if(!m)return null;
+  return CLIENT_DOMAINS[m[1].toLowerCase()]||null;
 }
-document.addEventListener('click',e=>{if(e.target.closest('[data-gconnect]')){e.preventDefault();connectGmail()}});
+function b64urlDecode(str){
+  try{
+    const bin=atob((str||'').replace(/-/g,'+').replace(/_/g,'/'));
+    const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    return new TextDecoder('utf-8').decode(bytes);
+  }catch(_){return ''}
+}
+function findParts(payload,mime){
+  if(!payload)return null;
+  if(payload.mimeType===mime&&payload.body&&payload.body.data)return payload;
+  if(payload.parts){for(const p of payload.parts){const r=findParts(p,mime);if(r)return r}}
+  return null;
+}
+function extractGmailBody(payload){
+  const plain=findParts(payload,'text/plain');
+  if(plain)return b64urlDecode(plain.body.data);
+  const html=findParts(payload,'text/html');
+  if(html)return b64urlDecode(html.body.data).replace(/<style[\s\S]*?<\/style>/gi,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+  return '(kein Textinhalt gefunden)';
+}
+function findAttachments(payload,out){
+  out=out||[];
+  if(!payload)return out;
+  if(payload.filename&&payload.body&&payload.body.attachmentId)out.push({filename:payload.filename,mimeType:payload.mimeType,attachmentId:payload.body.attachmentId,size:payload.body.size||0});
+  if(payload.parts)payload.parts.forEach(p=>findAttachments(p,out));
+  return out;
+}
+function gmailWhen(dateHeader){
+  const d=new Date(dateHeader);if(isNaN(d))return'';
+  const ds=iso(d);
+  if(ds===TODAY)return d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+  if(ds===addDays(TODAY,-1))return'Gestern';
+  return dm(ds);
+}
+async function loadGmail(){
+  const el=$('mList');if(!el)return;
+  if(!GAUTH){$('mailConnect').hidden=false;$('mailApp').hidden=true;return}
+  try{
+    const list=await (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?'+new URLSearchParams({maxResults:'20',q:'newer_than:30d'}))).json();
+    const ids=(list.messages||[]).map(m=>m.id);
+    const details=await Promise.all(ids.map(id=>
+      gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+id+'?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date').then(r=>r.json())
+    ));
+    MAILS=details.map(d=>{
+      const h=Object.fromEntries((d.payload&&d.payload.headers||[]).map(x=>[x.name,x.value]));
+      const from=h.From||'';
+      const nameM=/^"?([^"<]*)"?\s*<?/.exec(from);const fromName=(nameM&&nameM[1].trim())||from;
+      const addrM=/<([^>]+)>/.exec(from);const addr=addrM?addrM[1]:from;
+      const client=clientForEmail(addr);
+      return{
+        id:d.id,threadId:d.threadId,from:fromName,addr,ini:initials(fromName),
+        client,unread:(d.labelIds||[]).includes('UNREAD'),
+        subj:h.Subject||'(kein Betreff)',snip:d.snippet||'',
+        dateHeader:h.Date||'',internal:+d.internalDate||0,
+        tags:[client?'Kunde':null,/rechnung|invoice/i.test(h.Subject||'')?'Rechnung':null].filter(Boolean)
+      };
+    }).sort((a,b)=>b.internal-a.internal);
+    GMAIL=true;
+    $('mailConnect').hidden=true;$('mailApp').hidden=false;
+    setHTML('gmailPill','<svg class="i xs"><use href="#i-check"/></svg>Verbunden mit Gmail');
+    if(!mailSel&&MAILS[0])mailSel=MAILS[0].id;
+    renderMails();renderClientMails();
+  }catch(e){
+    GMAIL=false;
+    $('mailConnect').hidden=false;$('mailApp').hidden=true;
+    setHTML('gmailPill','<svg class="i xs"><use href="#i-warn"/></svg>Nicht verbunden');
+    setText('mailConnectHint','Konnte nicht geladen werden: '+e.message);
+    safe('clientMailsFallback',renderClientMails);
+  }
+}
+on('gmailRetry','click',()=>{
+  if(!tokenClient){toast('Google-Login lädt noch, bitte kurz warten.');return}
+  tokenClient.requestAccessToken({prompt:'consent'});
+});
+
 function mailItem(m){
   return `<button class="mail${m.unread?' unread':''}${m.id===mailSel?' sel':''}" data-mail="${m.id}">
     <span class="av">${m.ini}</span>
-    <span style="min-width:0"><span class="row1"><b>${esc(m.from)}</b><time>${mailWhen(m)}</time></span>
+    <span style="min-width:0"><span class="row1"><b>${esc(m.from)}</b><time>${gmailWhen(m.dateHeader)}</time></span>
     <span class="subj" style="display:block">${esc(m.subj)}</span><span class="snip" style="display:block">${esc(m.snip)}</span>
-    <span class="tags">${m.client&&m.client!=='LeMatic'?`<span class="proj"><i style="background:${PROJ[m.client]||'#8E8E93'}"></i>${esc(m.client)}</span>`:''}${m.attach?'<span class="tag">Anhang</span>':''}</span></span>
+    <span class="tags">${m.client?`<span class="proj"><i style="background:${PROJ[m.client]||'#8E8E93'}"></i>${esc(m.client)}</span>`:''}${m.tags.includes('Rechnung')?'<span class="tag">Rechnung</span>':''}</span></span>
   </button>`;
 }
 function renderMails(){
-  const q=document.getElementById('mSearch').value.trim().toLowerCase();
-  const list=MAILS.filter(m=>(mailF==='all'||(mailF==='unread'&&m.unread)||(mailF==='client'&&m.tags.includes('Kunde'))||(mailF==='invoice'&&m.tags.includes('Rechnung')))&&(!q||(m.from+' '+m.subj+' '+m.snip).toLowerCase().includes(q)));
-  document.getElementById('mList').innerHTML=list.length?list.map(mailItem).join(''):'<p class="empty">Keine Mails gefunden.</p>';
+  const q=($('mSearch').value||'').trim().toLowerCase();
+  const list=MAILS.filter(m=>(mailF==='all'||(mailF==='unread'&&m.unread)||(mailF==='client'&&m.client)||(mailF==='invoice'&&m.tags.includes('Rechnung')))&&(!q||(m.from+' '+m.subj+' '+m.snip).toLowerCase().includes(q)));
+  $('mList').innerHTML=list.length?list.map(mailItem).join(''):'<p class="empty">Keine Mails gefunden.</p>';
   const unread=MAILS.filter(m=>m.unread).length;
-  document.getElementById('mSummary').innerHTML=`<b>${unread} ungelesen</b>, ${MAILS.filter(m=>m.client).length} Mails automatisch Kunden zugeordnet`;
-  const m=MAILS.find(x=>x.id===mailSel);
-  document.getElementById('mRead').innerHTML=m?`
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${m.client&&m.client!=='LeMatic'?`<span class="auto"><svg class="i xs"><use href="#i-check"/></svg>Zugeordnet: ${esc(m.client)}</span>`:''}${m.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
-    <h2>${esc(m.subj)}</h2>
-    <div class="from"><span class="av">${m.ini}</span><div><strong>${esc(m.from)}</strong><span>${esc(m.addr)}</span></div><time>${m.d===TODAY?'Heute':m.d===yday?'Gestern':dm(m.d)}, ${m.time}</time></div>
-    <div class="body">${m.body.map(p=>`<p>${esc(p)}</p>`).join('')}</div>
-    ${m.attach?`<div class="attach"><svg class="i"><use href="#i-receipt"/></svg><div>${esc(m.attach.name)}<small>PDF, ${Math.round(m.attach.size/1024)} KB</small></div></div>`:''}
-    <div class="read-actions">
-      ${m.inv?`<button class="btn btn-primary sm" data-maction="invoice"><svg class="i sm"><use href="#i-receipt"/></svg>Als Rechnung ablegen</button>`:''}
-      <button class="btn ${m.inv?'btn-glass':'btn-primary'} sm" data-maction="task"><svg class="i sm"><use href="#i-tasks"/></svg>Aufgabe daraus machen</button>
-      ${m.client==='Mammutmarsch'?'<a class="btn btn-glass sm" href="#/kunde">Zur Kundenseite</a>':''}
-      <button class="btn btn-glass sm" data-toast="Mail wird in Gmail geöffnet"><svg class="i sm"><use href="#i-open"/></svg>In Gmail antworten</button>
-    </div>`:'<p class="empty">Mail auswählen</p>';
-  const nm=document.getElementById('navMail');nm.textContent=unread;nm.hidden=!unread;
+  setHTML('mSummary',`<b>${unread} ungelesen</b>, ${MAILS.filter(m=>m.client).length} Mails automatisch Kunden zugeordnet`);
+  renderMailRead();
+  const nm=$('navMail');if(nm){nm.textContent=unread;nm.hidden=!unread}
 }
-document.getElementById('mList').addEventListener('click',e=>{
+async function renderMailRead(){
+  const m=MAILS.find(x=>x.id===mailSel);
+  const box=$('mRead');if(!box)return;
+  if(!m){box.innerHTML='<p class="empty">Mail auswählen</p>';return}
+  box.innerHTML='<p class="empty">Wird geladen …</p>';
+  let full=mailBodyCache[m.id];
+  if(!full){
+    try{
+      const d=await (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+m.id+'?format=full')).json();
+      full={body:extractGmailBody(d.payload),attachments:findAttachments(d.payload)};
+      mailBodyCache[m.id]=full;
+    }catch(e){box.innerHTML='<p class="empty">Mail konnte nicht geladen werden: '+esc(e.message)+'</p>';return}
+  }
+  if(mailSel!==m.id)return;
+  box.innerHTML=`
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${m.client?`<span class="auto"><svg class="i xs"><use href="#i-check"/></svg>Zugeordnet: ${esc(m.client)}</span>`:''}${m.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    <h2>${esc(m.subj)}</h2>
+    <div class="from"><span class="av">${m.ini}</span><div><strong>${esc(m.from)}</strong><span>${esc(m.addr)}</span></div><time>${gmailWhen(m.dateHeader)}</time></div>
+    <div class="body">${esc(full.body).split('\n').filter(Boolean).map(p=>`<p>${p}</p>`).join('')}</div>
+    ${full.attachments.map((a,i)=>`<div class="attach"><svg class="i"><use href="#i-receipt"/></svg><div>${esc(a.filename)}<small>${a.mimeType||''}, ${Math.round((a.size||0)/1024)} KB</small></div><button class="icon-btn ghost" data-att="${i}" aria-label="${esc(a.filename)} als Rechnung ablegen" style="margin-left:auto"><svg class="i sm"><use href="#i-receipt"/></svg></button></div>`).join('')}
+    <div class="read-actions">
+      <button class="btn btn-glass sm" data-maction="task"><svg class="i sm"><use href="#i-tasks"/></svg>Aufgabe daraus machen</button>
+      ${m.client==='Mammutmarsch'?'<a class="btn btn-glass sm" href="#/kunde">Zur Kundenseite</a>':''}
+      <a class="btn btn-glass sm" href="https://mail.google.com/mail/u/0/#search/rfc822msgid:${encodeURIComponent(m.threadId||m.id)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Gmail öffnen</a>
+    </div>`;
+  box.dataset.attachments=JSON.stringify(full.attachments.map(a=>({filename:a.filename,mimeType:a.mimeType,attachmentId:a.attachmentId})));
+}
+on('mList','click',e=>{
   const b=e.target.closest('[data-mail]');if(!b)return;
-  mailSel=+b.dataset.mail;MAILS.find(m=>m.id===mailSel).unread=false;renderMails();renderClientMails();
-  if(window.innerWidth<1240)document.getElementById('mRead').scrollIntoView({behavior:'smooth',block:'start'});
+  mailSel=b.dataset.mail;const m=MAILS.find(x=>x.id===mailSel);if(m)m.unread=false;
+  renderMails();
+  if(window.innerWidth<1240)$('mRead').scrollIntoView({behavior:'smooth',block:'start'});
 });
-document.getElementById('mSearch').addEventListener('input',renderMails);
-document.getElementById('mFilter').addEventListener('click',e=>{
+on('mSearch','input',()=>{renderMails()});
+on('mFilter','click',e=>{
   const b=e.target.closest('[data-mf]');if(!b)return;
   document.querySelectorAll('#mFilter button').forEach(x=>x.setAttribute('aria-pressed',x===b));mailF=b.dataset.mf;renderMails();
 });
-document.getElementById('mRead').addEventListener('click',e=>{
-  const b=e.target.closest('[data-maction]');if(!b)return;
-  const m=MAILS.find(x=>x.id===mailSel);
-  if(b.dataset.maction==='task'){
-    TASKS.push({id:Date.now(),t:'Antworten: '+m.subj,p:PROJ[m.client]?m.client:'LeMatic',who:USER==='Martin'?'MS':'LP',due:addDays(TODAY,1)});
-    renderTasks();renderHome();toast('Aufgabe angelegt: Antworten auf „'+m.subj+'“');
+on('mRead','click',async e=>{
+  const m=MAILS.find(x=>x.id===mailSel);if(!m)return;
+  const att=e.target.closest('[data-att]');
+  if(att){
+    const list=JSON.parse($('mRead').dataset.attachments||'[]');
+    const a=list[+att.dataset.att];if(!a)return;
+    try{
+      toast('Anhang wird geladen …');
+      const d=await (await gfetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${m.id}/attachments/${a.attachmentId}`)).json();
+      const bin=atob(d.data.replace(/-/g,'+').replace(/_/g,'/'));
+      const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+      const file=new File([bytes],a.filename,{type:a.mimeType||'application/octet-stream'});
+      location.hash='#/rechnungen';
+      setTimeout(()=>{
+        setKind('Eingang');setFile(file);
+        $('invParty').value=m.from;
+        $('invDate').value=iso(new Date(m.dateHeader))||TODAY;
+        updatePath();
+        toast('Anhang aus „'+m.subj+'“ übernommen, bitte prüfen und ablegen');
+      },250);
+    }catch(err){toast('Anhang konnte nicht geladen werden: '+err.message)}
+    return;
   }
-  if(b.dataset.maction==='invoice'){
-    setKind(m.inv.kind);
-    document.getElementById('invParty').value=m.inv.party;
-    document.getElementById('invAmount').value=m.inv.amount;
-    document.getElementById('invProj').value=m.inv.p;
-    document.getElementById('invDate').value=m.d;
-    setFile(m.attach);
-    location.hash='#/rechnungen';
-    toast('Anhang übernommen, bitte prüfen und ablegen');
+  const act=e.target.closest('[data-maction]');
+  if(act&&act.dataset.maction==='task'){
+    TASKS.push({id:Date.now(),t:'Antworten: '+m.subj,p:PROJ[m.client]?m.client:'LeMatic',who:/martin/i.test(USER)?'MS':'LP',due:addDays(TODAY,1)});
+    renderTasks();renderHome();toast('Aufgabe angelegt: Antworten auf „'+m.subj+'“');
   }
 });
 function renderClientMails(){
-  const el=document.getElementById('clientMails');
-  if(!GMAIL){el.innerHTML='<div class="hint-row"><span>Mails kommen mit dem Umstieg auf Google Workspace. Danach erscheinen hier alle Mails mit Mammutmarsch.</span><button class="btn btn-glass sm" data-gconnect>Vorschau ansehen</button></div>';return}
-  el.innerHTML=MAILS.filter(m=>m.client==='Mammutmarsch').map(m=>`<button class="cmail" data-cmail="${m.id}"><span class="av">${m.ini}</span><div><b>${m.unread?'<span class="udot"></span> ':''}${esc(m.subj)}</b><span>${esc(m.from)}: ${esc(m.snip)}</span></div><time>${mailWhen(m)}</time></button>`).join('');
+  const el=$('clientMails');if(!el)return;
+  if(!GAUTH){el.innerHTML='<div class="hint-row"><span>Nach dem Google-Login mit Mail-Zugriff erscheinen hier alle Mails mit Mammutmarsch.</span></div>';return}
+  if(!GMAIL){el.innerHTML='<div class="hint-row"><span>Gmail ist noch nicht verbunden.</span><button class="btn btn-glass sm" id="cmRetry">Zu Mails</button></div>';const b=$('cmRetry');if(b)b.onclick=()=>location.hash='#/mails';return}
+  const list=MAILS.filter(m=>m.client==='Mammutmarsch');
+  el.innerHTML=list.length?list.map(m=>`<button class="cmail" data-cmail="${m.id}"><span class="av">${m.ini}</span><div><b>${m.unread?'<span class="udot"></span> ':''}${esc(m.subj)}</b><span>${esc(m.from)}: ${esc(m.snip)}</span></div><time>${gmailWhen(m.dateHeader)}</time></button>`).join(''):'<p class="empty">Keine Mails von Mammutmarsch in den letzten 30 Tagen.</p>';
 }
-document.getElementById('clientMails').addEventListener('click',e=>{
+on('clientMails','click',e=>{
   const b=e.target.closest('[data-cmail]');if(!b)return;
-  mailSel=+b.dataset.cmail;MAILS.find(m=>m.id===mailSel).unread=false;renderMails();location.hash='#/mails';
+  mailSel=b.dataset.cmail;const m=MAILS.find(x=>x.id===mailSel);if(m)m.unread=false;
+  location.hash='#/mails';renderMails();
 });
-renderClientMails();
-
-
 /* ---------- Medien: Upload, Vorschau, Löschen ---------- */
 let medLoadedOnce=false,medThumbUrls=[];
 (function initMediaFolders(){
@@ -3060,6 +3154,9 @@ function notionStatus(state,text){
   if(pill)pill.innerHTML=`<span class="pill ${state}"><i></i>${state==='ok'?'Live verbunden':state==='warn'?'Nicht verbunden':'Fehler'}</span>`;
   if(txt&&text)txt.textContent=text;
 }
+/* Notion hat kein eigenes Feld "Zuständig" — daher leiten wir es aus eurer echten
+   Aufgabenteilung her: Dreh/Schnitt/Technik/Website bei Lennart, Akquise/Admin bei Martin. */
+const BEREICH_WHO={'Dreh':'LP','Schnitt':'LP','Technik/Gear':'LP','Website':'LP','Akquise':'MS','Admin/Steuern':'MS','Feedback':'MS'};
 async function loadNotion(){
   lastNotionLoad=Date.now();
   try{
@@ -3067,7 +3164,7 @@ async function loadNotion(){
     if(auf.length){
       TASKS=auf.map((r,i)=>({
         id:'n'+i,nid:r.id,t:r['Aufgabe']||'(ohne Titel)',p:r['Bereich']||'LeMatic',
-        who:/martin/i.test(USER)?'MS':'LP',due:r['Deadline']||TODAY,
+        who:BEREICH_WHO[r['Bereich']]||'LP',due:r['Deadline']||TODAY,
         prio:r['Prio']||'',done:r['Status']==='Erledigt'
       }));
     }
