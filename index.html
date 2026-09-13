@@ -987,11 +987,14 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
             <label>Rechnungsnummer<input class="input" id="invNo"></label>
             <label>Datum<input class="input" type="date" id="invDate"></label>
             <label>Betrag in €<input class="input" id="invAmount" inputmode="decimal" placeholder="4500"></label>
+            <label class="full" id="dueField" hidden><span>Fällig bis</span><input class="input" type="date" id="invDue"></label>
+            <label class="full" id="angStatusField" hidden><span>Status</span><select class="input" id="invAngStatus"><option>Offen</option><option>Angenommen</option><option>Unterschrieben</option><option>Abgelehnt</option></select></label>
             <label>Projekt<select class="input" id="invProj"></select></label>
             <p class="kind-note" id="kindNote"></p>
           </div>
           <datalist id="partyList"></datalist>
           <div class="target">Wird abgelegt unter<div class="path" id="invPath"></div><div class="fname" id="invName"></div><p class="dc-note" id="invFolderNote" style="margin-top:8px"></p></div>
+          <label class="switch" id="newFolderBox" hidden style="cursor:pointer"><span id="newFolderLabel">Neuen Kundenordner anlegen</span><input type="checkbox" id="newFolderChk" checked aria-label="Neuen Kundenordner in Drive anlegen"></label>
           <p class="form-err" id="invErr" role="alert"></p>
           <button class="btn btn-primary wide" id="invSave"><svg class="i sm"><use href="#i-upload"/></svg>Hochladen und ablegen</button>
         </section>
@@ -1514,7 +1517,7 @@ let stateReady=false;
 function saveState(){
   if(!stateReady)return;
   try{
-    localStorage.setItem(LS_KEY,JSON.stringify({v:1,TASKS,INVOICES,LEADS,archStand,STREAKS,savedAt:new Date().toISOString()}));
+    localStorage.setItem(LS_KEY,JSON.stringify({v:1,TASKS,INVOICES,LEADS,archStand,STREAKS,AUSGANG_FOLDERS,savedAt:new Date().toISOString()}));
     const el=$('setSaveInfo');if(el)el.textContent='Zuletzt lokal gesichert: '+new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
   }catch(e){console.warn('Speichern nicht möglich',e)}
 }
@@ -1527,6 +1530,7 @@ function loadState(){
     if(Array.isArray(j.LEADS))LEADS=j.LEADS;
     if(typeof j.archStand==='string')archStand=j.archStand;
     if(j.STREAKS&&typeof j.STREAKS==='object')STREAKS=j.STREAKS;
+    if(j.AUSGANG_FOLDERS&&typeof j.AUSGANG_FOLDERS==='object')AUSGANG_FOLDERS=Object.assign({},AUSGANG_FOLDERS,j.AUSGANG_FOLDERS);
     return true;
   }catch(e){console.warn('Gespeicherte Daten unlesbar',e);return false}
 }
@@ -1826,13 +1830,24 @@ const driveUrl=id=>'https://drive.google.com/drive/folders/'+id;
 const DRIVE_ROOT_URL=driveUrl('15uyD_DLz6-oqzXeP1UoOBtXvzjpk4Z7E');            // LeMatic
 const RECHNUNGEN_ROOT_URL=driveUrl('1e2POXqZfgyM1y2486tV3RudWlHW2cbp8');       // 02_Rechnungen_und_Finanzen
 const AUSGANG_ROOT_URL=driveUrl('1-kzpckiM_dFJz0Jj5YmNOIxhJxHdAcJ0');          // .../Ausgangsrechnungen
+const AUSGANG_ROOT_ID='1-kzpckiM_dFJz0Jj5YmNOIxhJxHdAcJ0';
 const EINGANG_ROOT_URL=driveUrl('1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O');
 const ANGEBOT_ID='1uYGj_BbbCq42LplCGem8XB1cbEwkRNAY';
 const ANGEBOT_URL=driveUrl(ANGEBOT_ID);          // .../Eingangsrechnungen
 /* Bekannte Kunden-Unterordner unter Ausgangsrechnungen. Neue Kunden hier ergänzen, sobald ein Ordner existiert. */
-const AUSGANG_FOLDERS={
+/* Echte Kunde-Unterordner unter Ausgangsrechnungen, per Drive-Abfrage geprüft. Wird zur Laufzeit
+   um selbst angelegte Kundenordner ergänzt und dann lokal gemerkt (siehe loadState/saveState). */
+let AUSGANG_FOLDERS={
   'Mammutmarsch':{name:'08_Mammutmarsch_UG',id:'1pR2zA1VLvWArFLBjUIpbxW9AGmluqLfq'},
-  'Felix Michalski':{name:'09_Felix_Michalski',id:'1u2NysfWxiICm3iMBeGMxsbm82k-xz6eL'}
+  'Felix Michalski':{name:'09_Felix_Michalski',id:'1u2NysfWxiICm3iMBeGMxsbm82k-xz6eL'},
+  'Resident Studios':{name:'07_Resident_Studios_UG',id:'1efNsxXwmvsjecwJU1vQlOz1qnPyS0aVg'},
+  'MS Hausverwaltung':{name:'06_MS_Hausverwaltung',id:'1Rwi2mIpCoxfYuQnN5aUg7X0wyxFgQRCu'},
+  'W2 Hamburg':{name:'05_W2_Hamburg_GmbH',id:'1mJY767kJ-DU9Lcbi_Qketbw6vx3eSijc'},
+  'Fliesen Dörfer':{name:'04_Fliesen_Dörfer_GmbH',id:'1MVlKZ61gm8RL2sLrjDMoQ_XFZu4qpnXG'},
+  'Nikhil Makkar':{name:'03_We_Are_After_Nikhil_Makkar',id:'1LUaPxdb3BGKSmXrL3cSnXEuwe9-FtkZG'},
+  'We Are After':{name:'03_We_Are_After_Nikhil_Makkar',id:'1LUaPxdb3BGKSmXrL3cSnXEuwe9-FtkZG'},
+  'World Club Dome':{name:'02_World_Club_Dome_2025',id:'18Xi-QSycXbSLBfujZ_JWM0jZsof51A0W'},
+  'GerCollector':{name:'01_GerCollector_Trackday',id:'1J_hDlAu8zCkaWahepjLbyXufZPnog-Pe'}
 };
 /* Echte Kategorie-Unterordner unter Eingangsrechnungen. */
 const EINGANG_FOLDERS={
@@ -1938,8 +1953,10 @@ const invState=i=>{
   if(i.status==='bezahlt')return['bezahlt','ok','Bezahlt'];
   if(i.status==='unterschrieben')return['ok2','ok','Unterschrieben'];
   if(i.status==='abgelehnt')return['abgelehnt','done','Abgelehnt'];
+  if(i.status==='angenommen')return['ok2','info','Angenommen'];
   if(i.kind==='Eingang')return['offen','info','Zu zahlen'];
-  if(diffDays(TODAY,i.date)>14)return['over','warn','Überfällig'];
+  const overdue=i.faellig?diffDays(TODAY,i.faellig)>0:diffDays(TODAY,i.date)>14;
+  if(overdue)return['over','warn','Überfällig'];
   return['offen','done','Offen'];
 };
 
@@ -2197,6 +2214,13 @@ document.getElementById('logout').addEventListener('click',()=>{
 });
 
 /* ---------- Drive: Upload und Dateiliste ---------- */
+async function driveCreateFolder(name,parentId){
+  const r=await gfetch('https://www.googleapis.com/drive/v3/files?supportsAllDrives=true&fields=id,name',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name,mimeType:'application/vnd.google-apps.folder',parents:[parentId]})
+  });
+  return r.json();
+}
 async function driveUpload(file,name,parentId){
   if(!file)throw new Error('Keine Datei');
   if(file.size!=null&&file.size>MAX_UPLOAD_MB*1048576)throw new Error('Datei größer als '+MAX_UPLOAD_MB+' MB');
@@ -2412,10 +2436,13 @@ function setKind(k){
   document.getElementById('invNo').placeholder=k==='Ausgang'?'':'Nummer auf dem Beleg, falls vorhanden';
   document.getElementById('kindNote').textContent=k==='Ausgang'?'Rechnung in sevDesk schreiben, als PDF exportieren und hier hochladen — landet automatisch im richtigen Kundenordner.':k==='Angebot'?'Landet im Ordner Angebote_und_Kostenvoranschlaege und als Eintrag in Rechnungen & Angebote. Zählt nicht ins Umsatzziel.':'Belege von Freelancern, Equipment oder Reisen. Landen hier im Drive, in sevDesk tragt ihr sie separat ein.';
   document.getElementById('catField').hidden=k!=='Eingang';
+  document.getElementById('dueField').hidden=k!=='Ausgang';
+  document.getElementById('angStatusField').hidden=k!=='Angebot';
+  if(k==='Ausgang'&&!document.getElementById('invDue').value)document.getElementById('invDue').value=addDays(document.getElementById('invDate').value||TODAY,14);
   document.getElementById('partyList').innerHTML=PARTY_SUGGEST[k].map(v=>`<option value="${esc(v)}">`).join('');
   updatePath();
 }
-let invTargetUrl=RECHNUNGEN_ROOT_URL,invTargetId='1e2POXqZfgyM1y2486tV3RudWlHW2cbp8',invPathParts=[];
+let invTargetUrl=RECHNUNGEN_ROOT_URL,invTargetId='1e2POXqZfgyM1y2486tV3RudWlHW2cbp8',invPathParts=[],invNewFolder=false;
 function updatePath(){
   const date=document.getElementById('invDate').value||TODAY;
   const party=document.getElementById('invParty').value.trim();
@@ -2428,10 +2455,13 @@ function updatePath(){
   }else if(invKind==='Ausgang'){
     const hitKey=Object.keys(AUSGANG_FOLDERS).find(k=>party&&party.toLowerCase().includes(k.toLowerCase()));
     const f=hitKey?AUSGANG_FOLDERS[hitKey]:null;
-    parts=['LeMatic','02_Rechnungen_und_Finanzen','Ausgangsrechnungen',f?f.name:null].filter(Boolean);
+    invNewFolder=!!(party&&!f);
+    parts=['LeMatic','02_Rechnungen_und_Finanzen','Ausgangsrechnungen',f?f.name:(invNewFolder?'📁 '+party+' (wird angelegt)':null)].filter(Boolean);
     invTargetUrl=f?driveUrl(f.id):AUSGANG_ROOT_URL;invTargetId=f?f.id:'1-kzpckiM_dFJz0Jj5YmNOIxhJxHdAcJ0';
-    if(party&&!f)note='Noch kein Ordner für „'+party+'“ gefunden — landet oben in Ausgangsrechnungen, Unterordner bitte einmal von Hand anlegen.';
+    const newFolderBox=$('newFolderBox');
+    if(newFolderBox){newFolderBox.hidden=!invNewFolder;setText('newFolderLabel','Neuen Ordner für „'+(party||'')+'\u201c unter Ausgangsrechnungen anlegen');}
   }else{
+    const nf=$('newFolderBox');if(nf)nf.hidden=true;invNewFolder=false;
     const cat=document.getElementById('invCat').value;
     const f=EINGANG_FOLDERS[cat];
     parts=['LeMatic','02_Rechnungen_und_Finanzen','Eingangsrechnungen',f?f.name:null].filter(Boolean);
@@ -2465,13 +2495,24 @@ document.getElementById('invSave').addEventListener('click',async()=>{
   if(!(amount>0)){err.textContent='Bitte einen Betrag eintragen.';return}
   err.textContent='';
   const date=document.getElementById('invDate').value||TODAY;
+  const dueVal=document.getElementById('invDue').value;
+  const angStatusVal=(document.getElementById('invAngStatus').value||'Offen');
+  const wantsNewFolder=invKind==='Ausgang'&&invNewFolder&&document.getElementById('newFolderChk').checked;
   const fname=document.getElementById('invName').textContent;
-  let driveLink=invTargetUrl,realUpload=false,driveFileId=null;
+  let driveLink=invTargetUrl,driveTargetId=invTargetId,realUpload=false,driveFileId=null;
   const btn=document.getElementById('invSave');
   if(GAUTH&&invFile instanceof File){
     btn.disabled=true;btn.lastChild.textContent='Wird hochgeladen …';
     try{
-      const up=await driveUpload(invFile,fname,invTargetId);
+      if(wantsNewFolder){
+        btn.lastChild.textContent='Ordner wird angelegt …';
+        const nf=await driveCreateFolder(party,AUSGANG_ROOT_ID);
+        AUSGANG_FOLDERS[party]={name:nf.name,id:nf.id};
+        driveTargetId=nf.id;driveLink=driveUrl(nf.id);
+        saveState();
+        btn.lastChild.textContent='Wird hochgeladen …';
+      }
+      const up=await driveUpload(invFile,fname,driveTargetId);
       driveLink=up.webViewLink||driveLink;driveFileId=up.id||null;realUpload=true;
     }catch(e){
       err.textContent='Upload fehlgeschlagen: '+e.message+'. Hat dieses Google-Konto Schreibrechte auf den Ordner?';
@@ -2479,15 +2520,14 @@ document.getElementById('invSave').addEventListener('click',async()=>{
     }
     btn.disabled=false;btn.lastChild.textContent='Hochladen und ablegen';
   }
-  const localStatus=invKind==='Eingang'?'bezahlt':'offen';
-  const inv={id:Date.now(),kind:invKind,no:document.getElementById('invNo').value.trim(),party,note:fname,date,amount,status:localStatus,p:$('invProj').value,drive:driveLink,driveFileId,fresh:true};
+  const localStatus=invKind==='Eingang'?'bezahlt':(invKind==='Angebot'?angStatusVal.toLowerCase():'offen');
+  const inv={id:Date.now(),kind:invKind,no:document.getElementById('invNo').value.trim(),party,note:fname,date,amount,status:localStatus,faellig:invKind==='Ausgang'?dueVal:'',p:$('invProj').value,drive:driveLink,driveFileId,fresh:true};
   INVOICES.unshift(inv);
-  toast(realUpload?'In Drive abgelegt: '+invPathParts.join(' / '):'Demo: nicht wirklich hochgeladen, dafür mit Google anmelden');
+  toast(realUpload?(wantsNewFolder?'Neuer Ordner „'+party+'“ angelegt, Datei abgelegt':'In Drive abgelegt: '+invPathParts.join(' / ')):'Demo: nicht wirklich hochgeladen, dafür mit Google anmelden');
   if(realUpload)loadDriveFiles();
   if(realUpload&&(invKind==='Ausgang'||invKind==='Angebot')){
-    const notionStatus=invKind==='Angebot'?'Offen':'Offen';
     notionCreateRechnung({
-      no:inv.no,art:invKind==='Angebot'?'Angebot':'Rechnung',status:notionStatus,
+      no:inv.no,art:invKind==='Angebot'?'Angebot':'Rechnung',status:invKind==='Angebot'?angStatusVal:'Offen',
       betrag:amount,leistung:party+(inv.note?': '+fname:''),datum:date,datei:driveLink
     }).then(r=>{inv.nid=r.id;toast('Auch in Notion angelegt: '+party)})
       .catch(e=>toast('In Drive abgelegt, aber Notion-Eintrag fehlgeschlagen: '+e.message));
