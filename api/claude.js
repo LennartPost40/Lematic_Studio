@@ -1,6 +1,6 @@
 // Vercel Serverless Function: Claude im LeMatic Studio.
 // Benötigt in Vercel die Environment Variable ANTHROPIC_API_KEY (console.anthropic.com → API Keys).
-// Optional CLAUDE_MODEL, sonst claude-sonnet-5-5.
+// Optional CLAUDE_MODEL, sonst claude-haiku-5-5 (günstigstes Modell, reicht für Entwürfe und Briefings).
 // Nur eingeloggte lematic.de-Konten dürfen fragen; die Aufgaben sind fest vorgegeben,
 // damit die Funktion kein allgemeiner, offener Chat-Proxy ist.
 import { checkGoogle } from './_auth.js';
@@ -56,7 +56,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
       body: JSON.stringify({
-        model: process.env.CLAUDE_MODEL || 'claude-sonnet-5-5',
+        model: process.env.CLAUDE_MODEL || 'claude-haiku-5-5',
         max_tokens: 900,
         system: SYSTEM,
         messages: [{ role: 'user', content: build(ctx) }]
