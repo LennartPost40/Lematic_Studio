@@ -1468,7 +1468,8 @@ td {
 /* (dunkler Kalender-Look entfernt: im Studio gilt der Studio-Look) */
 </style>
   
-<script>window.LM_EMBED = window.parent !== window && !!window.parent.LM_STUDIO; if (window.LM_EMBED) document.documentElement.classList.add("lm-embed");</script>
+<script>window.LM_EMBED = window.parent !== window && !!window.parent.LM_STUDIO; if (window.LM_EMBED) document.documentElement.classList.add("lm-embed");
+(function(){var d=false;try{d=window.LM_EMBED?window.parent.document.documentElement.classList.contains("theme-dark"):((localStorage.getItem("lm_theme")||"auto")==="dark"||((localStorage.getItem("lm_theme")||"auto")==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches))}catch(e){}if(d)document.documentElement.classList.add("theme-dark")})();</script>
 <style>
 /* Im LeMatic Studio eingebettet: doppeltes Branding und Hinweis ausblenden */
 .lm-embed .sidebar .brand{display:none}
@@ -2248,25 +2249,29 @@ td,
 input,select,textarea{border-radius:12px;background:#fff;border:1px solid rgba(29,29,31,.12);color:#1D1D1F}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-2)}
 button.secondary,button.ghost{border-radius:999px;background:rgba(255,255,255,.8);border:1px solid var(--line);color:#1D1D1F}
-#downloadPdfBtn,#nextBtn{background:#FCD717;color:#073D30;border-color:#FCD717;font-weight:650}
+#nextBtn{background:#FCD717;color:#073D30;border-color:#FCD717;font-weight:650}
 /* Versand direkt aus dem Rechner */
 .send-box{margin-top:16px;padding:16px;border-radius:18px;background:linear-gradient(135deg,rgba(252,215,23,.16),rgba(255,255,255,.9));border:1px solid rgba(7,61,48,.1);display:grid;gap:12px}
 .send-head b{display:block;font-size:15px;color:#073D30}.send-head small{font-size:12.5px;color:#6E6E73}
-.send-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.send-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.send-b[hidden]{display:none!important}
+.send-state{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;color:#3A3A3C;background:rgba(255,255,255,.75);border:1px solid rgba(7,61,48,.1);border-radius:12px;padding:9px 12px}.send-state[hidden]{display:none}
+.sent-chk{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-weight:600;cursor:pointer;white-space:nowrap}.sent-chk[hidden]{display:none}.sent-chk input{width:16px;height:16px;accent-color:#073D30}
+.ss-row.err{background:#FDECEC;border:1.5px solid #D70015;font-weight:600;font-size:14px;padding:12px 14px}
 @media (max-width:900px){.send-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .send-b{display:flex!important;align-items:center;gap:10px;text-align:left;padding:12px!important;border-radius:14px!important;background:#fff!important;color:#1D1D1F!important;border:1px solid rgba(29,29,31,.1)!important;min-height:0;cursor:pointer;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
 .send-b:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 22px -14px rgba(7,61,48,.5)}
 .send-b:disabled{opacity:.6;cursor:wait}
 .send-b svg{width:22px;height:22px;flex:none;fill:none;stroke:#0C5543;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .send-b b{display:block;font-size:13.5px;font-weight:650}.send-b small{display:block;font-size:11.5px;color:#6E6E73;font-weight:400}
-.send-b.send-all{background:#073D30!important;color:#fff!important;border-color:#073D30!important}.send-b.send-all svg{stroke:#FCD717}.send-b.send-all small{color:rgba(255,255,255,.7)}
+.send-b.send-main{background:#073D30!important;color:#fff!important;border-color:#073D30!important}.send-b.send-main svg{stroke:#FCD717}.send-b.send-main small{color:rgba(255,255,255,.7)}
 .send-status{display:grid;gap:6px}.send-status:empty{display:none}
 .ss-row{display:flex;align-items:center;gap:8px;font-size:13px;color:#1D1D1F;background:rgba(255,255,255,.85);border-radius:10px;padding:8px 10px}
 .ss-row svg{width:16px;height:16px;flex:none;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .ss-row.ok svg{stroke:#1F8A4C}.ss-row.err{color:#B5000F}.ss-row.err svg{stroke:#D70015}.ss-row.wait svg{stroke:#8A6400;animation:ssSpin 1s linear infinite}
 .ss-row a{margin-left:auto;color:#0C5543;font-weight:600;text-decoration:none;white-space:nowrap}
 @keyframes ssSpin{to{transform:rotate(360deg)}}
-html.lm-embed #downloadPdfBtn{background:rgba(255,255,255,.85);color:#1D1D1F;border:1px solid rgba(29,29,31,.12);font-weight:500}
+
 
 .customer-box span,.draft-box span{color:var(--primary-2);letter-spacing:.08em;font-size:11px;font-weight:700}
 .customer-box strong,.draft-box strong{font-size:15px;color:#1D1D1F}
@@ -2307,6 +2312,94 @@ th:nth-child(2),td:nth-child(2){width:38%}
 .lm-embed .sidebar{position:sticky;top:12px}
 .lm-embed .sidebar .brand,.lm-embed .content > .topbar > div > .eyebrow{display:none}
 </style>
+<style id="darkAng">
+html.theme-dark{color-scheme:dark;--bg:transparent;--surface:rgba(34,43,40,.85);--surface-2:rgba(34,43,40,.6);--text:#E9EEEC;--muted:#A3ADA9;--line:rgba(255,255,255,.1);--primary:#23866A;--primary-2:#62C7A2;--ring:rgba(98,199,162,.25);--shadow:0 12px 30px rgba(0,0,0,.35)}
+html.theme-dark body{color:var(--text)}
+html.theme-dark:not(.lm-embed) body{background:#0E1412}
+html.theme-dark input,html.theme-dark select,html.theme-dark textarea{background:rgba(255,255,255,.06)!important;color:#E9EEEC!important;border-color:rgba(255,255,255,.14)!important}
+html.theme-dark select option{background:#1c2421;color:#E9EEEC}
+html.theme-dark label,html.theme-dark h1,html.theme-dark h2,html.theme-dark h3,html.theme-dark h4,html.theme-dark p,html.theme-dark td,html.theme-dark th{color:inherit}
+html.theme-dark .send-box{background:linear-gradient(135deg,rgba(252,215,23,.08),rgba(34,43,40,.9));border-color:rgba(255,255,255,.08)}
+html.theme-dark .send-head b,html.theme-dark .send-b b{color:#E9EEEC}
+html.theme-dark .send-b{background:rgba(255,255,255,.06)!important;color:#E9EEEC!important;border-color:rgba(255,255,255,.1)!important}
+html.theme-dark .send-b svg{stroke:#62C7A2}
+html.theme-dark .send-b.send-main{background:#23866A!important;border-color:#23866A!important}
+html.theme-dark .send-state,html.theme-dark .ss-row{background:rgba(255,255,255,.06);color:#E9EEEC;border-color:rgba(255,255,255,.1)}
+html.theme-dark .ss-row.err{background:rgba(215,0,21,.18);border-color:#ff5a5a;color:#ffd6d6}
+html.theme-dark .ss-row a{color:#62C7A2}
+html.theme-dark .preview{background:transparent}
+html.theme-dark .offer-doc{color:#1D1D1F;background:#fff;box-shadow:0 20px 50px -20px rgba(0,0,0,.7)}
+html.theme-dark body{background:radial-gradient(circle at 10% 0%, #1c2421 0%, var(--bg) 38%), linear-gradient(120deg, #1c2421 0%, #1c2421 100%)}
+html.theme-dark .sidebar{background:linear-gradient(180deg, #1c2421 0%, #1c2421 100%)}
+html.theme-dark .step-nav button{background:#1c2421}
+html.theme-dark .step-nav button.active{background:#1c2421}
+html.theme-dark .legal-structure-card{background:#1c2421}
+html.theme-dark .legal-structure-editor{background:#1c2421}
+html.theme-dark .highlight-backdrop{background:#1c2421}
+html.theme-dark .highlight-token{background:#1c2421}
+html.theme-dark .template-tab{background:#1c2421}
+html.theme-dark .template-tab.active{background:#1c2421}
+html.theme-dark .hero{background:linear-gradient(130deg, #1c2421 0%, #1c2421 100%)}
+html.theme-dark input,html.theme-dark select,html.theme-dark textarea{background:#1c2421}
+html.theme-dark #legalText::-webkit-scrollbar-track{background:#1c2421}
+html.theme-dark button.secondary{background:#1c2421}
+html.theme-dark .toggle{background:#1c2421}
+html.theme-dark thead{background:#1c2421}
+html.theme-dark .payment-summary-box{background:#1c2421}
+html.theme-dark .total-box{background:#1c2421}
+html.theme-dark .issue{background:#1c2421}
+html.theme-dark .issue.kritisch{background:#1c2421}
+html.theme-dark .issue.wichtig{background:#1c2421}
+html.theme-dark .issue.optional{background:#1c2421}
+html.theme-dark .pill.kritisch{background:#1c2421}
+html.theme-dark .pill.wichtig{background:#1c2421}
+html.theme-dark .pill.optional{background:#1c2421}
+html.theme-dark .offer-validity-box,html.theme-dark .sum-block,html.theme-dark .payment-box,html.theme-dark .legal-box,html.theme-dark .harring-box{background:#1c2421}
+html.theme-dark .cost-simple-header{background:#1c2421}
+html.theme-dark .approval-validity-box{background:#1c2421}
+html.theme-dark .draft-btn{background:#1c2421}
+html.theme-dark .draft-delete-btn{background:#1c2421}
+html.theme-dark .draft-delete-btn:hover{background:#1c2421}
+html.theme-dark .confirm-dialog{background:#1c2421}
+html.theme-dark body{background:#1c2421}
+html.theme-dark .sidebar,html.theme-dark .topbar,html.theme-dark .card,html.theme-dark .total-box,html.theme-dark .confirm-dialog{border:1px solid rgba(255,255,255,.1);background:rgba(34,43,40,.8)}
+html.theme-dark .hero{background:linear-gradient(135deg, rgba(252, 215, 23, 0.16), rgba(34,43,40,0.8))}
+html.theme-dark .hero ul,html.theme-dark .issue p,html.theme-dark .confirm-dialog p{color:#A3ADA9}
+html.theme-dark .step-nav button,html.theme-dark .template-tab,html.theme-dark .draft-btn,html.theme-dark button.secondary,html.theme-dark button.ghost{border:1px solid rgba(255,255,255,.1);background:rgba(34,43,40,.75);color:#E9EEEC}
+html.theme-dark input,html.theme-dark select,html.theme-dark textarea,html.theme-dark .legal-structure-editor,html.theme-dark .legal-structure-card,html.theme-dark .payment-summary-box,html.theme-dark .toggle,html.theme-dark thead,html.theme-dark .target-card,html.theme-dark .issue,html.theme-dark .cost-simple-header{border-color:rgba(255,255,255,0.16);background:rgba(34,43,40,.75);color:#E9EEEC}
+html.theme-dark .total-box{background:linear-gradient(135deg, rgba(252, 215, 23, 0.18), rgba(34,43,40,0.85))}
+html.theme-dark .issue.kritisch,html.theme-dark .issue.wichtig,html.theme-dark .issue.optional{background:rgba(34,43,40,.8)}
+html.theme-dark .customer-box{background:linear-gradient(135deg, rgba(252, 215, 23, 0.22), rgba(34,43,40,.85));color:#E9EEEC}
+html.theme-dark .customer-panel{background:rgba(34,43,40,.97)}
+html.theme-dark .customer-row{background:rgba(34,43,40,.75);color:#E9EEEC}
+html.theme-dark .customer-create-card{background:rgba(34,43,40,.6)}
+html.theme-dark .customer-step-picker{border:1px solid rgba(255,255,255,.1);background:rgba(34,43,40,.6)}
+html.theme-dark .draft-box{background:linear-gradient(135deg, rgba(252, 215, 23, 0.22), rgba(34,43,40,.85));color:#E9EEEC}
+html.theme-dark .draft-list-center .draft-btn strong{color:#E9EEEC}
+html.theme-dark .sidebar{background:rgba(34,43,40,.62)}
+html.theme-dark .step-nav button{background:rgba(34,43,40,.7);color:#E9EEEC}
+html.theme-dark input,html.theme-dark select,html.theme-dark textarea{background:#1c2421;border:1px solid rgba(255,255,255,0.16);color:#E9EEEC}
+html.theme-dark button.secondary,html.theme-dark button.ghost{background:rgba(34,43,40,.8);color:#E9EEEC}
+html.theme-dark .send-box{background:linear-gradient(135deg,rgba(252,215,23,.16),rgba(34,43,40,.9))}
+html.theme-dark .send-head small{color:#A3ADA9}
+html.theme-dark .send-state{color:#A3ADA9;background:rgba(34,43,40,.75)}
+html.theme-dark .ss-row.err{background:#1c2421}
+html.theme-dark .send-b{background:#1c2421!important;border:1px solid rgba(255,255,255,0.14)!important}
+html.theme-dark .send-b small{color:#A3ADA9}
+html.theme-dark .ss-row{color:#E9EEEC;background:rgba(34,43,40,.85)}
+html.theme-dark .customer-box strong,html.theme-dark .draft-box strong{color:#E9EEEC}
+html.theme-dark .customer-row{background:#1c2421;color:#E9EEEC}
+html.theme-dark .customer-step-picker{background:rgba(34,43,40,.7)}
+html.theme-dark .customer-search{background:#1c2421 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%236E6E73' stroke-width='2'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='m11 11 3.5 3.5'/%3E%3C/svg%3E") no-repeat 11px center}
+html.theme-dark .draft-list-center .draft-btn{background:#1c2421;color:#E9EEEC}
+html.theme-dark .draft-list-center .draft-btn strong{color:#E9EEEC}
+html.theme-dark .cust-suggest{background:#1c2421}
+html.theme-dark .cs-row{color:#E9EEEC}
+html.theme-dark .template-tabs button:not(.active),html.theme-dark .template-tab:not(.active){background:rgba(34,43,40,.8);color:#E9EEEC}
+</style>
+
+
+
 <script>
 /* Akzentfarben aus dem Studio übernehmen */
 try{if(window.parent!==window){const cs=parent.getComputedStyle(parent.document.documentElement);['--brand','--brand-2'].forEach(v=>{const x=cs.getPropertyValue(v);if(x)document.documentElement.style.setProperty(v,x.trim())})}}catch(e){}
@@ -2652,18 +2745,14 @@ try{if(window.parent!==window){const cs=parent.getComputedStyle(parent.document.
 
         <section id="step-7" class="step">
           <div id="preview" class="preview"></div>
-          <div class="send-box" id="sendBox" hidden>
-            <div class="send-head"><b>Angebot fertig? Direkt ablegen und verschicken</b><small>Alles landet im LeMatic-Konto: Drive-Ordner des Kunden, Notion „Rechnungen &amp; Angebote“ und Gmail-Entwürfe.</small></div>
+          <div class="send-box" id="sendBox">
+            <div class="send-state" id="sendState" hidden><span id="sendStateTxt"></span><label class="sent-chk" id="sentChkL" hidden><input type="checkbox" id="sentChk"> verschickt</label></div>
             <div class="send-grid">
-              <button type="button" class="send-b send-all" data-send="all"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg><span><b>Alles ablegen</b><small>Drive + Notion + Mail-Entwurf</small></span></button>
-              <button type="button" class="send-b" data-send="drive"><svg viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><span><b>In Drive speichern</b><small>im Ordner des Kunden</small></span></button>
-              <button type="button" class="send-b" data-send="draft"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6 8.5-6"/></svg><span><b>In Gmail-Entwürfe</b><small>Mail mit PDF, nur noch senden</small></span></button>
-              <button type="button" class="send-b" data-send="wa"><svg viewBox="0 0 24 24"><path d="M20 11.6a8 8 0 0 1-11.8 7L4 20l1.4-4.1A8 8 0 1 1 20 11.6z"/></svg><span><b>Per WhatsApp</b><small>mit Link zum PDF</small></span></button>
+              <button type="button" class="send-b send-main" data-send="drive" hidden><svg viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><span><b>Im Drive ablegen</b><small>Ordner des Kunden + Notion</small></span></button>
+              <button type="button" class="send-b" data-send="draft" hidden><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6 8.5-6"/></svg><span><b>In Gmail-Entwürfe legen</b><small>an die Kunden-Mail, PDF im Anhang</small></span></button>
+              <button type="button" class="send-b" id="downloadPdfBtn"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19.5h14"/></svg><span><b>PDF herunterladen</b><small>nur herunterladen</small></span></button>
             </div>
             <div class="send-status" id="sendStatus" aria-live="polite"></div>
-          </div>
-          <div class="actions bottom-actions">
-            <button id="downloadPdfBtn">PDF herunterladen</button>
           </div>
         </section>
 
@@ -3915,6 +4004,7 @@ function clearLineItemDragState() {
 }
 
 function showStep(stepId) {
+  if (Number(stepId) === 7) setTimeout(() => { try { refreshSendState(); } catch (_) {} }, 50);
   state.currentStep = stepId;
   refs.steps.forEach((step) => {
     step.classList.toggle("active", step.id === `step-${stepId}`);
@@ -6280,6 +6370,7 @@ function saveCurrentOffer(opts = {}) {
     values: { ...values, projectOfferNumber: offerNumber },
     issues: generateIssues(values),
     by: (window.LM_EMBED && typeof window.parent.studioUser === "function" && window.parent.studioUser()) || "",
+    ...(existing && existing.sentManual ? { sentManual: existing.sentManual, sentBy: existing.sentBy || "" } : {}),
   };
   if (existing) offers[idx] = entry; else offers.unshift(entry);
   localStorage.setItem(STORAGE_KEYS.offers, JSON.stringify(offers));
@@ -6311,12 +6402,12 @@ function saveAsNewVersion() {
   if (!current) { saveCurrentOffer(); return; }
   const base = baseOfferNumber(current);
   const maxV = offers.reduce((m, o) => (baseOfferNumber(o.offerNumber) === base ? Math.max(m, offerVersion(o.offerNumber)) : m), offerVersion(current));
-  const no = `${base}-v${maxV + 1}`;
+  const no = `${base}-V${maxV + 1}`;
   const numInput = document.querySelector('[name="projectOfferNumber"]');
   if (numInput) numInput.value = no;
   state.activeOfferId = null;
   const entry = saveCurrentOffer({ silent: true });
-  const msg = `✓ Neue Fassung ${no} angelegt. ${base}${maxV > 1 ? "-v" + maxV : ""} bleibt unverändert erhalten.`;
+  const msg = `Neue Fassung ${no} angelegt. ${base}${maxV > 1 ? "-V" + maxV : ""} bleibt unverändert erhalten.`;
   if (window.LM_EMBED && window.parent.toast) window.parent.toast(msg); else alert(msg);
   return entry;
 }
@@ -6651,129 +6742,129 @@ function saveCustomTemplate() {
 }
 
 /* Baut das PDF und die Angaben für die Ablage; null, wenn etwas fehlt */
-async function buildOfferPdf() {
+function offerIssuesOk() {
   const values = getFormData();
-  const issues = generateIssues(values);
-  const criticalCount = issues.filter((issue) => issue.severity === "kritisch").length;
+  const criticalCount = generateIssues(values).filter((issue) => issue.severity === "kritisch").length;
   if (criticalCount > 0) {
     alert(`Noch ${criticalCount} kritische Punkte offen. Bitte zuerst in Schritt 6 klären.`);
     showStep(6);
-    return null;
+    return false;
   }
-  let savedEntry = null;
-  try { savedEntry = saveCurrentOffer({ silent: true }); } catch (e) { console.warn("Entwurf", e); }
-  Object.assign(values, getFormData());
+  return true;
+}
+async function pdfFromPreview() {
   updatePreview();
   const docNode = refs.preview.querySelector(".offer-doc");
-  if (!docNode) { alert("PDF konnte nicht erstellt werden."); return null; }
-  const offerNumber = savedEntry ? savedEntry.offerNumber : getEffectiveOfferNumber(values);
-  const customer = (values.customerCompany || "Kunde").replace(/[^a-zA-Z0-9-_]+/g, "_");
-  const filename = `Angebot_${customer}_${offerNumber}.pdf`;
-  const blob = await createPdfBlob(docNode);
-  if (!blob) { alert("PDF konnte nicht erzeugt werden."); return null; }
-  return { blob, filename, meta: {
-    no: offerNumber, customer: values.customerCompany || "", contact: values.customerContact || "",
-    salutation: values.customerSalutation || "", email: values.customerEmail || "", phone: values.customerPhone || "",
-    title: values.projectTitle || "", total: getPayableTotal(values) } };
+  if (!docNode) throw new Error("PDF konnte nicht erstellt werden.");
+  const root = document.documentElement, dark = root.classList.contains("theme-dark");
+  if (dark) root.classList.remove("theme-dark");
+  try { return await createPdfBlob(docNode); } finally { if (dark) root.classList.add("theme-dark"); }
 }
-const SS_IC = { ok: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>', err: '<svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>', wait: '<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg>' };
+function offerMeta(values, no) {
+  return { no, customer: values.customerCompany || "", contact: values.customerContact || "", salutation: values.customerSalutation || "",
+    email: values.customerEmail || "", phone: values.customerPhone || "", title: values.projectTitle || "", total: getPayableTotal(values) };
+}
+function offerFileName(values, no) {
+  const customer = (values.customerCompany || "Kunde").replace(/[^a-zA-Z0-9-_]+/g, "_");
+  return `Angebot_${customer}_${no}.pdf`;
+}
+async function buildOfferPdf() {
+  if (!offerIssuesOk()) return null;
+  let entry = null;
+  try { entry = saveCurrentOffer({ silent: true }); } catch (e) { console.warn("Entwurf", e); }
+  const values = getFormData();
+  const no = entry ? entry.offerNumber : getEffectiveOfferNumber(values);
+  const blob = await pdfFromPreview();
+  if (!blob) throw new Error("PDF konnte nicht erzeugt werden.");
+  return { blob, filename: offerFileName(values, no), meta: offerMeta(values, no) };
+}
+const SS_IC = { ok: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>', err: '<svg viewBox="0 0 24 24"><path d="M12 7v6m0 4v.01M10.3 3.9L2.6 17.5A2 2 0 0 0 4.3 20.5h15.4a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>', wait: '<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg>' };
 function sendStatus(rows) {
   const el = document.getElementById("sendStatus"); if (!el) return;
   el.innerHTML = rows.map((r) => `<div class="ss-row ${r.st}">${SS_IC[r.st] || ""}<span>${escapeHtml(r.text)}</span>${r.link ? `<a href="${escapeHtml(r.link)}" target="_blank" rel="noopener">${escapeHtml(r.linkText || "Öffnen")}</a>` : ""}</div>`).join("");
 }
-async function sendOffer(act, btn) {
-  const api = window.parent && window.parent.studioOfferAction;
-  if (!api) return;
-  /* WhatsApp braucht das Fenster sofort, sonst blockt der Browser */
-  const win = act === "wa" ? window.open("about:blank", "_blank") : null;
+/* Fassung bestimmen: ersetzen, solange nicht verschickt; sonst V2, V3 … */
+function useOfferNumber(no) {
+  const input = document.querySelector('[name="projectOfferNumber"]');
+  const cur = String((input && input.value) || "").trim();
+  if (cur.toUpperCase() === String(no).toUpperCase()) return;
+  const offers = getStored(STORAGE_KEYS.offers);
+  const hit = offers.find((o) => String(o.offerNumber || "").toUpperCase() === String(no).toUpperCase());
+  state.activeOfferId = hit ? hit.id : null;
+  if (input) input.value = no;
+  saveCurrentOffer({ silent: true });
+}
+async function sendOffer(act) {
+  const P = window.parent;
+  if (!P || !P.studioOfferPlan) return;
+  if (!offerIssuesOk()) return;
   const btns = document.querySelectorAll("[data-send]"); btns.forEach((b) => (b.disabled = true));
-  sendStatus([{ st: "wait", text: "PDF wird erstellt …" }]);
+  sendStatus([{ st: "wait", text: act === "drive" ? "Wird im Drive abgelegt …" : "Mail-Entwurf wird angelegt …" }]);
   try {
-    const pdf = await buildOfferPdf();
-    if (!pdf) { sendStatus([]); if (win) win.close(); return; }
-    await api(act, pdf.blob, pdf.filename, pdf.meta, { win, onStatus: sendStatus });
+    const first = saveCurrentOffer({ silent: true });
+    const plan = await P.studioOfferPlan(first.offerNumber);
+    useOfferNumber(plan.no);
+    const values = getFormData();
+    const blob = await pdfFromPreview();
+    if (!blob) throw new Error("PDF konnte nicht erzeugt werden.");
+    const fn = offerFileName(values, plan.no), meta = offerMeta(values, plan.no);
+    if (act === "drive") {
+      const r = await P.studioOfferDrive(blob, fn, meta, plan);
+      const rows = [{ st: "ok", text: "Abgelegt: " + plan.no + (r.mode === "replace" ? " (vorhandene Datei ersetzt)" : r.mode === "new" ? " als neue Fassung, " + r.replacedOld + " bleibt daneben liegen" : "") + " · Ordner " + (r.folderName || "Angebote"), link: r.folderLink, linkText: "Ordner prüfen" }];
+      rows.push(r.notion === "ok" ? { st: "ok", text: "Notion „Rechnungen & Angebote“ " + (r.mode === "replace" ? "aktualisiert" : "eingetragen") + (r.mode === "new" ? ", " + r.replacedOld + " steht dort jetzt auf „Ersetzt“" : "") } : { st: "err", text: "Notion-Eintrag fehlgeschlagen: " + r.notion });
+      sendStatus(rows);
+    } else {
+      const r = await P.studioOfferDraft(blob, fn, meta, plan);
+      sendStatus([{ st: "ok", text: "Mail-Entwurf " + (r.replaced ? "ersetzt" : "angelegt") + ": „Angebot " + plan.no + "“" + (r.to ? " an " + r.to : ", Empfänger fehlt in Notion, bitte im Entwurf eintragen") + ". Nichts wurde gesendet.", link: r.url, linkText: "Entwurf öffnen" }]);
+    }
   } catch (e) {
-    if (win) try { win.close(); } catch (_) {}
-    sendStatus([{ st: "err", text: "Nicht geklappt: " + (e && e.message ? e.message : e) }]);
+    sendStatus([{ st: "err", text: (act === "drive" ? "Nicht abgelegt. " : "Kein Entwurf angelegt. ") + (e && e.message ? e.message : e) }]);
   }
   btns.forEach((b) => (b.disabled = false));
+  refreshSendState();
 }
-document.addEventListener("click", (e) => { const b = e.target.closest("[data-send]"); if (b) sendOffer(b.dataset.send, b); });
-if (window.LM_EMBED) { const sb = document.getElementById("sendBox"); if (sb) sb.hidden = false; }
+let SEND_STATE_NO = "";
+async function refreshSendState() {
+  const P = window.parent, box = document.getElementById("sendState");
+  if (!box || !P || !P.studioOfferStatus) return;
+  const input = document.querySelector('[name="projectOfferNumber"]');
+  const no = String((input && input.value) || "").trim();
+  if (!no) { box.hidden = true; return; }
+  box.hidden = false; document.getElementById("sendStateTxt").textContent = "Status wird geprüft …";
+  const st = await P.studioOfferStatus(no);
+  SEND_STATE_NO = st.no || "";
+  document.getElementById("sendStateTxt").textContent = st.text || "";
+  const l = document.getElementById("sentChkL"), c = document.getElementById("sentChk");
+  l.hidden = !st.canMark; c.checked = !!st.sent; c.disabled = !!st.sent && !st.manual;
+}
+document.addEventListener("change", (e) => {
+  if (e.target.id !== "sentChk" || !SEND_STATE_NO) return;
+  const offers = getStored(STORAGE_KEYS.offers);
+  let hit = offers.find((o) => String(o.offerNumber || "").toUpperCase() === SEND_STATE_NO.toUpperCase());
+  if (!hit) { useOfferNumber(SEND_STATE_NO); hit = getStored(STORAGE_KEYS.offers).find((o) => String(o.offerNumber || "").toUpperCase() === SEND_STATE_NO.toUpperCase()); }
+  const all = getStored(STORAGE_KEYS.offers).map((o) => (o.id === (hit && hit.id) ? { ...o, sentManual: e.target.checked ? new Date().toISOString() : "", sentBy: e.target.checked ? ((window.parent.studioUser && window.parent.studioUser()) || "") : "", updatedAt: new Date().toISOString() } : o));
+  localStorage.setItem(STORAGE_KEYS.offers, JSON.stringify(all));
+  refreshSendState();
+});
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-send]"); if (b) sendOffer(b.dataset.send); });
+if (window.LM_EMBED && window.parent.studioOfferPlan) document.querySelectorAll("[data-send]").forEach((b) => (b.hidden = false));
 
 async function downloadPdf() {
+  if (!offerIssuesOk()) return;
+  try { saveCurrentOffer({ silent: true }); } catch (e) { console.warn("Entwurf", e); }
   const values = getFormData();
-  const issues = generateIssues(values);
-  const criticalCount = issues.filter((issue) => issue.severity === "kritisch").length;
-  if (criticalCount > 0) {
-    alert(`PDF-Export blockiert: ${criticalCount} kritische Punkte sind offen.`);
-    showStep(6);
-    return;
-  }
-
-  /* Jedes fertige Angebot bleibt als Entwurf erhalten, damit später eine neue Fassung möglich ist */
-  let savedEntry = null;
-  try { savedEntry = saveCurrentOffer({ silent: true }); } catch (e) { console.warn("Entwurf", e); }
-  Object.assign(values, getFormData());
-
-  updatePreview();
-  const docNode = refs.preview.querySelector(".offer-doc");
-  if (!docNode) {
-    alert("PDF konnte nicht erstellt werden.");
-    return;
-  }
-
-  const offerNumber = savedEntry ? savedEntry.offerNumber : getEffectiveOfferNumber(values);
-  const customer = (values.customerCompany || "Kunde").replace(/[^a-zA-Z0-9-_]+/g, "_");
-  const filename = `Angebot_${customer}_${offerNumber}.pdf`;
-
+  const no = getEffectiveOfferNumber(values);
+  const filename = offerFileName(values, no);
   try {
-    const blob = await createPdfBlob(docNode);
-
-    if (!blob) {
-      fallbackToPrint();
-      return;
-    }
-
-    if (window.LM_EMBED && typeof window.parent.studioSaveOffer === "function") {
-      try {
-        await window.parent.studioSaveOffer(blob, filename, {
-          no: offerNumber,
-          customer: values.customerCompany || "",
-          contact: values.customerContact || "",
-          salutation: values.customerSalutation || "",
-          email: values.customerEmail || "",
-          phone: values.customerPhone || "",
-          title: values.projectTitle || "",
-          total: getPayableTotal(values),
-        });
-      } catch (e) {
-        console.error("Ablage im Drive fehlgeschlagen:", e);
-      }
-    }
-
+    const blob = await pdfFromPreview();
+    if (!blob) { fallbackToPrint(); return; }
     if ("showSaveFilePicker" in window && !window.LM_EMBED) {
-      const handle = await window.showSaveFilePicker({
-        suggestedName: filename,
-        types: [
-          {
-            description: "PDF-Datei",
-            accept: { "application/pdf": [".pdf"] },
-          },
-        ],
-      });
-
-      const writable = await handle.createWritable();
-      await writable.write(blob);
-      await writable.close();
-      return;
+      const handle = await window.showSaveFilePicker({ suggestedName: filename, types: [{ description: "PDF-Datei", accept: { "application/pdf": [".pdf"] } }] });
+      const writable = await handle.createWritable(); await writable.write(blob); await writable.close(); return;
     }
-
     downloadBlob(blob, filename);
   } catch (error) {
-    if (error && error.name === "AbortError") {
-      return;
-    }
+    if (error && error.name === "AbortError") return;
     console.error("PDF-Export fehlgeschlagen:", error);
     fallbackToPrint();
   }

@@ -1867,6 +1867,9 @@ html.theme-dark .kchips span{background:rgba(10,132,255,.18);color:#9CC8FF}
 html.theme-dark .li-head b,html.theme-dark .li-head strong,html.theme-dark .li-panel h2,html.theme-dark .li-panel h3{color:var(--ink)}
 html.theme-dark .nt-b{background:rgba(255,255,255,.04)}
 html.theme-dark .kb-card,html.theme-dark .kl-row:hover{background:rgba(40,50,46,.9)}
+html.theme-dark .blob.a{background:#1c2421}
+html.theme-dark .blob.b{background:#1c2421}
+html.theme-dark .blob.c{background:#1c2421}
 html.theme-dark .nav a:hover{background:rgba(34,43,40,.5)}
 html.theme-dark .clients a:hover{background:rgba(34,43,40,.5)}
 html.theme-dark .av{border:2px solid rgba(255,255,255,.1)}
@@ -1977,11 +1980,13 @@ html.theme-dark .hst-tile{background:rgba(34,43,40,.7)}
 html.theme-dark .hst-tile::after{background:linear-gradient(180deg,transparent 30%,rgba(34,43,40,.75))}
 html.theme-dark .hst-tile i{background:#1c2421}
 html.theme-dark .pp-st{background:rgba(34,43,40,.7)}
-html.theme-dark .pps-prev.klar{background:#1a2220}
+html.theme-dark .pps-prev.klar{background:#1c2421}
 html.theme-dark .pps-prev.klar i{background:#1c2421}
+html.theme-dark .pps-prev.gel{background:radial-gradient(80% 120% at 0% 100%,#FCD717aa,transparent 60%),radial-gradient(80% 120% at 100% 100%,#0C554366,transparent 60%),#1c2421}
 html.theme-dark .pps-prev.gel i{background:rgba(34,43,40,.7);border:1.5px solid rgba(255,255,255,.1)}
 html.theme-dark .fs-pill{background:rgba(34,43,40,.55)}
 html.theme-dark .fs-row{background:rgba(34,43,40,.45)}
+html.theme-dark .fx-coins i{background:radial-gradient(circle at 35% 30%,#1c2421,#FCD717 45%,#D4A600 85%)}
 html.theme-dark .fx-cookie{background:rgba(34,43,40,.98)}
 html.theme-dark .wk{background:rgba(34,43,40,.45)}
 html.theme-dark .dayev:hover{background:rgba(34,43,40,.6)}
@@ -2006,7 +2011,7 @@ html.theme-dark .nt-b{background:rgba(34,43,40,.7)}
 html.theme-dark .nav-edit-b:hover{background:rgba(34,43,40,.6)}
 html.theme-dark body.nav-editing .nav>a{background:rgba(34,43,40,.45)}
 html.theme-dark .tour-sheet{background:#1c2421}
-html.theme-dark .tour-stage{background:radial-gradient(120% 90% at 0% 0%,rgba(252,215,23,.38),transparent 60%),radial-gradient(90% 90% at 100% 100%,rgba(26,107,86,.35),transparent 60%),#1a2220}
+html.theme-dark .tour-stage{background:radial-gradient(120% 90% at 0% 0%,rgba(252,215,23,.38),transparent 60%),radial-gradient(90% 90% at 100% 100%,rgba(26,107,86,.35),transparent 60%),#1c2421}
 html.theme-dark .tour-img img{background:#1c2421}
 html.theme-dark .tour-x{background:rgba(34,43,40,.9)}
 @media (max-width:820px){html.theme-dark .tour-foot{background:#1c2421}}
@@ -2016,7 +2021,7 @@ html.theme-dark .prem-free{background:linear-gradient(135deg,rgba(252,215,23,.3)
 html.theme-dark .bell-b{background:rgba(34,43,40,.55)}
 html.theme-dark .bell-b:hover{background:#1c2421}
 html.theme-dark .bell-b em{box-shadow:0 0 0 2px #1c2421}
-html.theme-dark .note-panel{background:var(--panel-solid,#1a2220)}
+html.theme-dark .note-panel{background:var(--panel-solid,#1c2421)}
 html.theme-dark .home-stage form{background:#1c2421;border:1px solid rgba(255,255,255,.1)}
 html.theme-dark .hst-chip{background:rgba(34,43,40,.7)}
 html.theme-dark .hst-chip:hover{background:#1c2421}
@@ -3554,6 +3559,7 @@ const invState=i=>{
   if(i.status==='bezahlt')return['bezahlt','ok','Bezahlt'];
   if(i.status==='unterschrieben')return['ok2','ok','Unterschrieben'];
   if(i.status==='abgelehnt')return['abgelehnt','done','Abgelehnt'];
+  if(i.status==='ersetzt')return['ersetzt','done','Ersetzt'];
   if(i.status==='angenommen')return['ok2','info','Angenommen'];
   if(i.kind==='Eingang')return['offen','info','Zu zahlen'];
   if(i.kind!=='Ausgang')return['offen','done','Offen'];
@@ -5464,7 +5470,7 @@ async function loadNotion(){
     }
     if(rech.length){
       const kind=a=>a==='Angebot'?'Angebot':'Ausgang';
-      const stat=x=>({'Bezahlt':'bezahlt','Offen':'offen','Unterschrieben':'unterschrieben','Angenommen':'unterschrieben','Abgelehnt':'abgelehnt','Offen/unklar':'offen'}[x]||'offen');
+      const stat=x=>({'Bezahlt':'bezahlt','Offen':'offen','Unterschrieben':'unterschrieben','Angenommen':'unterschrieben','Abgelehnt':'abgelehnt','Offen/unklar':'offen','Ersetzt':'ersetzt'}[x]||'offen');
       INVOICES=rech.map((r,i)=>({
         id:'n'+i,nid:r.id,src:'notion',kind:kind(r['Art']),no:r['Nummer']||'',
         party:'—',note:(r['Leistung']||'').slice(0,80),date:r['Datum']||TODAY,faellig:String(r['Fällig am']||'').slice(0,10),
@@ -6609,28 +6615,132 @@ async function angWhatsApp(o,win){
   if(win)win.location=u;else window.open(u,'_blank');
   return ph;
 }
-/* Knöpfe im Rechner: Alles ablegen, Drive, Gmail-Entwurf, WhatsApp */
-window.studioOfferAction=async function(act,blob,filename,meta,opt){
-  opt=opt||{};const st=opt.onStatus||(()=>{});const rows=[];const show=()=>st(rows.slice());
-  const k=customerFor(meta.customer);if(k){meta.email=meta.email||k.email||'';meta.phone=meta.phone||(k.raw||{})['Telefon']||''}
-  rows.push({st:'wait',text:'Wird in Drive abgelegt …'});show();
-  let o;try{o=await angStore(blob,filename,meta)}catch(x){rows[0]={st:'err',text:'Drive: '+x.message};show();if(opt.win)opt.win.close();throw x}
-  rows[0]={st:'ok',text:'In Drive: Angebote / '+o.folder+(o.notion?' · in Notion eingetragen':''),link:o.link,linkText:'Ordner'};show();
-  if(act==='draft'||act==='all'){
-    rows.push({st:'wait',text:'Mail-Entwurf mit PDF wird angelegt …'});show();
-    try{const d=await makeOfferDraft(o,true);o.draft=d;rows[rows.length-1]={st:'ok',text:'Mail-Entwurf liegt in Gmail'+(d.to?' · an '+d.to:' · Empfänger noch eintragen'),link:draftUrl(d),linkText:'Entwurf öffnen'};track('act','Mail-Entwurf angelegt')}
-    catch(x){rows[rows.length-1]={st:'err',text:'Mail-Entwurf nicht angelegt: '+x.message}}
-    show();
+/* ---------- Angebote: ablegen, Entwurf, Fassungen ----------
+   Bis zum Versand ersetzt jedes Ablegen dieselbe Datei und denselben Notion-Eintrag.
+   Verschickt (Mail mit der Nummer im Gesendet-Ordner oder Haken „verschickt“): danach entsteht V2, V3 … daneben. */
+const vBase=no=>String(no||'').trim().replace(/-v\d+$/i,'');
+const vNum=no=>{const m=/-v(\d+)$/i.exec(String(no||''));return m?+m[1]:1};
+const vName=(base,n)=>n>1?base+'-V'+n:base;
+const reEsc=t=>String(t).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+function angErr(e){
+  const m=String(e&&e.message||e);
+  if(/storageQuotaExceeded|quota|storage limit|Speicher/i.test(m))return 'Google Drive ist voll. Bitte Platz schaffen (zum Beispiel den Drive-Papierkorb leeren) und dann nochmal ablegen.';
+  if(/insufficient|permission|forbidden|403/i.test(m))return 'Keine Berechtigung für den Drive-Ordner oder Gmail. Bitte mit info@lematic.de neu anmelden.';
+  if(/Erlaubnis für Mail-Entwürfe|popup|abgebrochen/i.test(m))return 'Gmail hat den Zugriff auf Entwürfe nicht erlaubt. Bitte nochmal drücken und im Google-Fenster zustimmen.';
+  if(/network|fetch|Failed to/i.test(m))return 'Keine Verbindung. Bitte Internet prüfen und nochmal versuchen.';
+  return m;
+}
+async function offerRows(base){
+  const rows=await notionGet('rechnungen');
+  return rows.filter(r=>r['Art']==='Angebot'&&vBase(r['Nummer']).toUpperCase()===base.toUpperCase()).map(r=>({nid:r.id,no:r['Nummer'],v:vNum(r['Nummer']),status:r['Status']||'',link:r['Datei']||''}));
+}
+async function offerFile(no,link){
+  const id=driveIdFrom(link||'');
+  if(id){try{const m=await (await gfetch('https://www.googleapis.com/drive/v3/files/'+id+'?fields=id,name,parents,trashed,webViewLink&supportsAllDrives=true')).json();if(m&&m.id&&!m.trashed)return m}catch(_){}}
+  const hits=await ddList(`name contains '${qesc(no)}' and trashed=false and mimeType='application/pdf'`);
+  return hits.find(f=>f.name.toUpperCase().endsWith(String(no).toUpperCase()+'.PDF'))||null;
+}
+async function offerSent(no){
+  const man=lsGet(DK.offers).find(o=>String(o.offerNumber||'').toUpperCase()===String(no).toUpperCase()&&o.sentManual);
+  if(man)return{manual:true,date:String(man.sentManual).slice(0,10),by:man.sentBy||''};
+  try{
+    const j=await (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?'+new URLSearchParams({q:'in:sent "'+no+'"',maxResults:'5'}))).json();
+    for(const m0 of (j.messages||[])){
+      const m=await (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+m0.id+'?format=metadata&metadataHeaders=To&metadataHeaders=Subject')).json();
+      const h=Object.fromEntries((m.payload&&m.payload.headers||[]).map(x=>[x.name,x.value]));
+      const txt=(h.Subject||'')+' '+(m.snippet||'');
+      if(new RegExp(reEsc(no)+'(?!-v\\d)','i').test(txt)||!/-v\d/i.test(txt))return{date:iso(new Date(+m.internalDate)),to:String(h.To||'').replace(/<.*?>/g,'').replace(/"/g,'').trim()};
+    }
+  }catch(_){}
+  return null;
+}
+window.studioOfferPlan=async function(no){
+  if(!GAUTH)throw new Error('Bitte zuerst mit info@lematic.de anmelden');
+  const base=vBase(no);let rows=[];
+  try{rows=await offerRows(base)}catch(e){throw new Error('Notion nicht erreichbar: '+e.message)}
+  const latest=rows.slice().sort((a,b)=>b.v-a.v)[0]||null;
+  if(!latest)return{mode:'first',no:String(no).trim(),base,latest:null,sent:null};
+  const sent=await offerSent(latest.no);
+  if(!sent)return{mode:'replace',no:latest.no,base,latest,sent:null};
+  return{mode:'new',no:vName(base,latest.v+1),base,latest,sent};
+};
+window.studioOfferStatus=async function(no){
+  if(!GAUTH)return{text:'Zum Ablegen mit info@lematic.de anmelden.'};
+  try{
+    const p=await window.studioOfferPlan(no);
+    if(p.mode==='first')return{text:'Noch nicht abgelegt.',no:p.no,canMark:false};
+    if(p.mode==='replace')return{text:p.latest.no+' liegt in Drive und ist noch nicht verschickt. „Im Drive ablegen“ ersetzt die Datei und den Notion-Eintrag.',no:p.latest.no,canMark:true,sent:false};
+    return{text:p.latest.no+' ist verschickt'+(p.sent.manual?' (von Hand markiert)':' am '+dm(p.sent.date)+(p.sent.to?' an '+p.sent.to:''))+'. Die nächste Ablage wird '+p.no+' und liegt daneben.',no:p.latest.no,canMark:true,sent:true,manual:!!p.sent.manual};
+  }catch(e){return{text:'Status nicht abrufbar: '+angErr(e)}}
+};
+async function angFolderFor(customer){
+  let folderId=ANGEBOT_ID,folderName='Angebote_und_Kostenvoranschlaege';
+  const subs=await ddList(`'${ANGEBOT_ID}' in parents and trashed=false and mimeType='application/vnd.google-apps.folder'`);
+  const toks=kTokens({name:customer||''});const year=TODAY.slice(0,4);
+  const hits=subs.filter(f=>customer&&toks.some(t=>f.name.toLowerCase().replace(/[_.]/g,' ').includes(t)));
+  const hit=hits.find(f=>f.name.includes(year))||hits[0];
+  if(hit){folderId=hit.id;folderName=hit.name}
+  else if(customer){
+    const nums=subs.map(f=>+(/^(\d+)[_.]/.exec(f.name)||[0,0])[1]);
+    const nn=String(Math.max(0,...nums)+1).padStart(2,'0')+'_'+String(customer).replace(/\s+(GmbH|UG|AG|KG|SE|e\.?V\.?)(\s.*)?$/i,'').normalize('NFC').replace(/[^\wÄÖÜäöüß&-]+/g,'_').replace(/^_|_$/g,'')+'_'+year;
+    const nf=await driveCreateFolder(nn,ANGEBOT_ID);folderId=nf.id;folderName=nf.name||nn;
   }
-  if(act==='wa'){
-    rows.push({st:'wait',text:'WhatsApp wird vorbereitet …'});show();
-    try{const ph=await angWhatsApp(o,opt.win);rows[rows.length-1]={st:'ok',text:ph?'WhatsApp ist offen, Nachricht an '+(o.contact||o.customer||'den Kunden')+' vorbereitet':'WhatsApp ist offen, Kontakt dort auswählen (keine Nummer in der Kartei)'}}
-    catch(x){if(opt.win)opt.win.close();rows[rows.length-1]={st:'err',text:'WhatsApp nicht vorbereitet: '+x.message}}
-    show();
-  }
-  safe('angDone',()=>showAngDone(o,true));
-  toast(act==='all'?'Angebot '+(o.no||'')+' abgelegt: Drive, Notion, Mail-Entwurf':act==='draft'?'Mail-Entwurf mit PDF liegt in Gmail':act==='wa'?'WhatsApp ist vorbereitet':'Angebot '+(o.no||'')+' liegt in Drive');
-  return o;
+  return{folderId,folderName};
+}
+window.studioOfferDrive=async function(blob,filename,meta,plan){
+  try{
+    meta=meta||{};const k=customerFor(meta.customer);
+    let file=null,folderId=null,folderName='';
+    if(plan.mode==='replace')file=await offerFile(plan.no,plan.latest&&plan.latest.link);
+    if(file){
+      await gfetch('https://www.googleapis.com/upload/drive/v3/files/'+file.id+'?uploadType=media&supportsAllDrives=true',{method:'PATCH',headers:{'Content-Type':'application/pdf'},body:blob});
+      folderId=(file.parents||[])[0];
+    }else{
+      if(plan.mode==='new'){const old=await offerFile(plan.latest.no,plan.latest.link).catch(()=>null);folderId=old&&(old.parents||[])[0]}
+      if(!folderId){const f=await angFolderFor(meta.customer);folderId=f.folderId;folderName=f.folderName}
+      const up=await driveUpload(new File([blob],filename,{type:'application/pdf'}),filename,folderId);
+      file={id:up.id,name:filename,webViewLink:up.webViewLink,parents:[folderId]};
+    }
+    if(!folderName&&folderId){try{folderName=(await (await gfetch('https://www.googleapis.com/drive/v3/files/'+folderId+'?fields=name&supportsAllDrives=true')).json()).name||''}catch(_){}}
+    PDF_CACHE[file.id]={blob,name:file.name||filename};
+    const link=file.webViewLink||('https://drive.google.com/file/d/'+file.id+'/view');
+    const props={'Nummer':{title:[{text:{content:plan.no}}]},'Art':{select:{name:'Angebot'}},'Betrag':{number:+meta.total||0},'Datum':{date:{start:TODAY}},'Datei':{url:link},
+      'Leistung':{rich_text:[{text:{content:((meta.customer||'')+(meta.title?': '+meta.title:'')).slice(0,1900)}}]}};
+    if(k)props['Kunde']={relation:[{id:k.id}]};
+    let notion='ok';
+    try{
+      if(plan.mode==='replace'&&plan.latest&&plan.latest.nid)await notionUpdate('rechnungen',plan.latest.nid,props);
+      else{props['Status']={select:{name:'Offen'}};await notionCreate('rechnungen',props);
+        if(plan.mode==='new'&&plan.latest&&plan.latest.nid)await notionUpdate('rechnungen',plan.latest.nid,{'Status':{select:{name:'Ersetzt'}}})}
+    }catch(e){notion=e.message}
+    track('act','Angebot als PDF erstellt');
+    setTimeout(()=>{safe('notionR',loadNotion);safe('dd',()=>scanDriveInvoices())},1200);
+    return{ok:true,no:plan.no,mode:plan.mode,link,folderLink:driveUrl(folderId),folderName,notion,replacedOld:plan.mode==='new'?plan.latest.no:''};
+  }catch(e){throw new Error(angErr(e))}
+};
+window.studioOfferDraft=async function(blob,filename,meta,plan){
+  try{
+    meta=meta||{};
+    if(!COMPOSE_OK)await composeToken();
+    const k=customerFor(meta.customer);const to=(k&&k.email)||meta.email||'';
+    const subj='Angebot '+plan.no+(meta.title?' – '+meta.title:'');
+    const fname=String(filename||'Angebot.pdf').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w.\-]+/g,'_');
+    const bd='lm_'+Date.now().toString(36),enc=t=>'=?UTF-8?B?'+b64utf8(t)+'?=';
+    const mime=['MIME-Version: 1.0',...(to?['To: '+to]:[]),'Subject: '+enc(subj),'Content-Type: multipart/mixed; boundary="'+bd+'"','',
+      '--'+bd,'Content-Type: text/plain; charset="UTF-8"','','',
+      '--'+bd,'Content-Type: application/pdf; name="'+fname+'"','Content-Disposition: attachment; filename="'+fname+'"','Content-Transfer-Encoding: base64','',wrap76(await blobB64(blob)),
+      '--'+bd+'--',''].join('\r\n');
+    const raw=btoa(mime).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    /* Alten Entwurf mit derselben Nummer suchen und ersetzen */
+    let old=null;
+    const dl=await (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/drafts?'+new URLSearchParams({q:'"'+plan.no+'"',maxResults:'10'}))).json();
+    const rx=new RegExp('^Angebot '+reEsc(plan.no)+'(\\s|$)','i');
+    for(const d of (dl.drafts||[])){try{const x=await (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/drafts/'+d.id+'?format=metadata')).json();
+      const h=Object.fromEntries((x.message&&x.message.payload&&x.message.payload.headers||[]).map(y=>[y.name,y.value]));if(rx.test(h.Subject||'')){old=d.id;break}}catch(_){}}
+    const r=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/drafts'+(old?'/'+old:''),{method:old?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(old?{id:old,message:{raw}}:{message:{raw}})});
+    const j=await r.json();track('act','Mail-Entwurf angelegt');
+    return{ok:true,no:plan.no,to,replaced:!!old,url:draftUrl({mid:j.message&&j.message.id})};
+  }catch(e){if(/insufficient|scope/i.test(String(e.message)))COMPOSE_OK=false;throw new Error(angErr(e))}
 };
 window.studioSaveOffer=async function(blob,filename,meta){
   if(!GAUTH){toast('Angebot heruntergeladen. Für die Ablage in Drive mit dem LeMatic-Konto anmelden.');return}
@@ -6806,7 +6916,6 @@ function showAngDone(o,quiet){
     <div class="ad-act">${o.draft?`<a class="btn btn-primary sm" href="${esc(draftUrl(o.draft))}" target="_blank" rel="noopener">Entwurf öffnen</a>`:o.draftErr?`<button class="btn btn-primary sm" data-mkdraft="${esc(o.id)}">Als Mail-Entwurf</button>`:''}
     <a class="btn btn-glass sm" href="${esc(o.link)}" target="_blank" rel="noopener">In Drive</a>
     <button class="btn btn-glass sm" data-share="${esc(o.id)}">Link kopieren</button>
-    <button class="btn btn-glass sm" data-wa="${esc(o.id)}" data-phone="${esc(wa)}" title="${wa?'Öffnet WhatsApp mit '+esc(o.phone):'Öffnet WhatsApp, Kontakt dort auswählen'}">WhatsApp</button>
     <button class="icon-btn" data-adclose aria-label="Schließen">✕</button></div></div>`;
   el._o=o;el.hidden=false;if(!quiet)el.scrollIntoView({block:'start',behavior:REDUCED?'auto':'smooth'});
 }
@@ -8317,8 +8426,17 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.22';
+const APP_VERSION='2026-10-31.23';
 const CHANGELOG=[
+  {v:'2026-10-31.23',d:'31.10.2026',tour:[
+    {img:'whatsnew/v23-angebote.webp',t:'Angebote ablegen, ohne Durcheinander',txt:'Im Angebotsrechner unter „7. Vorschau“ gibt es jetzt drei klare Knöpfe. Und das Studio passt auf, dass es keine doppelten Angebote gibt.',
+     steps:['„Im Drive ablegen“: PDF in den Ordner des Kunden, Eintrag in Notion. Danach steht ein Link zum Ordner zum Prüfen da','„In Gmail-Entwürfe legen“: Mail an die Kunden-Mail aus Notion, Betreff „Angebot Nummer – Projekt“, PDF im Anhang. Gesendet wird nichts','Solange das Angebot nicht verschickt ist, ersetzt jedes Ablegen die alte Datei, den Notion-Eintrag und den alten Entwurf','Verschickt (Mail mit der Nummer im Gesendet-Ordner oder Haken „verschickt“): Die nächste Änderung wird V2 und liegt neben der alten, die alte steht in Notion auf „Ersetzt“']}
+  ],items:[
+    'Angebotsrechner: „Im Drive ablegen“, „In Gmail-Entwürfe legen“ und „PDF herunterladen“. Der WhatsApp-Knopf ist weg',
+    'Fassungen: Bis zum Versand wird ersetzt, danach entsteht V2, V3 … daneben. Die alte Fassung steht in Notion auf „Ersetzt“',
+    'Fehler wie ein volles Drive stehen deutlich rot im Rechner',
+    'Dunkler Modus auch im Angebotsrechner, das Angebot selbst bleibt weiß'
+  ]},
   {v:'2026-10-31.22',d:'31.10.2026',tour:[
     {img:'whatsnew/v22-mitteilungen.webp',t:'Die Mitteilungszentrale',txt:'Alles, was das Studio euch gemeldet hat, steht jetzt an einem Ort. Nichts geht mehr verloren, nur weil eine Meldung zu schnell wieder weg war.',
      steps:['Oben links neben „LeMatic Studio“ auf die Glocke','Die rote Zahl zählt, was wichtig ist: Erinnerungen, Aufgaben und Termine, die der andere für dich eingetragen hat, und Updates','„Wichtig“ blendet die kleinen Bestätigungen aus','Klick auf eine Mitteilung öffnet direkt den passenden Bereich']},
@@ -8788,7 +8906,8 @@ const THEME_MQ=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null
 function themeGet(){try{return localStorage.getItem('lm_theme')||'auto'}catch(_){return 'auto'}}
 function applyTheme(){const t=themeGet();const d=t==='dark'||(t==='auto'&&THEME_MQ&&THEME_MQ.matches);document.documentElement.classList.toggle('theme-dark',!!d);
   document.querySelectorAll('#themeSeg [data-theme]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.theme===t)));
-  const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=d?'#0E1412':'#EEF1EF'}
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=d?'#0E1412':'#EEF1EF';
+  try{const fd=$('angFrame')&&$('angFrame').contentDocument;if(fd&&fd.documentElement)fd.documentElement.classList.toggle('theme-dark',!!d)}catch(_){}}
 if(THEME_MQ){try{THEME_MQ.addEventListener('change',applyTheme)}catch(_){THEME_MQ.addListener&&THEME_MQ.addListener(applyTheme)}}
 on('themeSeg','click',e=>{const b=e.target.closest('[data-theme]');if(!b)return;try{localStorage.setItem('lm_theme',b.dataset.theme)}catch(_){}applyTheme();toast(b.dataset.theme==='auto'?'Darstellung folgt jetzt dem Gerät':b.dataset.theme==='dark'?'Dunkel':'Hell',{noLog:true})});
 applyTheme();
