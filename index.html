@@ -377,6 +377,35 @@ body.onb-open{overflow:hidden}
 @media (max-width:640px){.onb-brief,.onb-how{grid-template-columns:1fr}.onb-ask{flex-direction:column}.onb{align-items:flex-start;padding-top:64px}.onb-skip{top:10px;right:10px;background:rgba(0,0,0,.25);border-radius:999px;padding:6px 12px}.onb-brief{grid-template-columns:1fr 1fr}.onb-brief .bt{padding:12px}.onb-brief b{font-size:15px}.onb-brief em{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}}
 @media (prefers-reduced-motion:reduce){.onb-bg i,.li-orb span,.li-dot,.spin{animation:none}.onb-card,.onb-src .src,.onb-brief .bt,.onb-how div{animation:none}}
 
+
+/* LI überall: Startseiten-Suche, Knopf, Seitenleiste */
+.li-hero{background:linear-gradient(135deg,rgba(7,61,48,.96),rgba(12,90,70,.92))!important;border:0!important;padding:22px!important}
+.li-hero .input{height:54px;font-size:16px;border-radius:16px;border:0;box-shadow:0 6px 24px rgba(0,0,0,.15)}
+.li-hero .btn-primary{background:#FCD717;color:#073D30;height:54px;padding:0 26px;border-radius:16px;font-weight:650}
+.li-hero .nav-ag.lg{width:54px;height:54px;border-radius:16px;font-size:18px;background:#FCD717;color:#073D30}
+.li-hero .chip-q{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff}
+.li-hero .chip-q:hover{background:rgba(255,255,255,.2)}
+.li-fab{position:fixed;right:22px;bottom:22px;z-index:60;display:flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:8px 18px 8px 8px;background:linear-gradient(135deg,#073D30,#0c5a46);color:#fff;font:inherit;font-weight:600;cursor:pointer;box-shadow:0 10px 30px rgba(7,61,48,.35);transition:transform .2s}
+.li-fab:hover{transform:translateY(-2px)}
+.li-fab span{width:34px;height:34px;border-radius:12px;background:#FCD717;color:#073D30;display:grid;place-items:center;font-weight:800;font-size:13px}
+body:has(.view[data-view="agent"].active) .li-fab,body.li-open .li-fab,body.onb-open .li-fab{display:none}
+.li-drawer{position:fixed;inset:0;z-index:80;pointer-events:none}
+.li-drawer .li-scrim{position:absolute;inset:0;background:rgba(10,30,24,.18);opacity:0;transition:opacity .25s}
+.li-drawer .li-panel{position:absolute;top:12px;right:12px;bottom:12px;width:min(460px,calc(100vw - 24px));display:flex;flex-direction:column;padding:16px;transform:translateX(110%);transition:transform .3s cubic-bezier(.2,.8,.2,1);background:rgba(250,252,251,.97)}
+.li-drawer.show{pointer-events:auto}.li-drawer.show .li-scrim{opacity:1}.li-drawer.show .li-panel{transform:none}
+.li-head{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.li-head b{display:block;font-size:15px}.li-head small{display:block;font-size:12px;color:var(--ink-3)}
+.li-head div{flex:1;min-width:0}
+.li-panel .ag-log{max-height:none;flex:1}
+.ag-src{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:8px;border-top:1px dashed var(--line);font-size:12px}
+.ag-src span{color:var(--ink-3)}
+.ag-src a{display:inline-flex;gap:4px;align-items:center;padding:3px 9px;border-radius:999px;background:rgba(7,61,48,.06);color:var(--ink);text-decoration:none;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ag-src a:hover{background:rgba(7,61,48,.12)}
+.ag-body a{color:#0c5a46;font-weight:600}
+@media (max-width:900px){.li-fab{bottom:86px;right:14px;padding:6px}.li-fab b{display:none}}
+@media (max-width:640px){.li-hero{padding:14px!important}.li-hero .nav-ag.lg{display:none}.li-drawer .li-panel{top:0;right:0;bottom:0;width:100vw;border-radius:0}}
+@media (prefers-reduced-motion:reduce){.li-drawer .li-panel,.li-drawer .li-scrim{transition:none}}
+
 /* LeMatic-Agent */
 .dd-status{font-size:12.5px;color:var(--ink-2);margin:0 0 10px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.dd-status:empty{display:none}.dd-status .link{background:none;border:0;color:var(--brand);font:inherit;text-decoration:underline;cursor:pointer;padding:0}.spin.dd{width:12px;height:12px;border-color:rgba(7,61,48,.15);border-top-color:#0c5a46}
 .nav-ag{width:20px;height:20px;border-radius:7px;background:linear-gradient(135deg,#073D30,#0c5a46);color:#FCD717;font-weight:800;font-size:8.5px;letter-spacing:-.02em;display:inline-grid;place-items:center;flex:none}
@@ -1171,6 +1200,10 @@ body.dcut .bg{filter:grayscale(.4)}
         </div>
       </header>
       <div class="grid">
+        <section class="glass panel c12 home-ask li-hero" aria-label="LeMatic Intelligence fragen">
+          <form id="homeAsk"><span class="nav-ag lg">LI</span><input class="input" id="homeAskIn" placeholder="Frag LeMatic Intelligence oder durchsuche alles: Kunden, Drive, Mails, Rechnungen …" aria-label="Frage an LeMatic Intelligence" autocomplete="off"><button class="btn btn-primary" type="submit">Fragen</button></form>
+          <div class="ag-sugg"><button class="chip-q" data-agq="Wie machen wir diese Woche am besten weiter? Gib mir die 5 wichtigsten Schritte mit wer und bis wann.">Wie weiter diese Woche?</button><button class="chip-q" data-agq="Wie viel haben wir insgesamt mit Rechnungen eingenommen, aufgeteilt nach Kunde?">Umsatz pro Kunde</button><button class="chip-q" data-agq="Wo liegen bei uns Rechnungen, Angebote, Verträge und das Footage?">Wo liegt was?</button><button class="chip-q" data-agq="Was ist überfällig oder bleibt gerade liegen?">Was bleibt liegen?</button><a class="chip-q" href="#/agent">Auswertung ansehen →</a></div>
+        </section>
         <section class="glass panel c12" id="martinIntro" hidden aria-label="Kurze Einordnung">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap">
             <div style="max-width:640px">
@@ -1186,10 +1219,6 @@ body.dcut .bg{filter:grayscale(.4)}
             <div class="head-right"><div class="legend static" id="legendHome"></div><a class="link" href="#/kalender">Kalender öffnen</a></div>
           </div>
           <div class="week" id="week"></div>
-        </section>
-        <section class="glass panel c12 home-ask" aria-label="LeMatic Intelligence fragen">
-          <form id="homeAsk"><span class="nav-ag lg">LI</span><input class="input" id="homeAskIn" placeholder="Frag LeMatic Intelligence, z. B. „Was steht bei Körber an?“" aria-label="Frage an LeMatic Intelligence"><button class="btn btn-primary" type="submit">Fragen</button></form>
-          <div class="ag-sugg"><button class="chip-q" data-agq="Wie machen wir diese Woche am besten weiter? Gib mir die 5 wichtigsten Schritte mit wer und bis wann.">Wie weiter diese Woche?</button><button class="chip-q" data-agq="Was ist überfällig oder bleibt gerade liegen?">Was bleibt liegen?</button><a class="chip-q" href="#/agent">Auswertung ansehen →</a></div>
         </section>
         <section class="glass panel c7" aria-labelledby="hr-title">
           <div class="panel-head"><div><h2 id="hr-title">Nachfassen</h2><p>Laufende Kunden ohne offene Aufgabe und seit über 10 Tagen ohne Kontakt</p></div><button class="btn btn-glass sm" id="radarAI">✨ Ideen von LI</button></div>
@@ -1539,7 +1568,7 @@ body.dcut .bg{filter:grayscale(.4)}
             <button class="chip-q" data-agq="Zeig mir die Rechnungssummen der letzten Monate als Grafik und sag kurz, was auffällt.">Umsatz als Grafik</button>
             <button class="chip-q" data-agq="Was ist überfällig oder bleibt gerade liegen?">Was bleibt liegen?</button>
           </div>
-          <form class="ag-form" id="agForm"><textarea class="input" id="agInput" rows="2" placeholder="z. B. Was ist bei Körber offen und was sollte Martin als Nächstes tun?" aria-label="Frage an LeMatic Intelligence"></textarea><button class="btn btn-primary" id="agSend" type="submit">Fragen</button></form>
+          <form class="ag-form" id="agForm"><textarea class="input" id="agInput" rows="2" placeholder="z. B. Was ist bei Körber offen und was sollte Martin als Nächstes tun?" aria-label="Frage an LeMatic Intelligence"></textarea><button class="btn btn-primary ag-send" id="agSend" type="submit">Fragen</button></form>
         </section>
         <section class="c5 ag-side" aria-labelledby="ins-title">
           <div class="glass panel">
@@ -1935,6 +1964,16 @@ body.dcut .bg{filter:grayscale(.4)}
   </div>
 </div>
 
+<!-- LeMatic Intelligence: überall erreichbar -->
+<button class="li-fab" id="liFab" aria-label="LeMatic Intelligence fragen (⌘J)" title="LeMatic Intelligence fragen (⌘J)"><span>LI</span><b>Fragen</b></button>
+<aside class="li-drawer" id="liDrawer" aria-hidden="true" aria-label="LeMatic Intelligence">
+  <div class="li-scrim" data-liclose></div>
+  <div class="li-panel glass">
+    <div class="li-head"><span class="nav-ag lg">LI</span><div><b>LeMatic Intelligence</b><small>Durchsucht Kartei, Kalender, Mails, Rechnungen und Drive</small></div><button class="icon-btn" id="liFull" title="Groß öffnen" aria-label="Groß öffnen">⤢</button><button class="icon-btn" data-liclose aria-label="Schließen">✕</button></div>
+    <div class="ag-log" id="liDLog" aria-live="polite"></div>
+    <form class="ag-form" id="liDForm"><textarea class="input" id="liDIn" rows="2" placeholder="Frag mich alles über LeMatic …" aria-label="Frage an LeMatic Intelligence"></textarea><button class="btn btn-primary ag-send" type="submit">Fragen</button></form>
+  </div>
+</aside>
 <!-- Willkommen mit LeMatic Intelligence -->
 <div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="Willkommen bei LeMatic Intelligence">
   <div class="onb-bg" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -4916,7 +4955,9 @@ function agSave(){try{localStorage.setItem(AG_KEY,JSON.stringify(AG_CHAT.slice(-
 function agFormat(text){
   let charts=[];
   const body=String(text||'').replace(/```chart\s*([\s\S]*?)```/g,(_,j)=>{try{const c=JSON.parse(j);if(Array.isArray(c.labels)&&Array.isArray(c.values))charts.push(c)}catch(_){}return ''}).trim();
-  const lines=esc(body).split('\n').map(l=>l.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>'));
+  const lines=esc(body).split('\n').map(l=>l.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g,'$1<a href="$2" target="_blank" rel="noopener">Link</a>'));
   let html='',inList=false;
   lines.forEach(l=>{const m=/^\s*(?:[-•*]|\d+\.)\s+(.*)/.exec(l);
     if(m){if(!inList){html+='<ul>';inList=true}html+='<li>'+m[1]+'</li>'}
@@ -4924,34 +4965,135 @@ function agFormat(text){
   if(inList)html+='</ul>';
   return html+charts.map(chartCard).join('');
 }
-function renderAgent(){
-  const log=$('agLog');if(!log)return;
-  log.innerHTML=AG_CHAT.length?AG_CHAT.map(m=>m.role==='user'?`<div class="ag-msg me"><span>${esc(m.text)}</span><small>${esc(NAMES[m.who]||'')}</small></div>`:`<div class="ag-msg bot${m.err?' err':''}"><div class="ag-av">LI</div><div class="ag-body">${m.err?esc(m.text):agFormat(m.text)}</div></div>`).join(''):
-    `<div class="ag-empty"><div class="ag-av lg">LI</div><h3>Frag LeMatic Intelligence</h3><p>Sie kennt Kundenkartei, Gespräche, Aufgaben, Kalender, Mails, Rechnungen und Akquise. Private Sachen kennt sie nicht.</p></div>`;
-  log.scrollTop=log.scrollHeight;
+function agMsgHTML(m){
+  if(m.role==='user')return `<div class="ag-msg me"><span>${esc(m.text)}</span><small>${esc(NAMES[m.who]||'')}</small></div>`;
+  const src=(m.src||[]).length?`<div class="ag-src"><span>Gefunden in:</span>${m.src.map(s=>`<a href="${esc(s.link)}" target="_blank" rel="noopener" title="${esc(s.where||'')}">${s.ic||'📄'} ${esc(String(s.name).slice(0,42))}</a>`).join('')}</div>`:'';
+  return `<div class="ag-msg bot${m.err?' err':''}"><div class="ag-av">LI</div><div class="ag-body">${m.err?esc(m.text):agFormat(m.text)}${src}</div></div>`;
 }
+function renderAgent(){
+  const html=AG_CHAT.length?AG_CHAT.map(agMsgHTML).join(''):
+    `<div class="ag-empty"><div class="ag-av lg">LI</div><h3>Frag LeMatic Intelligence</h3><p>Sie durchsucht Kundenkartei, Kalender, Mails, Rechnungen, Akquise und euren ganzen Drive. Private Sachen kennt sie nicht.</p></div>`;
+  document.querySelectorAll('.ag-log').forEach(log=>{log.innerHTML=html;log.scrollTop=log.scrollHeight});
+}
+function agWaitText(t){document.querySelectorAll('.ag-wait .ai-dots').forEach(el=>el.textContent=t)}
+
+/* ---------- Tiefensuche: Drive und Postfach zur konkreten Frage ---------- */
+const STOP=new Set('der die das und oder aber ein eine einen einem einer eines ist sind war waren wird werden wurde haben hat hatte habe mit von vom zum zur zu im in am an auf aus bei bis für fuer über ueber unter nach vor wie was wer wo wann warum wieso welche welcher welches welchen kann können koennen soll sollen sollte muss müssen gibt es uns wir ihr sie ich du mir mich dir dich noch schon mal nur auch alle alles jetzt heute morgen gestern bitte mehr viel viele wieviel denn dann doch hier da dort machen gemacht lematic sag zeig zeige gib finde such suche liegt liegen steht stehen haben bisher insgesamt geld kostet kosten kostete haben hatten gerade aktuell genau eigentlich'.split(' '));
+function liKeywords(q){
+  const words=(q.match(/[A-Za-zÄÖÜäöüß0-9][\wÄÖÜäöüß&.-]{2,}/g)||[]).map(w=>w.replace(/[.-]+$/,'')).filter(w=>!STOP.has(w.toLowerCase()));
+  const kn=KUNDEN.filter(k=>words.some(w=>w.length>3&&k.name.toLowerCase().includes(w.toLowerCase()))).map(k=>k.name.split(/\s[–-]\s|\s\(/)[0]);
+  const uniq=[...new Set(words)].sort((a,b)=>b.length-a.length).slice(0,4);
+  return {words:uniq,kunden:[...new Set(kn)].slice(0,2)};
+}
+const qesc=s=>String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+let LI_TREE=null;
+async function liDriveTree(){
+  if(LI_TREE)return LI_TREE;
+  try{
+    const F='application/vnd.google-apps.folder';
+    const l1=await ddList(`'${DRIVE_ROOT_ID}' in parents and trashed=false and mimeType='${F}'`);
+    const l2=l1.length?await ddList('('+l1.slice(0,40).map(f=>`'${f.id}' in parents`).join(' or ')+`) and trashed=false and mimeType='${F}'`):[];
+    LI_TREE='## Ordnerstruktur im LeMatic-Drive\n'+l1.filter(f=>notPrivate(f.name)).sort((a,b)=>a.name.localeCompare(b.name)).map(f=>`- ${f.name} (${f.webViewLink})`+l2.filter(c=>(c.parents||[]).includes(f.id)&&notPrivate(c.name)).map(c=>`\n  - ${c.name}`).join('')).join('\n');
+  }catch(e){LI_TREE=''}
+  return LI_TREE;
+}
+async function liReadFile(f){
+  const m=f.mimeType||'';
+  try{
+    if(m==='application/vnd.google-apps.document'||m==='application/vnd.google-apps.presentation')
+      return (await (await gfetch('https://www.googleapis.com/drive/v3/files/'+f.id+'/export?mimeType=text/plain')).text());
+    if(m==='application/vnd.google-apps.spreadsheet')
+      return (await (await gfetch('https://www.googleapis.com/drive/v3/files/'+f.id+'/export?mimeType=text/csv')).text());
+    if(m==='application/pdf')return await ddReadPdf(f);
+    if(/^text\/|json|csv|markdown/.test(m))return (await (await gfetch('https://www.googleapis.com/drive/v3/files/'+f.id+'?alt=media&supportsAllDrives=true')).text());
+  }catch(_){}
+  return '';
+}
+const MIME_IC=m=>/folder/.test(m)?'📁':/pdf/.test(m)?'🧾':/spreadsheet|csv|excel/.test(m)?'📊':/presentation/.test(m)?'📽️':/video/.test(m)?'🎬':/image/.test(m)?'🖼️':'📄';
+async function liDeepSearch(q){
+  const {words,kunden}=liKeywords(q);const terms=[...new Set([...kunden,...words])];
+  if(!terms.length)return {text:'',src:[]};
+  const out=[],src=[];
+  /* Drive */
+  try{
+    const base=" and trashed=false";
+    const and2=terms.slice(0,2).map(w=>`fullText contains '${qesc(w)}'`).join(' and ');
+    let hits=await ddList(`(${and2})${base}`);
+    if(hits.length<3){const or=terms.map(w=>`fullText contains '${qesc(w)}' or name contains '${qesc(w)}'`).join(' or ');const more=await ddList(`(${or})${base}`);hits=hits.concat(more.filter(m=>!hits.some(h=>h.id===m.id)))}
+    hits=hits.filter(h=>notPrivate(h.name)).slice(0,10);
+    if(hits.length){
+      agWaitText('LeMatic Intelligence liest '+Math.min(4,hits.filter(h=>!/folder|video|image/.test(h.mimeType)).length)+' Dateien aus Drive');
+      const readable=hits.filter(h=>!/folder|video|image|audio/.test(h.mimeType)).slice(0,4);
+      const texts=await Promise.all(readable.map(liReadFile));
+      out.push('## Treffer im Drive zur Frage (Suchbegriffe: '+terms.join(', ')+')');
+      hits.forEach(h=>{
+        const i=readable.indexOf(h),t=i>=0?texts[i]:'';
+        if(t&&PRIVATE_RX.test(t))return;
+        out.push(`- ${h.name} [${/folder/.test(h.mimeType)?'Ordner':h.mimeType.split('.').pop().split('/').pop()}] geändert ${(h.modifiedTime||'').slice(0,10)} · Link: ${h.webViewLink}`+(t?`\n  Inhalt (Auszug): ${t.replace(/\s+/g,' ').slice(0,2500)}`:''));
+        src.push({name:h.name,link:h.webViewLink,ic:MIME_IC(h.mimeType),where:'Drive'});
+      });
+    }
+  }catch(e){out.push('(Drive-Suche nicht möglich: '+e.message+')')}
+  /* Postfach über die geladenen Mails hinaus */
+  try{
+    agWaitText('LeMatic Intelligence durchsucht das Postfach');
+    const gq='{'+terms.slice(0,3).map(w=>/\s/.test(w)?`"${w}"`:w).join(' ')+'}';
+    const ids=((await gmailList(gq,null,8)).messages||[]).map(m=>m.id);
+    if(ids.length){
+      const ms=(await fetchMailDetails(ids)).filter(m=>notPrivate(m.from,m.subj,m.snip));
+      if(ms.length){out.push('## Treffer im Postfach info@lematic.de');
+        ms.forEach(m=>{out.push(`- ${m.internal?iso(new Date(m.internal)):''} ${m.sent?'gesendet ':''}${m.from}: ${m.subj} — ${m.snip}`);src.push({name:m.subj,link:'https://mail.google.com/mail/u/0/#all/'+m.threadId,ic:'✉️',where:'Mail'})});}
+    }
+  }catch(_){}
+  return {text:out.join('\n'),src:src.slice(0,8)};
+}
+
 let agBusy=false;
 async function agentAsk(q){
   q=String(q||'').trim();if(!q||agBusy)return;
   if(!GAUTH){toast('Erst mit dem LeMatic-Konto anmelden.');return}
   agBusy=true;AG_CHAT.push({role:'user',text:q,who:ME});renderAgent();
-  const log=$('agLog');log.insertAdjacentHTML('beforeend','<div class="ag-msg bot" id="agWait"><div class="ag-av">LI</div><div class="ag-body"><span class="ai-dots">LeMatic Intelligence schaut in Kartei, Kalender und Mails</span></div></div>');log.scrollTop=log.scrollHeight;
-  $('agSend').disabled=true;
+  document.querySelectorAll('.ag-log').forEach(log=>{log.insertAdjacentHTML('beforeend','<div class="ag-msg bot ag-wait"><div class="ag-av">LI</div><div class="ag-body"><span class="ai-dots">LeMatic Intelligence durchsucht Drive, Mails und Kartei</span></div></div>');log.scrollTop=log.scrollHeight});
+  document.querySelectorAll('.ag-send').forEach(b=>b.disabled=true);
   try{
     if(!KARTEI_LOADED)await safe('kartei',loadKartei);
-    const verlauf=AG_CHAT.slice(-9,-1).map(m=>(m.role==='user'?(NAMES[m.who]||'Team'):'Agent')+': '+String(m.text).replace(/```chart[\s\S]*?```/g,'[Grafik]').slice(0,800)).join('\n');
-    const text=await askClaude('agent',{wissen:agentWissen(),verlauf,frage:q,user:USER,heute:TODAY});
-    AG_CHAT.push({role:'bot',text:text||'(keine Antwort)'});
+    const [found,tree]=await Promise.all([liDeepSearch(q).catch(()=>({text:'',src:[]})),liDriveTree()]);
+    agWaitText('LeMatic Intelligence formuliert die Antwort');
+    const verlauf=AG_CHAT.slice(-9,-1).map(m=>(m.role==='user'?(NAMES[m.who]||'Team'):'LI')+': '+String(m.text).replace(/```chart[\s\S]*?```/g,'[Grafik]').slice(0,800)).join('\n');
+    const wissen=[found.text,agentWissen(),tree].filter(Boolean).join('\n\n');
+    const text=await askClaude('agent',{wissen,verlauf,frage:q,user:USER,heute:TODAY});
+    AG_CHAT.push({role:'bot',text:text||'(keine Antwort)',src:found.src});
   }catch(e){AG_CHAT.push({role:'bot',text:e.message,err:true})}
-  agBusy=false;$('agSend').disabled=false;agSave();renderAgent();
+  agBusy=false;document.querySelectorAll('.ag-send').forEach(b=>b.disabled=false);agSave();renderAgent();
 }
+/* Überall erreichbar: schwebender Knopf + Seitenleiste */
+function openLiDrawer(q){
+  if(location.hash==='#/agent'){const i=$('agInput');i&&i.focus();if(q)agentAsk(q);return}
+  const d=$('liDrawer');d.classList.add('show');d.setAttribute('aria-hidden','false');document.body.classList.add('li-open');
+  renderAgent();setTimeout(()=>{const i=$('liDIn');i&&i.focus()},REDUCED?0:220);
+  if(q)agentAsk(q);
+}
+function closeLiDrawer(){const d=$('liDrawer');d.classList.remove('show');d.setAttribute('aria-hidden','true');document.body.classList.remove('li-open')}
 document.addEventListener('submit',e=>{
-  if(e.target.id==='agForm'){e.preventDefault();const i=$('agInput');const q=i.value;i.value='';agentAsk(q)}
-  if(e.target.id==='homeAsk'){e.preventDefault();const i=$('homeAskIn');const q=i.value;i.value='';location.hash='#/agent';setTimeout(()=>agentAsk(q),60)}
+  const map={agForm:'agInput',liDForm:'liDIn',homeAsk:'homeAskIn'};
+  const inp=map[e.target.id];if(!inp)return;
+  e.preventDefault();const i=$(inp);const q=i.value;i.value='';
+  if(e.target.id==='homeAsk')openLiDrawer(q);else agentAsk(q);
 });
-document.addEventListener('keydown',e=>{if(e.target.id==='agInput'&&e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('agForm').requestSubmit()}});
+document.addEventListener('keydown',e=>{
+  if((e.target.id==='agInput'||e.target.id==='liDIn')&&e.key==='Enter'&&!e.shiftKey){e.preventDefault();e.target.form.requestSubmit()}
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='j'){e.preventDefault();$('liDrawer').classList.contains('show')?closeLiDrawer():openLiDrawer()}
+  if(e.key==='Escape'&&$('liDrawer').classList.contains('show'))closeLiDrawer();
+});
 document.addEventListener('click',e=>{
-  const s=e.target.closest('[data-agq]');if(s){e.preventDefault();if(location.hash!=='#/agent')location.hash='#/agent';setTimeout(()=>agentAsk(s.dataset.agq),40);return}
+  if(e.target.closest('#liFab')){openLiDrawer();return}
+  if(e.target.closest('[data-liclose]')){closeLiDrawer();return}
+  if(e.target.closest('#liFull')){closeLiDrawer();location.hash='#/agent';return}
+});
+window.addEventListener('hashchange',()=>{if(location.hash==='#/agent')closeLiDrawer()});
+
+document.addEventListener('click',e=>{
+  const s=e.target.closest('[data-agq]');if(s){e.preventDefault();openLiDrawer(s.dataset.agq);return}
   if(e.target.closest('#agClear')){AG_CHAT=[];agSave();renderAgent();return}
   const cg=e.target.closest('[data-chartgo]');if(cg&&!e.target.closest('.ag-log')){location.hash='#/'+cg.dataset.chartgo;return}
   if(e.target.closest('#agInsight')){
