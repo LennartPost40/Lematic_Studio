@@ -546,6 +546,23 @@ body.dens-full .home-kpis .kpi{text-decoration:none;color:inherit;padding:14px 1
 .hs-k{font-size:11px;color:var(--ink-3);font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(29,29,31,.05)}
 .hs-ai{border-top:1px solid var(--line);border-radius:0 0 12px 12px;margin-top:4px}.hs-ai b{color:var(--brand)}
 
+/* Bezahlung */
+body.own-calls [data-premium="calls"] .lock,body.own-bundle [data-premium="calls"] .lock{display:none}body.own-calls [data-premium="calls"]::after,body.own-bundle [data-premium="calls"]:not(.pc-own)::after{content:" ✓";color:#1d7a35;font-weight:700}body.own-erechnung [data-premium="erechnung"] .lock,body.own-bundle [data-premium="erechnung"] .lock{display:none}body.own-erechnung [data-premium="erechnung"]::after,body.own-bundle [data-premium="erechnung"]:not(.pc-own)::after{content:" ✓";color:#1d7a35;font-weight:700}body.own-report [data-premium="report"] .lock,body.own-bundle [data-premium="report"] .lock{display:none}body.own-report [data-premium="report"]::after,body.own-bundle [data-premium="report"]:not(.pc-own)::after{content:" ✓";color:#1d7a35;font-weight:700}body.own-whatsapp [data-premium="whatsapp"] .lock,body.own-bundle [data-premium="whatsapp"] .lock{display:none}body.own-whatsapp [data-premium="whatsapp"]::after,body.own-bundle [data-premium="whatsapp"]:not(.pc-own)::after{content:" ✓";color:#1d7a35;font-weight:700}body.own-offer [data-premium="offer"] .lock,body.own-bundle [data-premium="offer"] .lock{display:none}body.own-offer [data-premium="offer"]::after,body.own-bundle [data-premium="offer"]:not(.pc-own)::after{content:" ✓";color:#1d7a35;font-weight:700}body.own-reminders [data-premium="reminders"] .lock,body.own-bundle [data-premium="reminders"] .lock{display:none}body.own-reminders [data-premium="reminders"]::after,body.own-bundle [data-premium="reminders"]:not(.pc-own)::after{content:" ✓";color:#1d7a35;font-weight:700}
+.pay-owned{padding:14px;border-radius:14px;background:rgba(52,199,89,.1);border:1px solid rgba(52,199,89,.35);font-weight:650;margin-bottom:14px}.pay-owned small{display:block;font-weight:400;color:var(--ink-2);margin-top:4px}
+.pay-mode{font-size:12.5px;color:var(--ink-2);margin:-6px 0 14px}
+
+
+/* Neu laden, Updates */
+.nav-reload{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;font:inherit;font-size:14.5px;color:var(--ink-2);padding:9px 12px;border-radius:12px;cursor:pointer;text-align:left}
+.nav-reload:hover{background:rgba(255,255,255,.6);color:var(--ink)}
+.nav-reload span{width:20px;text-align:center;font-size:17px}
+.nav-reload em{margin-left:auto;font-style:normal;font-size:10.5px;font-weight:700;background:#FCD717;color:#3d3000;border-radius:999px;padding:2px 8px}
+.m-reload{font-size:17px}
+.upd-bar{position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:86;display:flex;gap:12px;align-items:center;padding:10px 12px 10px 18px;border-radius:999px;background:rgba(255,255,255,.97);box-shadow:0 14px 40px rgba(7,61,48,.25);font-size:14px;font-weight:600;animation:onbIn .4s both}
+.news-sheet{width:min(520px,100%)}.news-sheet h2{margin:4px 0 12px}
+.news-block{margin-top:10px}.news-block small{font-size:11.5px;color:var(--ink-3);font-weight:600}.news-block ul{margin:6px 0 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px}.news-block li{font-size:14px;line-height:1.45}
+@media (max-width:900px){.upd-bar{top:10px;width:calc(100vw - 32px);border-radius:18px}}
+
 /* LeMatic-Agent */
 .calshare{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.calshare label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink-2)}@media (max-width:640px){.calshare{grid-template-columns:1fr}}
 .dd-status{font-size:12.5px;color:var(--ink-2);margin:0 0 10px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.dd-status:empty{display:none}.dd-status .link{background:none;border:0;color:var(--brand);font:inherit;text-decoration:underline;cursor:pointer;padding:0}.spin.dd{width:12px;height:12px;border-color:rgba(7,61,48,.15);border-top-color:var(--brand-2)}
@@ -1313,6 +1330,7 @@ body.dcut .bg{filter:grayscale(.4)}
       <a href="#/kunde" data-route="kunde"><i></i>Mammutmarsch Portal</a>
     </div>
     <div class="side-bottom">
+      <button class="nav-reload" id="appReload" title="Studio neu laden und alles aktualisieren"><span>↻</span>Neu laden<em id="updDot" hidden>Update</em></button>
       <a class="nav-settings" href="#/einstellungen" data-route="einstellungen"><svg class="i"><use href="#i-gear"/></svg>Einstellungen</a>
       <div class="user">
         <span class="av us lg" id="uAv">LP</span>
@@ -1327,7 +1345,7 @@ body.dcut .bg{filter:grayscale(.4)}
     <section class="view" data-view="heute" aria-label="Heute">
       <header class="topbar">
         <div>
-          <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
+          <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><button class="icon-btn m-reload" data-appreload aria-label="Neu laden">↻</button><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
           <p class="date" id="hDate"></p>
           <h1 id="hGreet">Hallo</h1>
           <div class="streak-badge" id="streakBadge" hidden></div>
@@ -1748,11 +1766,12 @@ body.dcut .bg{filter:grayscale(.4)}
       <header class="topbar">
         <div>
           <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
-          <span class="intern prem-badge">✦ Testlauf für die Zentrale · keine echten Käufe</span>
+          <span class="intern prem-badge">✦ Zentrale Pro</span>
           <h1>Zentrale Pro</h1>
           <p class="summary">Mehr Zeit für die Arbeit, weniger Zeit im Büro. Einzelne Module ab 29 € im Monat oder alles zusammen.</p>
         </div>
       </header>
+      <p class="pay-mode" id="payMode"></p>
       <section class="glass prem-bundle">
         <div><span class="prem-kicker">Alles drin</span><h2>Zentrale Pro Komplett</h2><p>Alle sechs Module, ein Preis. Spart gegenüber einzeln über 60 € im Monat.</p></div>
         <div class="prem-price"><b>149 €</b><span>pro Monat, monatlich kündbar</span><button class="btn btn-primary" data-premium="bundle">Komplett freischalten</button></div>
@@ -1788,7 +1807,7 @@ body.dcut .bg{filter:grayscale(.4)}
           <div id="setPrefs"></div>
         </section>
         <section class="glass panel c12" aria-labelledby="onb-title">
-          <div class="setting" style="border:0;padding:0"><span><b id="onb-title" style="font-size:15px">Willkommen mit LeMatic Intelligence</b><small>Den Start-Rundgang noch einmal ansehen, so wie ihn neue Nutzer beim ersten Login sehen.</small></span><span style="display:flex;gap:8px"><button class="btn btn-glass sm" id="onbReplay">Willkommen</button><button class="btn btn-primary sm" id="tourReplay">Rundgang</button></span></div>
+          <div class="setting" style="border:0;padding:0"><span><b id="onb-title" style="font-size:15px">Willkommen mit LeMatic Intelligence</b><small>Den Start-Rundgang noch einmal ansehen, so wie ihn neue Nutzer beim ersten Login sehen.</small></span><span style="display:flex;gap:8px"><button class="btn btn-glass sm" data-shownews>Was ist neu</button><button class="btn btn-glass sm" id="onbReplay">Willkommen</button><button class="btn btn-primary sm" id="tourReplay">Rundgang</button></span></div>
         </section>
         <section class="glass panel c12" aria-labelledby="pt-title">
           <div class="setting" style="border:0;padding:0"><span><b id="pt-title" style="font-size:15px">Premium-Test anzeigen</b><small>Zeigt die gesperrten Zentrale-Pro-Funktionen überall im Studio. Für den Alltag ausschalten.</small></span><input type="checkbox" id="premToggle" class="chk" aria-label="Premium-Test anzeigen"></div>
@@ -2151,6 +2170,8 @@ body.dcut .bg{filter:grayscale(.4)}
 </aside>
 <div class="remind-stack" id="remindStack" aria-live="polite"></div>
 <div class="tour" id="tour" hidden><div class="tour-spot" id="tourSpot"></div><div class="tour-card glass" id="tourCard" role="dialog" aria-label="Rundgang"></div></div>
+<div class="upd-bar glass" id="updBar" hidden><span>✨ Neue Version des Studios ist da.</span><button class="btn btn-primary sm" data-appreload>Jetzt neu laden</button><button class="icon-btn" id="updLater" aria-label="Später">✕</button></div>
+<div class="modal-wrap" id="newsWrap" aria-hidden="true"><div class="glass sheet news-sheet" role="dialog" aria-modal="true" aria-labelledby="newsTitle" id="newsSheet"></div></div>
 <!-- Willkommen mit LeMatic Intelligence -->
 <div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="Willkommen bei LeMatic Intelligence">
   <div class="onb-bg" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -2687,7 +2708,7 @@ const MAX_UPLOAD_MB=100;
 /* ---------- Router ---------- */
 const views=document.querySelectorAll('.view');
 function go(route){
-  const parts=String(route||'').split('/');route=parts[0];
+  const parts=String(route||'').split('?')[0].split('/');route=parts[0];
   if(route==='kunden'&&parts[1])setTimeout(()=>openKunde(parts[1]),30);
   const v=[...views].some(x=>x.dataset.view===route)?route:'heute';
   views.forEach(x=>x.classList.toggle('active',x.dataset.view===v));
@@ -2862,6 +2883,8 @@ function enterGoogle(me){
   safe('gmail',loadGmail);
   safe('myCal',loadMyCalendar);
   safe('notion',loadNotion);
+  safe('pay',loadPay);
+  safe('news',newsAfterLogin);
   safe('mammutDrive',()=>{if(location.hash.slice(2)==='kunde')loadMammutDrive()});
 }
 /* Persönlicher Fokus: Aufgaben defaulten auf die eingeloggte Person, ohne die andere auszublenden */
@@ -6080,6 +6103,77 @@ async function importBotTasks(){
 }
 setInterval(()=>safe('botTasks',importBotTasks),120000);
 
+
+/* ---------- Echte Bezahlung (Stripe, Testmodus) ---------- */
+let PAY={mode:null,owned:{},err:''};
+function payOwned(k){return !!(PAY.owned[k]||PAY.owned.bundle)}
+function applyPayState(){
+  const keys=Object.keys(PREMIUM);
+  keys.forEach(k=>document.body.classList.toggle('own-'+k,payOwned(k)));
+  const bb=document.querySelector('.prem-bundle [data-premium="bundle"]');
+  if(bb){bb.textContent=PAY.owned.bundle?'✓ Gebucht · verwalten':'Komplett freischalten'}
+  const pm=$('payMode');if(pm)pm.textContent=PAY.mode==='test'?'🧪 Testmodus aktiv: Zahlungen laufen über Stripe-Testkarten, es wird nichts abgebucht.':PAY.mode==='live'?'Live-Zahlungen aktiv.':(PAY.err||'');
+  if(location.hash.startsWith('#/premium'))safe('prem',renderPremium);
+}
+async function loadPay(){
+  if(!GAUTH)return;
+  try{const j=await napi('/api/pay');PAY={mode:j.mode,owned:j.owned||{},err:''}}
+  catch(e){PAY={mode:null,owned:{},err:/501|STRIPE/.test(e.message)?'Bezahlung ist noch nicht eingerichtet: In Vercel fehlt STRIPE_SECRET_KEY.':'Bezahlung gerade nicht erreichbar.'}}
+  applyPayState();
+  const m=/bezahlt=(\w+)/.exec(location.hash);
+  if(m){history.replaceState(null,'','#/premium');closePaywall();
+    if(payOwned(m[1])){toast('✓ '+(PREMIUM[m[1]]||{name:'Modul'}).name+' ist freigeschaltet');if(typeof confetti==='function')try{confetti(80)}catch(_){}}
+    else toast('Zahlung wird noch bestätigt, gleich nochmal neu laden.');}
+}
+window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#/premium'))safe('pay',loadPay)});
+window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList.contains('show'))closePaywall()});
+
+
+/* ---------- Version, Neu laden, „Was ist neu“ ---------- */
+const APP_VERSION='2026-10-31.8';
+const CHANGELOG=[
+  {v:'2026-10-31.8',d:'31.10.2026',items:[
+    '↻ Neu-laden-Knopf links unten und Hinweis, sobald es ein Update gibt',
+    '✨ „Was ist neu“: nach jedem Update steht hier, was sich geändert hat',
+    '💳 Zentrale Pro: echter Bezahlablauf über Stripe (Testmodus), Module erst nach Zahlung freigeschaltet',
+    '📥 Aufgaben aus WhatsApp und Notion landen automatisch in deiner Aufgabenliste',
+    '🔒 Private Einträge (Status „Privat“ in Notion) sind überall ausgeblendet',
+    '🗓️ Einstellungen: LeMatic-Kalender per Knopf in eure eigenen Kalender freigeben'
+  ]},
+  {v:'2026-10-31.7',d:'31.10.2026',items:[
+    '🎨 Dein Studio: Ansicht Minimal / Ausgewogen / Alles, eigene Akzentfarbe und Hintergrund',
+    '⚡ Blitzschnelle Suche ohne KI direkt auf der Startseite',
+    '💶 Geldeingänge: Kontist-Export reinziehen, bezahlte Rechnungen werden erkannt'
+  ]}
+];
+function showNews(all){
+  let seen='';try{seen=localStorage.getItem('lm_seen_version')||''}catch(_){}
+  const list=all?CHANGELOG:CHANGELOG.filter(c=>!seen||c.v>seen);
+  if(!list.length)return;
+  $('newsSheet').innerHTML=`<p class="onb-kicker" style="color:var(--brand)">Was ist neu</p><h2 id="newsTitle">Das Studio hat ein Update bekommen</h2>${list.map(c=>`<div class="news-block"><small>${esc(c.d)}</small><ul>${c.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}<div class="sheet-actions"><button class="btn btn-primary sm" id="newsOk">Alles klar</button></div>`;
+  const w=$('newsWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');
+}
+function closeNews(){const w=$('newsWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true');try{localStorage.setItem('lm_seen_version',APP_VERSION)}catch(_){}}
+document.addEventListener('click',e=>{
+  if(e.target.closest('#newsOk')||e.target.id==='newsWrap'){closeNews();return}
+  if(e.target.closest('#appReload')||e.target.closest('[data-appreload]')){toast('Wird neu geladen …');setTimeout(()=>location.reload(),150);return}
+  if(e.target.closest('#updLater')){$('updBar').hidden=true;return}
+  if(e.target.closest('[data-shownews]')){showNews(true)}
+});
+async function checkUpdate(){
+  try{
+    const j=await (await fetch('/version.json?t='+Date.now(),{cache:'no-store'})).json();
+    if(j.version&&j.version!==APP_VERSION){$('updBar').hidden=false;$('updDot').hidden=false}
+  }catch(_){}
+}
+setInterval(checkUpdate,5*60000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpdate()});
+function newsAfterLogin(){
+  let seen='';try{seen=localStorage.getItem('lm_seen_version')||''}catch(_){}
+  if(!seen){try{localStorage.setItem('lm_seen_version',APP_VERSION)}catch(_){}return} /* Erstbesuch: Willkommen statt Update-Liste */
+  if(seen!==APP_VERSION&&$('onb').hidden)setTimeout(()=>showNews(false),1200);
+}
+
 /* ---------- Zentrale Pro: gesperrte Premium-Module (Test, keine echten Käufe) ---------- */
 const PREMIUM={
   calls:{ic:'🎙️',name:'Anruf-Assistent',price:39,pitch:'Telefonat aufnehmen oder hochladen, fertig ist das Gesprächsprotokoll.',
@@ -6108,15 +6202,17 @@ function openPaywall(key){
   $('paySheet').innerHTML=`<div class="ph"><div class="pc-ic">${p.ic}</div><h2 id="payTitle">${esc(p.name)}</h2><p>${esc(p.pitch)}</p></div>
   <div class="pb"><ul>${p.pts.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
   <div class="pp"><b>${p.price} €</b><span>pro Monat zusätzlich, monatlich kündbar</span></div>
+  ${payOwned(key)?`<div class="pay-owned">✓ Freigeschaltet${PAY.owned[key]?' seit '+dm(PAY.owned[key].since):' über Zentrale Pro Komplett'}${PAY.mode==='test'?' (Testmodus)':''}<small>Das Modul ist in Vorbereitung. Sobald es fertig ist, läuft es hier automatisch, ohne dass du etwas tun musst.</small></div>
+  <div class="kd-row"><button class="btn btn-glass" data-payportal>Abo verwalten</button><button class="btn btn-glass" data-payclose>Schließen</button></div>`:`
   <div class="kd-row"><button class="btn btn-primary" data-paybuy="${key}">Jetzt freischalten</button>${key!=='bundle'?`<button class="btn btn-glass" data-paybuy="bundle">Alles für 149 € <small style="opacity:.6">statt ${sum} €</small></button>`:''}<button class="btn btn-glass" data-payclose>Später</button></div>
-  <p class="pnote">Testlauf für die LeMatic Zentrale: Es wird nichts gekauft und nichts abgebucht.</p></div>`;
+  <p class="pnote">${PAY.mode==='test'?'🧪 Testmodus: Bezahlen mit Karte 4242 4242 4242 4242, Ablaufdatum in der Zukunft, beliebige Prüfziffer. Es wird nichts abgebucht.':PAY.mode==='live'?'Sichere Zahlung über Stripe. Monatlich kündbar.':esc(PAY.err||'Bezahlung wird geladen …')}</p>`}</div>`;
   const w=$('payWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');
   setTimeout(()=>{const b=w.querySelector('[data-paybuy]');b&&b.focus()},30);
 }
 function closePaywall(){const w=$('payWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true')}
 function renderPremium(){
   const g=$('premGrid');if(!g)return;
-  g.innerHTML=Object.entries(PREMIUM).filter(([k])=>k!=='bundle').map(([k,p])=>`<article class="glass prem-card"><div class="pc-ic">${p.ic}</div><h3>${esc(p.name)}</h3><p>${esc(p.pitch)}</p><ul>${p.pts.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="pc-foot"><span><b>${p.price} €</b> <small>/ Monat</small></span><button class="btn btn-primary sm" data-premium="${k}">Ansehen</button></div></article>`).join('');
+  g.innerHTML=Object.entries(PREMIUM).filter(([k])=>k!=='bundle').map(([k,p])=>`<article class="glass prem-card"><div class="pc-ic">${p.ic}</div><h3>${esc(p.name)}</h3><p>${esc(p.pitch)}</p><ul>${p.pts.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="pc-foot"><span><b>${p.price} €</b> <small>/ Monat</small></span>${payOwned(k)?`<button class="btn btn-glass sm pc-own" data-premium="${k}">✓ Gebucht</button>`:`<button class="btn btn-primary sm" data-premium="${k}">Ansehen</button>`}</div></article>`).join('');
   const c=premClicks(),rows=Object.entries(PREMIUM).map(([k,p])=>({k,p,o:(c[k]||{}).open||0,b:(c[k]||{}).buy||0})).sort((a,b)=>b.o+b.b*3-(a.o+a.b*3));
   const max=Math.max(1,...rows.map(r=>r.o));
   $('premStats').innerHTML=rows.some(r=>r.o)?rows.map(r=>`<div class="bar"><span>${r.p.ic} ${esc(r.p.name)}</span><span><i style="width:${Math.round(r.o/max*100)}%"></i></span><span title="${r.o}× geöffnet, ${r.b}× Kaufen geklickt">${r.o}/${r.b}</span></div>`).join('')+'<p class="pnote" style="font-size:12px;color:var(--ink-3);margin-top:8px">Zahl links: geöffnet, rechts: auf „Freischalten" geklickt.</p>':'<p class="empty-note">Noch keine Klicks. Einfach im Studio arbeiten, die 🔒-Knöpfe tauchen an den passenden Stellen auf.</p>';
@@ -6125,7 +6221,13 @@ document.addEventListener('click',e=>{
   const t=e.target.closest('[data-premium]');
   if(t){e.preventDefault();e.stopPropagation();openPaywall(t.dataset.premium);return}
   const b=e.target.closest('[data-paybuy]');
-  if(b){const p=PREMIUM[b.dataset.paybuy];premCount(b.dataset.paybuy,'buy');closePaywall();toast('Test: Das wäre ein Abo über '+p.price+' €/Monat gewesen ('+p.name+').');if(typeof confetti==='function')try{confetti(40)}catch(_){}renderPremium();return}
+  if(b){const k=b.dataset.paybuy;premCount(k,'buy');
+    if(!PAY.mode){toast(PAY.err||'Bezahlung ist noch nicht eingerichtet.');return}
+    b.disabled=true;b.textContent='Weiter zur Bezahlung …';
+    napi('/api/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'checkout',module:k})})
+      .then(j=>{location.href=j.url}).catch(x=>{b.disabled=false;b.textContent='Jetzt freischalten';toast('Bezahlung nicht möglich: '+x.message)});
+    return}
+  if(e.target.closest('[data-payportal]')){napi('/api/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'portal'})}).then(j=>{location.href=j.url}).catch(x=>toast('Abo-Verwaltung nicht erreichbar: '+x.message));return}
   if(e.target.closest('[data-payclose]')||e.target.id==='payWrap')closePaywall();
   if(e.target.closest('#premReset')){try{localStorage.removeItem(PREM_KEY)}catch(_){}renderPremium()}
 },true);
