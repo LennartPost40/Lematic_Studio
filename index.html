@@ -305,6 +305,71 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 .t-akquise{background:rgba(175,82,222,.16);color:#6E2A99}
 .t-intern{background:rgba(29,29,31,.08);color:#48484A}
 .t-frist{background:rgba(255,59,48,.13);color:#A8231B}
+.t-privat{background:rgba(10,155,138,.14);color:#06655A}
+.t-aufgabe{background:rgba(252,215,23,.32);color:#5C4A00}
+
+/* Aufgaben aus dem Kalender */
+.task .kd{font-size:12px;color:var(--ink-2);display:inline-flex;align-items:center;gap:4px;cursor:pointer;background:none;border:0;padding:0}
+.task .kd:hover{color:var(--brand);text-decoration:underline}
+.task .del{opacity:0;transition:opacity .15s}
+.task:hover .del,.task .del:focus-visible{opacity:1}
+@media (hover:none){.task .del{opacity:.6}}
+.add-task.v2{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1.3fr) 110px 150px 110px auto;gap:8px}
+@media (max-width:980px){.add-task.v2{grid-template-columns:1fr 1fr}.add-task.v2 #atTitle{grid-column:1/-1}}
+
+/* Kundenkartei */
+.kartei-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.kartei-tools .input{max-width:320px}
+.kartei-tools .seg{max-width:100%;overflow-x:auto;scrollbar-width:none}
+.kartei-tools .seg button{white-space:nowrap}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.kcard{padding:18px;display:flex;flex-direction:column;gap:6px;text-align:left;border:0;cursor:pointer;font:inherit;color:inherit;transition:transform .15s,box-shadow .15s}
+.kcard:hover{transform:translateY(-2px)}
+.kcard:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.kcard .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.kcard .typ{font-size:12px;color:var(--ink-3)}
+.kcard h3{font-size:17px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
+.kcard .who{font-size:13px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.kcard .note{font-size:13px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;-webkit-box-pack:start;overflow:hidden;flex:0 1 auto;margin-bottom:auto}
+.kcard,.kcard *{text-align:left}
+.kcard .meta{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--ink-3);margin-top:8px;padding-top:10px;border-top:1px solid var(--line)}
+.kcard .meta b{color:var(--ink);font-weight:600}
+.pill.st-Bestandskunde{color:var(--ok);background:rgba(52,199,89,.14)}
+.pill.st-Warm{color:#7A5A00;background:rgba(252,215,23,.3)}
+.pill.st-Angefragt{color:#7A4100;background:rgba(255,159,10,.18)}
+.pill.st-Kalt{color:var(--ink-2);background:rgba(29,29,31,.06)}
+.pill.st-Abgesagt{color:#A8231B;background:rgba(255,59,48,.12)}
+
+/* Kundendetail und Dialoge */
+.sheet.wide{width:min(980px,100%);max-height:84vh;overflow:auto;padding:24px}
+.modal-wrap.kd-wrap{padding-top:5vh}
+.kd-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.kd-head h2{font-size:24px}
+.kd-head .sub{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.kd-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:860px){.kd-grid{grid-template-columns:1fr}}
+.kd-box{border:1px solid var(--line);border-radius:14px;padding:14px;background:rgba(255,255,255,.55)}
+.kd-box h3{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3);margin-bottom:10px}
+.kd-fields{display:grid;grid-template-columns:1fr;gap:10px}
+.kd-fields label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink-2)}
+.kd-fields textarea,.kd-note textarea{min-height:70px;padding:10px 12px;resize:vertical;height:auto}
+.kd-notes{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow:auto;margin-top:10px}
+.kd-notes p{font-size:13px;line-height:1.45;white-space:pre-wrap;padding:8px 10px;border-radius:10px;background:rgba(29,29,31,.04)}
+.kd-notes p b{display:block;font-size:11px;color:var(--ink-3);font-weight:600;margin-bottom:2px}
+.kd-note{display:flex;flex-direction:column;gap:8px}
+.kd-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.kd-list{display:flex;flex-direction:column;gap:2px}
+.kd-list .cmail{width:100%}
+.kd-doc{font-size:13px;line-height:1.5;color:var(--ink-2);max-height:260px;overflow:auto}
+.kd-doc h4{font-size:13px;color:var(--ink);margin:10px 0 2px}
+.kd-doc p,.kd-doc li{margin:2px 0}
+.who-pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.who-pick button{padding:18px;border-radius:16px;border:1px solid var(--line);background:#fff;cursor:pointer;font:inherit;display:flex;flex-direction:column;align-items:center;gap:8px}
+.who-pick button:hover{border-color:var(--brand)}
+.who-pick b{font-size:16px}
+#uName{cursor:pointer}
+#uName:hover{text-decoration:underline}
+.mail-more{display:flex;justify-content:center;padding:10px}
 .legend{display:flex;gap:6px;flex-wrap:wrap}
 .lg{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:4px 10px;border-radius:999px;border:1px solid rgba(29,29,31,.08);background:rgba(255,255,255,.6);color:var(--ink-2);cursor:pointer}
 .lg i{width:8px;height:8px;border-radius:50%}
@@ -623,6 +688,8 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 .search-trigger .kbd{margin-left:auto;font-size:11px;border:1px solid rgba(29,29,31,.14);border-radius:6px;padding:1px 5px}
 
 /* Bestätigen */
+.modal-wrap.confirm{z-index:65}
+#whoWrap{z-index:80}
 .confirm .sheet{width:min(420px,100%);text-align:left}
 .confirm h2{font-size:18px}
 .confirm p{font-size:14px;color:var(--ink-2);margin-top:6px}
@@ -773,13 +840,11 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
       <a href="#/medien" data-route="medien"><svg class="i"><use href="#i-image"/></svg>Medien</a>
       <a href="#/archiv" data-route="archiv"><svg class="i"><use href="#i-drive"/></svg>Archiv</a>
       <a href="#/akquise" data-route="akquise"><svg class="i"><use href="#i-target"/></svg>Akquise</a>
-      <a href="#/kunden" data-route="kunden"><svg class="i"><use href="#i-users"/></svg>Kunden</a>
+      <a href="#/kunden" data-route="kunden"><svg class="i"><use href="#i-users"/></svg>Kundenkartei</a>
     </nav>
-    <p class="side-label">Aktive Kunden</p>
-    <div class="clients">
-      <a href="#/kunde" data-route="kunde"><i></i>Mammutmarsch<small id="navReq">4</small></a>
-      <a href="#/kunden" data-toast="Fairground ist im Mockup noch nicht ausgearbeitet"><i></i>Fairground Festival</a>
-      <a href="#/kunden" data-toast="Messe-Akquise ist im Mockup noch nicht ausgearbeitet"><i></i>Hydrogen Expo</a>
+    <p class="side-label">Kunden im Fokus</p>
+    <div class="clients" id="sideClients">
+      <a href="#/kunde" data-route="kunde"><i></i>Mammutmarsch Portal</a>
     </div>
     <div class="side-bottom">
       <a class="nav-settings" href="#/einstellungen" data-route="einstellungen"><svg class="i"><use href="#i-gear"/></svg>Einstellungen</a>
@@ -813,7 +878,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap">
             <div style="max-width:640px">
               <h2 style="font-size:16px;font-weight:600">Kurz zur Einordnung, Martin</h2>
-              <p style="font-size:14px;color:var(--ink-2);margin-top:6px">Aufgaben, Rechnungen und Akquise kommen live aus unserem LeMatic OS in Notion — was ihr dort ändert, taucht auch hier auf, und umgekehrt. Fehlt dir was oder wirkt etwas komisch: unten in den Einstellungen gibt's ein Feld für Verbesserungsvorschläge, die landen direkt als Aufgabe bei uns in Notion.</p>
+              <p style="font-size:14px;color:var(--ink-2);margin-top:6px">Aufgaben legst du hier an, sie landen direkt im LeMatic-Kalender, mit Datum und wer zuständig ist. Was du über einen Kunden weißt, schreibst du in die Kundenkartei: Kunde öffnen, Notiz rein, fertig. Das landet in Notion, dort lesen auch Claude und ChatGPT mit.</p>
             </div>
             <button class="btn btn-glass sm" id="introDismiss">Verstanden</button>
           </div>
@@ -826,15 +891,15 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
           <div class="week" id="week"></div>
         </section>
         <section class="glass panel c7" aria-labelledby="ht-title">
-          <div class="panel-head"><div><h2 id="ht-title">Aufgaben</h2><p>Fällig bis Sonntag, über alle Projekte</p></div><a class="link" href="#/aufgaben">Alle Aufgaben</a></div>
+          <div class="panel-head"><div><h2 id="ht-title">Aufgaben</h2><p>Fällig bis Sonntag, aus dem LeMatic-Kalender</p></div><a class="link" href="#/aufgaben">Alle Aufgaben</a></div>
           <div id="homeTasks"></div>
         </section>
         <section class="glass panel c5" aria-labelledby="he-title">
-          <div class="panel-head"><div><h2 id="he-title">Nächste Events</h2><p>Drehs, Messen und Einsätze</p></div></div>
+          <div class="panel-head"><div><h2 id="he-title">Nächste Termine</h2><p>Aus dem LeMatic-Kalender</p></div></div>
           <div id="homeEvents"></div>
         </section>
         <section class="glass panel c7" aria-labelledby="hd-title">
-          <div class="panel-head"><div><h2 id="hd-title">Lieferungen</h2><p>Aftermovies, Reels und andere Deadlines</p></div></div>
+          <div class="panel-head"><div><h2 id="hd-title">Lieferungen</h2><p>Termine mit „Lieferung“, „Deadline“, „Abgabe“ im Titel</p></div></div>
           <div id="homeDeliveries"></div>
         </section>
         <section class="glass panel c5" aria-labelledby="hg-title">
@@ -851,20 +916,20 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
           <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
           <span class="intern" id="gmailPill"><svg class="i xs"><use href="#i-mail"/></svg>Wird geprüft …</span>
           <h1>Mails</h1>
-          <p class="summary" id="mSummary">Alle Mails von Lennart und Martin, automatisch den Kunden zugeordnet</p>
+          <p class="summary" id="mSummary">Alle Mails von info@lematic.de, automatisch den Kunden aus der Kartei zugeordnet</p>
         </div>
         <div class="actions">
-          <button class="btn btn-primary" data-toast="Neue Mail wird in Gmail geöffnet"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Neue Mail</span></button>
+          <a class="btn btn-primary" href="https://mail.google.com/mail/?authuser=info@lematic.de&view=cm&fs=1" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Neue Mail</span></a>
         </div>
       </header>
       <section class="glass connect-card" id="mailConnect" aria-labelledby="gc-title">
         <div class="big-ic"><svg class="i"><use href="#i-mail"/></svg></div>
         <h2 id="gc-title">Gmail noch nicht angemeldet</h2>
-        <p>info@lematic.de läuft über IONOS, ist aber als Zweitkonto in Gmail eingebunden. Meldet euch hier einmal neu mit Google an und erlaubt den Mail-Zugriff, dann erscheinen eure echten Mails.</p>
+        <p>info@lematic.de läuft über Google Workspace. Meldet euch hier mit info@lematic.de an und erlaubt den Mail-Zugriff, dann erscheint das komplette Postfach.</p>
         <ul>
           <li><svg class="i sm"><use href="#i-check"/></svg>Kundenmails erscheinen direkt auf der Kundenseite</li>
           <li><svg class="i sm"><use href="#i-check"/></svg>Rechnungen im Anhang mit einem Klick ablegen</li>
-          <li><svg class="i sm"><use href="#i-check"/></svg>Aus jeder Mail eine Aufgabe machen</li>
+          <li><svg class="i sm"><use href="#i-check"/></svg>Aus jeder Mail eine Aufgabe im Kalender machen</li>
         </ul>
         <button class="btn btn-primary" id="gmailRetry"><svg class="i sm"><use href="#i-mail"/></svg>Erneut mit Google anmelden</button>
         <small id="mailConnectHint">Dabei fragt Google auch nach dem Mail-Zugriff — bitte den Haken setzen.</small>
@@ -893,7 +958,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
           <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
           <span class="intern"><svg class="i xs"><use href="#i-cal"/></svg>Mit Google Calendar synchronisiert</span>
           <h1>Kalender</h1>
-          <p class="summary">Drehs, Lieferungen, Meetings und Akquise von Lennart und Martin in einer Ansicht</p>
+          <p class="summary">Der LeMatic-Kalender von info@lematic.de, Termine und Aufgaben in einer Ansicht</p>
         </div>
         <div class="actions">
           <button class="btn btn-primary" id="openEvent"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Termin anlegen</span></button>
@@ -915,7 +980,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
         <section class="glass panel c4" aria-labelledby="dayTitle">
           <div class="panel-head"><div><h2 id="dayTitle"></h2><p id="daySub"></p></div></div>
           <div id="dayList"></div>
-          <p class="sync"><svg class="i sm"><use href="#i-check"/></svg>Kalender LeMatic, Lennart und Martin verbunden, zuletzt vor 2 Minuten abgeglichen</p>
+          <p class="sync" id="calSync"><svg class="i sm"><use href="#i-check"/></svg>Noch nicht abgeglichen</p>
         </section>
       </div>
     </section>
@@ -931,12 +996,13 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
       </header>
       <div class="grid">
         <section class="glass panel c12" aria-label="Aufgabenliste">
-          <form class="add-task" id="addTask">
-            <input class="input" id="atTitle" placeholder="Neue Aufgabe, zum Beispiel: Ticket-Sales-Creative Oktober schneiden" aria-label="Neue Aufgabe">
-            <select class="input" id="atProj" aria-label="Projekt"></select>
+          <form class="add-task v2" id="addTask">
+            <input class="input" id="atTitle" placeholder="Neue Aufgabe, zum Beispiel: Angebot an Fronius schicken" aria-label="Neue Aufgabe">
+            <select class="input" id="atKunde" aria-label="Kunde"></select>
             <select class="input" id="atWho" aria-label="Zuständig"><option value="LP">Lennart</option><option value="MS">Martin</option></select>
             <input class="input" type="date" id="atDue" aria-label="Fällig am">
-            <button class="btn btn-primary" type="submit"><svg class="i sm"><use href="#i-plus"/></svg>Hinzufügen</button>
+            <input class="input" type="time" id="atTime" aria-label="Uhrzeit, optional" title="Uhrzeit (optional) — ohne Uhrzeit ganztägig">
+            <button class="btn btn-primary" type="submit" id="atGo"><svg class="i sm"><use href="#i-plus"/></svg>In den Kalender</button>
           </form>
           <div class="filters">
             <div class="seg" role="group" aria-label="Nach Person filtern" id="tWho">
@@ -944,7 +1010,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
               <button aria-pressed="false" data-who="LP">Lennart</button>
               <button aria-pressed="false" data-who="MS">Martin</button>
             </div>
-            <select class="input" id="tProj" aria-label="Nach Projekt filtern"></select>
+            <select class="input" id="tProj" aria-label="Nach Kunde filtern"></select>
             <label class="toggle-line"><input type="checkbox" class="chk" id="tDone">Erledigte zeigen</label>
           </div>
           <div id="taskGroups"></div>
@@ -1119,23 +1185,23 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
     </section>
 
     <!-- ===== Kunden ===== -->
-    <section class="view" data-view="kunden" aria-label="Kunden">
+    <section class="view" data-view="kunden" aria-label="Kundenkartei">
       <header class="topbar">
         <div>
           <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
-          <h1>Kunden</h1>
-          <p class="summary">Laufende Kunden, Crew-Einsätze und Akquise an einem Ort</p>
+          <span class="intern"><svg class="i xs"><use href="#i-table"/></svg>Live aus Notion „Kunden &amp; Kontakte“</span>
+          <h1>Kundenkartei</h1>
+          <p class="summary" id="kSummary">Wird nach dem Login geladen …</p>
         </div>
         <div class="actions">
-          <div class="seg" role="group" aria-label="Kunden filtern" id="clientFilter">
-            <button aria-pressed="true" data-cf="all">Alle</button>
-            <button aria-pressed="false" data-cf="Aktiv">Aktiv</button>
-            <button aria-pressed="false" data-cf="Akquise">Akquise</button>
-          </div>
-          <button class="btn btn-primary" data-toast="Kunde anlegen ist im Mockup nicht aktiv"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Kunde anlegen</span></button>
+          <button class="btn btn-primary" id="kNew"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Kunde anlegen</span></button>
         </div>
       </header>
-      <div class="clients-grid" id="clientGrid"></div>
+      <div class="kartei-tools">
+        <input class="input" id="kSearch" type="search" placeholder="Name, Ansprechpartner, Notiz …" aria-label="Kundenkartei durchsuchen">
+        <div class="seg" role="group" aria-label="Nach Status filtern" id="kFilter"></div>
+      </div>
+      <div class="kgrid" id="kGrid"></div>
     </section>
 
     <!-- ===== Einstellungen ===== -->
@@ -1149,7 +1215,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
       </header>
       <div class="grid">
         <section class="glass panel c12" aria-labelledby="fb-title">
-          <div class="panel-head"><div><h2 id="fb-title">Verbesserungsvorschlag</h2><p>Landet als neue Aufgabe in eurem LeMatic OS, Bereich „Feedback"</p></div></div>
+          <div class="panel-head"><div><h2 id="fb-title">Verbesserungsvorschlag</h2><p>Landet als Aufgabe für Lennart im LeMatic-Kalender</p></div></div>
           <textarea id="fbText" class="input" style="height:90px;padding:10px 12px;resize:vertical;width:100%" placeholder="Was sollte anders sein, fehlen oder besser funktionieren?" aria-label="Verbesserungsvorschlag"></textarea>
           <p class="form-err" id="fbErr" role="alert"></p>
           <button class="btn btn-primary sm" id="fbSend" style="margin-top:8px">Absenden</button>
@@ -1166,10 +1232,10 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
         <section class="glass panel c7" aria-labelledby="set-conn-title">
           <div class="panel-head"><div><h2 id="set-conn-title">Verbindungen</h2><p>Woher das Tool seine Daten holt und wohin es ablegt</p></div></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-folder"/></svg></span><div><strong>Google Drive</strong><span id="setDriveText">Ordner „LeMatic“, erst nach dem Google-Login verbunden</span></div><span style="display:flex;gap:6px;align-items:center"><span class="pill done" id="setDrivePill"><i></i>Nicht verbunden</span><a class="btn btn-glass sm" data-drivetest href="#" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>Öffnen</a></span></div>
-          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-mail"/></svg></span><div><strong>Mails</strong><span id="setGmailText">Aktuell IONOS (info@lematic.de), Gmail nach dem Umstieg auf Google Workspace</span></div><span id="setGmail"><span class="pill done"><i></i>Später</span></span></div>
-          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-cal"/></svg></span><div><strong>Google Calendar</strong><span>LeMatic, Lennart und Martin</span></div><span class="pill ok"><i></i>Verbunden</span></div>
+          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-mail"/></svg></span><div><strong>Mails</strong><span id="setGmailText">info@lematic.de über Google Workspace</span></div><span id="setGmail"><span class="pill done"><i></i>Später</span></span></div>
+          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-cal"/></svg></span><div><strong>Google Calendar</strong><span id="setCalText">LeMatic-Kalender von info@lematic.de, inklusive Aufgaben</span></div><span id="setCalPill"><span class="pill warn"><i></i>Prüfe …</span></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-receipt"/></svg></span><div><strong>sevDesk</strong><span>Kein API-Zugang, Buchhaltung Pro war es nicht wert — Export und Upload statt Automatik</span></div><span class="pill done"><i></i>Manuell</span></div>
-          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-table"/></svg></span><div><strong>Notion — LeMatic OS</strong><span id="setNotionText">Daten aus Aufgaben, Rechnungen und Akquise-Pipeline</span></div><span id="setNotionPill"><span class="pill warn"><i></i>Prüfe …</span></span></div>
+          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-table"/></svg></span><div><strong>Notion — LeMatic OS</strong><span id="setNotionText">Kundenkartei, Rechnungen und Akquise-Pipeline</span></div><span id="setNotionPill"><span class="pill warn"><i></i>Prüfe …</span></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-ticket"/></svg></span><div><strong>Ticketshop-Tracking Mammutmarsch</strong><span>Nötig für echte Ticketzahlen</span></div><button class="btn btn-glass sm" data-toast="Anfrage an Alex vorbereitet">Zugang anfragen</button></div>
           <p class="warn-box"><svg class="i sm"><use href="#i-warn"/></svg><span>Der Ordner „LeMatic“ ist aktuell über einen Link erreichbar. Das Tool braucht diese Freigabe nicht, es greift über euren Google-Login zu. Stellt sie auf „Eingeschränkt“, sobald ihr wirklich Rechnungen darin ablegt.</span></p>
         </section>
@@ -1358,7 +1424,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 
     </div>
     </section>
-    <p class="note">Interne Ansicht, Designvorschlag von LeMatic. Mammutmarsch-Beträge, Termine von Messe und Fairground sowie das Umsatzziel stammen aus euren Unterlagen, alles andere sind Platzhalter.</p>
+    <p class="note">Interne Ansicht von LeMatic. Mails und Kalender live aus info@lematic.de, Kundenkartei, Rechnungen und Akquise live aus Notion.</p>
   </main>
 </div>
 
@@ -1423,7 +1489,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
       <label>Format<select id="upFmt"><option>Reel 9:16</option><option>Ticket-Sales-Creative</option><option>Creator-Content</option><option>Template</option><option>Rohmaterial</option></select></label>
     </div>
     <div class="switch"><span>Direkt zur Freigabe senden<small>Alex bekommt eine Benachrichtigung</small></span><input type="checkbox" id="upSend" aria-label="Direkt zur Freigabe senden"></div>
-    <div class="switch"><span>Martin benachrichtigen<small>Legt eine Aufgabe in eurem LeMatic OS an</small></span><input type="checkbox" id="upNotify" checked aria-label="Martin benachrichtigen"></div>
+    <div class="switch"><span>Martin benachrichtigen<small>Legt eine Aufgabe für morgen im LeMatic-Kalender an</small></span><input type="checkbox" id="upNotify" checked aria-label="Martin benachrichtigen"></div>
     <div class="switch"><span>Tracking-Link erstellen<small>Wird nach der Freigabe aktiv</small></span><input type="checkbox" id="upTrack" checked aria-label="Tracking-Link erstellen"></div>
     <p class="form-err" id="upErr" role="alert"></p>
     <div class="sheet-actions">
@@ -1437,7 +1503,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 <div class="modal-wrap" id="eventWrap" aria-hidden="true">
   <div class="glass sheet" role="dialog" aria-modal="true" aria-labelledby="ev-title">
     <h2 id="ev-title">Termin anlegen</h2>
-    <p>Landet in deinem echten Google-Kalender, nur du siehst und bearbeitest ihn.</p>
+    <p>Landet im LeMatic-Kalender (info@lematic.de), Lennart und Martin sehen ihn beide.</p>
     <div class="fields">
       <label class="full">Titel<input type="text" id="evTitle" placeholder="Zum Beispiel: Anruf Aussteller GET NORD"></label>
       <label>Datum<input type="date" id="evDate"></label>
@@ -1447,6 +1513,44 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
     <div class="sheet-actions">
       <button class="btn btn-glass sm" id="evCancel">Abbrechen</button>
       <button class="btn btn-primary sm" id="evGo">Anlegen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Wer arbeitet hier? -->
+<div class="modal-wrap" id="whoWrap" aria-hidden="true">
+  <div class="glass sheet" role="dialog" aria-modal="true" aria-labelledby="who-title">
+    <h2 id="who-title">Wer sitzt gerade hier?</h2>
+    <p>Ihr meldet euch beide mit info@lematic.de an. Damit Aufgaben und Notizen richtig zugeordnet werden, merkt sich dieser Browser, wer du bist. Ändern geht jederzeit über deinen Namen unten links.</p>
+    <div class="who-pick">
+      <button data-me="LP"><span class="av us lg">LP</span><b>Lennart</b><small>Kamera, Schnitt, KI</small></button>
+      <button data-me="MS"><span class="av us lg">MS</span><b>Martin</b><small>Akquise, Kunden, Admin</small></button>
+    </div>
+  </div>
+</div>
+
+<!-- Kundendetail -->
+<div class="modal-wrap kd-wrap" id="kdWrap" aria-hidden="true">
+  <div class="glass sheet wide" role="dialog" aria-modal="true" aria-labelledby="kdName" id="kdSheet"></div>
+</div>
+
+<!-- Kunde anlegen -->
+<div class="modal-wrap" id="knWrap" aria-hidden="true">
+  <div class="glass sheet" role="dialog" aria-modal="true" aria-labelledby="kn-title">
+    <h2 id="kn-title">Kunde anlegen</h2>
+    <p>Landet in Notion „Kunden &amp; Kontakte“.</p>
+    <div class="fields">
+      <label class="full">Firma oder Name<input type="text" id="knName" placeholder="Zum Beispiel: Fronius Deutschland"></label>
+      <label>Status<select id="knStatus"></select></label>
+      <label>Typ<select id="knTyp"></select></label>
+      <label class="full">Ansprechpartner<input type="text" id="knAp" placeholder="Name, Rolle"></label>
+      <label class="full">E-Mail<input type="text" id="knMail" placeholder="name@firma.de"></label>
+      <label class="full">Was wissen wir schon?<textarea class="input" id="knNote" style="height:80px;padding:10px 12px"></textarea></label>
+    </div>
+    <p class="form-err" id="knErr" role="alert"></p>
+    <div class="sheet-actions">
+      <button class="btn btn-glass sm" id="knCancel">Abbrechen</button>
+      <button class="btn btn-primary sm" id="knGo">Anlegen</button>
     </div>
   </div>
 </div>
@@ -1517,7 +1621,7 @@ let stateReady=false;
 function saveState(){
   if(!stateReady)return;
   try{
-    localStorage.setItem(LS_KEY,JSON.stringify({v:1,TASKS,INVOICES,LEADS,archStand,STREAKS,AUSGANG_FOLDERS,savedAt:new Date().toISOString()}));
+    localStorage.setItem(LS_KEY,JSON.stringify({v:1,INVOICES,LEADS,archStand,STREAKS,AUSGANG_FOLDERS,savedAt:new Date().toISOString()}));
     const el=$('setSaveInfo');if(el)el.textContent='Zuletzt lokal gesichert: '+new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
   }catch(e){console.warn('Speichern nicht möglich',e)}
 }
@@ -1525,7 +1629,6 @@ function loadState(){
   try{
     const raw=localStorage.getItem(LS_KEY);if(!raw)return false;
     const j=JSON.parse(raw);if(!j||j.v!==1)return false;
-    if(Array.isArray(j.TASKS))TASKS=j.TASKS;
     if(Array.isArray(j.INVOICES))INVOICES=j.INVOICES;
     if(Array.isArray(j.LEADS))LEADS=j.LEADS;
     if(typeof j.archStand==='string')archStand=j.archStand;
@@ -1565,7 +1668,7 @@ function renderReq(){
   document.getElementById('cNeu').textContent=counts.neu;
   document.getElementById('cArbeit').textContent=counts.arbeit;
   document.getElementById('cErledigt').textContent=counts.erledigt;
-  const nav=document.getElementById('navReq');nav.textContent=counts.neu;nav.hidden=!counts.neu;
+  const nav=document.getElementById('navReq');if(nav){nav.textContent=counts.neu;nav.hidden=!counts.neu}
   const list=REQ.filter(r=>r.status===tab);
   const el=document.getElementById('reqList');
   if(!list.length){el.innerHTML='<p class="empty">Hier ist gerade nichts.</p>';updateSummary();return}
@@ -1778,7 +1881,7 @@ document.getElementById('upGo').addEventListener('click',async()=>{
     err.textContent='Upload fehlgeschlagen: '+e.message;btn.disabled=false;btn.textContent='Hochladen';return;
   }
   btn.disabled=false;btn.textContent='Hochladen';
-  const c={id:Date.now(),t,ev:ev+', '+fm,who:/martin/i.test(USER)?'MS':'LP',stage:send?2:1,drive:driveLink,fresh:true};
+  const c={id:Date.now(),t,ev:ev+', '+fm,who:ME,stage:send?2:1,drive:driveLink,fresh:true};
   CARDS.push(c);
   if(send){WAIT.push({t,sent:new Date().toISOString().slice(0,10),seen:null});renderWait()}
   renderBoard();closeUp();
@@ -1786,13 +1889,9 @@ document.getElementById('upGo').addEventListener('click',async()=>{
   document.getElementById('pipeline').scrollIntoView({behavior:'smooth',block:'start'});
   if(notify){
     try{
-      await notionCreate('aufgaben',{
-        'Aufgabe':{title:[{text:{content:'🔔 Neues Asset von '+USER+' für Mammutmarsch: '+t}}]},
-        'Bereich':{select:{name:'Dreh'}},
-        'Status':{status:{name:'Nicht begonnen'}},
-        'Prio':{select:{name:'Niedrig'}}
-      });
-    }catch(e){toast('Hochgeladen, aber Benachrichtigung an Martin nicht möglich: '+e.message)}
+      const mm=KUNDEN.find(k=>/mammut/i.test(k.name));
+      await createTask({title:'Neues Asset von '+USER+' prüfen: '+t,who:ME==='MS'?'LP':'MS',due:addDays(TODAY,1),kid:mm?mm.id:'',kname:mm?mm.name:'Mammutmarsch'});
+    }catch(e){toast('Hochgeladen, aber Aufgabe im Kalender nicht angelegt: '+e.message)}
   }
   medLoadedOnce=false;loadMammutDrive();
 });
@@ -1878,56 +1977,19 @@ const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','S
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 const PROJ={'Feedback':'#FF3B30','Akquise':'#AF52DE','Dreh':'#073D30','Schnitt':'#0A84FF','Admin/Steuern':'#8B5A2B','Technik/Gear':'#8E8E93','Website':'#1F7A37','Mammutmarsch':'#073D30','Fairground':'#0A84FF','Messe-Akquise':'#AF52DE','LeMatic':'#D4A600','Buchhaltung':'#8E8E93'};
-const TYPES={dreh:'Drehs',lieferung:'Lieferungen',meeting:'Meetings',akquise:'Akquise',frist:'Fristen',intern:'Intern',privat:'Mein Kalender'};
-const TYPE_ONE={dreh:'Dreh',lieferung:'Lieferung',meeting:'Meeting',akquise:'Akquise',frist:'Frist',intern:'Intern',privat:'Google Kalender'};
-const TYPE_DOT={dreh:'#073D30',lieferung:'#FF9F0A',meeting:'#0A84FF',akquise:'#AF52DE',frist:'#FF3B30',intern:'#8E8E93',privat:'#0A9B8A'};
+const TYPES={dreh:'Drehs',lieferung:'Lieferungen',meeting:'Meetings',akquise:'Akquise',frist:'Fristen',intern:'Intern',privat:'Termine',aufgabe:'Aufgaben'};
+const TYPE_ONE={dreh:'Dreh',lieferung:'Lieferung',meeting:'Meeting',akquise:'Akquise',frist:'Frist',intern:'Intern',privat:'Termin',aufgabe:'Aufgabe'};
+const TYPE_DOT={dreh:'#073D30',lieferung:'#FF9F0A',meeting:'#0A84FF',akquise:'#AF52DE',frist:'#FF3B30',intern:'#8E8E93',privat:'#0A9B8A',aufgabe:'#D4A600'};
 
 /* Termine (Platzhalter, würden aus Google Calendar kommen) */
 let EVENTS=[]; /* Bewusst leer — die frei erfundenen Platzhaltertermine waren nicht mehr aktuell.
    Ab dem Google-Login kommen hier nur noch echte Kalendertermine der eingeloggten Person rein. */
 const onDay=(ds,filter)=>EVENTS.filter(e=>e.d<=ds&&(e.end||e.d)>=ds&&(!filter||filter.has(e.type))).sort((a,b)=>(a.time||'00:00').localeCompare(b.time||'00:00'));
 
-/* Aufgaben – Stand aus eurer Notion-Datenbank „Aufgaben" */
-let TASKS=[
-  {id:1,t:'Dynabeat-Rechnung stellen (4.250 €) — größter offener Posten, Angebot ist unterschrieben',p:'Admin/Steuern',who:'MS',due:'2026-08-31',prio:'Hoch'},
-  {id:3,t:'GET NORD: Zielliste 20–30 Aussteller bauen',p:'Akquise',who:'MS',due:'2026-08-31',prio:'Hoch'},
-  {id:4,t:'Bremen 06.–08.11.: Ausstellerlisten ReiseLust / Fisch & Feines / CARAVAN ziehen',p:'Akquise',who:'MS',due:'2026-08-31',prio:'Hoch'},
-  {id:5,t:'Messe-Media-Kit + Ein-Tages-Paketpreis festlegen',p:'Akquise',who:'MS',due:'2026-09-04',prio:'Hoch'},
-  {id:6,t:'Implant expo + Cruise Ship Interiors: Zielliste und Erstkontakt starten',p:'Akquise',who:'MS',due:'2026-09-14',prio:'Mittel'},
-  {id:7,t:'Rollenverteilung mit Martin festlegen (Akquise / Dreh / Schnitt / Buchhaltung)',p:'Admin/Steuern',who:'LP',due:'2026-09-15',prio:'Hoch'},
-  {id:8,t:'GET NORD: Erstkontakt-Welle raus (Mail + Telefon Martin)',p:'Akquise',who:'MS',due:'2026-09-18',prio:'Hoch'},
-  {id:9,t:'Freelancer-Tagessatz festlegen — ohne die Zahl ist keine Marge rechenbar',p:'Admin/Steuern',who:'LP',due:'2026-09-30',prio:'Mittel'},
-  {id:10,t:'15 Sport-/Outdoor-Veranstalter Norddeutschland listen',p:'Akquise',who:'MS',due:'2026-10-15',prio:'Mittel'},
-  {id:11,t:'30 Corporate-/Recruiting-Leads listen (Basis: aktive Stellenanzeigen)',p:'Akquise',who:'MS',due:'2026-10-15',prio:'Hoch'},
-  {id:12,t:'Nordstil: Ausstellerverzeichnis ziehen, Zielliste bauen',p:'Akquise',who:'MS',due:'2026-10-19',prio:'Mittel'},
-  {id:13,t:'Messekalender Winter 26/27 (HH, HB, H) durchgehen + Ausstellerlisten ziehen',p:'Akquise',who:'MS',due:'2026-10-20',prio:'Mittel'},
-  {id:14,t:'GET NORD: Abschluss-Deadline – danach ist das Standbudget verplant',p:'Akquise',who:'MS',due:'2026-10-22',prio:'Hoch'},
-  {id:15,t:'Steuerberatergespräch: Umsatzsteuerpflicht ab 2027 + Rechtsform',p:'Admin/Steuern',who:'LP',due:'2026-10-31',prio:'Hoch'},
-  {id:16,t:'Media-Kit-Varianten für Corporate und Messe bauen',p:'Akquise',who:'MS',due:'2026-10-31',prio:'Mittel'},
-  {id:17,t:'hanseBAU Bremen: Ausstellerliste ziehen + Erstkontakt',p:'Akquise',who:'MS',due:'2026-11-09',prio:'Mittel'},
-  {id:18,t:'Hamburg Open Ticket sichern (20.–21.01.) – Netzwerktermin, kein Verkauf',p:'Akquise',who:'LP',due:'2026-11-16',prio:'Niedrig'},
-  {id:19,t:'GET NORD: 2–3 Stände auf eigene Kosten drehen – Messe-Referenzclip 60 s',p:'Dreh',who:'LP',due:'2026-11-21',prio:'Hoch'},
-  {id:20,t:'Bremen Classic Motorshow: Restaurationsbetriebe und Händler anschreiben',p:'Akquise',who:'MS',due:'2026-11-23',prio:'Mittel'},
-  {id:21,t:'Beim Fairground eigenen Cut mitnehmen, nicht nur für Justin arbeiten',p:'Dreh',who:'LP',due:'2026-11-28',prio:'Niedrig'},
-  {id:22,t:'Recruiting-Video auf eigene Kosten drehen (Referenz fürs Corporate-Segment)',p:'Dreh',who:'LP',due:'2026-11-30',prio:'Hoch'},
-  {id:23,t:'Eine Wintermesse besuchen und Aussteller-Referenzmaterial drehen',p:'Dreh',who:'LP',due:'2026-11-30',prio:'Mittel'},
-  {id:24,t:'Messe-Referenzclip schneiden – muss vor der Januar-Akquise fertig sein',p:'Schnitt',who:'LP',due:'2026-11-30',prio:'Hoch'},
-  {id:25,t:'Alle Januar-Abschlüsse (Nordstil, hanseBAU) müssen stehen',p:'Akquise',who:'MS',due:'2026-12-18',prio:'Hoch'},
-  {id:26,t:'Angebots- und Preisvorlagen auf Nettopreise plus USt. umstellen',p:'Admin/Steuern',who:'MS',due:'2026-12-31',prio:'Mittel'},
-  {id:27,t:'EDIT_01 leerräumen – nur noch 14 GB frei',p:'Technik/Gear',who:'LP',due:'2026-09-25',prio:'Hoch'},
-  {id:28,t:'Dynabeat-Aftermovie fertigstellen (inkl. Save-the-Date-Endcard)',p:'Schnitt',who:'LP',due:'2026-09-20',prio:'Hoch'},
-  {id:29,t:'Ticket-Vorverkaufs-Reel Dynabeat 2027 (VO deutsch + englisch)',p:'Schnitt',who:'LP',due:'2026-09-22',prio:'Hoch'},
-  {id:30,t:'Fairground 28.11. – Planung mit Justin abstimmen',p:'Dreh',who:'LP',due:'2026-09-12',prio:'Niedrig'},
-  {id:31,t:'Tagessatz und Jahresumsatzziel kalkulieren',p:'Admin/Steuern',who:'LP',due:'2026-09-19',prio:'Hoch'},
-  {id:32,t:'Mammutmarsch-Volumen ausbauen – neuer Anlauf statt Jahrespaket',p:'Akquise',who:'MS',due:'2026-10-07',prio:'Hoch'},
-  {id:33,t:'Dock/Gehäuse für mehrere TB-HDDs aussuchen',p:'Technik/Gear',who:'LP',due:'2026-10-10',prio:'Mittel'},
-  {id:34,t:'Event↔Werbung-Schalter auf lematic.de umsetzen',p:'Website',who:'LP',due:'2026-10-24',prio:'Mittel'},
-  {id:35,t:'Motorsport-Bereich für lematic.de aufbauen',p:'Akquise',who:'LP',due:'2026-11-14',prio:'Mittel'},
-  {id:36,t:'Neue Nischen prüfen: Messen, Motorsport, Radiosender',p:'Akquise',who:'MS',due:'2026-10-02',prio:'Mittel'},
-  {id:37,t:'LeMatic Media-/Crew-Shirts bestellen',p:'Technik/Gear',who:'MS',due:'2026-08-20',prio:'Niedrig',done:true},
-  {id:38,t:'REC-/Run-Stop-Kabel Komodo-X → RS 3 Pro beschaffen',p:'Technik/Gear',who:'LP',due:'2026-08-15',prio:'Mittel',done:true},
-  {id:39,t:'Startseiten-Headline entschärfen (zu konfrontativ)',p:'Website',who:'LP',due:'2026-08-10',prio:'Mittel',done:true}
-];
+/* Aufgaben kommen ausschließlich aus dem LeMatic-Kalender (Termine mit Markierung „lmTask“). */
+let TASKS=[];
+/* Kundenkartei aus Notion „Kunden & Kontakte“ */
+let KUNDEN=[],KSCHEMA=null,KARTEI_LOADED=false;
 const endOfWeek=()=>{const d=parse(TODAY);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()+(6-dow));return iso(d)};
 const startOfWeek=()=>{const d=parse(TODAY);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return iso(d)};
 
@@ -1960,15 +2022,7 @@ const invState=i=>{
   return['offen','done','Offen'];
 };
 
-/* Kunden */
-const CLIENTS=[
-  {n:'Mammutmarsch',s:'Aktiv',pill:'ok',d:'Drehs, Tracking-Links und Content-System 2027 im Kundenportal.',next:'Dreh Hannover, Sa 26.09.',open:true},
-  {n:'Fairground Festival',s:'Aktiv',pill:'ok',d:'Media Crew über Justin Müller.',next:'Einsatz am Sa, 28.11.'},
-  {n:'Dynabeat Festival',s:'Abgeschlossen',pill:'done',d:'Media Lead 2026, +30 % Follower als Case auf der Website.',next:'Gespräch über 2027 anstoßen'},
-  {n:'Hydrogen + Carbon Capture Expo',s:'Akquise',pill:'info',d:'Erste Zielmesse. Verkauft wird an Aussteller, Martin telefoniert.',next:'Messe 20.–22.10., Hamburg'},
-  {n:'Pangea Festival',s:'Akquise',pill:'info',d:'Pitch lief, neuer Anlauf geplant.',next:'Follow-up schreiben'},
-  {n:'Ferdinands Feld',s:'Akquise',pill:'info',d:'Warmer Kontakt über Manuel.',next:'Neuer Anlauf im Herbst'}
-];
+
 
 /* ---------- Akquise – Stand aus eurer Notion-Datenbank „Akquise-Pipeline" ---------- */
 const LSTAGES=['Nicht begonnen','In Bearbeitung','Erledigt'];
@@ -2024,12 +2078,16 @@ const MAX_UPLOAD_MB=100;
 /* ---------- Router ---------- */
 const views=document.querySelectorAll('.view');
 function go(route){
+  const parts=String(route||'').split('/');route=parts[0];
+  if(route==='kunden'&&parts[1])setTimeout(()=>openKunde(parts[1]),30);
   const v=[...views].some(x=>x.dataset.view===route)?route:'heute';
   views.forEach(x=>x.classList.toggle('active',x.dataset.view===v));
   document.querySelectorAll('[data-route]').forEach(a=>a.classList.toggle('active',a.dataset.route===v));
   if(v==='kalender')safe('cal',renderCal);
   if(v==='heute')safe('home',renderHome);
   if(v==='akquise')safe('leads',renderLeads);
+  if(v==='kunden')safe('kartei',renderKartei);
+  if(v==='aufgaben')safe('tasks',renderTasks);
   if(v==='medien')safe('media',()=>{if(!GAUTH||!medLoadedOnce)loadMedia()});
   if(v==='mails'&&GAUTH&&!GMAIL)safe('gmail',loadGmail);
   if(v==='kunde')safe('mammutDrive',()=>{if(GAUTH)loadMammutDrive()});
@@ -2040,7 +2098,9 @@ window.addEventListener('hashchange',()=>{if(location.hash.startsWith('#/'))go(l
 /* ---------- Google-Login ---------- */
 /* Client-ID aus der Google Cloud Console eintragen (endet auf .apps.googleusercontent.com). Die ID ist nicht geheim. */
 const GOOGLE_CLIENT_ID='103865922550-oedundd8e5qet9k5j7sotgtmrs8ge8tp.apps.googleusercontent.com';
-/* Erlaubte Google-Adressen, z. B. ['vorname@gmail.com']. Leer = jedes Konto, das Zugriff auf den Drive-Ordner hat. */
+/* Nur das LeMatic-Konto: Mails, Kalender und Kundenkartei sollen nie aus einem privaten Konto kommen.
+   Die Serverfunktion /api/notion prüft dasselbe noch einmal. */
+const ALLOWED_DOMAINS=['lematic.de'];
 const ALLOWED_EMAILS=[];
 const DRIVE_SCOPE='https://www.googleapis.com/auth/drive';
 const CAL_SCOPE='https://www.googleapis.com/auth/calendar.events';
@@ -2049,7 +2109,7 @@ const GOOGLE_SCOPES='openid email profile '+DRIVE_SCOPE+' '+CAL_SCOPE+' '+GMAIL_
 const DRIVE_ROOT_ID='15uyD_DLz6-oqzXeP1UoOBtXvzjpk4Z7E';
 
 const login=document.getElementById('login');
-let USER='Lennart',GAUTH=false,tokenClient=null,accessToken=null,tokenExpiry=0,tokenWaiters=[];
+let USER='Lennart',ME='LP',GAUTH=false,tokenClient=null,accessToken=null,tokenExpiry=0,tokenWaiters=[];
 
 function waitForGis(ms=8000){
   return new Promise(res=>{
@@ -2092,9 +2152,10 @@ async function onToken(resp){
   if(GAUTH)return;
   try{
     const me=await (await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+accessToken}})).json();
-    if(ALLOWED_EMAILS.length&&!ALLOWED_EMAILS.map(x=>x.toLowerCase()).includes((me.email||'').toLowerCase())){
+    const em=(me.email||'').toLowerCase();
+    if(!ALLOWED_DOMAINS.includes(em.split('@')[1]||'')&&!ALLOWED_EMAILS.map(x=>x.toLowerCase()).includes(em)){
       google.accounts.oauth2.revoke(accessToken,()=>{});accessToken=null;
-      loginError(me.email+' ist für LeMatic Studio nicht freigegeben.');return;
+      loginError(me.email+' ist kein LeMatic-Konto. Bitte mit info@lematic.de anmelden.');return;
     }
     enterGoogle(me);
   }catch(e){loginError('Profil konnte nicht geladen werden: '+e.message)}
@@ -2147,32 +2208,48 @@ const MARTIN_DISS=[
   'Schön, dass du da bist. Die GET NORD-Liste vermisst dich schon.'
 ];
 
+/* Beide arbeiten über dasselbe Konto (info@lematic.de). Wer gerade am Rechner sitzt,
+   wird deshalb einmal pro Browser abgefragt und gemerkt. */
+function storedPerson(){try{const v=localStorage.getItem('lm_person');return v==='LP'||v==='MS'?v:null}catch(_){return null}}
+function setPerson(code,silent){
+  ME=code;USER=NAMES[code];
+  try{localStorage.setItem('lm_person',code)}catch(_){}
+  const avEl=$('uAv');
+  if(avEl){avEl.style.padding='';avEl.textContent=code}
+  setText('uName',code==='MS'?'Martin Schmick':'Lennart Post');
+  safe('personal',()=>personalizeFor(code));
+  safe('intro',checkMartinIntro);
+  safe('home',renderHome);
+  if(!silent){
+    if(code==='MS')toast(MARTIN_DISS[Math.floor(Math.random()*MARTIN_DISS.length)]);
+    else toast('Hallo Lennart');
+  }
+  safe('streak',()=>bumpStreak(code));
+}
+function askPerson(){
+  const w=$('whoWrap');if(!w)return;
+  w.classList.add('show');w.setAttribute('aria-hidden','false');
+}
+on('whoWrap','click',e=>{
+  const b=e.target.closest('[data-me]');if(!b)return;
+  const w=$('whoWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true');
+  setPerson(b.dataset.me);
+});
+on('uName','click',askPerson);
 function enterGoogle(me){
   GAUTH=true;
-  USER=(me.given_name||(me.name||'').split(' ')[0]||'du');
-  const codeGuess=/martin/i.test(USER)?'MS':'LP';
-  const avEl=document.getElementById('uAv');
-  if(me.picture){avEl.innerHTML=`<img src="${me.picture}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;avEl.style.padding='0';}
-  else avEl.textContent=initials(me.name||me.email);
-  if(!PHOTOS[codeGuess]&&me.picture)PHOTOS[codeGuess]=me.picture;
-  document.getElementById('uName').textContent=me.name||me.email;
   document.getElementById('uMail').textContent=me.email||'';
   document.getElementById('setLoginInfo').textContent='Angemeldet als '+me.email;
   const lp=document.getElementById('setLoginPill');lp.className='pill ok';lp.innerHTML='<i></i>Aktiv';
   login.hidden=true;
   if(!location.hash.startsWith('#/'))location.hash='#/heute';else go(location.hash.slice(2));
-  if(/martin/i.test(USER)){
-    toast(MARTIN_DISS[Math.floor(Math.random()*MARTIN_DISS.length)]);
-  }else{
-    toast('Angemeldet als '+me.email);
-  }
+  const known=storedPerson();
+  if(known)setPerson(known);else{setPerson('LP',true);askPerson()}
   safe('driveCheck',checkDrive);safe('driveFiles',loadDriveFiles);safe('media',loadMedia);
   safe('gmail',loadGmail);
-  safe('intro',checkMartinIntro);
-  safe('personal',()=>personalizeFor(codeGuess));
   safe('myCal',loadMyCalendar);
+  safe('notion',loadNotion);
   safe('mammutDrive',()=>{if(location.hash.slice(2)==='kunde')loadMammutDrive()});
-  safe('streak',()=>bumpStreak(codeGuess));
 }
 /* Persönlicher Fokus: Aufgaben defaulten auf die eingeloggte Person, ohne die andere auszublenden */
 function personalizeFor(code){
@@ -2195,7 +2272,7 @@ async function checkDrive(){
 function checkMartinIntro(){
   const el=$('martinIntro');if(!el)return;
   let seen=false;try{seen=localStorage.getItem('martin_intro_seen')==='1'}catch(_){}
-  el.hidden=!(/martin/i.test(USER)&&!seen);
+  el.hidden=!(ME==='MS'&&!seen);
 }
 on('introDismiss','click',()=>{
   try{localStorage.setItem('martin_intro_seen','1')}catch(_){}
@@ -2270,16 +2347,17 @@ function legendHTML(active){
 function taskRow(t){
   const dd=diffDays(t.due,TODAY);
   const cls=t.done?'':dd<0?'over':dd<=2?'soon':'';
-  const label=t.done?'Erledigt':dd<0?'Überfällig, '+dm(t.due):dd===0?'Heute':dd===1?'Morgen':wd(t.due)+', '+dm(t.due);
+  const label=t.done?'Erledigt':(dd<0?'Überfällig, '+dm(t.due):dd===0?'Heute':dd===1?'Morgen':wd(t.due)+', '+dm(t.due))+(t.time&&!t.done?', '+t.time:'');
+  const kd=t.kid?`<button class="kd" data-kopen="${t.kid}"><svg class="i xs"><use href="#i-users"/></svg>${esc(t.kname||'Kunde')}</button>`:`<span class="proj"><i style="background:#8E8E93"></i>Allgemein</span>`;
   return `<div class="task${t.done?' done':''}">
     <input type="checkbox" class="chk" data-task="${t.id}" ${t.done?'checked':''} aria-label="${esc(t.t)} erledigt">
-    <div><div class="tt">${esc(t.t)}</div><div class="sub"><span class="proj"><i style="background:${PROJ[t.p]||'#8E8E93'}"></i>${esc(t.p)}</span></div></div>
-    <div class="right"><span class="due ${cls}">${label}</span><span class="av us sm">${t.who}</span></div>
+    <div><div class="tt">${esc(t.t)}</div><div class="sub">${kd}${t.by&&t.by!==t.who?`<span class="proj" style="color:var(--ink-3)">von ${esc(NAMES[t.by]||t.by)}</span>`:''}</div></div>
+    <div class="right"><span class="due ${cls}">${label}</span><span class="av us sm" title="${NAMES[t.who]||''}">${t.who}</span><button class="icon-btn ghost del" data-tdel="${t.id}" aria-label="${esc(t.t)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button></div>
   </div>`;
 }
 function renderHome(){
   const h=NOW.getHours();
-  const mood=moodFor(),myCode=/martin/i.test(USER)?'MS':'LP',streak=(STREAKS[myCode]||{}).count||0;
+  const mood=moodFor(),myCode=ME,streak=(STREAKS[myCode]||{}).count||0;
   document.getElementById('hGreet').innerHTML=`${(h<5?'Na, mitten in der Nacht':h<11?'Guten Morgen':h<18?'Hallo':'Guten Abend')}, ${esc(USER)}<span class="mood-badge" title="${esc(mood.t)}">${mood.e}</span>`;
   const streakEl=$('streakBadge');
   if(streakEl){streakEl.hidden=streak<=1;streakEl.innerHTML=streak>1?`🔥 ${streak} Tage in Folge eingeloggt`:'';}
@@ -2289,7 +2367,7 @@ function renderHome(){
   const over=TASKS.filter(t=>!t.done&&t.due<TODAY).length;
   const nextShoot=EVENTS.filter(e=>e.type==='dreh'&&e.d>=TODAY).sort((a,b)=>a.d.localeCompare(b.d))[0];
   const openInv=INVOICES.filter(i=>i.kind==='Ausgang'&&i.status!=='bezahlt').length;
-  document.getElementById('hSummary').innerHTML=`<b>${openWeek.length} Aufgaben bis Sonntag</b>${over?`, davon ${over} überfällig`:''}${nextShoot?`, nächster Dreh in ${diffDays(nextShoot.d,TODAY)} Tagen`:''}, ${openInv} ${openInv===1?'Rechnung':'Rechnungen'} offen${GMAIL?`, ${MAILS.filter(m=>m.unread).length} ungelesene Mails`:''}.`;
+  document.getElementById('hSummary').innerHTML=`<b>${openWeek.length} ${openWeek.length===1?'Aufgabe':'Aufgaben'} bis Sonntag</b>${over?`, davon ${over} überfällig`:''}${nextShoot?`, nächster Dreh in ${diffDays(nextShoot.d,TODAY)} Tagen`:''}, ${openInv} ${openInv===1?'Rechnung':'Rechnungen'} offen${GMAIL?`, ${MAILS.filter(m=>m.unread).length} ungelesene Mails`:''}.`;
   document.getElementById('weekRange').textContent=dm(sow)+' bis '+dm(eow);
   document.getElementById('legendHome').innerHTML=legendHTML().replace(/<button/g,'<span').replace(/<\/button>/g,'</span>');
   let w='';
@@ -2303,17 +2381,17 @@ function renderHome(){
   document.getElementById('week').innerHTML=w;
   const ht=[...openWeek].sort((a,b)=>a.due.localeCompare(b.due)).slice(0,6);
   document.getElementById('homeTasks').innerHTML=ht.length?ht.map(taskRow).join(''):'<p class="empty">Alles erledigt für diese Woche.</p>';
-  const big=EVENTS.filter(e=>e.big&&(e.end||e.d)>=TODAY).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,4);
+  const big=EVENTS.filter(e=>e.type!=='aufgabe'&&(e.end||e.d)>=TODAY).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||''))).slice(0,4);
   document.getElementById('homeEvents').innerHTML=big.length?big.map((e,i)=>{
     const dd=diffDays(e.d,TODAY);
     return `<div class="evrow"><div class="dblock${i===0?' first':''}"><b>${parse(e.d).getDate()}</b><small>${MONTHS[parse(e.d).getMonth()].slice(0,3)}</small></div>
-      <div><h3>${esc(e.t)}</h3><p>${e.end?dm(e.d)+' bis '+dm(e.end)+', ':''}${esc(e.place||'')}</p></div>
+      <div><h3>${esc(e.t)}</h3><p>${e.end?dm(e.d)+' bis '+dm(e.end):wd(e.d)+(e.time?', '+e.time+' Uhr':', ganztags')}${e.place?' · '+esc(e.place):''}</p></div>
       <div class="in-days">${dd<=0?'<b>Jetzt</b>':`<b>${dd}</b>${dd===1?'Tag':'Tage'}`}</div></div>`;
   }).join(''):'<p class="empty">Noch nichts Großes terminiert.</p>';
-  const dl=EVENTS.filter(e=>e.type==='lieferung'&&e.d>=TODAY).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,5);
+  const dl=EVENTS.filter(e=>(e.type==='lieferung'||/lieferung|deadline|abgabe|aftermovie|recap|reel/i.test(e.t))&&e.type!=='aufgabe'&&e.d>=TODAY).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,5);
   document.getElementById('homeDeliveries').innerHTML=dl.length?dl.map(e=>{
     const st=e.status||'Geplant';const pc=st==='Im Schnitt'?'info':st==='Angenommen'?'warn':'done';
-    return `<div class="deliv"><div><h3>${esc(e.t)}</h3><span class="proj"><i style="background:${PROJ[e.p]}"></i>${esc(e.p)}</span></div><span class="pill ${pc}"><i></i>${st}</span><span class="when">${wd(e.d)}, ${dm(e.d)}${e.time?', '+e.time:''}</span></div>`;
+    return `<div class="deliv"><div><h3>${esc(e.t)}</h3><span class="proj"><i style="background:${PROJ[e.p]||'#8E8E93'}"></i>${esc(e.p)}</span></div><span class="pill ${pc}"><i></i>${st}</span><span class="when">${wd(e.d)}, ${dm(e.d)}${e.time?', '+e.time:''}</span></div>`;
   }).join(''):'<p class="empty">Nichts offen.</p>';
   const rev=INVOICES.filter(i=>i.kind==='Ausgang'&&i.date.startsWith('2026')).reduce((a,i)=>a+i.amount,0);
   const signed=INVOICES.filter(i=>i.kind==='Angebot'&&i.status==='unterschrieben').reduce((a,i)=>a+i.amount,0);
@@ -2334,10 +2412,13 @@ document.getElementById('week').addEventListener('click',e=>{
 });
 document.addEventListener('change',e=>{
   const c=e.target.closest('[data-task]');if(!c)return;
-  const t=TASKS.find(x=>x.id==c.dataset.task);t.done=c.checked;
-  if(t.done)toast('Erledigt: '+t.t);
-  renderHome();renderTasks();
-  if(t.nid)notionUpdate('aufgaben',t.nid,{'Status':{status:{name:t.done?'Erledigt':'Nicht begonnen'}}}).catch(err=>toast('Lokal gesetzt, aber Notion-Update fehlgeschlagen: '+err.message));
+  const t=TASKS.find(x=>x.id===c.dataset.task);if(!t)return;
+  safe('toggle',()=>toggleTask(t,c.checked));
+});
+document.addEventListener('click',e=>{
+  const d=e.target.closest('[data-tdel]');if(!d)return;
+  const t=TASKS.find(x=>x.id===d.dataset.tdel);if(!t)return;
+  askConfirm('„'+t.t+'“ aus dem LeMatic-Kalender löschen?',()=>safe('tdel',()=>deleteTask(t)),'Löschen');
 });
 
 /* ---------- Kalender ---------- */
@@ -2372,7 +2453,7 @@ function renderDay(){
   const evs=onDay(selDay,calTypes);
   document.getElementById('daySub').textContent=evs.length?evs.length+(evs.length===1?' Termin':' Termine'):'Nichts geplant';
   document.getElementById('dayList').innerHTML=evs.length?evs.map(e=>`
-    <div class="dayev"><time>${e.time||'Ganztags'}</time><div><h3>${esc(e.t)}</h3><p><span class="ev t-${e.type}">${TYPE_ONE[e.type]}</span><span class="proj"><i style="background:${PROJ[e.p]}"></i>${esc(e.p)}</span>${e.who?`<span class="av us sm">${e.who}</span>`:''}</p></div></div>`).join(''):'<p class="empty">Frei. Zeit für Schnitt oder Akquise.</p>';
+    <div class="dayev"><time>${e.time||'Ganztags'}</time><div><h3>${esc(e.t)}</h3><p><span class="ev t-${e.type}">${TYPE_ONE[e.type]}</span><span class="proj"><i style="background:${PROJ[e.p]||'#8E8E93'}"></i>${esc(e.p)}</span>${e.who?`<span class="av us sm">${e.who}</span>`:''}</p></div></div>`).join(''):'<p class="empty">Frei. Zeit für Schnitt oder Akquise.</p>';
 }
 document.getElementById('month').addEventListener('click',e=>{
   const b=e.target.closest('[data-cal]');if(!b)return;
@@ -2384,12 +2465,19 @@ document.getElementById('calPrev').addEventListener('click',()=>{calMonth=new Da
 document.getElementById('calNext').addEventListener('click',()=>{calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+1,1);renderCal()});
 document.getElementById('calToday').addEventListener('click',()=>{calMonth=new Date(NOW.getFullYear(),NOW.getMonth(),1);selDay=TODAY;renderCal()});
 
-/* ---------- Aufgaben ---------- */
+/* ---------- Aufgaben über Google Kalender ----------
+   Jede Aufgabe ist ein Termin im LeMatic-Kalender (info@lematic.de) mit der Markierung lmTask=1.
+   Damit sehen Lennart und Martin sie auch direkt in Google Kalender auf dem Handy. */
 const projOptions=Object.keys(PROJ).map(p=>`<option>${p}</option>`).join('');
-document.getElementById('atProj').innerHTML=projOptions;
-document.getElementById('tProj').innerHTML='<option value="all">Alle Projekte</option>'+projOptions;
-document.getElementById('atDue').value=addDays(TODAY,3);
-let tWho='all';
+const TASK_COLOR={LP:'10',MS:'5',done:'8'};
+let tWho='all',CAL_ID='primary';
+function fillKundenSelects(){
+  const opts=KUNDEN.filter(k=>k.status!=='Abgesagt').map(k=>`<option value="${k.id}">${esc(k.name)}</option>`).join('');
+  const at=$('atKunde');if(at){const v=at.value;at.innerHTML='<option value="">Allgemein (kein Kunde)</option>'+opts;at.value=v||''}
+  const tp=$('tProj');if(tp){const v=tp.value;tp.innerHTML='<option value="all">Alle Kunden</option><option value="none">Allgemein</option>'+opts;tp.value=v||'all';if(!tp.value)tp.value='all'}
+}
+fillKundenSelects();
+document.getElementById('atDue').value=addDays(TODAY,1);
 document.getElementById('tWho').addEventListener('click',e=>{
   const b=e.target.closest('[data-who]');if(!b)return;
   document.querySelectorAll('#tWho button').forEach(x=>x.setAttribute('aria-pressed',x===b));tWho=b.dataset.who;renderTasks();
@@ -2398,28 +2486,92 @@ document.getElementById('tProj').addEventListener('change',renderTasks);
 document.getElementById('tDone').addEventListener('change',renderTasks);
 function renderTasks(){
   const pj=document.getElementById('tProj').value,showDone=document.getElementById('tDone').checked,eow=endOfWeek();
-  const list=TASKS.filter(t=>(tWho==='all'||t.who===tWho)&&(pj==='all'||t.p===pj)).sort((a,b)=>a.due.localeCompare(b.due));
+  const list=TASKS.filter(t=>(tWho==='all'||t.who===tWho)&&(pj==='all'||(pj==='none'?!t.kid:t.kid===pj))).sort((a,b)=>(a.due+(a.time||'')).localeCompare(b.due+(b.time||'')));
   const groups=[
     ['Überfällig',list.filter(t=>!t.done&&t.due<TODAY)],
     ['Bis Sonntag',list.filter(t=>!t.done&&t.due>=TODAY&&t.due<=eow)],
     ['Später',list.filter(t=>!t.done&&t.due>eow)]
   ];
-  if(showDone)groups.push(['Erledigt',list.filter(t=>t.done)]);
+  if(showDone)groups.push(['Erledigt',list.filter(t=>t.done).reverse()]);
   const html=groups.filter(g=>g[1].length).map(g=>`<p class="grp">${g[0]} <span>${g[1].length}</span></p>${g[1].map(taskRow).join('')}`).join('');
-  document.getElementById('taskGroups').innerHTML=html||'<p class="empty">Keine Aufgaben mit diesem Filter.</p>';
+  document.getElementById('taskGroups').innerHTML=html||(GAUTH?(CAL_LOADED?'<p class="empty">Keine Aufgaben mit diesem Filter.</p>':'<p class="empty">Kalender wird geladen …</p>'):'<p class="empty">Nach dem Login mit info@lematic.de erscheinen hier die Aufgaben aus dem LeMatic-Kalender.</p>');
   const open=TASKS.filter(t=>!t.done);
-  saveState();
-  document.getElementById('tSummary').innerHTML=`<b>${open.length} offen</b> von ${TASKS.length} aus eurem LeMatic OS${NOTION_LIVE?' (live)':' (Stand '+NOTION_SNAPSHOT+')'}.`;
+  document.getElementById('tSummary').innerHTML=`<b>${open.length} offen</b>${open.filter(t=>t.due<TODAY).length?`, ${open.filter(t=>t.due<TODAY).length} überfällig`:''}. Jede Aufgabe steht als Termin im LeMatic-Kalender.`;
   updateBadges();
 }
-document.getElementById('addTask').addEventListener('submit',e=>{
+function taskFromEvent(it){
+  const x=(it.extendedProperties&&it.extendedProperties.private)||{};
+  const allDay=!it.start.dateTime;
+  return{
+    id:it.id,t:x.lmTitle||(it.summary||'').replace(/^[☐✓]\s*/,'').replace(/\s*\((Lennart|Martin)\)$/,''),
+    who:x.lmWho==='MS'?'MS':'LP',by:x.lmBy||'',done:x.lmDone==='1',
+    due:(it.start.dateTime||it.start.date).slice(0,10),time:allDay?null:it.start.dateTime.slice(11,16),
+    kid:x.lmKid||'',kname:x.lmKname||'',raw:x
+  };
+}
+function taskEventBody(t){
+  const summary=(t.done?'✓ ':'☐ ')+t.t+' ('+NAMES[t.who]+')';
+  const priv={lmTask:'1',lmWho:t.who,lmDone:t.done?'1':'0',lmTitle:t.t.slice(0,900),lmKid:t.kid||'',lmKname:(t.kname||'').slice(0,200),lmBy:t.by||ME};
+  const description=['Aufgabe für '+NAMES[t.who],t.kname?'Kunde: '+t.kname:'','Angelegt von '+(NAMES[t.by]||USER)+' im LeMatic Studio'].filter(Boolean).join('\n');
+  const body={summary,description,colorId:t.done?TASK_COLOR.done:TASK_COLOR[t.who],extendedProperties:{private:priv},transparency:'transparent'};
+  if(t.time){
+    const [h,m]=t.time.split(':').map(Number);const end=new Date(2000,0,1,h,m+30);
+    body.start={dateTime:t.due+'T'+t.time+':00',timeZone:'Europe/Berlin'};
+    body.end={dateTime:(end.getDate()>1?addDays(t.due,1):t.due)+'T'+pad(end.getHours())+':'+pad(end.getMinutes())+':00',timeZone:'Europe/Berlin'};
+  }else{
+    body.start={date:t.due};body.end={date:addDays(t.due,1)};
+  }
+  return body;
+}
+async function createTask({title,who,due,time,kid,kname}){
+  if(!GAUTH)throw new Error('Bitte zuerst mit info@lematic.de anmelden');
+  const t={t:title,who:who||ME,due:due||addDays(TODAY,1),time:time||null,done:false,kid:kid||'',kname:kname||'',by:ME};
+  const r=await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events',{
+    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))
+  });
+  const j=await r.json();
+  t.id=j.id;TASKS.push(t);syncTaskEvents();
+  safe('tasksR',renderTasks);safe('homeR',renderHome);safe('kartR',renderKartei);safe('calR',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
+  return t;
+}
+async function toggleTask(t,done){
+  const before=t.done;t.done=done;
+  safe('tasksR',renderTasks);safe('homeR',renderHome);
+  try{
+    await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id),{
+      method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))
+    });
+    if(done)toast('Erledigt: '+t.t);
+    syncTaskEvents();safe('kartR',renderKartei);if(kOpen)safe('ks',()=>renderKundeSheet(kOpen));
+  }catch(e){
+    t.done=before;safe('tasksR',renderTasks);safe('homeR',renderHome);
+    toast('Kalender nicht aktualisiert: '+e.message);
+  }
+}
+async function deleteTask(t){
+  try{
+    await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id),{method:'DELETE'});
+  }catch(e){if(!/410|404/.test(e.message)){toast('Nicht gelöscht: '+e.message);return}}
+  TASKS=TASKS.filter(x=>x!==t);syncTaskEvents();
+  safe('tasksR',renderTasks);safe('homeR',renderHome);safe('kartR',renderKartei);if(kOpen)safe('ks',()=>renderKundeSheet(kOpen));
+  toast('Aufgabe gelöscht');
+}
+function syncTaskEvents(){
+  EVENTS=EVENTS.filter(e=>e.type!=='aufgabe').concat(TASKS.filter(t=>!t.done).map(t=>({d:t.due,time:t.time,t:t.t+' ('+t.who+')',type:'aufgabe',p:t.kname||'LeMatic',who:t.who,taskId:t.id})));
+}
+document.getElementById('addTask').addEventListener('submit',async e=>{
   e.preventDefault();
-  const t=document.getElementById('atTitle').value.trim();
-  if(!t){document.getElementById('atTitle').focus();return}
-  const who=document.getElementById('atWho').value;
-  TASKS.push({id:Date.now(),t,p:document.getElementById('atProj').value,who,due:document.getElementById('atDue').value||TODAY});
-  document.getElementById('atTitle').value='';
-  renderTasks();renderHome();toast('Aufgabe für '+(who==='LP'?'Lennart':'Martin')+' angelegt');
+  const title=document.getElementById('atTitle').value.trim();
+  if(!title){document.getElementById('atTitle').focus();return}
+  const kid=$('atKunde').value,k=KUNDEN.find(x=>x.id===kid);
+  const who=$('atWho').value,btn=$('atGo');
+  btn.disabled=true;
+  try{
+    await createTask({title,who,due:$('atDue').value||TODAY,time:$('atTime').value||null,kid:k?k.id:'',kname:k?k.name:''});
+    $('atTitle').value='';$('atTime').value='';
+    toast('Im Kalender für '+NAMES[who]+' eingetragen');
+  }catch(err){toast('Nicht angelegt: '+err.message)}
+  btn.disabled=false;
 });
 
 /* ---------- Rechnungen ---------- */
@@ -2626,10 +2778,16 @@ let MAILS=[];
 
 /* Kunden anhand der Absenderdomain erkennen. Bei Bedarf hier weitere Domains ergänzen. */
 const CLIENT_DOMAINS={'mammutmarsch.de':'Mammutmarsch'};
+/* Kundenzuordnung: erst exakte Adresse aus der Kartei, dann Domain (ohne Freemailer). */
+const FREEMAIL=new Set(['gmail.com','googlemail.com','web.de','gmx.de','gmx.net','t-online.de','outlook.com','outlook.de','hotmail.com','hotmail.de','icloud.com','me.com','yahoo.com','yahoo.de','aol.com','freenet.de','posteo.de','mail.de','live.de','live.com']);
+let CLIENT_ADDR={};
 function clientForEmail(addr){
-  const m=/@([^\s>]+)/.exec(addr||'');if(!m)return null;
-  return CLIENT_DOMAINS[m[1].toLowerCase()]||null;
+  const a=(addr||'').toLowerCase().trim();
+  if(CLIENT_ADDR[a])return CLIENT_ADDR[a];
+  const m=/@([^\s>]+)/.exec(a);if(!m)return null;
+  return CLIENT_DOMAINS[m[1]]||null;
 }
+function kundeForName(n){return KUNDEN.find(k=>k.name===n)||null}
 function b64urlDecode(str){
   try{
     const bin=atob((str||'').replace(/-/g,'+').replace(/_/g,'/'));
@@ -2664,61 +2822,103 @@ function gmailWhen(dateHeader){
   if(ds===addDays(TODAY,-1))return'Gestern';
   return dm(ds);
 }
-async function loadGmail(){
+const MAIL_BASE_Q='-in:spam -in:trash -in:draft';
+let mailNext='',mailQ='',mailLoading=false;
+function parseMail(d){
+  const h=Object.fromEntries((d.payload&&d.payload.headers||[]).map(x=>[x.name,x.value]));
+  const split=v=>{const nameM=/^"?([^"<]*)"?\s*<?/.exec(v||'');const addrM=/<([^>]+)>/.exec(v||'');return{name:((nameM&&nameM[1].trim())||v||'').replace(/^"|"$/g,''),addr:(addrM?addrM[1]:(v||'')).trim()}};
+  const f=split(h.From),to=split((h.To||'').split(',')[0]);
+  const sent=(d.labelIds||[]).includes('SENT');
+  const other=sent?to:f;
+  const client=clientForEmail(other.addr)||clientForEmail(f.addr);
+  return{
+    id:d.id,threadId:d.threadId,from:sent?'An: '+(to.name||to.addr):(f.name||f.addr),addr:other.addr,ini:initials(other.name||other.addr),
+    sent,client,unread:(d.labelIds||[]).includes('UNREAD'),
+    subj:h.Subject||'(kein Betreff)',snip:d.snippet||'',
+    dateHeader:h.Date||'',internal:+d.internalDate||0,
+    tags:[client?'Kunde':null,sent?'Gesendet':null,/rechnung|invoice|beleg|quittung/i.test(h.Subject||'')?'Rechnung':null].filter(Boolean)
+  };
+}
+async function fetchMailDetails(ids){
+  const out=[];
+  for(let i=0;i<ids.length;i+=10){
+    const part=await Promise.all(ids.slice(i,i+10).map(id=>
+      gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+id+'?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=To&metadataHeaders=Date').then(r=>r.json()).catch(()=>null)
+    ));
+    out.push(...part.filter(Boolean));
+  }
+  return out.map(parseMail);
+}
+async function gmailList(q,pageToken,max){
+  const p={maxResults:String(max||50),q:(q?q+' ':'')+MAIL_BASE_Q};
+  if(pageToken)p.pageToken=pageToken;
+  return (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?'+new URLSearchParams(p))).json();
+}
+async function loadGmail(opts={}){
   const el=$('mList');if(!el)return;
   if(!GAUTH){$('mailConnect').hidden=false;$('mailApp').hidden=true;return}
+  if(mailLoading)return;mailLoading=true;
   try{
-    const list=await (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?'+new URLSearchParams({maxResults:'20',q:'newer_than:30d'}))).json();
-    const ids=(list.messages||[]).map(m=>m.id);
-    const details=await Promise.all(ids.map(id=>
-      gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+id+'?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date').then(r=>r.json())
-    ));
-    MAILS=details.map(d=>{
-      const h=Object.fromEntries((d.payload&&d.payload.headers||[]).map(x=>[x.name,x.value]));
-      const from=h.From||'';
-      const nameM=/^"?([^"<]*)"?\s*<?/.exec(from);const fromName=(nameM&&nameM[1].trim())||from;
-      const addrM=/<([^>]+)>/.exec(from);const addr=addrM?addrM[1]:from;
-      const client=clientForEmail(addr);
-      return{
-        id:d.id,threadId:d.threadId,from:fromName,addr,ini:initials(fromName),
-        client,unread:(d.labelIds||[]).includes('UNREAD'),
-        subj:h.Subject||'(kein Betreff)',snip:d.snippet||'',
-        dateHeader:h.Date||'',internal:+d.internalDate||0,
-        tags:[client?'Kunde':null,/rechnung|invoice/i.test(h.Subject||'')?'Rechnung':null].filter(Boolean)
-      };
-    }).sort((a,b)=>b.internal-a.internal);
+    const more=!!opts.more;
+    if(!more&&!opts.quiet)el.innerHTML='<p class="empty">Postfach wird geladen …</p>';
+    const list=await gmailList(mailQ,more?mailNext:'',50);
+    const known=new Set(MAILS.map(m=>m.id));
+    const ids=(list.messages||[]).map(m=>m.id).filter(id=>!(more||opts.quiet)||!known.has(id));
+    const fresh=await fetchMailDetails(ids);
+    if(more)MAILS=MAILS.concat(fresh);
+    else if(opts.quiet)MAILS=fresh.concat(MAILS);
+    else MAILS=fresh;
+    MAILS.sort((a,b)=>b.internal-a.internal);
+    if(!opts.quiet)mailNext=list.nextPageToken||'';
     GMAIL=true;
     $('mailConnect').hidden=true;$('mailApp').hidden=false;
-    setHTML('gmailPill','<svg class="i xs"><use href="#i-check"/></svg>Verbunden mit Gmail');
+    const em=$('uMail')?$('uMail').textContent:'';
+    setHTML('gmailPill','<svg class="i xs"><use href="#i-check"/></svg>Verbunden: '+esc(em||'Gmail'));
+    const gp=$('setGmail');if(gp)gp.innerHTML='<span class="pill ok"><i></i>Verbunden</span>';
     if(!mailSel&&MAILS[0])mailSel=MAILS[0].id;
-    renderMails();renderClientMails();
+    if(opts.quiet&&fresh.length&&fresh.some(m=>m.unread&&!m.sent))toast(fresh.filter(m=>m.unread&&!m.sent).length+' neue Mail(s)');
+    renderMails();renderClientMails();safe('kartM',renderKartei);
   }catch(e){
-    GMAIL=false;
-    $('mailConnect').hidden=false;$('mailApp').hidden=true;
-    setHTML('gmailPill','<svg class="i xs"><use href="#i-warn"/></svg>Nicht verbunden');
-    setText('mailConnectHint','Konnte nicht geladen werden: '+e.message);
-    safe('clientMailsFallback',renderClientMails);
-  }
+    if(!opts.quiet){
+      GMAIL=false;
+      $('mailConnect').hidden=false;$('mailApp').hidden=true;
+      setHTML('gmailPill','<svg class="i xs"><use href="#i-warn"/></svg>Nicht verbunden');
+      setText('mailConnectHint','Konnte nicht geladen werden: '+e.message);
+      const gp=$('setGmail');if(gp)gp.innerHTML='<span class="pill warn"><i></i>Fehler</span>';
+      safe('clientMailsFallback',renderClientMails);
+    }
+  }finally{mailLoading=false}
+}
+function retagMails(){
+  MAILS.forEach(m=>{
+    m.client=clientForEmail(m.addr);
+    m.tags=[m.client?'Kunde':null,m.sent?'Gesendet':null,/rechnung|invoice|beleg|quittung/i.test(m.subj)?'Rechnung':null].filter(Boolean);
+  });
 }
 on('gmailRetry','click',()=>{
   if(!tokenClient){toast('Google-Login lädt noch, bitte kurz warten.');return}
   tokenClient.requestAccessToken({prompt:'consent'});
 });
+setInterval(()=>{if(GAUTH&&GMAIL&&document.visibilityState==='visible'&&!mailQ)safe('mailPoll',()=>loadGmail({quiet:true}))},120000);
+setInterval(()=>{if(GAUTH&&document.visibilityState==='visible')safe('calPoll',loadMyCalendar)},300000);
 
 function mailItem(m){
   return `<button class="mail${m.unread?' unread':''}${m.id===mailSel?' sel':''}" data-mail="${m.id}">
     <span class="av">${m.ini}</span>
     <span style="min-width:0"><span class="row1"><b>${esc(m.from)}</b><time>${gmailWhen(m.dateHeader)}</time></span>
     <span class="subj" style="display:block">${esc(m.subj)}</span><span class="snip" style="display:block">${esc(m.snip)}</span>
-    <span class="tags">${m.client?`<span class="proj"><i style="background:${PROJ[m.client]||'#8E8E93'}"></i>${esc(m.client)}</span>`:''}${m.tags.includes('Rechnung')?'<span class="tag">Rechnung</span>':''}</span></span>
+    <span class="tags">${m.client?`<span class="proj"><i style="background:var(--brand)"></i>${esc(m.client)}</span>`:''}${m.sent?'<span class="tag">Gesendet</span>':''}${m.tags.includes('Rechnung')?'<span class="tag">Rechnung</span>':''}</span></span>
   </button>`;
 }
 function renderMails(){
   const q=($('mSearch').value||'').trim().toLowerCase();
-  const list=MAILS.filter(m=>(mailF==='all'||(mailF==='unread'&&m.unread)||(mailF==='client'&&m.client)||(mailF==='invoice'&&m.tags.includes('Rechnung')))&&(!q||(m.from+' '+m.subj+' '+m.snip).toLowerCase().includes(q)));
-  $('mList').innerHTML=list.length?list.map(mailItem).join(''):'<p class="empty">Keine Mails gefunden.</p>';
-  const unread=MAILS.filter(m=>m.unread).length;
-  setHTML('mSummary',`<b>${unread} ungelesen</b>, ${MAILS.filter(m=>m.client).length} Mails automatisch Kunden zugeordnet`);
+  const local=mailQ?'':q;
+  const list=MAILS.filter(m=>(mailF==='all'||(mailF==='unread'&&m.unread)||(mailF==='client'&&m.client)||(mailF==='invoice'&&m.tags.includes('Rechnung')))&&(!local||(m.from+' '+m.addr+' '+m.subj+' '+m.snip+' '+(m.client||'')).toLowerCase().includes(local)));
+  $('mList').innerHTML=(mailQ?`<p class="grp">Gmail-Suche: „${esc(mailQ)}“ <button class="link" id="mClearQ" style="border:0;background:none;cursor:pointer">zurück zum Postfach</button></p>`:'')+
+    (list.length?list.map(mailItem).join(''):'<p class="empty">Keine Mails gefunden.'+(q&&!mailQ?' Enter drücken, um das ganze Postfach zu durchsuchen.':'')+'</p>')+
+    (mailNext?'<div class="mail-more"><button class="btn btn-glass sm" id="mMore">Ältere Mails laden</button></div>':'');
+  const unread=MAILS.filter(m=>m.unread&&!m.sent).length;
+  setHTML('mSummary',`<b>${unread} ungelesen</b> von ${MAILS.length} geladenen Mails aus info@lematic.de, ${MAILS.filter(m=>m.client).length} davon Kunden aus der Kartei zugeordnet`);
   renderMailRead();
   const nm=$('navMail');if(nm){nm.textContent=unread;nm.hidden=!unread}
 }
@@ -2740,22 +2940,30 @@ async function renderMailRead(){
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${m.client?`<span class="auto"><svg class="i xs"><use href="#i-check"/></svg>Zugeordnet: ${esc(m.client)}</span>`:''}${m.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
     <h2>${esc(m.subj)}</h2>
     <div class="from"><span class="av">${m.ini}</span><div><strong>${esc(m.from)}</strong><span>${esc(m.addr)}</span></div><time>${gmailWhen(m.dateHeader)}</time></div>
+    ${!m.client&&!m.sent?`<div class="kd-row" style="margin:8px 0"><span style="font-size:12px;color:var(--ink-3)">Keinem Kunden zugeordnet.</span><button class="btn btn-glass sm" data-maction="tokunde">Absender zu Kunde zuordnen</button></div>`:''}
     <div class="body">${esc(full.body).split('\n').filter(Boolean).map(p=>`<p>${p}</p>`).join('')}</div>
     ${full.attachments.map((a,i)=>`<div class="attach"><svg class="i"><use href="#i-receipt"/></svg><div>${esc(a.filename)}<small>${a.mimeType||''}, ${Math.round((a.size||0)/1024)} KB</small></div><button class="icon-btn ghost" data-att="${i}" aria-label="${esc(a.filename)} als Rechnung ablegen" style="margin-left:auto"><svg class="i sm"><use href="#i-receipt"/></svg></button></div>`).join('')}
     <div class="read-actions">
-      <button class="btn btn-glass sm" data-maction="task"><svg class="i sm"><use href="#i-tasks"/></svg>Aufgabe daraus machen</button>
-      ${m.client==='Mammutmarsch'?'<a class="btn btn-glass sm" href="#/kunde">Zur Kundenseite</a>':''}
-      <a class="btn btn-glass sm" href="https://mail.google.com/mail/u/0/#search/rfc822msgid:${encodeURIComponent(m.threadId||m.id)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Gmail öffnen</a>
+      <button class="btn btn-glass sm" data-maction="task"><svg class="i sm"><use href="#i-tasks"/></svg>Aufgabe für morgen</button>
+      ${m.client&&kundeForName(m.client)?`<button class="btn btn-glass sm" data-kopen="${kundeForName(m.client).id}"><svg class="i sm"><use href="#i-users"/></svg>Kundenkarte</button>`:''}
+      <a class="btn btn-glass sm" href="https://mail.google.com/mail/?authuser=info@lematic.de#all/${encodeURIComponent(m.threadId||m.id)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Gmail antworten</a>
     </div>`;
   box.dataset.attachments=JSON.stringify(full.attachments.map(a=>({filename:a.filename,mimeType:a.mimeType,attachmentId:a.attachmentId})));
 }
 on('mList','click',e=>{
+  if(e.target.closest('#mMore')){e.target.closest('#mMore').disabled=true;loadGmail({more:true});return}
+  if(e.target.closest('#mClearQ')){mailQ='';$('mSearch').value='';mailSel=null;loadGmail();return}
   const b=e.target.closest('[data-mail]');if(!b)return;
   mailSel=b.dataset.mail;const m=MAILS.find(x=>x.id===mailSel);if(m)m.unread=false;
   renderMails();
   if(window.innerWidth<1240)$('mRead').scrollIntoView({behavior:'smooth',block:'start'});
 });
-on('mSearch','input',()=>{renderMails()});
+on('mSearch','input',()=>{if(!mailQ)renderMails()});
+on('mSearch','keydown',e=>{
+  if(e.key!=='Enter')return;e.preventDefault();
+  const q=($('mSearch').value||'').trim();
+  mailQ=q;mailSel=null;loadGmail();
+});
 on('mFilter','click',e=>{
   const b=e.target.closest('[data-mf]');if(!b)return;
   document.querySelectorAll('#mFilter button').forEach(x=>x.setAttribute('aria-pressed',x===b));mailF=b.dataset.mf;renderMails();
@@ -2785,15 +2993,19 @@ on('mRead','click',async e=>{
   }
   const act=e.target.closest('[data-maction]');
   if(act&&act.dataset.maction==='task'){
-    TASKS.push({id:Date.now(),t:'Antworten: '+m.subj,p:PROJ[m.client]?m.client:'LeMatic',who:/martin/i.test(USER)?'MS':'LP',due:addDays(TODAY,1)});
-    renderTasks();renderHome();toast('Aufgabe angelegt: Antworten auf „'+m.subj+'“');
+    const k=m.client?kundeForName(m.client):null;
+    try{
+      await createTask({title:'Antworten: '+m.subj,who:ME,due:addDays(TODAY,1),kid:k?k.id:'',kname:k?k.name:''});
+      toast('Im Kalender für morgen: Antworten auf „'+m.subj+'“');
+    }catch(err){toast('Nicht angelegt: '+err.message)}
   }
+  if(act&&act.dataset.maction==='tokunde'){openAssign(m)}
 });
 function renderClientMails(){
   const el=$('clientMails');if(!el)return;
   if(!GAUTH){el.innerHTML='<div class="hint-row"><span>Nach dem Google-Login mit Mail-Zugriff erscheinen hier alle Mails mit Mammutmarsch.</span></div>';return}
   if(!GMAIL){el.innerHTML='<div class="hint-row"><span>Gmail ist noch nicht verbunden.</span><button class="btn btn-glass sm" id="cmRetry">Zu Mails</button></div>';const b=$('cmRetry');if(b)b.onclick=()=>location.hash='#/mails';return}
-  const list=MAILS.filter(m=>m.client==='Mammutmarsch');
+  const list=MAILS.filter(m=>/mammut/i.test((m.client||'')+' '+m.addr));
   el.innerHTML=list.length?list.map(m=>`<button class="cmail" data-cmail="${m.id}"><span class="av">${m.ini}</span><div><b>${m.unread?'<span class="udot"></span> ':''}${esc(m.subj)}</b><span>${esc(m.from)}: ${esc(m.snip)}</span></div><time>${gmailWhen(m.dateHeader)}</time></button>`).join(''):'<p class="empty">Keine Mails von Mammutmarsch in den letzten 30 Tagen.</p>';
 }
 on('clientMails','click',e=>{
@@ -2996,10 +3208,11 @@ on('addLead','submit',e=>{
 let palList=[],palSel=0,palLast=null;
 function buildIndex(){
   const out=[];
-  TASKS.filter(t=>!t.done).forEach(t=>out.push({ic:'i-tasks',t:t.t,s:t.p+' · '+(NAMES[t.who]||''),k:'Aufgabe',go:'#/aufgaben'}));
+  TASKS.filter(t=>!t.done).forEach(t=>out.push({ic:'i-tasks',t:t.t,s:(t.kname||'Allgemein')+' · '+(NAMES[t.who]||'')+' · '+dm(t.due),k:'Aufgabe',go:'#/aufgaben'}));
   INVOICES.forEach(i=>out.push({ic:'i-receipt',t:i.party+' · '+eur(i.amount),s:(i.no||'Beleg')+' · '+dm(i.date),k:'Rechnung',go:'#/rechnungen'}));
   LEADS.forEach(l=>out.push({ic:'i-target',t:l.n,s:LSTAGES[l.stage]+(l.val?' · '+eur(l.val):''),k:'Akquise',go:'#/akquise'}));
-  CLIENTS.forEach(c=>out.push({ic:'i-users',t:c.n,s:c.next,k:'Kunde',go:c.open?'#/kunde':'#/kunden'}));
+  KUNDEN.forEach(k=>out.push({ic:'i-users',t:k.name,s:[k.status,k.typ,k.ap].filter(Boolean).join(' · '),k:'Kunde',go:'#/kunden',kid:k.id}));
+  TASKS.filter(t=>t.done).slice(-20).forEach(t=>out.push({ic:'i-check',t:t.t,s:'Erledigt · '+(NAMES[t.who]||''),k:'Aufgabe',go:'#/aufgaben'}));
   EVENTS.filter(e=>e.d>=TODAY).slice(0,40).forEach(e=>out.push({ic:'i-cal',t:e.t,s:wd(e.d)+', '+dm(e.d)+(e.time?' · '+e.time:''),k:'Termin',go:'#/kalender'}));
   DRIVES.forEach(d=>out.push({ic:'i-drive',t:d.name,s:fmtSize(d.free)+' frei von '+fmtSize(d.cap),k:'Laufwerk',go:'#/archiv'}));
   MEDIA_FOLDERS.forEach(m=>out.push({ic:'i-image',t:m.n,s:'Medienordner in Drive',k:'Medien',go:'#/medien'}));
@@ -3030,7 +3243,7 @@ function closePal(){
   w.classList.remove('show');w.setAttribute('aria-hidden','true');
   if(palLast&&palLast.focus)palLast.focus();
 }
-function goPal(i){const x=palList[i];if(!x)return;closePal();location.hash=x.go}
+function goPal(i){const x=palList[i];if(!x)return;closePal();location.hash=x.go;if(x.kid)setTimeout(()=>openKunde(x.kid),60)}
 on('palQ','input',()=>{palSel=0;renderPal()});
 (function(){
   const w=$('palWrap');if(!w)return;
@@ -3049,30 +3262,44 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter'){e.preventDefault();goPal(palSel)}
 });
 
-/* ---------- Google Kalender: eigener, echter Kalender der eingeloggten Person ---------- */
-let MY_CAL_LOADED=false;
+/* ---------- Google Kalender: der LeMatic-Kalender von info@lematic.de ---------- */
+let MY_CAL_LOADED=false,CAL_LOADED=false;
 async function loadMyCalendar(){
-  const win=document.getElementById('legendCal');
+  const pill=$('setCalPill');
   try{
-    const timeMin=new Date();timeMin.setDate(timeMin.getDate()-45);
-    const timeMax=new Date();timeMax.setDate(timeMax.getDate()+150);
-    const url='https://www.googleapis.com/calendar/v3/calendars/primary/events?'+new URLSearchParams({
-      timeMin:timeMin.toISOString(),timeMax:timeMax.toISOString(),singleEvents:'true',orderBy:'startTime',maxResults:'250'
-    });
-    const j=await (await gfetch(url)).json();
-    EVENTS=EVENTS.filter(e=>e.type!=='privat');
-    (j.items||[]).forEach(it=>{
-      if(!it.start)return;
+    const timeMin=new Date();timeMin.setDate(timeMin.getDate()-60);
+    const timeMax=new Date();timeMax.setDate(timeMax.getDate()+365);
+    const items=[];let pageToken='';
+    for(let i=0;i<6;i++){
+      const q={timeMin:timeMin.toISOString(),timeMax:timeMax.toISOString(),singleEvents:'true',orderBy:'startTime',maxResults:'250'};
+      if(pageToken)q.pageToken=pageToken;
+      const j=await (await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events?'+new URLSearchParams(q))).json();
+      items.push(...(j.items||[]));
+      if(!j.nextPageToken)break;pageToken=j.nextPageToken;
+    }
+    const evs=[],tasks=[];
+    items.forEach(it=>{
+      if(!it.start||it.status==='cancelled')return;
+      const x=(it.extendedProperties&&it.extendedProperties.private)||{};
+      if(x.lmTask==='1'){tasks.push(taskFromEvent(it));return}
       const allDay=!it.start.dateTime;
       const d=(it.start.dateTime||it.start.date).slice(0,10);
+      let end=null;
+      if(allDay&&it.end&&it.end.date){const e=addDays(it.end.date,-1);if(e>d)end=e}
       const time=allDay?null:it.start.dateTime.slice(11,16);
-      EVENTS.push({d,time,t:it.summary||'(ohne Titel)',type:'privat',p:'LeMatic',who:/martin/i.test(USER)?'MS':'LP',gcalId:it.id});
+      evs.push({d,end,time,t:it.summary||'(ohne Titel)',type:'privat',p:'LeMatic',place:it.location||'',big:!!end,gcalId:it.id});
     });
-    MY_CAL_LOADED=true;
+    EVENTS=evs;TASKS=tasks;syncTaskEvents();
+    MY_CAL_LOADED=CAL_LOADED=true;
+    const at=new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+    setHTML('calSync','<svg class="i sm"><use href="#i-check"/></svg>LeMatic-Kalender abgeglichen um '+at+' Uhr');
+    if(pill)pill.innerHTML='<span class="pill ok"><i></i>Verbunden</span>';
     safe('cal2',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
-    safe('home2',renderHome);
+    safe('home2',renderHome);safe('tasks2',renderTasks);safe('kart2',renderKartei);
   }catch(e){
     console.warn('Google Kalender nicht geladen:',e.message);
+    setHTML('calSync','<svg class="i sm"><use href="#i-warn"/></svg>Kalender nicht erreichbar: '+esc(e.message));
+    if(pill)pill.innerHTML='<span class="pill warn"><i></i>Fehler</span>';
   }
 }
 function openEventDialog(){
@@ -3091,14 +3318,14 @@ on('evGo','click',async()=>{
   if(!title){err.textContent='Bitte einen Titel eintragen.';return}
   err.textContent='';
   const body=time
-    ?{summary:title,start:{dateTime:date+'T'+time+':00'},end:{dateTime:date+'T'+time+':00'}}
-    :{summary:title,start:{date},end:{date}};
+    ?{summary:title,start:{dateTime:date+'T'+time+':00',timeZone:'Europe/Berlin'},end:{dateTime:(+time.slice(0,2)>=23?addDays(date,1)+'T00:'+time.slice(3):date+'T'+pad(+time.slice(0,2)+1)+':'+time.slice(3))+':00',timeZone:'Europe/Berlin'}}
+    :{summary:title,start:{date},end:{date:addDays(date,1)}};
   try{
-    const r=await gfetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{
+    const r=await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events',{
       method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)
     });
     const j=await r.json();
-    EVENTS.push({d:date,time:time||null,t:title,type:'privat',p:'LeMatic',who:/martin/i.test(USER)?'MS':'LP',gcalId:j.id});
+    EVENTS.push({d:date,time:time||null,t:title,type:'privat',p:'LeMatic',gcalId:j.id});
     closeEventDialog();toast('Im Google-Kalender angelegt: '+title);
     safe('calR',renderCal);safe('homeR',renderHome);
   }catch(e){
@@ -3114,12 +3341,17 @@ on('evGo','click',async()=>{
 let NOTION_LIVE=false;
 const NOTION_SNAPSHOT='11.09.2026';
 
-async function notionUpdate(db,pageId,properties){
-  const r=await fetch('/api/notion?db='+encodeURIComponent(db)+'&id='+encodeURIComponent(pageId),{
-    method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({properties})
-  });
+/* Alle Notion-Anfragen schicken das Google-Token mit — die Serverfunktion lässt nur lematic.de-Konten durch. */
+async function napi(url,opts={}){
+  const t=await getToken();
+  const r=await fetch(url,{...opts,headers:{...(opts.headers||{}),Authorization:'Bearer '+t}});
   if(!r.ok){let m='HTTP '+r.status;try{const j=await r.json();m=j.error||m}catch(_){}throw new Error(m)}
   return r.json();
+}
+async function notionUpdate(db,pageId,properties){
+  return napi('/api/notion?db='+encodeURIComponent(db)+'&id='+encodeURIComponent(pageId),{
+    method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({properties})
+  });
 }
 async function notionCreateRechnung({no,art,status,betrag,leistung,datum,datei}){
   const props={
@@ -3134,40 +3366,24 @@ async function notionCreateRechnung({no,art,status,betrag,leistung,datum,datei})
   return notionCreate('rechnungen',props);
 }
 async function notionCreate(db,properties){
-  const r=await fetch('/api/notion?db='+encodeURIComponent(db),{
+  return napi('/api/notion?db='+encodeURIComponent(db),{
     method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({properties})
   });
-  if(!r.ok){let m='HTTP '+r.status;try{const j=await r.json();m=j.error||m}catch(_){}throw new Error(m)}
-  return r.json();
 }
 async function notionGet(db){
-  const r=await fetch('/api/notion?db='+encodeURIComponent(db));
-  if(!r.ok){
-    let msg='HTTP '+r.status;
-    try{const j=await r.json();msg=j.error||msg}catch(_){}
-    throw new Error(msg);
-  }
-  return (await r.json()).rows||[];
+  return (await napi('/api/notion?db='+encodeURIComponent(db))).rows||[];
 }
 function notionStatus(state,text){
   const pill=$('setNotionPill'),txt=$('setNotionText');
   if(pill)pill.innerHTML=`<span class="pill ${state}"><i></i>${state==='ok'?'Live verbunden':state==='warn'?'Nicht verbunden':'Fehler'}</span>`;
   if(txt&&text)txt.textContent=text;
 }
-/* Notion hat kein eigenes Feld "Zuständig" — daher leiten wir es aus eurer echten
-   Aufgabenteilung her: Dreh/Schnitt/Technik/Website bei Lennart, Akquise/Admin bei Martin. */
-const BEREICH_WHO={'Dreh':'LP','Schnitt':'LP','Technik/Gear':'LP','Website':'LP','Akquise':'MS','Admin/Steuern':'MS','Feedback':'MS'};
+/* Aus Notion kommen nur noch Rechnungen, Akquise und die Kundenkartei.
+   Aufgaben laufen über den LeMatic-Kalender (siehe „Aufgaben über Google Kalender“). */
 async function loadNotion(){
   lastNotionLoad=Date.now();
   try{
-    const [auf,rech,akq]=await Promise.all([notionGet('aufgaben'),notionGet('rechnungen'),notionGet('akquise')]);
-    if(auf.length){
-      TASKS=auf.map((r,i)=>({
-        id:'n'+i,nid:r.id,t:r['Aufgabe']||'(ohne Titel)',p:r['Bereich']||'LeMatic',
-        who:BEREICH_WHO[r['Bereich']]||'LP',due:r['Deadline']||TODAY,
-        prio:r['Prio']||'',done:r['Status']==='Erledigt'
-      }));
-    }
+    const [rech,akq]=await Promise.all([notionGet('rechnungen'),notionGet('akquise')]);
     if(akq.length){
       const st=n=>n==='Erledigt'?2:n==='In Bearbeitung'?1:0;
       LEADS=akq.map((r,i)=>({
@@ -3186,9 +3402,8 @@ async function loadNotion(){
       }));
     }
     NOTION_LIVE=true;
-    notionStatus('ok','Live aus dem LeMatic OS: '+auf.length+' Aufgaben, '+rech.length+' Rechnungen und Angebote, '+akq.length+' Leads');
-    safe('tasks',renderTasks);safe('inv',renderInvoices);safe('leads',renderLeads);safe('home',renderHome);
-    toast('Notion-Daten geladen');
+    notionStatus('ok','Live aus dem LeMatic OS: Kundenkartei, '+rech.length+' Rechnungen und Angebote, '+akq.length+' Leads');
+    safe('inv',renderInvoices);safe('leads',renderLeads);safe('home',renderHome);
   }catch(e){
     NOTION_LIVE=false;
     const missing=/NOTION_TOKEN/.test(e.message)||/501/.test(e.message);
@@ -3196,12 +3411,15 @@ async function loadNotion(){
       ? 'Noch nicht verbunden — NOTION_TOKEN in Vercel hinterlegen. Bis dahin läuft das Tool mit dem Stand vom '+NOTION_SNAPSHOT
       : 'Nicht erreichbar ('+e.message+'). Stand vom '+NOTION_SNAPSHOT);
   }
+  safe('kartei',loadKartei);
 }
 
 let lastNotionLoad=0;
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible'&&GAUTH&&Date.now()-lastNotionLoad>60000){
     safe('notionRefresh',loadNotion);
+    safe('calRefresh',loadMyCalendar);
+    safe('mailRefresh',()=>loadGmail({quiet:true}));
   }
 });
 
@@ -3220,7 +3438,7 @@ on('expJson','click',()=>{
     .concat(INVOICES.map(i=>[i.kind,i.date,i.party,i.no||'',String(i.amount).replace('.',','),i.status,i.p].map(csvEsc).join(';')))
     .join('\n');
   downloadFile('lematic_rechnungen_'+TODAY+'.csv','\ufeff'+csv,'text/csv;charset=utf-8');
-  setTimeout(()=>downloadFile('lematic_sicherung_'+TODAY+'.json',JSON.stringify({TASKS,INVOICES,LEADS,archStand},null,2)),400);
+  setTimeout(()=>downloadFile('lematic_sicherung_'+TODAY+'.json',JSON.stringify({TASKS,INVOICES,LEADS,KUNDEN,archStand},null,2)),400);
   toast('Rechnungen als CSV und alles als JSON exportiert');
 });
 on('resetState','click',()=>{
@@ -3230,21 +3448,364 @@ on('resetState','click',()=>{
   },'Zurücksetzen');
 });
 
-/* ---------- Kunden ---------- */
-let cf='all';
-function renderClients(){
-  document.getElementById('clientGrid').innerHTML=CLIENTS.filter(c=>cf==='all'||c.s===cf).map(c=>`
-    <article class="glass ccard">
-      <div class="top"><span class="pill ${c.pill}"><i></i>${c.s}</span></div>
-      <h3>${esc(c.n)}</h3><p>${esc(c.d)}</p>
-      <div class="next"><svg class="i sm"><use href="#i-chev"/></svg><span>${esc(c.next)}</span></div>
-      <div class="cta">${c.open?'<a class="btn btn-primary sm" href="#/kunde">Öffnen</a>':`<button class="btn btn-glass sm" data-toast="${esc(c.n)} ist im Mockup noch nicht ausgearbeitet">Öffnen</button>`}</div>
-    </article>`).join('');
+/* ---------- Kundenkartei (Notion „Kunden & Kontakte“) ----------
+   Liest alle Felder, die es in Notion gibt — kommen dort neue Spalten dazu (Telefon, Website,
+   Nächster Schritt …), tauchen sie hier automatisch als bearbeitbare Felder auf. */
+const K_ORDER=['Bestandskunde','Warm','Angefragt','Kalt','Abgesagt'];
+const K_EDITABLE=new Set(['title','rich_text','email','phone_number','url','select','status','date','number','multi_select']);
+let kf='laufend',kOpen=null;
+const EMAIL_RX=/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
+function kTitleKey(){return KSCHEMA?Object.keys(KSCHEMA).find(k=>KSCHEMA[k].type==='title')||'Name':'Name'}
+function rowToKunde(r){
+  const tk=kTitleKey();
+  return{id:r.id,url:r.url,raw:r,edited:r._edited||'',name:r[tk]||r['Name']||'(ohne Namen)',
+    status:r['Status']||'',typ:r['Typ']||'',ap:r['Ansprechpartner']||'',email:r['E-Mail']||'',notes:r['Notizen']||''};
 }
-document.getElementById('clientFilter').addEventListener('click',e=>{
-  const b=e.target.closest('[data-cf]');if(!b)return;
-  document.querySelectorAll('#clientFilter button').forEach(x=>x.setAttribute('aria-pressed',x===b));cf=b.dataset.cf;renderClients();
+function kEmails(k){
+  const set=new Set();
+  [k.email,k.ap,k.notes].forEach(t=>{(String(t||'').match(EMAIL_RX)||[]).forEach(e=>{if(!/lematic\.de$/i.test(e))set.add(e.toLowerCase())})});
+  return [...set];
+}
+function rebuildMailMap(){
+  CLIENT_ADDR={};
+  const dom={'mammutmarsch.de':'Mammutmarsch'};
+  KUNDEN.forEach(k=>{
+    kEmails(k).forEach(e=>{CLIENT_ADDR[e]=k.name;const d=e.split('@')[1];if(d&&!FREEMAIL.has(d))dom[d]=k.name});
+  });
+  Object.keys(CLIENT_DOMAINS).forEach(d=>delete CLIENT_DOMAINS[d]);
+  Object.assign(CLIENT_DOMAINS,dom);
+  safe('retag',retagMails);
+}
+async function loadKartei(){
+  try{
+    const [sch,rows]=await Promise.all([
+      KSCHEMA?Promise.resolve({props:KSCHEMA}):napi('/api/notion?db=kunden&schema=1'),
+      notionGet('kunden')
+    ]);
+    KSCHEMA=sch.props||{};
+    KUNDEN=rows.map(rowToKunde);
+    KARTEI_LOADED=true;
+    rebuildMailMap();
+    fillKundenSelects();
+    renderKartei();renderSideClients();
+    if(GMAIL){safe('mailsR',renderMails)}
+    if(kOpen&&$('kdWrap').classList.contains('show'))renderKundeSheet(kOpen);
+  }catch(e){
+    setText('kSummary','Kundenkartei nicht erreichbar: '+e.message);
+    $('kGrid').innerHTML='<p class="empty">Die Kartei konnte nicht geladen werden ('+esc(e.message)+').</p>';
+  }
+}
+function kSorted(list){
+  return list.slice().sort((a,b)=>{
+    const sa=K_ORDER.indexOf(a.status),sb=K_ORDER.indexOf(b.status);
+    if(sa!==sb)return (sa<0?99:sa)-(sb<0?99:sb);
+    return (b.edited||'').localeCompare(a.edited||'');
+  });
+}
+function kPill(st){return st?`<span class="pill st-${esc(st)}"><i></i>${esc(st)}</span>`:'<span class="pill done"><i></i>Ohne Status</span>'}
+function lastNote(k){
+  const n=String(k.notes||'').trim();if(!n)return'';
+  return n.split(/\n\s*\n/)[0].replace(/^\[[^\]]*\]\s*/,'');
+}
+function renderKartei(){
+  const grid=$('kGrid');if(!grid)return;
+  if(!KARTEI_LOADED){grid.innerHTML=GAUTH?'<p class="empty">Kundenkartei wird geladen …</p>':'<p class="empty">Nach dem Login mit info@lematic.de erscheint hier eure Kundenkartei aus Notion.</p>';return}
+  const opts=(KSCHEMA&&KSCHEMA['Status']&&KSCHEMA['Status'].options||[]).map(o=>o.name);
+  const filters=[['laufend','Laufend'],['all','Alle'],...opts.map(o=>[o,o])];
+  const cnt=f=>KUNDEN.filter(k=>kMatch(k,f)).length;
+  $('kFilter').innerHTML=filters.map(([v,l])=>`<button aria-pressed="${kf===v}" data-kf="${esc(v)}">${esc(l)} <small>${cnt(v)}</small></button>`).join('');
+  const q=($('kSearch').value||'').trim().toLowerCase();
+  const list=kSorted(KUNDEN.filter(k=>kMatch(k,kf)&&(!q||[k.name,k.ap,k.email,k.notes,k.typ].join(' ').toLowerCase().includes(q))));
+  grid.innerHTML=list.length?list.map(k=>{
+    const open=TASKS.filter(t=>!t.done&&t.kid===k.id).sort((a,b)=>a.due.localeCompare(b.due));
+    const mails=MAILS.filter(m=>m.client===k.name).length;
+    return `<button class="glass kcard" data-kopen="${k.id}">
+      <div class="top">${kPill(k.status)}<span class="typ">${esc(k.typ||'')}</span></div>
+      <h3>${esc(k.name)}</h3>
+      ${k.ap?`<div class="who">${esc(k.ap)}</div>`:''}
+      <div class="note">${esc(lastNote(k)||'Noch keine Notizen.')}</div>
+      <div class="meta"><span><b>${open.length}</b> ${open.length===1?'Aufgabe':'Aufgaben'}${open[0]?' · nächste '+dm(open[0].due):''}</span>${GMAIL?`<span><b>${mails}</b> ${mails===1?'Mail':'Mails'}</span>`:''}${k.edited?`<span>geändert ${dm(k.edited.slice(0,10))}</span>`:''}</div>
+    </button>`;
+  }).join(''):'<p class="empty">Keine Kunden mit diesem Filter.</p>';
+  const st=s=>KUNDEN.filter(k=>k.status===s).length;
+  setHTML('kSummary',`<b>${KUNDEN.length} Einträge</b>: ${st('Bestandskunde')} Bestandskunden, ${st('Warm')} warm, ${st('Angefragt')} angefragt. Karte öffnen, um Notizen und Aufgaben einzutragen.`);
+}
+function kMatch(k,f){
+  if(f==='all')return true;
+  if(f==='laufend')return k.status!=='Kalt'&&k.status!=='Abgesagt';
+  return k.status===f;
+}
+function renderSideClients(){
+  const el=$('sideClients');if(!el)return;
+  const focus=KUNDEN.filter(k=>(k.status==='Bestandskunde'||k.status==='Warm')&&!/mammut/i.test(k.name)).sort((a,b)=>(b.edited||'').localeCompare(a.edited||'')).slice(0,6);
+  el.innerHTML='<a href="#/kunde" data-route="kunde"><i></i>Mammutmarsch Portal</a>'+focus.map(k=>`<a href="#/kunden" data-kopen="${k.id}"><i></i>${esc(k.name.split(/\s[–-]\s/)[0])}</a>`).join('');
+}
+on('kSearch','input',renderKartei);
+on('kFilter','click',e=>{const b=e.target.closest('[data-kf]');if(!b)return;kf=b.dataset.kf;renderKartei()});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-kopen]');if(!b)return;
+  e.preventDefault();
+  if(!b.closest('#kdWrap')&&location.hash!=='#/kunden')location.hash='#/kunden';
+  openKunde(b.dataset.kopen);
 });
+
+/* Detailkarte */
+function openKunde(id){
+  const k=KUNDEN.find(x=>x.id===id);
+  if(!k){if(!KARTEI_LOADED)toast('Kundenkartei lädt noch …');return}
+  kOpen=id;
+  const w=$('kdWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');
+  renderKundeSheet(id);
+  safe('kmails',()=>loadKundeMails(k));
+  safe('kdoc',()=>loadKundeDoc(k));
+}
+function closeKunde(){const w=$('kdWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true');kOpen=null}
+on('kdWrap','click',e=>{if(e.target.id==='kdWrap')closeKunde()});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape')return;
+  if($('kdWrap').classList.contains('show'))closeKunde();
+  const kn=$('knWrap');if(kn.classList.contains('show')){kn.classList.remove('show');kn.setAttribute('aria-hidden','true')}
+});
+function noteEntries(text){
+  const t=String(text||'').trim();if(!t)return[];
+  return t.split(/\n\s*\n(?=\[)/).map(part=>{
+    const m=/^\[([^\]]+)\]\s*([\s\S]*)$/.exec(part.trim());
+    return m?{head:m[1],body:m[2]}:{head:'Ältere Notizen',body:part.trim()};
+  });
+}
+function fieldInput(name,def,val){
+  const id='kf_'+btoa(unescape(encodeURIComponent(name))).replace(/[^A-Za-z0-9]/g,'');
+  const v=val==null?'':val;
+  if(def.type==='select'||def.type==='status'){
+    const opts=(def.options||[]).map(o=>o.name);if(v&&!opts.includes(v))opts.unshift(v);
+    return `<label>${esc(name)}<select class="input" data-kfield="${esc(name)}" id="${id}"><option value="">—</option>${opts.map(o=>`<option${o===v?' selected':''}>${esc(o)}</option>`).join('')}</select></label>`;
+  }
+  if(def.type==='rich_text'&&String(v).length>60)return `<label>${esc(name)}<textarea class="input" data-kfield="${esc(name)}" id="${id}">${esc(v)}</textarea></label>`;
+  const type=def.type==='date'?'date':def.type==='number'?'number':def.type==='email'?'email':def.type==='url'?'url':def.type==='phone_number'?'tel':'text';
+  const shown=def.type==='multi_select'?(Array.isArray(v)?v.join(', '):v):def.type==='date'?String(v).slice(0,10):v;
+  return `<label>${esc(name)}${def.type==='multi_select'?' <small style="color:var(--ink-3)">(kommagetrennt)</small>':''}<input class="input" type="${type}" data-kfield="${esc(name)}" id="${id}" value="${esc(shown)}"></label>`;
+}
+function renderKundeSheet(id){
+  const k=KUNDEN.find(x=>x.id===id);if(!k)return;
+  const sch=KSCHEMA||{};
+  const fields=Object.keys(sch).filter(n=>n!=='Notizen'&&K_EDITABLE.has(sch[n].type));
+  fields.sort((a,b)=>(sch[a].type==='title'?-1:0)-(sch[b].type==='title'?-1:0));
+  const tasks=TASKS.filter(t=>t.kid===k.id).sort((a,b)=>Number(a.done)-Number(b.done)||a.due.localeCompare(b.due));
+  const notes=noteEntries(k.notes);
+  const rel=['Projekte','Rechnungen & Angebote','Leads'].filter(n=>Array.isArray(k.raw[n])&&k.raw[n].length).map(n=>`${k.raw[n].length} ${esc(n)}`).join(' · ');
+  $('kdSheet').innerHTML=`
+    <div class="kd-head">
+      <div><h2 id="kdName">${esc(k.name)}</h2>
+        <div class="sub">${kPill(k.status)}${k.typ?`<span class="tag">${esc(k.typ)}</span>`:''}${rel?`<span style="font-size:12px;color:var(--ink-3)">${rel} in Notion verknüpft</span>`:''}</div></div>
+      <div class="kd-row"><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Notion</a><button class="btn btn-glass sm" id="kdClose">Schließen</button></div>
+    </div>
+    <div class="kd-grid">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <section class="kd-box">
+          <h3>Notizen</h3>
+          <div class="kd-note">
+            <textarea class="input" id="kdNoteText" placeholder="Was hat der Kunde gesagt? Was braucht er, Budget, nächster Schritt …"></textarea>
+            <div class="kd-row"><button class="btn btn-primary sm" id="kdNoteSave">Notiz speichern</button><span style="font-size:12px;color:var(--ink-3)">wird mit Datum und „${esc(USER)}“ oben eingetragen</span></div>
+            <p class="form-err" id="kdNoteErr" role="alert"></p>
+          </div>
+          <div class="kd-notes">${notes.length?notes.map(n=>`<p><b>${esc(n.head)}</b>${esc(n.body)}</p>`).join(''):'<p style="background:none;color:var(--ink-3)">Noch keine Notizen.</p>'}</div>
+        </section>
+        <section class="kd-box">
+          <h3>Stammdaten</h3>
+          <div class="kd-fields">${fields.map(n=>fieldInput(n,sch[n],k.raw[n])).join('')}</div>
+          <div class="kd-row" style="margin-top:12px"><button class="btn btn-glass sm" id="kdSave">Änderungen speichern</button><p class="form-err" id="kdSaveErr" role="alert" style="margin:0"></p></div>
+        </section>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <section class="kd-box">
+          <h3>Aufgaben im Kalender</h3>
+          <form class="kd-note" id="kdTaskForm">
+            <input class="input" id="kdTaskTitle" placeholder="Zum Beispiel: Angebot schicken">
+            <div class="kd-row">
+              <select class="input" id="kdTaskWho" style="width:auto"><option value="MS"${ME==='MS'?' selected':''}>Martin</option><option value="LP"${ME==='LP'?' selected':''}>Lennart</option></select>
+              <input class="input" type="date" id="kdTaskDue" value="${addDays(TODAY,1)}" style="width:auto">
+              <input class="input" type="time" id="kdTaskTime" style="width:auto" title="Optional">
+              <button class="btn btn-primary sm" type="submit">In den Kalender</button>
+            </div>
+          </form>
+          <div class="kd-list" style="margin-top:8px">${tasks.length?tasks.map(taskRow).join(''):'<p class="empty" style="padding:12px">Keine Aufgaben zu diesem Kunden.</p>'}</div>
+        </section>
+        <section class="kd-box">
+          <h3>Mails</h3>
+          <div class="kd-list" id="kdMails"><p class="empty" style="padding:12px">${GAUTH?'Wird gesucht …':'Nach dem Login sichtbar.'}</p></div>
+        </section>
+        <section class="kd-box">
+          <h3>Inhalt der Notion-Seite</h3>
+          <div class="kd-doc" id="kdDoc"><p style="color:var(--ink-3)">Wird geladen …</p></div>
+        </section>
+      </div>
+    </div>`;
+  if(k._mails)renderKundeMails(k);
+  if(k._doc)renderKundeDoc(k);
+}
+on('kdSheet','click',async e=>{
+  if(e.target.closest('#kdClose')){closeKunde();return}
+  const k=KUNDEN.find(x=>x.id===kOpen);if(!k)return;
+  if(e.target.closest('#kdNoteSave')){
+    const ta=$('kdNoteText'),text=(ta.value||'').trim(),err=$('kdNoteErr'),btn=e.target.closest('#kdNoteSave');
+    if(!text){err.textContent='Bitte zuerst etwas eintragen.';ta.focus();return}
+    err.textContent='';btn.disabled=true;btn.textContent='Wird gespeichert …';
+    const stamp=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const merged='['+stamp+' · '+USER+'] '+text+(k.notes?'\n\n'+k.notes:'');
+    try{
+      await notionUpdate('kunden',k.id,{'Notizen':{rich_text:richChunks(merged)}});
+      k.notes=merged;k.raw['Notizen']=merged;k.edited=new Date().toISOString();
+      rebuildMailMap();renderKundeSheet(k.id);renderKartei();toast('Notiz bei '+k.name+' gespeichert');
+    }catch(x){err.textContent='Nicht gespeichert: '+x.message;btn.disabled=false;btn.textContent='Notiz speichern'}
+    return;
+  }
+  if(e.target.closest('#kdSave')){
+    const err=$('kdSaveErr'),btn=e.target.closest('#kdSave'),props={},changed={};
+    document.querySelectorAll('#kdSheet [data-kfield]').forEach(el=>{
+      const n=el.dataset.kfield,def=KSCHEMA[n];if(!def)return;
+      const old=k.raw[n],v=el.value.trim();
+      const oldS=Array.isArray(old)?old.join(', '):def.type==='date'?String(old||'').slice(0,10):String(old==null?'':old);
+      if(v===oldS)return;
+      const p=propPayload(def.type,v);if(!p)return;
+      if(def.type==='title'&&!v){err.textContent='Der Name darf nicht leer sein.';return}
+      props[n]=p;changed[n]=def.type==='multi_select'?v.split(',').map(x=>x.trim()).filter(Boolean):def.type==='number'?(v===''?null:+v):v;
+    });
+    if(!Object.keys(props).length){err.textContent='Nichts geändert.';return}
+    err.textContent='';btn.disabled=true;btn.textContent='Wird gespeichert …';
+    try{
+      await notionUpdate('kunden',k.id,props);
+      Object.assign(k.raw,changed);Object.assign(k,rowToKunde(k.raw),{raw:k.raw,edited:new Date().toISOString(),_mails:k._mails,_doc:k._doc});
+      rebuildMailMap();fillKundenSelects();renderKundeSheet(k.id);renderKartei();renderSideClients();toast('Gespeichert');
+    }catch(x){err.textContent='Nicht gespeichert: '+x.message;btn.disabled=false;btn.textContent='Änderungen speichern'}
+    return;
+  }
+  const cm=e.target.closest('[data-kmail]');
+  if(cm){
+    const m=(k._mails||[]).find(x=>x.id===cm.dataset.kmail);
+    if(m&&!MAILS.find(x=>x.id===m.id)){MAILS.push(m);MAILS.sort((a,b)=>b.internal-a.internal)}
+    mailSel=cm.dataset.kmail;closeKunde();location.hash='#/mails';safe('mr',renderMails);
+  }
+});
+on('kdSheet','submit',async e=>{
+  if(e.target.id!=='kdTaskForm')return;e.preventDefault();
+  const k=KUNDEN.find(x=>x.id===kOpen);if(!k)return;
+  const title=($('kdTaskTitle').value||'').trim();if(!title){$('kdTaskTitle').focus();return}
+  const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;
+  try{
+    const who=$('kdTaskWho').value;
+    await createTask({title,who,due:$('kdTaskDue').value||TODAY,time:$('kdTaskTime').value||null,kid:k.id,kname:k.name});
+    toast('Im Kalender für '+NAMES[who]+' eingetragen');renderKundeSheet(k.id);
+  }catch(x){toast('Nicht angelegt: '+x.message);btn.disabled=false}
+});
+function richChunks(text){
+  const out=[];const t=String(text||'');
+  for(let i=0;i<t.length&&out.length<100;i+=1900)out.push({type:'text',text:{content:t.slice(i,i+1900)}});
+  return out;
+}
+function propPayload(type,v){
+  switch(type){
+    case 'title':return{title:[{text:{content:v}}]};
+    case 'rich_text':return{rich_text:richChunks(v)};
+    case 'email':return{email:v||null};
+    case 'phone_number':return{phone_number:v||null};
+    case 'url':return{url:v||null};
+    case 'select':return{select:v?{name:v}:null};
+    case 'status':return v?{status:{name:v}}:null;
+    case 'date':return{date:v?{start:v}:null};
+    case 'number':return{number:v===''?null:+v};
+    case 'multi_select':return{multi_select:v.split(',').map(x=>x.trim()).filter(Boolean).map(name=>({name}))};
+  }
+  return null;
+}
+async function loadKundeMails(k){
+  if(!GAUTH)return;
+  const ems=kEmails(k);
+  const doms=[...new Set(ems.map(e=>e.split('@')[1]).filter(d=>d&&!FREEMAIL.has(d)))];
+  const terms=[...ems,...doms].slice(0,12);
+  const q=terms.length?'{'+terms.map(t=>'from:'+t+' to:'+t).join(' ')+'}':'"'+k.name.split(/\s[–-]\s/)[0].replace(/"/g,'')+'"';
+  try{
+    const list=await gmailList(q,'',12);
+    k._mails=await fetchMailDetails((list.messages||[]).map(m=>m.id));
+    k._mailsQ=terms.length?'':'(Suche nach Name — im Feld E-Mail eine Adresse eintragen, dann wird es genauer)';
+  }catch(e){k._mails=[];k._mailsErr=e.message}
+  if(kOpen===k.id)renderKundeMails(k);
+}
+function renderKundeMails(k){
+  const el=$('kdMails');if(!el)return;
+  if(k._mailsErr){el.innerHTML='<p class="empty" style="padding:12px">Mails nicht abrufbar: '+esc(k._mailsErr)+'</p>';return}
+  const list=k._mails||[];
+  el.innerHTML=(k._mailsQ?`<p style="font-size:12px;color:var(--ink-3);margin-bottom:6px">${esc(k._mailsQ)}</p>`:'')+
+    (list.length?list.map(m=>`<button class="cmail" data-kmail="${m.id}"><span class="av">${m.ini}</span><div><b>${m.unread?'<span class="udot"></span> ':''}${esc(m.subj)}</b><span>${esc(m.from)}: ${esc(m.snip)}</span></div><time>${gmailWhen(m.dateHeader)}</time></button>`).join(''):'<p class="empty" style="padding:12px">Keine Mails gefunden.</p>');
+}
+async function loadKundeDoc(k){
+  try{k._doc=(await napi('/api/notion?db=kunden&content=1&id='+encodeURIComponent(k.id))).blocks||[]}
+  catch(e){k._doc=[];k._docErr=e.message}
+  if(kOpen===k.id)renderKundeDoc(k);
+}
+function renderKundeDoc(k){
+  const el=$('kdDoc');if(!el)return;
+  if(k._docErr){el.innerHTML='<p>Nicht abrufbar: '+esc(k._docErr)+'</p>';return}
+  const b=k._doc||[];
+  el.innerHTML=b.length?b.map(x=>/^heading/.test(x.type)?`<h4>${esc(x.text)}</h4>`:x.type==='divider'?'<hr style="border:0;border-top:1px solid var(--line);margin:8px 0">':/list_item$/.test(x.type)?`<li>${esc(x.text)}</li>`:x.type==='to_do'?`<li>${x.checked?'☑':'☐'} ${esc(x.text)}</li>`:`<p>${esc(x.text)}</p>`).join(''):'<p style="color:var(--ink-3)">Die Seite in Notion ist leer. Gesprächsprotokolle, die dort landen, erscheinen hier.</p>';
+}
+
+/* Kunde anlegen */
+on('kNew','click',()=>{
+  if(!KARTEI_LOADED){toast('Kundenkartei lädt noch …');return}
+  const opt=n=>((KSCHEMA[n]&&KSCHEMA[n].options)||[]).map(o=>`<option>${esc(o.name)}</option>`).join('');
+  $('knStatus').innerHTML=opt('Status');$('knTyp').innerHTML=opt('Typ');
+  if([...$('knStatus').options].some(o=>o.value==='Angefragt'))$('knStatus').value='Angefragt';
+  ['knName','knAp','knMail','knNote'].forEach(i=>$(i).value='');$('knErr').textContent='';
+  const w=$('knWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');setTimeout(()=>$('knName').focus(),20);
+});
+on('knCancel','click',()=>{const w=$('knWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true')});
+on('knGo','click',async()=>{
+  const name=$('knName').value.trim(),err=$('knErr'),btn=$('knGo');
+  if(!name){err.textContent='Bitte einen Namen eintragen.';return}
+  const mail=$('knMail').value.trim();
+  if(mail&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)){err.textContent='Die E-Mail-Adresse sieht nicht gültig aus.';return}
+  const note=$('knNote').value.trim();
+  const stamp=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const props={[kTitleKey()]:{title:[{text:{content:name}}]}};
+  if(KSCHEMA['Status']&&$('knStatus').value)props['Status']={select:{name:$('knStatus').value}};
+  if(KSCHEMA['Typ']&&$('knTyp').value)props['Typ']={select:{name:$('knTyp').value}};
+  if(KSCHEMA['Ansprechpartner']&&$('knAp').value.trim())props['Ansprechpartner']={rich_text:richChunks($('knAp').value.trim())};
+  if(KSCHEMA['E-Mail']&&mail)props['E-Mail']={email:mail};
+  if(KSCHEMA['Notizen']&&note)props['Notizen']={rich_text:richChunks('['+stamp+' · '+USER+'] '+note)};
+  err.textContent='';btn.disabled=true;btn.textContent='Wird angelegt …';
+  try{
+    const j=await notionCreate('kunden',props);
+    const w=$('knWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true');
+    toast(name+' in der Kundenkartei angelegt');
+    await loadKartei();
+    if(j&&j.id)openKunde(j.id);
+  }catch(x){err.textContent='Nicht angelegt: '+x.message}
+  btn.disabled=false;btn.textContent='Anlegen';
+});
+
+/* Mail-Absender einem Kunden zuordnen */
+function openAssign(m){
+  if(!KARTEI_LOADED){toast('Kundenkartei lädt noch …');return}
+  const box=$('mRead');
+  const opts=kSorted(KUNDEN).map(k=>`<option value="${k.id}">${esc(k.name)}</option>`).join('');
+  const row=document.createElement('div');row.className='kd-row';row.style.margin='8px 0';
+  row.innerHTML=`<select class="input" id="asKunde" style="width:auto;max-width:320px">${opts}</select><button class="btn btn-primary sm" id="asGo">Zuordnen</button>`;
+  const at=box.querySelector('[data-maction="tokunde"]');if(at)at.parentElement.replaceWith(row);
+  $('asGo').onclick=async()=>{
+    const k=KUNDEN.find(x=>x.id===$('asKunde').value);if(!k)return;
+    const addr=(m.addr||'').toLowerCase();
+    try{
+      if(KSCHEMA['E-Mail']&&!k.email){
+        await notionUpdate('kunden',k.id,{'E-Mail':{email:addr}});k.email=addr;k.raw['E-Mail']=addr;
+      }else{
+        const stamp=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+        const merged='['+stamp+' · '+USER+'] Weitere Mail-Adresse: '+addr+(k.notes?'\n\n'+k.notes:'');
+        await notionUpdate('kunden',k.id,{'Notizen':{rich_text:richChunks(merged)}});k.notes=merged;k.raw['Notizen']=merged;
+      }
+      rebuildMailMap();renderMails();renderKartei();toast(addr+' gehört jetzt zu '+k.name);
+    }catch(x){toast('Nicht zugeordnet: '+x.message)}
+  };
+}
 
 function updateBadges(){
   const over=TASKS.filter(t=>!t.done&&t.due<=endOfWeek()).length;
@@ -3371,13 +3932,8 @@ on('fbSend','click',async()=>{
   if(!text){err.textContent='Bitte kurz eintragen, worum es geht.';el.focus();return}
   err.textContent='';btn.disabled=true;btn.textContent='Wird gesendet …';
   try{
-    await notionCreate('aufgaben',{
-      'Aufgabe':{title:[{text:{content:'Feedback von '+USER+': '+text}}]},
-      'Bereich':{select:{name:'Feedback'}},
-      'Status':{status:{name:'Nicht begonnen'}},
-      'Prio':{select:{name:'Mittel'}}
-    });
-    el.value='';toast('Danke — landet als Aufgabe in eurem LeMatic OS');
+    await createTask({title:'Feedback von '+USER+': '+text.slice(0,300),who:'LP',due:addDays(TODAY,1)});
+    el.value='';toast('Danke — steht als Aufgabe für Lennart im Kalender');
   }catch(e){
     err.textContent='Konnte nicht gesendet werden: '+e.message;
   }
@@ -3392,14 +3948,13 @@ on('fbSend','click',async()=>{
   safe('kind',()=>setKind('Eingang'));
   safe('tasks',renderTasks);
   safe('invoices',renderInvoices);
-  safe('clients',renderClients);
+  safe('kartei',renderKartei);
   safe('leads',renderLeads);
   safe('drives',renderDriveGrid);
   safe('home',renderHome);
   safe('branding',applyBranding);
   safe('route',()=>{if(location.hash.startsWith('#/'))go(location.hash.slice(2))});
   safe('google',initGoogle);
-  safe('notion',loadNotion);
   if(restored)setTimeout(()=>toast('Gespeicherter Stand aus diesem Browser geladen'),600);
 })();
 window.addEventListener('error',e=>{console.error('Unerwarteter Fehler:',e.message)});
