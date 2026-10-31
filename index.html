@@ -547,6 +547,7 @@ body.dens-full .home-kpis .kpi{text-decoration:none;color:inherit;padding:14px 1
 .hs-ai{border-top:1px solid var(--line);border-radius:0 0 12px 12px;margin-top:4px}.hs-ai b{color:var(--brand)}
 
 /* LeMatic-Agent */
+.calshare{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.calshare label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink-2)}@media (max-width:640px){.calshare{grid-template-columns:1fr}}
 .dd-status{font-size:12.5px;color:var(--ink-2);margin:0 0 10px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.dd-status:empty{display:none}.dd-status .link{background:none;border:0;color:var(--brand);font:inherit;text-decoration:underline;cursor:pointer;padding:0}.spin.dd{width:12px;height:12px;border-color:rgba(7,61,48,.15);border-top-color:var(--brand-2)}
 .nav-ag{width:20px;height:20px;border-radius:7px;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#FCD717;font-weight:800;font-size:8.5px;letter-spacing:-.02em;display:inline-grid;place-items:center;flex:none}
 .nav-ag.lg{width:34px;height:34px;border-radius:11px;font-size:13px}
@@ -1773,6 +1774,15 @@ body.dcut .bg{filter:grayscale(.4)}
         </div>
       </header>
       <div class="grid">
+        <section class="glass panel c12" aria-labelledby="calshare-title">
+          <div class="panel-head"><div><h2 id="calshare-title">LeMatic-Kalender im eigenen Kalender</h2><p>Gibt den LeMatic-Kalender für eure privaten Google-Konten frei. Danach erscheint er auch im iPhone- und Mac-Kalender.</p></div></div>
+          <div class="calshare">
+            <label>Lennart<input class="input" id="csLP" type="email" value="lennartpost40@gmail.com"></label>
+            <label>Martin<input class="input" id="csMS" type="email" value="martinschmick@gmail.com"></label>
+            <button class="btn btn-primary sm" id="csGo">Freigeben</button>
+          </div>
+          <p class="form-err" id="csMsg" role="status"></p>
+        </section>
         <section class="glass panel c12" aria-labelledby="look-title">
           <div class="panel-head"><div><h2 id="look-title">Dein Studio</h2><p>Ansicht und Look gelten nur für dich (pro Person und Gerät gemerkt)</p></div></div>
           <div id="setPrefs"></div>
@@ -5998,6 +6008,36 @@ document.addEventListener('click',e=>{
     if(r.dataset.hs==='ai'){$('homeAsk').requestSubmit();return}
     const o=HS.list[+r.dataset.hs];$('homeAskIn').value='';openResult(o);return}
   if(!e.target.closest('.li-hero')){const box=$('homeSuggest');if(box)box.hidden=true}
+});
+
+
+/* ---------- LeMatic-Kalender für private Konten freigeben ---------- */
+function aclToken(){
+  return new Promise((res,rej)=>{
+    try{
+      const c=google.accounts.oauth2.initTokenClient({client_id:GOOGLE_CLIENT_ID,scope:'https://www.googleapis.com/auth/calendar.acls',include_granted_scopes:true,
+        callback:r=>r.error?rej(new Error(r.error)):res(r.access_token),error_callback:e=>rej(new Error(e&&e.type||'abgebrochen'))});
+      c.requestAccessToken({prompt:''});
+    }catch(e){rej(e)}
+  });
+}
+on('csGo','click',async()=>{
+  const msg=$('csMsg'),btn=$('csGo');
+  const mails=[$('csLP').value,$('csMS').value].map(x=>x.trim().toLowerCase()).filter(x=>/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/.test(x));
+  if(!GAUTH){msg.textContent='Bitte zuerst mit info@lematic.de anmelden.';return}
+  if(!mails.length){msg.textContent='Bitte mindestens eine gültige Adresse eintragen.';return}
+  btn.disabled=true;msg.style.color='';msg.textContent='Google fragt gleich einmal nach der Erlaubnis …';
+  try{
+    const tok=await aclToken();const done=[];
+    for(const m of mails){
+      const r=await fetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/acl?sendNotifications=true',{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({role:'writer',scope:{type:'user',value:m}})});
+      if(!r.ok){let t='HTTP '+r.status;try{t=(await r.json()).error.message}catch(_){}throw new Error(m+': '+t)}
+      done.push(m);
+    }
+    msg.style.color='#1d7a35';msg.textContent='✓ Freigegeben für '+done.join(' und ')+'. Ihr bekommt jeweils eine Mail von Google, dort auf „Diesen Kalender hinzufügen“ klicken.';
+    toast('Kalender freigegeben');
+  }catch(e){msg.style.color='';msg.textContent='Nicht freigegeben: '+e.message}
+  btn.disabled=false;
 });
 
 /* ---------- Zentrale Pro: gesperrte Premium-Module (Test, keine echten Käufe) ---------- */
