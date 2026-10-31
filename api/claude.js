@@ -73,7 +73,7 @@ ${c.verlauf || '(neu)'}
 ${c.frage}`,
   beleg: c => `Lies den Beleg und gib NUR ein JSON-Objekt zurück, ohne Text davor oder danach:
 {"art":"Eingang|Ausgang|Angebot","partei":"Firmenname des Lieferanten bzw. Kunden","nummer":"Rechnungsnummer oder leer",
-"datum":"JJJJ-MM-TT","betrag":Bruttobetrag als Zahl,"faellig":"JJJJ-MM-TT oder leer",
+"datum":"JJJJ-MM-TT","betrag":Bruttobetrag als Zahl,"faellig":"JJJJ-MM-TT (Fälligkeitsdatum; steht nur ein Zahlungsziel in Tagen da, z. B. zahlbar innerhalb von 30 Tagen, dann Rechnungsdatum plus diese Tage) oder leer",
 "kategorie":"Equipment|Programme|Domain|Buchhaltung|Sonstiges","beschreibung":"max. 8 Wörter, was gekauft/geleistet wurde"}
 LeMatic (Lennart Post / Martin Schmick, Geesthacht) ist der Empfänger, wenn es eine Eingangsrechnung ist.
 Kategorien: Equipment = Kamera, Licht, Ton, Technik; Programme = Software, Abos, KI-Tools; Domain = Domain, Hosting, Server;
