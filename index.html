@@ -443,7 +443,7 @@ body:has(.view[data-view="agent"].active) .li-fab,body:has(.view[data-view="ange
 .kcrow .ic{width:22px;text-align:center}.kcrow small{display:block;font-size:11px;color:var(--ink-3)}.kcrow b{display:block;font-size:13.5px;font-weight:500;word-break:break-word}
 .kcrow a{color:var(--brand);text-decoration:none}.kcrow a:hover{text-decoration:underline}
 .kmoney{display:flex;flex-direction:column;gap:6px}
-.kmrow{display:grid;grid-template-columns:74px minmax(0,1fr) 62px 86px auto;gap:10px;align-items:center;padding:9px 10px;border-radius:12px;background:rgba(29,29,31,.03);color:inherit;text-decoration:none;font-size:13px}
+.kmrow{display:grid;grid-template-columns:74px minmax(0,1fr) 62px 86px auto auto;gap:10px;align-items:center;padding:9px 10px;border-radius:12px;background:rgba(29,29,31,.03);color:inherit;text-decoration:none;font-size:13px}
 a.kmrow[href]:hover{background:rgba(7,61,48,.07)}
 .kmk{font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;background:rgba(7,61,48,.1);color:var(--brand);text-align:center}.kmk.ang{background:rgba(252,215,23,.3);color:#6b5200}
 .kmw b{display:block}.kmw small{display:block;color:var(--ink-3);font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -457,6 +457,36 @@ a.kmrow[href]:hover{background:rgba(7,61,48,.07)}
 .kfiles a:hover{background:rgba(7,61,48,.07)}.kfiles b{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.kfiles small{color:var(--ink-3)}
 @media (max-width:980px){.kkpis{grid-template-columns:repeat(2,minmax(0,1fr))}.kkpis .kkpi.hl{grid-column:1/-1}#kdSheet .kd-grid{grid-template-columns:1fr}}
 @media (max-width:640px){.modal-wrap.kd-wrap{padding:0}#kdSheet.sheet.wide{padding:20px 16px;border-radius:0;min-height:100vh}.kmrow{grid-template-columns:minmax(0,1fr) auto;row-gap:4px}.kmrow .kmk,.kmrow .kmd{display:none}.kfiles{grid-template-columns:1fr}}
+
+
+/* LI-Aktionen, Mikro */
+.li-acts{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.li-act{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px 11px;border-radius:12px;background:rgba(252,215,23,.14);border:1px solid rgba(212,166,0,.3);font-size:13px}
+.li-act b{display:block}.li-act small{display:block;color:var(--ink-2)}.li-act em{display:block;color:#A8231B;font-style:normal;font-size:12px}
+.li-act.ok{background:rgba(52,199,89,.1);border-color:rgba(52,199,89,.35)}.li-act.err{background:rgba(255,59,48,.08);border-color:rgba(255,59,48,.3)}
+.li-act .st{font-size:12px;font-weight:600;color:#1d7a35}.li-act.err .st{color:#A8231B}
+.li-acts .kd-row{margin-top:4px}
+.li-mic{flex:none;font-size:17px;width:44px;height:44px}.li-mic.on{background:#FF3B30!important;color:#fff;animation:liPulse 1.4s infinite}
+.li-hero .li-mic{width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,.14);color:#fff}
+.kmp{cursor:pointer;font-size:14px;padding:2px 4px;border-radius:8px}.kmp:hover{background:rgba(7,61,48,.1)}
+/* Erinnerungen */
+.remind-stack{position:fixed;top:16px;right:16px;z-index:85;display:flex;flex-direction:column;gap:8px;width:min(380px,calc(100vw - 32px));pointer-events:none}
+.remind{pointer-events:auto;display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px 12px 12px 14px;border-radius:16px;background:rgba(255,255,255,.95);box-shadow:0 12px 34px rgba(7,61,48,.18);border-left:4px solid #FCD717;animation:onbIn .35s both}
+.remind.soft{border-left-color:#0c5a46}.remind .rb{font-size:20px}.remind b{display:block;font-size:14px}.remind small{display:block;font-size:12.5px;color:var(--ink-2)}.remind .ra{display:flex;gap:6px;align-items:center}
+/* Rundgang */
+.tour{position:fixed;inset:0;z-index:92}
+.tour-spot{position:fixed;border-radius:16px;box-shadow:0 0 0 9999px rgba(6,38,30,.62),0 0 0 3px #FCD717;transition:all .4s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.tour-card{position:fixed;padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.98);box-shadow:0 20px 50px rgba(0,0,0,.25);transition:left .4s,top .4s}
+.tour-card small{font-size:11.5px;color:var(--ink-3);font-weight:600;letter-spacing:.04em}
+.tour-card h3{font-size:18px;margin:4px 0 6px;letter-spacing:-.01em}.tour-card p{font-size:14px;line-height:1.5;color:var(--ink-2)}
+.tc-act{display:flex;gap:8px;align-items:center;margin-top:14px}
+.tc-prog{height:4px;border-radius:9px;background:rgba(7,61,48,.1);margin-bottom:10px;overflow:hidden}.tc-prog i{display:block;height:100%;background:#0c5a46;transition:width .4s}
+.tc-auto{height:2px;margin-top:12px;background:rgba(7,61,48,.08);border-radius:9px;overflow:hidden}.tc-auto i{display:block;height:100%;width:100%;background:#FCD717;transform-origin:left;animation:tcAuto 7s linear both}
+@keyframes tcAuto{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+body.touring .li-fab{display:none}
+.view-hint{display:flex;gap:12px;align-items:center;padding:12px 16px;margin:0 0 16px;border-radius:16px;background:linear-gradient(135deg,rgba(252,215,23,.2),rgba(255,255,255,.7));border:1px solid rgba(212,166,0,.3);animation:onbIn .4s both}
+.view-hint p{flex:1;font-size:13.5px;line-height:1.5;margin:0}
+@media (prefers-reduced-motion:reduce){.tour-spot,.tour-card{transition:none}.tc-auto i{animation:none}}
 
 /* LeMatic-Agent */
 .dd-status{font-size:12.5px;color:var(--ink-2);margin:0 0 10px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.dd-status:empty{display:none}.dd-status .link{background:none;border:0;color:var(--brand);font:inherit;text-decoration:underline;cursor:pointer;padding:0}.spin.dd{width:12px;height:12px;border-color:rgba(7,61,48,.15);border-top-color:#0c5a46}
@@ -1254,7 +1284,7 @@ body.dcut .bg{filter:grayscale(.4)}
       </header>
       <div class="grid">
         <section class="glass panel c12 home-ask li-hero" aria-label="LeMatic Intelligence fragen">
-          <form id="homeAsk"><span class="nav-ag lg">LI</span><input class="input" id="homeAskIn" placeholder="Frag LeMatic Intelligence oder durchsuche alles: Kunden, Drive, Mails, Rechnungen …" aria-label="Frage an LeMatic Intelligence" autocomplete="off"><button class="btn btn-primary" type="submit">Fragen</button></form>
+          <form id="homeAsk"><span class="nav-ag lg">LI</span><input class="input" id="homeAskIn" placeholder="Frag LeMatic Intelligence oder durchsuche alles: Kunden, Drive, Mails, Rechnungen …" aria-label="Frage an LeMatic Intelligence" autocomplete="off"><button type="button" class="icon-btn li-mic" data-for="homeAskIn" aria-label="Spracheingabe" title="Reinsprechen">🎙️</button><button class="btn btn-primary" type="submit">Fragen</button></form>
           <div class="ag-sugg"><button class="chip-q" data-agq="Wie machen wir diese Woche am besten weiter? Gib mir die 5 wichtigsten Schritte mit wer und bis wann.">Wie weiter diese Woche?</button><button class="chip-q" data-agq="Wie viel haben wir insgesamt mit Rechnungen eingenommen, aufgeteilt nach Kunde?">Umsatz pro Kunde</button><button class="chip-q" data-agq="Wo liegen bei uns Rechnungen, Angebote, Verträge und das Footage?">Wo liegt was?</button><button class="chip-q" data-agq="Was ist überfällig oder bleibt gerade liegen?">Was bleibt liegen?</button><a class="chip-q" href="#/agent">Auswertung ansehen →</a></div>
         </section>
         <section class="glass panel c12" id="martinIntro" hidden aria-label="Kurze Einordnung">
@@ -1635,7 +1665,7 @@ body.dcut .bg{filter:grayscale(.4)}
             <button class="chip-q" data-agq="Zeig mir die Rechnungssummen der letzten Monate als Grafik und sag kurz, was auffällt.">Umsatz als Grafik</button>
             <button class="chip-q" data-agq="Was ist überfällig oder bleibt gerade liegen?">Was bleibt liegen?</button>
           </div>
-          <form class="ag-form" id="agForm"><textarea class="input" id="agInput" rows="2" placeholder="z. B. Was ist bei Körber offen und was sollte Martin als Nächstes tun?" aria-label="Frage an LeMatic Intelligence"></textarea><button class="btn btn-primary ag-send" id="agSend" type="submit">Fragen</button></form>
+          <form class="ag-form" id="agForm"><textarea class="input" id="agInput" rows="2" placeholder="z. B. Was ist bei Körber offen und was sollte Martin als Nächstes tun?" aria-label="Frage an LeMatic Intelligence"></textarea><button type="button" class="icon-btn li-mic" data-for="agInput" aria-label="Spracheingabe" title="Reinsprechen">🎙️</button><button class="btn btn-primary ag-send" id="agSend" type="submit">Fragen</button></form>
         </section>
         <section class="c5 ag-side" aria-labelledby="ins-title">
           <div class="glass panel">
@@ -1681,7 +1711,7 @@ body.dcut .bg{filter:grayscale(.4)}
       </header>
       <div class="grid">
         <section class="glass panel c12" aria-labelledby="onb-title">
-          <div class="setting" style="border:0;padding:0"><span><b id="onb-title" style="font-size:15px">Willkommen mit LeMatic Intelligence</b><small>Den Start-Rundgang noch einmal ansehen, so wie ihn neue Nutzer beim ersten Login sehen.</small></span><button class="btn btn-glass sm" id="onbReplay">Abspielen</button></div>
+          <div class="setting" style="border:0;padding:0"><span><b id="onb-title" style="font-size:15px">Willkommen mit LeMatic Intelligence</b><small>Den Start-Rundgang noch einmal ansehen, so wie ihn neue Nutzer beim ersten Login sehen.</small></span><span style="display:flex;gap:8px"><button class="btn btn-glass sm" id="onbReplay">Willkommen</button><button class="btn btn-primary sm" id="tourReplay">Rundgang</button></span></div>
         </section>
         <section class="glass panel c12" aria-labelledby="pt-title">
           <div class="setting" style="border:0;padding:0"><span><b id="pt-title" style="font-size:15px">Premium-Test anzeigen</b><small>Zeigt die gesperrten Zentrale-Pro-Funktionen überall im Studio. Für den Alltag ausschalten.</small></span><input type="checkbox" id="premToggle" class="chk" aria-label="Premium-Test anzeigen"></div>
@@ -2039,9 +2069,11 @@ body.dcut .bg{filter:grayscale(.4)}
   <div class="li-panel glass">
     <div class="li-head"><span class="nav-ag lg">LI</span><div><b>LeMatic Intelligence</b><small>Durchsucht Kartei, Kalender, Mails, Rechnungen und Drive</small></div><button class="icon-btn" id="liFull" title="Groß öffnen" aria-label="Groß öffnen">⤢</button><button class="icon-btn" data-liclose aria-label="Schließen">✕</button></div>
     <div class="ag-log" id="liDLog" aria-live="polite"></div>
-    <form class="ag-form" id="liDForm"><textarea class="input" id="liDIn" rows="2" placeholder="Frag mich alles über LeMatic …" aria-label="Frage an LeMatic Intelligence"></textarea><button class="btn btn-primary ag-send" type="submit">Fragen</button></form>
+    <form class="ag-form" id="liDForm"><textarea class="input" id="liDIn" rows="2" placeholder="Frag mich alles über LeMatic …" aria-label="Frage an LeMatic Intelligence"></textarea><button type="button" class="icon-btn li-mic" data-for="liDIn" aria-label="Spracheingabe" title="Reinsprechen">🎙️</button><button class="btn btn-primary ag-send" type="submit">Fragen</button></form>
   </div>
 </aside>
+<div class="remind-stack" id="remindStack" aria-live="polite"></div>
+<div class="tour" id="tour" hidden><div class="tour-spot" id="tourSpot"></div><div class="tour-card glass" id="tourCard" role="dialog" aria-label="Rundgang"></div></div>
 <!-- Willkommen mit LeMatic Intelligence -->
 <div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="Willkommen bei LeMatic Intelligence">
   <div class="onb-bg" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -3017,7 +3049,8 @@ function taskEventBody(t){
   const summary=(t.done?'✓ ':'☐ ')+t.t+' ('+NAMES[t.who]+')';
   const priv={lmTask:'1',lmWho:t.who,lmDone:t.done?'1':'0',lmDoneAt:t.doneAt||'',lmDoneBy:t.doneBy||'',lmTitle:t.t.slice(0,900),lmKid:t.kid||'',lmKname:(t.kname||'').slice(0,200),lmBy:t.by||ME};
   const description=['Aufgabe für '+NAMES[t.who],t.kname?'Kunde: '+t.kname:'','Angelegt von '+(NAMES[t.by]||USER)+' im LeMatic Studio'].filter(Boolean).join('\n');
-  const body={summary,description,colorId:t.done?TASK_COLOR.done:TASK_COLOR[t.who],extendedProperties:{private:priv},transparency:'transparent'};
+  const body={summary,description,colorId:t.done?TASK_COLOR.done:TASK_COLOR[t.who],extendedProperties:{private:priv},transparency:'transparent',
+    reminders:t.done?{useDefault:false,overrides:[]}:{useDefault:false,overrides:[{method:'popup',minutes:t.time?30:960}]}};
   if(t.time){
     const [h,m]=t.time.split(':').map(Number);const end=new Date(2000,0,1,h,m+30);
     body.start={dateTime:t.due+'T'+t.time+':00',timeZone:'Europe/Berlin'};
@@ -3225,6 +3258,7 @@ function renderInvoices(){
       <td class="r num">${i.kind==='Eingang'?'−':''}${eur(i.amount)}</td>
       <td>${st==='bezahlt'&&i.kind!=='Angebot'?`<button class="pill ok pill-btn" data-unpay="${i.id}" aria-label="${esc(i.party)} wieder als offen markieren"><i></i>${label}</button>`:i.kind!=='Angebot'?`<button class="pill ${pc} pill-btn" data-pay="${i.id}" aria-label="${esc(i.party)} als bezahlt markieren"><i></i>${label}</button>`:`<span class="pill ${pc}"><i></i>${label}</span>`}</td>
       <td><span style="display:flex;gap:2px;justify-content:flex-end">
+        ${(i.driveFileId||driveIdFrom(i.drive))?`<button class="icon-btn" data-print="${esc(i.driveFileId||driveIdFrom(i.drive))}" data-pname="${esc(i.note||'')}" aria-label="${esc(i.no||i.party)} drucken" title="Drucken">🖨️</button>`:''}
         <button class="icon-btn" data-rowdrive="${i.drive||(i.kind==='Ausgang'?AUSGANG_ROOT_URL:EINGANG_ROOT_URL)}" aria-label="${esc(i.party)} in Google Drive öffnen"><svg class="i sm"><use href="#i-open"/></svg></button>
         <button class="icon-btn" data-invdel="${i.id}" aria-label="${esc(i.party)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button>
       </span></td>
@@ -3875,6 +3909,7 @@ on('evGo','click',async()=>{
     body={summary:title,start:{dateTime:date+'T'+time+':00',timeZone:'Europe/Berlin'},end:{dateTime:endDate+'T'+pad(en.getHours())+':'+pad(en.getMinutes())+':00',timeZone:'Europe/Berlin'}};
   }else body={summary:title,start:{date},end:{date:addDays(date,1)}};
   if(ort)body.location=ort;
+  body.reminders={useDefault:false,overrides:[{method:'popup',minutes:time?30:960}]};
   body.description=[note,k?'Kunde: '+k.name:'','Angelegt von '+USER+' im LeMatic Studio'].filter(Boolean).join('\n');
   if(k)body.extendedProperties={private:{lmKid:k.id,lmKname:k.name.slice(0,200)}};
   try{
@@ -5101,7 +5136,7 @@ function kMoneyHTML(k){
     <span class="kmk ${i.kind==='Angebot'?'ang':''}">${i.kind==='Angebot'?'Angebot':'Rechnung'}</span>
     <span class="kmw"><b>${esc(i.no||'ohne Nr.')}</b><small>${esc(String(i.what||'').slice(0,70))}</small></span>
     <span class="kmd">${i.date?dm(i.date)+String(i.date).slice(2,4):''}</span>
-    <span class="kma">${eur(i.amount)}</span>${stl(i.status)}</a>`).join('')}</div>`;
+    <span class="kma">${eur(i.amount)}</span>${stl(i.status)}${driveIdFrom(i.link)?`<span class="kmp" data-print="${esc(driveIdFrom(i.link))}" data-pname="x.pdf" title="Drucken" role="button" aria-label="Drucken">🖨️</span>`:''}</a>`).join('')}</div>`;
 }
 function kContactHTML(k){
   const r=k.raw,ppl=kPeople(k),ch=Array.isArray(r['Bevorzugter Kanal'])?r['Bevorzugter Kanal']:[];
@@ -5151,16 +5186,16 @@ function agentWissen(){
   L.push('\n## Kunden ('+KUNDEN.length+', wichtigste zuerst)');
   (typeof kSorted==='function'?kSorted(KUNDEN):KUNDEN).filter(k=>notPrivate(k.name)).slice(0,90).forEach(k=>{
     const r=k.raw||{},lt=lastTouch(k);
-    L.push(`- ${k.name} | ${k.status||''} | ${k.typ||''}${r['Branche']?' | '+r['Branche']:''} | AP: ${cut(r['Ansprechpartner'],80)||'?'} | Kanal: ${Array.isArray(r['Bevorzugter Kanal'])?r['Bevorzugter Kanal'].join('/'):''} | Nächster Schritt: ${cut(r['Nächster Schritt'],140)||'-'} | Letzter Kontakt: ${lt||'?'} | Notiz: ${cut(lastNote(k),160)}`);
+    L.push(`- ${k.name} [Kunde-ID ${k.id}] | ${k.status||''} | ${k.typ||''}${r['Branche']?' | '+r['Branche']:''} | AP: ${cut(r['Ansprechpartner'],80)||'?'} | Kanal: ${Array.isArray(r['Bevorzugter Kanal'])?r['Bevorzugter Kanal'].join('/'):''} | Nächster Schritt: ${cut(r['Nächster Schritt'],140)||'-'} | Letzter Kontakt: ${lt||'?'} | Notiz: ${cut(lastNote(k),160)}`);
   });
   const g=GESPR.filter(x=>notPrivate(x.title,x.bedarf)).slice(0,30);
   if(g.length){L.push('\n## Kundengespräche (neueste zuerst)');g.forEach(x=>{const k=KUNDEN.find(q=>x.kids.includes(q.id));L.push(`- ${x.date} ${x.art||''} ${k?k.name:''}: ${cut(x.title,90)} | Bedarf: ${cut(x.bedarf,120)||'-'} | Budget: ${cut(x.budget,40)||'-'} | Chance: ${x.chance||'-'} | Nächster Schritt: ${cut(x.next,100)||'-'}`)})}
   const open=TASKS.filter(t=>!t.done&&notPrivate(t.t,t.kname)).sort((a,b)=>(a.due||'').localeCompare(b.due||''));
-  L.push('\n## Offene Aufgaben ('+open.length+')');open.slice(0,60).forEach(t=>L.push(`- fällig ${t.due||'?'}${t.time?' '+t.time:''} · ${NAMES[t.who]||t.who} · ${cut(t.t,120)}${t.kname?' · Kunde: '+t.kname:''}${t.due&&t.due<TODAY?' · ÜBERFÄLLIG':''}`));
+  L.push('\n## Offene Aufgaben ('+open.length+')');open.slice(0,60).forEach(t=>L.push(`- fällig ${t.due||'?'}${t.time?' '+t.time:''} · ${NAMES[t.who]||t.who} · ${cut(t.t,120)}${t.kname?' · Kunde: '+t.kname:''}${t.due&&t.due<TODAY?' · ÜBERFÄLLIG':''} [Aufgabe-ID ${t.id}]`));
   const done=TASKS.filter(t=>t.done&&notPrivate(t.t,t.kname)&&(t.doneAt||'').slice(0,10)>=addDays(TODAY,-21));
   if(done.length){L.push('\n## Erledigt in den letzten 3 Wochen');done.slice(0,40).forEach(t=>L.push(`- ${(t.doneAt||'').slice(0,10)} ${NAMES[t.doneBy||t.who]||''}: ${cut(t.t,100)}`))}
   const ev=EVENTS.filter(e=>e.type!=='aufgabe'&&(e.end||e.d)>=TODAY&&e.d<=addDays(TODAY,45)&&notPrivate(e.t,e.place)).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||'')));
-  if(ev.length){L.push('\n## Termine nächste 6 Wochen');ev.slice(0,40).forEach(e=>{const k=e.kid&&KUNDEN.find(q=>q.id===e.kid);L.push(`- ${e.d} ${e.time||''} ${cut(e.t,90)}${e.place?' @ '+cut(e.place,50):''}${k?' · Kunde: '+k.name:''}`)})}
+  if(ev.length){L.push('\n## Termine nächste 6 Wochen');ev.slice(0,40).forEach(e=>{const k=e.kid&&KUNDEN.find(q=>q.id===e.kid);L.push(`- ${e.d} ${e.time||''} ${cut(e.t,90)}${e.place?' @ '+cut(e.place,50):''}${k?' · Kunde: '+k.name:''}${e.gcalId?' [Termin-ID '+e.gcalId+']':''}`)})}
   const ms=agentMails().slice(0,45);
   if(ms.length){L.push('\n## Letzte Mails (info@lematic.de)');ms.forEach(m=>L.push(`- ${m.internal?iso(new Date(m.internal)):''} ${m.sent?'gesendet ':''}${cut(m.from,40)}${m.client?' [Kunde: '+m.client+']':''}: ${cut(m.subj,90)} — ${cut(m.snip,110)}`))}
   const dw=driveDocsWissen();if(dw)L.push(dw);
@@ -5250,13 +5285,13 @@ function agFormat(text){
   if(inList)html+='</ul>';
   return html+charts.map(chartCard).join('');
 }
-function agMsgHTML(m){
+function agMsgHTML(m,mi){
   if(m.role==='user')return `<div class="ag-msg me"><span>${esc(m.text)}</span><small>${esc(NAMES[m.who]||'')}</small></div>`;
   const src=(m.src||[]).length?`<div class="ag-src"><span>Gefunden in:</span>${m.src.map(s=>`<a href="${esc(s.link)}" target="_blank" rel="noopener" title="${esc(s.where||'')}">${s.ic||'📄'} ${esc(String(s.name).slice(0,42))}</a>`).join('')}</div>`:'';
-  return `<div class="ag-msg bot${m.err?' err':''}"><div class="ag-av">LI</div><div class="ag-body">${m.err?esc(m.text):agFormat(m.text)}${src}</div></div>`;
+  return `<div class="ag-msg bot${m.err?' err':''}"><div class="ag-av">LI</div><div class="ag-body">${m.err?esc(m.text):agFormat(m.text)}${liActionsHTML(m,mi)}${src}</div></div>`;
 }
 function renderAgent(){
-  const html=AG_CHAT.length?AG_CHAT.map(agMsgHTML).join(''):
+  const html=AG_CHAT.length?AG_CHAT.map((m,i)=>agMsgHTML(m,i)).join(''):
     `<div class="ag-empty"><div class="ag-av lg">LI</div><h3>Frag LeMatic Intelligence</h3><p>Sie durchsucht Kundenkartei, Kalender, Mails, Rechnungen, Akquise und euren ganzen Drive. Private Sachen kennt sie nicht.</p></div>`;
   document.querySelectorAll('.ag-log').forEach(log=>{log.innerHTML=html;log.scrollTop=log.scrollHeight});
 }
@@ -5347,7 +5382,8 @@ async function agentAsk(q){
     const verlauf=AG_CHAT.slice(-9,-1).map(m=>(m.role==='user'?(NAMES[m.who]||'Team'):'LI')+': '+String(m.text).replace(/```chart[\s\S]*?```/g,'[Grafik]').slice(0,800)).join('\n');
     const wissen=[found.text,agentWissen(),tree].filter(Boolean).join('\n\n');
     const text=await askClaude('agent',{wissen,verlauf,frage:q,user:USER,heute:TODAY});
-    AG_CHAT.push({role:'bot',text:text||'(keine Antwort)',src:found.src});
+    const ex=liExtractActions(text||'');
+    AG_CHAT.push({role:'bot',text:ex.body.trim()||(ex.acts.length?'Das kann ich für dich erledigen:':'(keine Antwort)'),src:found.src,acts:ex.acts});
   }catch(e){AG_CHAT.push({role:'bot',text:e.message,err:true})}
   agBusy=false;document.querySelectorAll('.ag-send').forEach(b=>b.disabled=false);agSave();renderAgent();
 }
@@ -5470,7 +5506,7 @@ function onbRender(){
         <div style="--d:180ms"><span>📅</span><b>Aufgaben landen im Kalender</b><small>Mit wer und bis wann. Ich erinnere, wenn etwas liegen bleibt.</small></div>
       </div>
       <form class="onb-ask" id="onbAsk"><input class="input" id="onbAskIn" placeholder="Frag mich direkt etwas, z. B. „Was steht diese Woche an?“" aria-label="Frage an LeMatic Intelligence"><button class="btn onb-btn" type="submit">Fragen</button></form>
-      <div class="onb-act"><button class="btn onb-ghost" data-onbend="heute">Zum Studio</button></div>${dots}`;
+      <div class="onb-act"><button class="btn onb-btn" data-onbtour>Rundgang starten (1 Min.)</button><button class="btn onb-ghost" data-onbend="heute">Direkt loslegen</button></div>${dots}`;
   }
   const f=o.querySelector('[data-onbnext]:not([disabled]),input');if(f&&!REDUCED)setTimeout(()=>f.focus(),60);
 }
@@ -5479,6 +5515,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-onbnext]')){ONB.step=Math.min(3,ONB.step+1);onbRender();return}
   if(e.target.closest('[data-onbskip]')){endOnboarding('heute');return}
   const g=e.target.closest('[data-onbgo]');if(g){endOnboarding(g.dataset.onbgo);return}
+  if(e.target.closest('[data-onbtour]')){endOnboarding('heute');setTimeout(startTour,REDUCED?100:700);return}
   const en=e.target.closest('[data-onbend]');if(en){endOnboarding(en.dataset.onbend);if(typeof confetti==='function')try{confetti(60)}catch(_){}}
 });
 document.addEventListener('submit',e=>{
@@ -5488,6 +5525,243 @@ document.addEventListener('submit',e=>{
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('onb').hidden)endOnboarding('heute')});
 on('onbReplay','click',()=>startOnboarding());
 
+
+/* ---------- LI kann Dinge erledigen: Aktionen mit Bestätigung ---------- */
+function liExtractActions(text){
+  let acts=[];
+  const body=String(text||'').replace(/```actions\s*([\s\S]*?)```/g,(_,j)=>{try{const a=JSON.parse(j);acts=acts.concat(Array.isArray(a)?a:[a])}catch(_){}return ''});
+  return{body,acts:acts.filter(a=>a&&a.type).slice(0,8)};
+}
+function liActLabel(a){
+  const k=a.kunde_id&&KUNDEN.find(x=>x.id===a.kunde_id);
+  const t=a.id&&TASKS.find(x=>x.id===a.id),e=a.id&&EVENTS.find(x=>x.gcalId===a.id);
+  const when=(d,tm)=>d?(d===TODAY?'heute':dm(d))+(tm?' '+tm:''):'';
+  switch(a.type){
+    case 'task_create':return['✅','Aufgabe anlegen',`${a.title} · ${NAMES[a.who]||NAMES[ME]} · ${when(a.due||addDays(TODAY,1),a.time)}${k?' · '+k.name:''}`];
+    case 'task_done':return['☑️','Als erledigt abhaken',t?t.t:'(Aufgabe nicht gefunden)'];
+    case 'task_move':return['↪️','Aufgabe verschieben',`${t?t.t:'?'} → ${when(a.due,a.time)}`];
+    case 'task_delete':return['🗑️','Aufgabe löschen',t?t.t:'(Aufgabe nicht gefunden)'];
+    case 'event_create':return['📅','Termin anlegen',`${a.title} · ${when(a.date,a.time)}${a.ort?' · '+a.ort:''}${k?' · '+k.name:''}`];
+    case 'event_move':return['↪️','Termin verschieben',`${e?e.t:'?'} → ${when(a.date,a.time)}`];
+    case 'note_add':return['📝','Notiz in Kundenkarte',`${k?k.name:'?'}: ${String(a.text||'').slice(0,90)}`];
+    default:return['⚙️',a.type,''];
+  }
+}
+async function liRunAction(a){
+  const k=a.kunde_id&&KUNDEN.find(x=>x.id===a.kunde_id);
+  const cal='https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events';
+  if(a.type==='task_create'){await createTask({title:String(a.title).slice(0,300),who:a.who==='LP'||a.who==='MS'?a.who:ME,due:a.due||addDays(TODAY,1),time:a.time||null,kid:k?k.id:'',kname:k?k.name:''});return 'angelegt'}
+  if(a.type==='task_done'||a.type==='task_delete'||a.type==='task_move'){
+    const t=TASKS.find(x=>x.id===a.id);if(!t)throw new Error('Aufgabe nicht gefunden');
+    if(a.type==='task_done'){await toggleTask(t,true);return 'abgehakt'}
+    if(a.type==='task_delete'){await deleteTask(t);return 'gelöscht'}
+    const old={due:t.due,time:t.time};t.due=a.due||t.due;if(a.time!==undefined)t.time=a.time||null;
+    try{await gfetch(cal+'/'+encodeURIComponent(t.id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))})}
+    catch(e){Object.assign(t,old);throw e}
+    syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome);return 'verschoben';
+  }
+  if(a.type==='event_create'){
+    const date=a.date||TODAY,time=a.time||'',dur=+a.dauer_min||60;let body;
+    if(time){const [hh,mm]=time.split(':').map(Number);const st=new Date(date+'T00:00:00');st.setHours(hh,mm);const en=new Date(st.getTime()+dur*60000);
+      body={summary:a.title,start:{dateTime:date+'T'+time+':00',timeZone:'Europe/Berlin'},end:{dateTime:iso(en)+'T'+pad(en.getHours())+':'+pad(en.getMinutes())+':00',timeZone:'Europe/Berlin'}}}
+    else body={summary:a.title,start:{date},end:{date:addDays(date,1)}};
+    if(a.ort)body.location=a.ort;
+    body.description=[k?'Kunde: '+k.name:'','Angelegt von '+USER+' über LeMatic Intelligence'].filter(Boolean).join('\n');
+    if(k)body.extendedProperties={private:{lmKid:k.id,lmKname:k.name.slice(0,200)}};
+    body.reminders={useDefault:false,overrides:[{method:'popup',minutes:time?30:600}]};
+    const j=await (await gfetch(cal,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
+    EVENTS.push({d:date,time:time||null,t:a.title,type:'privat',p:k?k.name:'LeMatic',gcalId:j.id,link:j.htmlLink,kid:k?k.id:'',place:a.ort||''});
+    safe('calR',renderCal);safe('homeR',renderHome);return 'angelegt';
+  }
+  if(a.type==='event_move'){
+    const ev=await (await gfetch(cal+'/'+encodeURIComponent(a.id))).json();
+    let patch;
+    if(ev.start&&ev.start.dateTime){
+      const dur=new Date(ev.end.dateTime)-new Date(ev.start.dateTime);
+      const oldT=ev.start.dateTime.slice(11,16);const time=a.time||oldT;const date=a.date||ev.start.dateTime.slice(0,10);
+      const st=new Date(date+'T'+time+':00');const en=new Date(st.getTime()+dur);
+      patch={start:{dateTime:date+'T'+time+':00',timeZone:'Europe/Berlin'},end:{dateTime:iso(en)+'T'+pad(en.getHours())+':'+pad(en.getMinutes())+':00',timeZone:'Europe/Berlin'}};
+    }else{
+      const days=Math.max(1,diffDays(ev.end.date,ev.start.date));const date=a.date||ev.start.date;
+      patch={start:{date},end:{date:addDays(date,days)}};
+    }
+    await gfetch(cal+'/'+encodeURIComponent(a.id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(patch)});
+    const e=EVENTS.find(x=>x.gcalId===a.id);if(e){e.d=a.date||e.d;if(a.time)e.time=a.time}
+    safe('calR',renderCal);safe('homeR',renderHome);return 'verschoben';
+  }
+  if(a.type==='note_add'){
+    if(!k)throw new Error('Kunde nicht gefunden');
+    const stamp=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const merged='['+stamp+' · '+USER+'] '+String(a.text||'').trim()+(k.notes?'\n\n'+k.notes:'');
+    await notionUpdate('kunden',k.id,{'Notizen':{rich_text:richChunks(merged)}});
+    k.notes=merged;k.raw['Notizen']=merged;safe('kartR',renderKartei);if(kOpen===k.id)safe('ks',()=>renderKundeSheet(k.id));
+    return 'gespeichert';
+  }
+  throw new Error('Unbekannte Aktion');
+}
+function liActionsHTML(m,mi){
+  if(!m.acts||!m.acts.length)return '';
+  const allDone=m.acts.every(a=>a._st==='ok');
+  return `<div class="li-acts">${m.acts.map((a,i)=>{const [ic,l,d]=liActLabel(a);return `<div class="li-act ${a._st||''}"><span class="ic">${ic}</span><span><b>${esc(l)}</b><small>${esc(d)}</small>${a._err?`<em>${esc(a._err)}</em>`:''}</span><span class="st">${a._st==='ok'?'✓ '+esc(a._res||'erledigt'):a._st==='err'?'Fehler':''}</span></div>`}).join('')}
+    ${allDone?'':`<div class="kd-row"><button class="btn btn-primary sm" data-lirun="${mi}">${m.acts.length>1?'Alle ausführen':'Ausführen'}</button><button class="btn btn-glass sm" data-lino="${mi}">Lieber nicht</button></div>`}</div>`;
+}
+document.addEventListener('click',async e=>{
+  const r=e.target.closest('[data-lirun]'),n=e.target.closest('[data-lino]');
+  if(n){const m=AG_CHAT[+n.dataset.lino];if(m){m.acts=[];agSave();renderAgent()}return}
+  if(!r)return;
+  const m=AG_CHAT[+r.dataset.lirun];if(!m||!m.acts)return;
+  r.disabled=true;r.textContent='Wird ausgeführt …';
+  for(const a of m.acts){if(a._st==='ok')continue;try{a._res=await liRunAction(a);a._st='ok';a._err=''}catch(x){a._st='err';a._err=x.message}}
+  agSave();renderAgent();
+  const ok=m.acts.filter(a=>a._st==='ok').length;toast(ok===m.acts.length?'Erledigt: '+ok+(ok===1?' Aktion':' Aktionen'):ok+' von '+m.acts.length+' ausgeführt');
+});
+
+/* ---------- Spracheingabe ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function liMicSetup(){
+  document.querySelectorAll('.li-mic').forEach(b=>{b.hidden=!SR});
+}
+let liRec=null;
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.li-mic');if(!b||!SR)return;
+  e.preventDefault();
+  if(liRec){liRec.stop();return}
+  const inp=$(b.dataset.for);if(!inp)return;
+  const rec=new SR();rec.lang='de-DE';rec.interimResults=true;rec.continuous=false;liRec=rec;
+  const base=inp.value?inp.value.trim()+' ':'';
+  b.classList.add('on');
+  rec.onresult=ev=>{let t='';for(const r of ev.results)t+=r[0].transcript;inp.value=base+t};
+  rec.onerror=ev=>{if(ev.error==='not-allowed')toast('Mikrofon nicht erlaubt. In den Browser-Einstellungen freigeben.')};
+  rec.onend=()=>{b.classList.remove('on');liRec=null;if(inp.value.trim()&&inp.form)inp.form.requestSubmit()};
+  rec.start();
+});
+
+/* ---------- Erinnerungen, die direkt auftauchen ---------- */
+let remindSeen={};try{remindSeen=JSON.parse(sessionStorage.getItem('lm_remind')||'{}')||{}}catch(_){}
+function remindNotify(title,body){
+  try{if('Notification' in window&&Notification.permission==='granted'){new Notification(title,{body,icon:'logo.png',tag:title+body});}}catch(_){}
+}
+function remindShow(key,title,body,go){
+  if(remindSeen[key])return;remindSeen[key]=1;try{sessionStorage.setItem('lm_remind',JSON.stringify(remindSeen))}catch(_){}
+  const box=$('remindStack');if(!box)return;
+  const el=document.createElement('div');el.className='remind glass';
+  el.innerHTML=`<span class="rb">🔔</span><span><b>${esc(title)}</b><small>${esc(body)}</small></span><span class="ra">${go?`<button class="btn btn-primary sm" data-rgo="${esc(go)}">Öffnen</button>`:''}<button class="icon-btn" data-rx aria-label="Erinnerung schließen">✕</button></span>`;
+  box.appendChild(el);remindNotify(title,body);
+  if('Notification' in window&&Notification.permission==='default'&&!remindSeen._asked){remindSeen._asked=1;
+    const ask=document.createElement('div');ask.className='remind glass soft';ask.innerHTML='<span class="rb">💡</span><span><b>Auch als Mitteilung aufs Gerät?</b><small>Dann erscheinen Erinnerungen auch, wenn das Studio im Hintergrund offen ist.</small></span><span class="ra"><button class="btn btn-glass sm" data-rperm>Erlauben</button><button class="icon-btn" data-rx aria-label="Schließen">✕</button></span>';box.appendChild(ask)}
+}
+function remindTick(){
+  if(!GAUTH||!CAL_LOADED)return;
+  const now=new Date(),nowM=now.getHours()*60+now.getMinutes();
+  const toM=t=>{const [h,m]=String(t).split(':').map(Number);return h*60+m};
+  EVENTS.filter(e=>e.d===TODAY&&e.time&&e.type!=='aufgabe').forEach(e=>{const d=toM(e.time)-nowM;if(d>=0&&d<=15)remindShow('ev'+(e.gcalId||e.t)+e.time,d<=1?'Jetzt: '+e.t:'In '+d+' Min: '+e.t,(e.place?e.place+' · ':'')+e.time+' Uhr','kalender')});
+  TASKS.filter(t=>!t.done&&t.who===ME&&t.due===TODAY&&t.time).forEach(t=>{const d=toM(t.time)-nowM;if(d>=0&&d<=15)remindShow('tk'+t.id,'Aufgabe gleich fällig: '+t.t,t.time+' Uhr'+(t.kname?' · '+t.kname:''),'aufgaben')});
+  const over=TASKS.filter(t=>!t.done&&t.who===ME&&t.due&&t.due<TODAY);
+  const today=TASKS.filter(t=>!t.done&&t.who===ME&&t.due===TODAY&&!t.time);
+  if(over.length)remindShow('over'+TODAY+ME,over.length+(over.length===1?' Aufgabe ist überfällig':' Aufgaben sind überfällig'),over.slice(0,2).map(t=>t.t).join(' · '),'aufgaben');
+  if(today.length)remindShow('today'+TODAY+ME,'Heute für dich: '+today.length+(today.length===1?' Aufgabe':' Aufgaben'),today.slice(0,3).map(t=>t.t).join(' · '),'aufgaben');
+}
+document.addEventListener('click',e=>{
+  const x=e.target.closest('[data-rx]');if(x){x.closest('.remind').remove();return}
+  const g=e.target.closest('[data-rgo]');if(g){location.hash='#/'+g.dataset.rgo;g.closest('.remind').remove();return}
+  if(e.target.closest('[data-rperm]')){try{Notification.requestPermission().then(p=>toast(p==='granted'?'Mitteilungen sind an.':'Mitteilungen bleiben aus.'))}catch(_){}e.target.closest('.remind').remove()}
+});
+setInterval(()=>safe('remind',remindTick),30000);
+setTimeout(()=>safe('remind',remindTick),6000);
+
+/* ---------- Drucken ---------- */
+function driveIdFrom(s){const m=/\/d\/([\w-]{20,})|[?&]id=([\w-]{20,})/.exec(String(s||''));return m?(m[1]||m[2]):''}
+async function printDriveFile(id,name){
+  if(!id){toast('Keine Datei zum Drucken gefunden.');return}
+  toast('Wird zum Drucken vorbereitet …');
+  try{
+    const blob=await (await gfetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media&supportsAllDrives=true')).blob();
+    const url=URL.createObjectURL(blob);
+    if(/pdf/.test(blob.type)||/\.pdf$/i.test(name||'')){
+      const f=document.createElement('iframe');f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';f.src=url;document.body.appendChild(f);
+      f.onload=()=>{try{f.contentWindow.focus();f.contentWindow.print()}catch(_){window.open(url,'_blank')}setTimeout(()=>{f.remove();URL.revokeObjectURL(url)},60000)};
+    }else{const w=window.open('','_blank');if(w){w.document.write(`<img src="${url}" style="max-width:100%" onload="print()">`)}}
+  }catch(e){toast('Drucken nicht möglich: '+e.message)}
+}
+document.addEventListener('click',e=>{
+  const p=e.target.closest('[data-print]');if(!p)return;
+  e.preventDefault();e.stopPropagation();printDriveFile(p.dataset.print,p.dataset.pname||'');
+},true);
+
+/* ---------- Geführter Rundgang ---------- */
+const TOUR=[
+  {r:'heute',sel:'.li-hero',t:'Alles beginnt hier',d:'Oben fragst du LeMatic Intelligence. Sie durchsucht Kunden, Drive, Mails, Kalender und Rechnungen und kann Dinge für dich erledigen: „Leg Martin für Freitag ‚Angebot an Fronius‘ an.“'},
+  {r:'heute',sel:'#week',t:'Deine Woche',d:'Drehs, Termine und Aufgaben der Woche auf einen Blick. Alles kommt live aus dem LeMatic-Kalender.'},
+  {r:'heute',sel:'#homeRadar',t:'Nachfassen',d:'Wer länger nichts von uns gehört hat, landet hier. Ein Klick legt dir die Nachfass-Aufgabe in den Kalender.'},
+  {r:'mails',sel:'[data-route="mails"]',t:'Postfach info@lematic.de',d:'Alle Mails, automatisch dem richtigen Kunden zugeordnet. Aus jeder Mail: Antwort entwerfen, Termin oder Aufgabe daraus machen.'},
+  {r:'kalender',sel:'[data-route="kalender"]',t:'Kalender',d:'Termine anlegen, Kunden zuordnen. Kurz vorher erscheint eine Erinnerung oben rechts.'},
+  {r:'aufgaben',sel:'[data-route="aufgaben"]',t:'Aufgaben',d:'Jede Aufgabe ist ein Kalendereintrag mit wer und bis wann. Abhaken gilt sofort für euch beide.'},
+  {r:'rechnungen',sel:'#dz',t:'Rechnungen einfach reinziehen',d:'PDF oder Foto ablegen. Das Studio erkennt Kunde, Nummer und Betrag und sortiert die Datei selbst in den richtigen Drive-Ordner.'},
+  {r:'angebot',sel:'[data-route="angebot"]',t:'Angebotsrechner',d:'Kunden aus der Kartei übernehmen, kalkulieren, PDF erzeugen. Das fertige Angebot liegt automatisch in Drive und Notion.'},
+  {r:'kunden',sel:'[data-route="kunden"]',t:'Kundenkartei',d:'Jeder Kunde hat eine eigene Seite: Ansprechpartner, Umsatz, Rechnungen, Projekte, Gespräche, Mails und Dateien.'},
+  {r:'agent',sel:'#agCharts',t:'Auswertung',d:'Live-Grafiken aus euren Zahlen. „Auswerten“ lässt LeMatic Intelligence erklären, was auffällt.'},
+  {r:'heute',sel:'#liFab',t:'Immer dabei',d:'Von jeder Seite aus erreichbar: unten rechts oder mit ⌘J. Du kannst auch einfach reinsprechen. Viel Spaß!'}
+];
+let tourI=-1,tourT=null,tourAuto=true;
+function startTour(){tourI=-1;tourAuto=true;$('tour').hidden=false;document.body.classList.add('touring');tourNext()}
+function endTour(){clearTimeout(tourT);$('tour').hidden=true;document.body.classList.remove('touring');tourI=-1;try{localStorage.setItem('lm_tour_done_'+ME,'1')}catch(_){};location.hash='#/heute'}
+function tourNext(dir){
+  clearTimeout(tourT);tourI+=dir||1;
+  if(tourI>=TOUR.length){endTour();if(typeof confetti==='function')try{confetti(70)}catch(_){};toast('Rundgang fertig. Frag LeMatic Intelligence, wenn du etwas suchst.');return}
+  if(tourI<0)tourI=0;
+  const s=TOUR[tourI];
+  if(location.hash!=='#/'+s.r)location.hash='#/'+s.r;
+  setTimeout(()=>tourPlace(s),REDUCED?50:380);
+}
+function tourPlace(s){
+  let el=document.querySelector(s.sel);
+  if(el&&!el.offsetParent&&!(el.getClientRects().length)){el=null}
+  const spot=$('tourSpot'),card=$('tourCard');
+  if(el){el.scrollIntoView({block:'center',behavior:'auto'})}
+  setTimeout(()=>{
+    const r=el?el.getBoundingClientRect():{left:innerWidth/2-120,top:innerHeight/2-40,width:240,height:80};
+    const pad=8;spot.style.cssText=`left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px`;
+    card.innerHTML=`<div class="tc-prog"><i style="width:${(tourI+1)/TOUR.length*100}%"></i></div><small>${tourI+1} von ${TOUR.length}</small><h3>${esc(s.t)}</h3><p>${esc(s.d)}</p>
+      <div class="tc-act"><button class="btn btn-glass sm" data-tour="end">Beenden</button><span style="flex:1"></span>${tourI?'<button class="btn btn-glass sm" data-tour="back">Zurück</button>':''}<button class="btn btn-primary sm" data-tour="next">${tourI===TOUR.length-1?'Fertig':'Weiter'}</button></div>${tourAuto?'<div class="tc-auto"><i></i></div>':''}`;
+    const cw=Math.min(340,innerWidth-24),below=r.top+r.height+16+190<innerHeight;
+    let left=Math.min(Math.max(12,r.left),innerWidth-cw-12),top=below?r.top+r.height+16:Math.max(12,r.top-200);
+    if(r.left+r.width+cw+24<innerWidth&&r.height>innerHeight*.5){left=r.left+r.width+16;top=Math.max(12,r.top)}
+    card.style.cssText=`left:${left}px;top:${top}px;width:${cw}px`;
+    if(tourAuto)tourT=setTimeout(()=>tourNext(),7000);
+  },REDUCED?0:420);
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-tour]');if(!b)return;
+  tourAuto=false;const a=b.dataset.tour;
+  if(a==='end')endTour();else if(a==='back')tourNext(-1);else tourNext(1);
+});
+document.addEventListener('keydown',e=>{if(!document.body.classList.contains('touring'))return;if(e.key==='Escape')endTour();if(e.key==='ArrowRight'){tourAuto=false;tourNext(1)}if(e.key==='ArrowLeft'){tourAuto=false;tourNext(-1)}});
+on('tourReplay','click',()=>startTour());
+
+/* Kleine Erklärungen beim ersten Besuch jeder Seite */
+const VIEW_HINT={
+  mails:'Klick auf eine Mail zeigt rechts den Kundenkontext. Mit „Antwort entwerfen“ schreibt LeMatic Intelligence einen Vorschlag.',
+  kalender:'Auf einen Tag klicken und „Termin“ wählen. Ordnest du einen Kunden zu, taucht der Termin auch in seiner Kundenseite auf.',
+  aufgaben:'Aufgabe eintragen, wer und bis wann: landet im LeMatic-Kalender. Abhaken sieht der andere sofort.',
+  rechnungen:'Einfach die Rechnung reinziehen. Das Studio liest sie, schlägt den Ordner vor und legt sie nach 5 Sekunden selbst ab.',
+  angebot:'Schritt für Schritt durch: Kunde, Projekt, Leistung, Rechte, Kalkulation. Am Ende „PDF herunterladen“, dann liegt es auch in Drive.',
+  kunden:'Kunden-Kärtchen anklicken öffnet die große Kundenseite mit allem, was wir über den Kunden wissen.',
+  akquise:'Leads aus Notion. Ein Klick auf die Phase verschiebt sie, ausgeblendete Leads verschwinden für euch beide.',
+  agent:'Frag in normalen Sätzen. Willst du etwas ändern, schlägt LeMatic Intelligence es vor und du bestätigst mit „Ausführen“. Das Mikro nimmt Sprache an.'
+};
+function viewHint(v){
+  const txt=VIEW_HINT[v];if(!txt||document.body.classList.contains('touring'))return;
+  let seen={};try{seen=JSON.parse(localStorage.getItem('lm_hints_'+ME)||'{}')||{}}catch(_){}
+  if(seen[v])return;
+  const view=document.querySelector('.view[data-view="'+v+'"]');if(!view||view.querySelector('.view-hint'))return;
+  const h=document.createElement('div');h.className='view-hint glass';
+  h.innerHTML=`<span class="nav-ag">LI</span><p>${esc(txt)}</p><button class="btn btn-glass sm" data-hintok="${v}">Verstanden</button>`;
+  const head=view.querySelector('.topbar');head?head.insertAdjacentElement('afterend',h):view.prepend(h);
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-hintok]');if(!b)return;let seen={};try{seen=JSON.parse(localStorage.getItem('lm_hints_'+ME)||'{}')||{}}catch(_){}seen[b.dataset.hintok]=1;try{localStorage.setItem('lm_hints_'+ME,JSON.stringify(seen))}catch(_){}b.closest('.view-hint').remove()});
+window.addEventListener('hashchange',()=>{if(GAUTH)setTimeout(()=>safe('hint',()=>viewHint(location.hash.slice(2).split('/')[0])),200)});
+
+liMicSetup();
 /* ---------- Zentrale Pro: gesperrte Premium-Module (Test, keine echten Käufe) ---------- */
 const PREMIUM={
   calls:{ic:'🎙️',name:'Anruf-Assistent',price:39,pitch:'Telefonat aufnehmen oder hochladen, fertig ist das Gesprächsprotokoll.',
