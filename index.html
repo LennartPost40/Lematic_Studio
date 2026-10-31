@@ -72,6 +72,8 @@ body.w-center .app{max-width:1580px}
 .clients a.active i{background:var(--brand);box-shadow:0 0 0 3px var(--yellow-soft)}
 .clients a small{margin-left:auto;font-size:12px;color:var(--ink-3);font-weight:500}
 .side-bottom{margin-top:auto;padding-top:16px}
+.clients{flex:0 1 auto;min-height:40px;overflow:auto}.sidebar>*:not(.clients){flex-shrink:0}
+@media (max-height:980px){.nav a{padding:8px 12px}.brand{padding-bottom:14px}.side-label{padding-top:12px}}
 .user{display:flex;align-items:center;gap:10px;padding:10px 8px 4px;border-top:1px solid var(--line)}
 .user strong{display:block;font-size:13px}
 .user span{font-size:12px;color:var(--ink-2)}
@@ -696,7 +698,7 @@ body.no-prem .prem{display:none!important}
 .prem-card .pc-foot b{font-size:18px}
 .prem-card .pc-foot small{font-size:11.5px;color:var(--ink-3)}
 .prem-card.pc-unlocked::after{content:none}
-.prem-card::after{content:"🔒";position:absolute;top:14px;right:14px;font-size:14px;opacity:.6}
+.prem-card::after{content:"";width:14px;height:14px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Crect x='5' y='10.5' width='14' height='10' rx='2.5'/%3E%3Cpath d='M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Crect x='5' y='10.5' width='14' height='10' rx='2.5'/%3E%3Cpath d='M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5'/%3E%3C/svg%3E") center/contain no-repeat;position:absolute;top:14px;right:14px;font-size:14px;opacity:.6}
 .prem-sheet{width:min(520px,100%);padding:0;overflow:hidden}
 .prem-sheet .ph{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;padding:22px 24px}
 .prem-sheet .ph .pc-ic{font-size:34px}
@@ -705,7 +707,7 @@ body.no-prem .prem{display:none!important}
 .prem-sheet .pb{padding:18px 24px 22px}
 .prem-sheet ul{list-style:none;padding:0;margin:0 0 14px;display:flex;flex-direction:column;gap:8px}
 .prem-sheet li{font-size:13.5px;display:flex;gap:8px}
-.prem-sheet li::before{content:"✓";color:#1d7a35;font-weight:700}
+.prem-sheet li::before{content:"·";color:#1d7a35;font-weight:700}
 .prem-sheet .pp{display:flex;align-items:baseline;gap:8px;margin-bottom:14px}
 .prem-sheet .pp b{font-size:28px}
 .prem-sheet .pp span{font-size:12.5px;color:var(--ink-3)}
@@ -1108,7 +1110,9 @@ body.li-open .remind-stack,body.onb-open .remind-stack{visibility:hidden}
 @media (prefers-reduced-motion:reduce){.tp-card{animation:none}.tp-load .nav-ag{animation:none}}
 
 /* ============ Gelee-Look ============ */
-.gel-bg,.hst-tiles,.hst-world{display:none}
+.gel-bg,.hst-world{display:none}
+.hst-tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;width:min(860px,100vw - 40px);margin-top:26px}
+@media (max-width:760px){.hst-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
 body.look-gelee{--font:"Poppins",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;--r-panel:32px;--r-item:20px;
   --glass:rgba(255,255,255,.46);--glass-hi:rgba(255,255,255,.92);--stroke:rgba(255,255,255,.85);
   --shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.35),0 30px 60px -38px rgba(20,52,44,.38),0 2px 10px -4px rgba(20,52,44,.08);
@@ -1242,7 +1246,7 @@ button.fs-row{cursor:pointer;transition:transform .35s cubic-bezier(.34,1.56,.64
 @keyframes clapSnap{0%,25%{transform:rotate(-24deg)}38%{transform:rotate(0)}100%{transform:rotate(0)}}
 @keyframes clapIn{0%{opacity:0;transform:translate(-50%,-44%) scale(.9)}15%{opacity:1;transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-56%)}}
 .fx-coins{position:absolute;inset:0;pointer-events:none!important}
-.fx-coins i{position:absolute;top:-8vh;font-style:normal;font-size:calc(26px*var(--s));animation:coinFall 2s cubic-bezier(.45,0,.75,1) both}
+.fx-coins i{position:absolute;top:-8vh;font-style:normal;width:calc(26px*var(--s));height:calc(26px*var(--s));border-radius:50%;display:grid;place-items:center;font-size:calc(13px*var(--s));font-weight:800;color:#8A6400;background:radial-gradient(circle at 35% 30%,#FFF3A6,#FCD717 45%,#D4A600 85%);box-shadow:inset 0 0 0 2px rgba(138,100,0,.35),0 3px 6px -2px rgba(0,0,0,.25);animation:coinFall 2s cubic-bezier(.45,0,.75,1) both}
 @keyframes coinFall{to{transform:translateY(118vh) rotate(var(--r))}}
 .fx-drone{position:absolute;border:0;background:none;padding:6px;cursor:pointer;animation:droneLtr 8.5s linear both}
 .fx-drone.rtl{animation-name:droneRtl}.fx-drone.rtl svg{transform:scaleX(-1)}
@@ -1261,12 +1265,118 @@ button.fs-row{cursor:pointer;transition:transform .35s cubic-bezier(.34,1.56,.64
 .fun-cookie{color:var(--ink-3)}
 .fx-saison{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .home-stage>.hst-in,.home-stage>.hst-down{position:relative;z-index:1}
-.fx-saison i{position:absolute;top:-6%;font-style:normal;font-size:calc(20px*var(--s));opacity:.75;animation:saisonFall linear infinite}
+.fx-saison i{position:absolute;top:-6%;font-style:normal;opacity:.8;animation:saisonFall linear infinite;transform-origin:center}.fx-saison i svg{width:calc(20px*var(--s));height:calc(20px*var(--s));display:block}
 @keyframes saisonFall{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(var(--sw),25vh) rotate(90deg)}50%{transform:translate(0,50vh) rotate(180deg)}75%{transform:translate(calc(var(--sw)*-1),75vh) rotate(270deg)}100%{transform:translate(0,105vh) rotate(360deg)}}
 body.fun-disco .btn-primary,body.fun-disco .nav a.active,body.fun-disco .hst-chip,body.fun-disco .pill-btn{animation:disco 3s linear infinite}
 @keyframes disco{to{filter:hue-rotate(360deg)}}
 body.fun-korn::after{content:"";position:fixed;inset:0;z-index:97;pointer-events:none;opacity:.09;mix-blend-mode:multiply;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 @media (prefers-reduced-motion:reduce){.fs-plant,body.fun-disco .btn-primary,body.fun-disco .nav a.active,body.fun-disco .hst-chip{animation:none}}
+
+/* ===== Kalender neu ===== */
+.t-termin{background:rgba(10,132,255,.13);color:#0050A8}
+.t-schnitt{background:rgba(126,87,194,.15);color:#53309A}
+.t-akquise{background:rgba(224,138,0,.16);color:#8A4F00}
+.t-belegt{background:repeating-linear-gradient(135deg,rgba(229,72,77,.16) 0 6px,rgba(229,72,77,.24) 6px 12px);color:#A0161B}
+.ev.done,.wk-ev.done,.dayev.done h3{opacity:.5;text-decoration:line-through}
+.ev .ev-chk,.wk-ev .ev-chk,.dayev .ev-chk{display:inline-block;width:10px;height:10px;border:1.5px solid currentColor;border-radius:3px;margin-right:4px;vertical-align:-1px;opacity:.8}
+.ev-chk.on{background:currentColor}
+.ev em{font-style:normal;opacity:.6;font-size:10px}
+.ev .i{margin-right:3px;vertical-align:-2px}
+.cal-main .panel-head{margin-bottom:10px}
+#legendCal{margin-bottom:12px}
+.month .cell{position:relative;cursor:pointer;text-align:left}
+.cell-add{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;border:0;background:var(--brand);color:#fff;display:grid;place-items:center;opacity:0;transition:opacity .15s,transform .3s cubic-bezier(.34,1.56,.64,1);cursor:pointer}
+.cell:hover .cell-add,.cell.sel .cell-add{opacity:1}.cell-add:hover{transform:scale(1.12)}
+@media (hover:none){.cell.sel .cell-add{opacity:1}}
+.cell .ev.mc{cursor:pointer;margin-top:3px}
+.wk{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:rgba(255,255,255,.45)}
+.wk-head,.wk-allrow{display:grid;grid-template-columns:52px repeat(7,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.wk-dh{border:0;background:none;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;font:inherit;color:var(--ink-2)}
+.wk-dh span{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}.wk-dh b{font-size:17px;color:var(--ink);width:30px;height:30px;display:grid;place-items:center;border-radius:50%}
+.wk-dh.today b{background:var(--brand);color:#fff}.wk-dh.sel:not(.today) b{background:rgba(7,61,48,.1)}
+.wk-gl{font-size:10.5px;color:var(--ink-3);display:flex;align-items:center;justify-content:center}
+.wk-all{min-height:34px;padding:4px 3px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:3px;cursor:copy}
+.wk-all .ev{cursor:pointer}
+.wk-scroll{max-height:min(62vh,640px);overflow:auto;position:relative}
+.wk-body{position:relative;display:grid;grid-template-columns:52px repeat(7,minmax(0,1fr))}
+.wk-gut{position:relative}
+.wk-hr{position:absolute;left:0;right:0;font-size:10.5px;color:var(--ink-3);text-align:right;padding-right:8px;transform:translateY(-6px)}
+.wk-col{position:relative;border-left:1px solid var(--line);background-image:repeating-linear-gradient(180deg,transparent 0 calc(var(--wkpx,46px) - 1px),rgba(29,29,31,.06) calc(var(--wkpx,46px) - 1px) var(--wkpx,46px));cursor:copy}
+.wk-col.today{background-color:rgba(252,215,23,.05)}
+.wk-ev{position:absolute;border-radius:8px;padding:3px 6px;font-size:11.5px;line-height:1.25;overflow:hidden;cursor:pointer;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 2px 6px -3px rgba(0,0,0,.2);border-left:3px solid currentColor;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.wk-ev:hover{transform:scale(1.02);z-index:2}
+.wk-ev b{display:block;font-size:10.5px;font-weight:700;opacity:.8}.wk-ev span{display:block;font-weight:600}
+.wk-now{position:absolute;left:-1px;right:0;height:2px;background:#E5484D;z-index:3}.wk-now::before{content:"";position:absolute;left:-4px;top:-4px;width:10px;height:10px;border-radius:50%;background:#E5484D}
+.dayev{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;width:100%;text-align:left;border:0;background:none;font:inherit;color:inherit;padding:10px 8px;border-radius:14px;cursor:pointer;transition:background .15s}
+.dayev:hover{background:rgba(255,255,255,.6)}
+.dayev time small{display:block;font-size:11px;color:var(--ink-3)}
+.dayev .ev{display:inline-flex;align-items:center}
+.dayev p{flex-wrap:wrap}
+.dpl{font-size:12px;color:var(--ink-3)}
+.day-stand{display:inline-block;width:60px;height:5px;border-radius:3px;background:rgba(229,72,77,.15);overflow:hidden}.day-stand i{display:block;height:100%;background:#E5484D}
+.day-empty{width:100%;display:flex;align-items:center;gap:8px;justify-content:center;padding:22px 12px;border:1.5px dashed rgba(7,61,48,.2);border-radius:16px;background:none;color:var(--ink-2);font:inherit;font-size:13.5px;cursor:pointer}
+.day-empty:hover{border-color:var(--brand);color:var(--brand)}
+/* Eintrag-Popover */
+.entry-pop{position:fixed;z-index:150;width:min(340px,calc(100vw - 20px));padding:14px 16px;border-radius:18px;background:rgba(252,253,252,.98)!important;box-shadow:0 22px 60px -20px rgba(20,52,44,.4);animation:epIn .25s cubic-bezier(.34,1.56,.64,1)}
+@keyframes epIn{from{opacity:0;transform:scale(.96)}}
+.ep-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.ep-art{display:inline-flex;align-items:center;gap:5px;border:0;border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;font-weight:650;cursor:pointer}
+.entry-pop h3{font-size:16px;font-weight:650;line-height:1.3;margin-bottom:6px}.entry-pop h3.ep-done{text-decoration:line-through;opacity:.55}
+.ep-meta{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2);margin-top:3px}
+.ep-link{border:0;background:none;color:var(--brand);font:inherit;cursor:pointer;padding:0}
+.ep-note{font-size:13px;margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(29,29,31,.04);white-space:pre-wrap}
+.ep-stand{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:12.5px;color:var(--ink-2)}.ep-stand input{flex:1;accent-color:#E5484D}
+.ep-act{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.ep-act .btn{height:32px;padding:0 12px;font-size:13px;gap:5px}
+.ep-del:hover{color:#B5000F}
+/* Eintrag-Dialog */
+.ev-sheet{width:min(620px,96vw)}
+.art-pick{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}
+.art-pick .ap{display:inline-flex;align-items:center;gap:6px;border:1.5px solid transparent;border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;opacity:.6;transition:opacity .15s,transform .3s cubic-bezier(.34,1.56,.64,1),border-color .15s}
+.art-pick .ap:hover{opacity:.9}.art-pick .ap.on{opacity:1;border-color:currentColor;transform:scale(1.04)}
+.ev-sheet .fields label[hidden]{display:none}
+.ev-sheet textarea.input{resize:vertical;min-height:52px}
+.chkline{display:flex!important;flex-direction:row!important;align-items:center;gap:8px;font-size:13.5px}
+.chkline input{width:18px;height:18px;accent-color:var(--brand)}
+#evStandL b{font-weight:650;color:#A0161B;margin-left:6px}#evStand{accent-color:#E5484D}
+.ev-warn{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:rgba(229,72,77,.08);border:1px solid rgba(229,72,77,.25);color:#8E1519;font-size:13px;margin-top:8px}
+.ev-warn small{color:var(--ink-2)}
+/* Verfügbarkeit */
+.avail{margin-bottom:14px}
+.av-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.av-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.9);box-shadow:var(--shadow)}
+.av-card.busy{background:linear-gradient(135deg,rgba(229,72,77,.08),rgba(255,255,255,.7));border-color:rgba(229,72,77,.25);cursor:pointer}
+.av-txt{flex:1;min-width:0;display:grid;gap:1px}.av-txt b{font-size:14px}
+.av-txt small{font-size:12px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av-st{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#A0161B}.av-st i{width:8px;height:8px;border-radius:50%;background:#E5484D}
+.av-st.free{color:var(--ok)}.av-st.free i{background:var(--ok-dot)}
+.av-prog{position:relative;width:110px;height:24px;border-radius:999px;background:rgba(229,72,77,.12);overflow:hidden;flex:none}
+.av-prog span{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#F2797D,#E5484D);border-radius:999px}
+.av-prog b{position:relative;display:grid;place-items:center;height:100%;font-size:11.5px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.3)}
+.home-avail{margin-top:12px}.home-avail .av-card{box-shadow:none;padding:10px 12px}
+@media (max-width:760px){.av-row{grid-template-columns:1fr}.wk-head,.wk-allrow,.wk-body{grid-template-columns:40px repeat(7,minmax(0,1fr))}.wk-ev span{font-size:10.5px}.wk-dh b{font-size:14px;width:24px;height:24px}}
+.i.emo{width:1.05em;height:1.05em;vertical-align:-.16em;margin:0 .12em}
+.hs-ic .i.emo,.pm-ic .i.emo,.tp-k .i.emo,.pc-ic .i.emo,.kav .i.emo,.li-act .ic .i.emo{margin:0}
+.pc-ic .i.emo{width:26px;height:26px;color:var(--brand-2)}
+.plant-svg{display:block;width:20px;height:20px}
+
+/* Profilbilder */
+body.av-MS .av.us[data-who="MS"],body.av-LP .av.us[data-who="LP"]{background:var(--av-MS) center/cover no-repeat;color:transparent!important;font-size:0}
+body.av-LP .av.us[data-who="LP"]{background-image:var(--av-LP)}
+body.gold-MS .av.us[data-who="MS"],body.gold-LP .av.us[data-who="LP"]{box-shadow:0 0 0 2px #fff,0 0 0 4px #E0B400,0 4px 12px -4px rgba(224,180,0,.6)}
+.av-me{border:0;cursor:pointer;padding:0;font:inherit;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}.av-me:hover{transform:scale(1.06)}
+/* Erfolge */
+.pc-chall{display:grid;gap:5px;margin-top:4px;font-size:12px;color:var(--ink-2)}
+.pc-chall i,.pay-chall i{display:block;height:6px;border-radius:3px;background:rgba(7,61,48,.08);overflow:hidden}
+.pc-chall b,.pay-chall i span{display:block;height:100%;background:linear-gradient(90deg,#E0B400,#FCD717);border-radius:3px}
+.pay-chall{display:grid;gap:6px;padding:12px 14px;border-radius:14px;background:rgba(252,215,23,.12);border:1px solid rgba(224,180,0,.3);margin:12px 0}
+.pay-chall small{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8A6400}.pay-chall b{font-size:15px}.pay-chall em{font-style:normal;font-size:12px;color:var(--ink-2)}
+.fx-reward{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(380px,90vw);padding:22px;border-radius:24px;background:rgba(255,253,245,.98);box-shadow:0 30px 80px -25px rgba(20,52,44,.5);text-align:center;display:grid;gap:6px;justify-items:center;animation:cookieIn .55s cubic-bezier(.34,1.56,.64,1)}
+.rw-ic{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(135deg,#FCD717,#E0B400);color:#073D30;box-shadow:0 10px 24px -8px rgba(224,180,0,.6);animation:rwPop .8s cubic-bezier(.34,1.56,.64,1)}
+.rw-ic .i{width:32px;height:32px}
+@keyframes rwPop{0%{transform:scale(.3) rotate(-20deg)}60%{transform:scale(1.15) rotate(6deg)}100%{transform:none}}
+.fx-reward small{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8A6400}
+.fx-reward h3{font-size:20px;font-weight:700}.fx-reward p{font-size:13.5px;color:var(--ink-2)}.rw-more{font-weight:600}
+.pc-ic .i{width:26px;height:26px;color:var(--brand-2)}
 /* Startbühne */
 .home-stage{min-height:calc(100vh - 40px);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:40px 16px 72px!important;margin-bottom:8px;background:none!important;border:0!important;box-shadow:none!important}
 .hst-in{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
@@ -1533,6 +1643,48 @@ body.dcut .bg{filter:grayscale(.4)}
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6.5" cy="7" r="2.5"/><circle cx="6.5" cy="17" r="2.5"/><path d="M8.6 8.4 20 17M8.6 15.6 20 7"/></symbol>
+  <symbol id="i-busy" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M6 6l12 12"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7 4.5 11.5 9 16"/><path d="M5 11.5h9a5 5 0 0 1 0 10h-2"/></symbol>
+  <symbol id="i-handoff" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><path d="M3 19a5 5 0 0 1 10 0"/><path d="M14 12h7m0 0-2.5-2.5M21 12l-2.5 2.5"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4"/></symbol>
+  <symbol id="i-skip" viewBox="0 0 24 24"><path d="m6 6 7 6-7 6z"/><path d="M17 6v12"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M15.5 5.5 18.5 8.5 9 18H6v-3z"/><path d="M13.5 7.5l3 3"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.4-6.5-11a6.5 6.5 0 0 1 13 0c0 5.6-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M11 4c.6 4.4 3 6.8 7.5 7.5C14 12.2 11.6 14.6 11 19c-.6-4.4-3-6.8-7.5-7.5C8 10.8 10.4 8.4 11 4z"/><path d="M19 3v3M17.5 4.5h3"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5.5 13.5H12L11 21l7.5-10.5H12z"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><rect x="5" y="3.5" width="10" height="17" rx="1.5"/><path d="M15 9h3.5a1 1 0 0 1 1 1v10.5H15M8 7.5h4M8 11h4M8 14.5h4"/></symbol>
+  <symbol id="i-puzzle" viewBox="0 0 24 24"><path d="M9 4.5h3a1.5 1.5 0 0 1 3 0h3a1 1 0 0 1 1 1v3a1.5 1.5 0 0 1 0 3v3a1 1 0 0 1-1 1h-3a1.5 1.5 0 0 0-3 0H9a1 1 0 0 1-1-1v-3a1.5 1.5 0 0 0 0-3v-3a1 1 0 0 1 1-1z"/></symbol>
+  <symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 17 17 7M9 7h8v8"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 4 2.4 5 5.3.7-3.9 3.7 1 5.3L12 16.2 7.2 18.7l1-5.3-3.9-3.7 5.3-.7z"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 21a6 6 0 0 0 6-6c0-3.5-2.5-5.5-3.5-8-1.5 2-2 3.5-2.5 3.5S10.5 8 10 5c-2.5 2.5-4 5.5-4 10a6 6 0 0 0 6 6z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M20.5 3.5 3.5 10.5l7 2.5 2.5 7z"/><path d="m10.5 13 4-4"/></symbol>
+  <symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 12V6.5a1.5 1.5 0 0 1 3 0V11V5a1.5 1.5 0 0 1 3 0v6V6.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7 6 6 0 0 1-5.2-3L4 14.5a1.5 1.5 0 0 1 2.4-1.8L8 14z"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="4" rx="1"/><path d="M5 8.5V18a1.5 1.5 0 0 0 1.5 1.5h11A1.5 1.5 0 0 0 19 18V8.5M10 12.5h4"/></symbol>
+  <symbol id="i-lockk" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></symbol>
+  <symbol id="i-firework" viewBox="0 0 24 24"><path d="M12 12V3M12 12l6.4-6.4M12 12h9M12 12l6.4 6.4M12 12v9M12 12l-6.4 6.4M12 12H3M12 12 5.6 5.6"/></symbol>
+  <symbol id="i-clap" viewBox="0 0 24 24"><rect x="3.5" y="9.5" width="17" height="10" rx="1.5"/><path d="m3.5 9.5 1-4 16 2.5-.5 1.5M8 5.9l-1.5 3.3M12.5 6.6 11 9.5M17 7.3l-1.3 2.2"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><ellipse cx="12" cy="7" rx="7" ry="3"/><path d="M5 7v5c0 1.7 3.1 3 7 3s7-1.3 7-3V7M5 12v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></symbol>
+  <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z"/><path d="M16 10.5h1.5a2.5 2.5 0 0 1 0 5H16M8 3.5c0 1.2 1 1.3 1 2.5M12 3.5c0 1.2 1 1.3 1 2.5"/></symbol>
+  <symbol id="i-plant" viewBox="0 0 24 24"><path d="M12 20v-8M12 12c0-4 3-6.5 7-6.5 0 4-3 6.5-7 6.5zM12 14c0-3-2.3-5-5.5-5 0 3 2.3 5 5.5 5z"/><path d="M7.5 20h9"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/></symbol>
+  <symbol id="i-disco" viewBox="0 0 24 24"><circle cx="12" cy="13" r="7"/><path d="M12 6V3M5.5 11h13M5.5 15h13M12 6c-2 2-2 12 0 14M12 6c2 2 2 12 0 14"/></symbol>
+  <symbol id="i-grain" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 8h.01M12 9h.01M16 8h.01M9 12h.01M14 13h.01M8 16h.01M12 16h.01M16 15h.01" stroke-width="2.4"/></symbol>
+  <symbol id="i-drone" viewBox="0 0 24 24"><rect x="9" y="10" width="6" height="4" rx="1.5"/><path d="M9 11 5.5 8M15 11l3.5-3M9 13l-3.5 3M15 13l3.5 3"/><path d="M2.5 7.5h5M16.5 7.5h5M2.5 16.5h5M16.5 16.5h5"/></symbol>
+  <symbol id="i-cookie" viewBox="0 0 24 24"><path d="M20.5 12A8.5 8.5 0 1 1 12 3.5a3 3 0 0 0 4 3.5 3 3 0 0 0 4.5 5z"/><path d="M8.5 10h.01M13 15h.01M9 15.5h.01M14 10.5h.01" stroke-width="2.4"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19 13 11"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4.5h8V10a4 4 0 0 1-8 0z"/><path d="M8 6.5H4.5a3 3 0 0 0 3.5 3.5M16 6.5h3.5A3 3 0 0 1 16 10M12 14v3.5M8.5 20.5h7M9.5 17.5h5"/></symbol>
+  <symbol id="i-camera2" viewBox="0 0 24 24"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7H8l1.5-2h5L16 7h2.5A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.3"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 6 6l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 5.5a2 2 0 0 1 2-2z"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3.5h10V8"/><rect x="3.5" y="8" width="17" height="8.5" rx="2"/><path d="M7 14h10v6.5H7z"/></symbol>
+  <symbol id="i-thumb-up" viewBox="0 0 24 24"><path d="M7.5 10.5V20h-3v-9.5zM7.5 10.5l3.5-6.5a2 2 0 0 1 2.5 2.3L12.8 10H18a2 2 0 0 1 2 2.4l-1.4 6A2 2 0 0 1 16.6 20H7.5"/></symbol>
+  <symbol id="i-thumb-down" viewBox="0 0 24 24"><path d="M7.5 13.5V4h-3v9.5zM7.5 13.5l3.5 6.5a2 2 0 0 0 2.5-2.3L12.8 14H18a2 2 0 0 0 2-2.4l-1.4-6A2 2 0 0 0 16.6 4H7.5"/></symbol>
+  <symbol id="i-ok" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></symbol>
   <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 13.5 6.2 5.8A1.5 1.5 0 0 1 7.6 4.7h8.8a1.5 1.5 0 0 1 1.4 1.1L20 13.5V18a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18z"/><path d="M4 13.5h4.5l1.5 2.5h4l1.5-2.5H20"/></symbol>
   <symbol id="i-board" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M9.2 4v16M14.8 4v16"/></symbol>
@@ -1607,7 +1759,7 @@ body.dcut .bg{filter:grayscale(.4)}
       <button class="nav-reload" id="appReload" title="Studio neu laden und alles aktualisieren"><span>↻</span>Neu laden<em id="updDot" hidden>Update</em></button>
       <a class="nav-settings" href="#/einstellungen" data-route="einstellungen"><svg class="i"><use href="#i-gear"/></svg>Einstellungen</a>
       <div class="user">
-        <span class="av us lg" id="uAv">LP</span>
+        <button class="av us lg av-me" id="uAv" data-who="LP" title="Profilbild ändern" aria-label="Profilbild ändern">LP</button><input type="file" id="uAvFile" accept="image/*" hidden>
         <div><strong id="uName">Lennart Post</strong><span id="uMail">Kamera und Schnitt</span></div>
         <button class="icon-btn" id="logout" aria-label="Abmelden"><svg class="i sm"><use href="#i-logout"/></svg></button>
       </div>
@@ -1626,12 +1778,12 @@ body.dcut .bg{filter:grayscale(.4)}
           <div class="hs-wrap"><form id="homeAsk"><span class="nav-ag lg">LI</span><input class="input" id="homeAskIn" placeholder="Frag mich was oder such nach Kunden, Rechnungen, Mails …" aria-label="Frage an LeMatic Intelligence" autocomplete="off"><button type="button" class="icon-btn li-mic" data-for="homeAskIn" aria-label="Spracheingabe" title="Reinsprechen">🎙️</button><button class="btn btn-primary" type="submit">Fragen</button></form><div class="home-suggest glass" id="homeSuggest" hidden role="listbox" aria-label="Suchtreffer"></div></div>
           <div class="hst-chips" id="hstChips"></div>
           <div class="hst-tiles">
-            <a class="hst-tile t-kal" href="#/kalender"><span>Kalender</span><i>↗</i></a>
-            <a class="hst-tile t-kun" href="#/kunden"><span>Kunden</span><i>↗</i></a>
-            <a class="hst-tile t-ang" href="#/angebot"><span>Angebot</span><i>↗</i></a>
-            <a class="hst-tile t-rec" href="#/rechnungen"><span>Rechnungen</span><i>↗</i></a>
+            <a class="hst-tile t-kal" href="#/kalender"><span>Kalender</span><i><svg class="i xs"><use href="#i-arrow-ur"/></svg></i></a>
+            <a class="hst-tile t-kun" href="#/kunden"><span>Kunden</span><i><svg class="i xs"><use href="#i-arrow-ur"/></svg></i></a>
+            <a class="hst-tile t-ang" href="#/angebot"><span>Angebot</span><i><svg class="i xs"><use href="#i-arrow-ur"/></svg></i></a>
+            <a class="hst-tile t-rec" href="#/rechnungen"><span>Rechnungen</span><i><svg class="i xs"><use href="#i-arrow-ur"/></svg></i></a>
           </div>
-          <div class="hst-quick"><a href="#/aufgaben">＋ Aufgabe</a><a href="#/rechnungen">Rechnung hochladen</a><a href="#/angebot">Angebot schreiben</a><button type="button" data-opensearch>Alles durchsuchen <span class="kbd">⌘K</span></button><button type="button" class="fun-cookie" id="funCookie" hidden>🥠 Glückskeks</button></div>
+          <div class="hst-quick"><a href="#/aufgaben">＋ Aufgabe</a><a href="#/rechnungen">Rechnung hochladen</a><a href="#/angebot">Angebot schreiben</a><button type="button" data-opensearch>Alles durchsuchen <span class="kbd">⌘K</span></button><button type="button" class="fun-cookie" id="funCookie" hidden>Glückskeks</button></div>
         </div>
         <button type="button" class="hst-down" id="hstDown"><span id="hstDownTxt">Deine Woche</span><svg class="i sm"><use href="#i-chev"/></svg></button>
       </section>
@@ -1642,7 +1794,7 @@ body.dcut .bg{filter:grayscale(.4)}
           <h1 id="hGreet">Hallo</h1>
           <div class="streak-badge" id="streakBadge" hidden></div>
           <div class="fun-strip" id="funStrip"></div>
-          <button class="prem prem-inline" data-premium="report">📊 Montags-Bericht aufs Handy <span class="lock">🔒</span></button>
+          <button class="prem prem-inline" data-premium="report">Montags-Bericht aufs Handy <span class="lock"><svg class="i xs"><use href="#i-lockk"/></svg></span></button>
           <p class="summary" id="hSummary"></p>
         </div>
         <div class="actions">
@@ -1668,6 +1820,7 @@ body.dcut .bg{filter:grayscale(.4)}
             <div class="head-right"><div class="legend static" id="legendHome"></div><a class="link" href="#/kalender">Kalender öffnen</a></div>
           </div>
           <div class="week" id="week"></div>
+          <div class="home-avail" id="homeAvail"></div>
         </section>
         <section class="glass panel c7 tipps" aria-labelledby="tp-title">
           <div class="panel-head"><div><h2 id="tp-title"><span class="nav-ag" aria-hidden="true">LI</span>LeMatic Intelligence empfiehlt</h2><p id="tpSub">Aus euren Daten und wie ihr das Studio nutzt. Lernt mit deinem Feedback.</p></div><button class="btn btn-glass sm" id="tpNew" title="Neue Empfehlungen">↻ Neu</button></div>
@@ -1731,7 +1884,7 @@ body.dcut .bg{filter:grayscale(.4)}
               <button aria-pressed="false" data-mf="unread">Ungelesen</button>
               <button aria-pressed="false" data-mf="client">Kunden</button>
               <button aria-pressed="false" data-mf="invoice">Rechnungen</button>
-              <button aria-pressed="false" class="prem" data-premium="whatsapp">WhatsApp <span class="lock">🔒</span></button>
+              <button aria-pressed="false" class="prem" data-premium="whatsapp">WhatsApp <span class="lock"><svg class="i xs"><use href="#i-lockk"/></svg></span></button>
             </div>
           </div>
           <div id="mList"></div>
@@ -1750,24 +1903,28 @@ body.dcut .bg{filter:grayscale(.4)}
           <p class="summary">Der LeMatic-Kalender von info@lematic.de, Termine und Aufgaben in einer Ansicht</p>
         </div>
         <div class="actions">
-          <button class="btn btn-primary" id="openEvent"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Termin anlegen</span></button>
+          <button class="btn btn-glass" id="openBusy"><svg class="i sm"><use href="#i-busy"/></svg><span class="label">Ich bin belegt</span></button>
+          <button class="btn btn-primary" id="openEvent"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Eintrag</span></button>
         </div>
       </header>
+      <div class="avail" id="availBar" aria-label="Wer ist gerade belegt"></div>
       <div class="grid">
-        <section class="glass panel c8" aria-label="Monatsansicht">
+        <section class="glass panel c8 cal-main" aria-label="Kalender">
           <div class="panel-head">
             <div class="cal-head">
-              <button class="icon-btn" id="calPrev" aria-label="Vorheriger Monat"><svg class="i"><use href="#i-chevl"/></svg></button>
+              <button class="icon-btn" id="calPrev" aria-label="Zurück"><svg class="i"><use href="#i-chevl"/></svg></button>
               <h2 id="calTitle" aria-live="polite"></h2>
-              <button class="icon-btn" id="calNext" aria-label="Nächster Monat"><svg class="i"><use href="#i-chev"/></svg></button>
+              <button class="icon-btn" id="calNext" aria-label="Weiter"><svg class="i"><use href="#i-chev"/></svg></button>
               <button class="btn btn-glass sm" id="calToday">Heute</button>
             </div>
-            <div class="legend" id="legendCal" role="group" aria-label="Terminarten filtern"></div>
+            <div class="seg" id="calMode" role="group" aria-label="Ansicht"><button data-cm="month" aria-pressed="true">Monat</button><button data-cm="week" aria-pressed="false">Woche</button></div>
           </div>
+          <div class="legend" id="legendCal" role="group" aria-label="Arten filtern"></div>
           <div class="month" id="month"></div>
+          <div class="wk" id="week7" hidden></div>
         </section>
         <section class="glass panel c4" aria-labelledby="dayTitle">
-          <div class="panel-head"><div><h2 id="dayTitle"></h2><p id="daySub"></p></div></div>
+          <div class="panel-head"><div><h2 id="dayTitle"></h2><p id="daySub"></p></div><button class="btn btn-primary sm" id="dayAdd"><svg class="i xs"><use href="#i-plus"/></svg>Eintrag</button></div>
           <div id="dayList"></div>
           <p class="sync" id="calSync"><svg class="i sm"><use href="#i-check"/></svg>Noch nicht abgeglichen</p>
         </section>
@@ -1801,7 +1958,7 @@ body.dcut .bg{filter:grayscale(.4)}
             </div>
             <select class="input" id="tProj" aria-label="Nach Kunde filtern"></select>
             <label class="toggle-line"><input type="checkbox" class="chk" id="tDone">Erledigte zeigen</label>
-            <button class="prem prem-chip" data-premium="reminders">🔔 Handy-Erinnerungen <span class="lock">🔒</span></button>
+            <button class="prem prem-chip" data-premium="reminders">🔔 Handy-Erinnerungen <span class="lock"><svg class="i xs"><use href="#i-lockk"/></svg></span></button>
           </div>
           <div id="taskGroups"></div>
         </section>
@@ -2111,8 +2268,8 @@ body.dcut .bg{filter:grayscale(.4)}
         </section>
         <section class="glass panel c5" aria-labelledby="acc-title">
           <div class="panel-head"><div><h2 id="acc-title">Team und Zugang</h2><p>Wer sich im Tool anmelden darf</p></div><button class="btn btn-glass sm" data-toast="Einladung per E-Mail vorbereitet"><svg class="i sm"><use href="#i-plus"/></svg>Einladen</button></div>
-          <div class="member"><span class="av us lg">LP</span><div><strong>Lennart Post</strong><span>Admin, Kamera und Schnitt</span></div><span class="pill ok"><i></i>Aktiv</span></div>
-          <div class="member"><span class="av us lg">MS</span><div><strong>Martin Schmick</strong><span>Admin, Akquise und Buchhaltung</span></div><span class="pill ok"><i></i>Aktiv</span></div>
+          <div class="member"><span class="av us lg" data-who="LP">LP</span><div><strong>Lennart Post</strong><span>Admin, Kamera und Schnitt</span></div><span class="pill ok"><i></i>Aktiv</span></div>
+          <div class="member"><span class="av us lg" data-who="MS">MS</span><div><strong>Martin Schmick</strong><span>Admin, Akquise und Buchhaltung</span></div><span class="pill ok"><i></i>Aktiv</span></div>
           
           <div class="setting"><span>Anmeldung mit Google-Konto<small id="setLoginInfo">Nicht angemeldet</small></span><span class="pill done" id="setLoginPill"><i></i>Aus</span></div>
           <div class="setting"><span>Zwei-Faktor-Bestätigung<small>Läuft über eure Google-Konten, dort bitte aktivieren</small></span><span class="pill info"><i></i>Google</span></div>
@@ -2201,12 +2358,12 @@ body.dcut .bg{filter:grayscale(.4)}
           <table class="mods">
             <thead><tr><th scope="col">Baustein</th><th scope="col">Zuständig</th><th scope="col" class="hide-sm">Nächster Schritt</th><th scope="col">Status</th></tr></thead>
             <tbody>
-              <tr><td><span class="n">01</span>Live vor Ort</td><td><span class="av us sm">MS</span></td><td class="step hide-sm">Moderation finden und casten</td><td><span class="pill done"><i></i>Offen</span></td></tr>
-              <tr><td><span class="n">02</span>Teilnehmer-Stories</td><td><span class="av us sm">LP</span></td><td class="step hide-sm">Story-Point planen: Zelt, Schild, Ton</td><td><span class="pill info"><i></i>In Planung</span></td></tr>
-              <tr><td><span class="n">03</span>Creator</td><td><span class="av us sm">MS</span></td><td class="step hide-sm">Shortlist mit 6 Profilen liegt beim Kunden</td><td><span class="pill warn"><i></i>Beim Kunden</span></td></tr>
-              <tr><td><span class="n">04</span>Challenges</td><td><span class="av us sm">MS</span></td><td class="step hide-sm">3 Ideen liegen beim Kunden zur Auswahl</td><td><span class="pill warn"><i></i>Beim Kunden</span></td></tr>
-              <tr><td><span class="n">05</span>Sponsoring</td><td><span class="av us sm">MS</span></td><td class="step hide-sm">Slot-Paket für Partnergespräche aufsetzen</td><td><span class="pill done"><i></i>Offen</span></td></tr>
-              <tr><td><span class="n">06</span>Zwischen den Events</td><td><span class="av us sm">LP</span></td><td class="step hide-sm">Templates bauen, Check-in am 07.10. vorbereiten</td><td><span class="pill info"><i></i>In Arbeit</span></td></tr>
+              <tr><td><span class="n">01</span>Live vor Ort</td><td><span class="av us sm" data-who="MS">MS</span></td><td class="step hide-sm">Moderation finden und casten</td><td><span class="pill done"><i></i>Offen</span></td></tr>
+              <tr><td><span class="n">02</span>Teilnehmer-Stories</td><td><span class="av us sm" data-who="LP">LP</span></td><td class="step hide-sm">Story-Point planen: Zelt, Schild, Ton</td><td><span class="pill info"><i></i>In Planung</span></td></tr>
+              <tr><td><span class="n">03</span>Creator</td><td><span class="av us sm" data-who="MS">MS</span></td><td class="step hide-sm">Shortlist mit 6 Profilen liegt beim Kunden</td><td><span class="pill warn"><i></i>Beim Kunden</span></td></tr>
+              <tr><td><span class="n">04</span>Challenges</td><td><span class="av us sm" data-who="MS">MS</span></td><td class="step hide-sm">3 Ideen liegen beim Kunden zur Auswahl</td><td><span class="pill warn"><i></i>Beim Kunden</span></td></tr>
+              <tr><td><span class="n">05</span>Sponsoring</td><td><span class="av us sm" data-who="MS">MS</span></td><td class="step hide-sm">Slot-Paket für Partnergespräche aufsetzen</td><td><span class="pill done"><i></i>Offen</span></td></tr>
+              <tr><td><span class="n">06</span>Zwischen den Events</td><td><span class="av us sm" data-who="LP">LP</span></td><td class="step hide-sm">Templates bauen, Check-in am 07.10. vorbereiten</td><td><span class="pill info"><i></i>In Arbeit</span></td></tr>
             </tbody>
           </table>
           <div class="side-stack">
@@ -2244,8 +2401,8 @@ body.dcut .bg{filter:grayscale(.4)}
             </ul>
             <h3 style="margin-top:16px">Crew</h3>
             <ul class="crew">
-              <li><span class="av us sm">LP</span><div>Lennart<span>Kamera A, Schnitt vor Ort</span></div><span class="pill ok"><i></i>Fix</span></li>
-              <li><span class="av us sm">MS</span><div>Martin<span>Produktion, Social</span></div><span class="pill ok"><i></i>Fix</span></li>
+              <li><span class="av us sm" data-who="LP">LP</span><div>Lennart<span>Kamera A, Schnitt vor Ort</span></div><span class="pill ok"><i></i>Fix</span></li>
+              <li><span class="av us sm" data-who="MS">MS</span><div>Martin<span>Produktion, Social</span></div><span class="pill ok"><i></i>Fix</span></li>
               <li><span class="av sm">FL</span><div>Freelancer<span>Kamera B, Tagessatz 500 €</span></div><span class="pill ok"><i></i>Fix</span></li>
             </ul>
           </div>
@@ -2390,18 +2547,25 @@ body.dcut .bg{filter:grayscale(.4)}
 
 <!-- Termin anlegen -->
 <div class="modal-wrap" id="eventWrap" aria-hidden="true">
-  <div class="glass sheet" role="dialog" aria-modal="true" aria-labelledby="ev-title">
-    <h2 id="ev-title">Termin anlegen</h2>
-    <p>Landet im LeMatic-Kalender (info@lematic.de), Lennart und Martin sehen ihn beide.</p>
+  <div class="glass sheet ev-sheet" role="dialog" aria-modal="true" aria-labelledby="ev-title">
+    <h2 id="ev-title">Neuer Eintrag</h2>
+    <p id="evSub">Landet im LeMatic-Kalender (info@lematic.de). Lennart und Martin sehen ihn beide.</p>
+    <div class="art-pick" id="evArt" role="radiogroup" aria-label="Art"></div>
     <div class="fields">
-      <label class="full">Titel<input type="text" id="evTitle" placeholder="Zum Beispiel: Call mit Körber, Frau Voigt"></label>
+      <label class="full">Titel<input type="text" id="evTitle" placeholder="Worum geht es?" autocomplete="off"></label>
+      <label id="evWhoL">Für<select id="evWho"><option value="">Beide</option><option value="LP">Lennart</option><option value="MS">Martin</option></select></label>
       <label>Datum<input type="date" id="evDate"></label>
-      <label>Uhrzeit<input type="time" id="evTime"></label>
-      <label>Dauer<select id="evDur"><option value="30">30 Min.</option><option value="60" selected>1 Std.</option><option value="90">1,5 Std.</option><option value="120">2 Std.</option><option value="240">4 Std.</option><option value="600">Drehtag (10 Std.)</option></select></label>
-      <label>Kunde<select id="evKunde"></select></label>
-      <label class="full">Ort oder Link<input type="text" id="evOrt" placeholder="Adresse, Teams- oder Meet-Link"></label>
-      <label class="full">Notiz<input type="text" id="evNote" placeholder="Worum geht's?"></label>
+      <label id="evEndL">Bis einschließlich<input type="date" id="evEnd"></label>
+      <label id="evTimeL">Von<input type="time" id="evTime" step="900"></label>
+      <label id="evTimeEndL">Bis<input type="time" id="evTimeEnd" step="900"></label>
+      <label id="evStandL" class="full">Stand <b id="evStandV">0 %</b><input type="range" id="evStand" min="0" max="100" step="10" value="0"></label>
+      <label id="evRemL">Erinnerung<select id="evRem"></select></label>
+      <label id="evKundeL">Kunde<select id="evKunde"></select></label>
+      <label class="full" id="evOrtL">Ort oder Link<input type="text" id="evOrt" placeholder="Adresse, Teams- oder Meet-Link"></label>
+      <label class="full">Notiz<textarea class="input" id="evNote" rows="2" placeholder="Was muss der andere wissen?"></textarea></label>
+      <label class="full chkline" id="evInvL"><input type="checkbox" id="evInvite" checked><span id="evInvTxt">Per Kalender-Einladung erinnern</span></label>
     </div>
+    <div class="ev-warn" id="evWarn" hidden></div>
     <p class="form-err" id="evErr" role="alert"></p>
     <div class="sheet-actions">
       <button class="btn btn-glass sm" id="evCancel">Abbrechen</button>
@@ -2416,8 +2580,8 @@ body.dcut .bg{filter:grayscale(.4)}
     <h2 id="who-title">Wer sitzt gerade hier?</h2>
     <p>Ihr meldet euch beide mit info@lematic.de an. Damit Aufgaben und Notizen richtig zugeordnet werden, merkt sich dieser Browser, wer du bist. Ändern geht jederzeit über deinen Namen unten links.</p>
     <div class="who-pick">
-      <button data-me="LP"><span class="av us lg">LP</span><b>Lennart</b><small>Kamera, Schnitt, KI</small></button>
-      <button data-me="MS"><span class="av us lg">MS</span><b>Martin</b><small>Akquise, Kunden, Admin</small></button>
+      <button data-me="LP"><span class="av us lg" data-who="LP">LP</span><b>Lennart</b><small>Kamera, Schnitt, KI</small></button>
+      <button data-me="MS"><span class="av us lg" data-who="MS">MS</span><b>Martin</b><small>Akquise, Kunden, Admin</small></button>
     </div>
   </div>
 </div>
@@ -2503,6 +2667,7 @@ body.dcut .bg{filter:grayscale(.4)}
 /* Toast */
 const toastEl=document.getElementById('toast');let tt;
 function toast(msg,opt){
+  if(typeof noEmo==='function')msg=noEmo(msg);
   toastEl.querySelector('span').textContent=msg;
   let ub=toastEl.querySelector('.toast-undo');if(ub)ub.remove();
   if(opt&&opt.undo){ub=document.createElement('button');ub.className='toast-undo';ub.textContent='Rückgängig';ub.onclick=()=>{ub.remove();toastEl.classList.remove('show');opt.undo()};toastEl.append(ub)}
@@ -2622,7 +2787,7 @@ function renderReq(){
         ?`<button class="btn btn-primary sm" data-act="meet" data-id="${r.id}">Termin vorschlagen</button>`
         :`<select aria-label="Zuständig für ${r.title}" id="who${r.id}"><option value="LP">Lennart</option><option value="MS">Martin</option></select><button class="btn btn-primary sm" data-act="take" data-id="${r.id}">Annehmen</button>`;
     }else if(r.status==='arbeit'){
-      actions=`<span class="av us sm" title="${NAMES[r.who]}">${r.who}</span><button class="btn btn-glass sm" data-act="done" data-id="${r.id}">Erledigt</button>`;
+      actions=`<span class="av us sm" title="${NAMES[r.who]}" data-who="${r.who}">${r.who}</span><button class="btn btn-glass sm" data-act="done" data-id="${r.id}">Erledigt</button>`;
     }else{
       actions=`<span class="pill done"><i></i>Erledigt</span>`;
     }
@@ -2711,7 +2876,7 @@ function cardHTML(c){
   const next=c.stage<4?`<button class="next" data-next="${c.id}" aria-label="${c.t} in ${STAGES[c.stage+1].name} verschieben"><svg class="i sm"><use href="#i-chev"/></svg></button>`:'';
   return `<article class="card${c.fresh?' fresh':''}" draggable="true" data-id="${c.id}">
     <strong>${c.t}</strong><p>${c.ev}</p>
-    <div class="card-foot"><span class="av us sm">${c.who}</span>${right}${next}</div>
+    <div class="card-foot"><span class="av us sm" data-who="${c.who}">${c.who}</span>${right}${next}</div>
   </article>`;
 }
 function renderBoard(){
@@ -2920,14 +3085,19 @@ const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','S
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 const PROJ={'Feedback':'#FF3B30','Akquise':'#AF52DE','Dreh':'#073D30','Schnitt':'#0A84FF','Admin/Steuern':'#8B5A2B','Technik/Gear':'#8E8E93','Website':'#1F7A37','Mammutmarsch':'#073D30','Fairground':'#0A84FF','Messe-Akquise':'#AF52DE','LeMatic':'#D4A600','Buchhaltung':'#8E8E93'};
-const TYPES={dreh:'Drehs',lieferung:'Lieferungen',meeting:'Meetings',akquise:'Akquise',frist:'Fristen',intern:'Intern',privat:'Termine',aufgabe:'Aufgaben'};
-const TYPE_ONE={dreh:'Dreh',lieferung:'Lieferung',meeting:'Meeting',akquise:'Akquise',frist:'Frist',intern:'Intern',privat:'Termin',aufgabe:'Aufgabe'};
-const TYPE_DOT={dreh:'#073D30',lieferung:'#FF9F0A',meeting:'#0A84FF',akquise:'#AF52DE',frist:'#FF3B30',intern:'#8E8E93',privat:'#0A9B8A',aufgabe:'#D4A600'};
+const TYPES={termin:'Termine',dreh:'Drehs',schnitt:'Schnitt',akquise:'Akquise',aufgabe:'Aufgaben',belegt:'Belegt'};
+const TYPE_ONE={termin:'Termin',dreh:'Dreh',schnitt:'Schnitt',akquise:'Akquise',aufgabe:'Aufgabe',belegt:'Belegt',lieferung:'Lieferung',meeting:'Meeting',frist:'Frist',intern:'Intern',privat:'Termin'};
+const ARTI={termin:'i-cal',dreh:'i-camera',schnitt:'i-scissors',akquise:'i-target',aufgabe:'i-check',belegt:'i-busy'};
+const ART_COLOR={termin:'5',dreh:'2',schnitt:'9',akquise:'3',aufgabe:'5',belegt:'11'};
+function guessArt(t){t=String(t||'');return /^belegt\b/i.test(t)?'belegt':/\b(dreh|shoot|filmen|aufnahme|messe-?dreh)/i.test(t)?'dreh':/\b(schnitt|edit|grading|cut|postpro|render)/i.test(t)?'schnitt':/\b(akquise|pitch|anruf|call|angebot|kaltakquise|termin bei)/i.test(t)?'akquise':'termin'}
+const isTermin=e=>e&&e.type!=='aufgabe'&&e.type!=='belegt';
+const artIc=(a,cls)=>`<svg class="i ${cls||'xs'}"><use href="#${ARTI[a]||'i-cal'}"/></svg>`;
+const TYPE_DOT={termin:'#0A84FF',dreh:'#0C5543',schnitt:'#7E57C2',akquise:'#E08A00',aufgabe:'#D4A600',belegt:'#E5484D',lieferung:'#FF9F0A',meeting:'#0A84FF',frist:'#FF3B30',intern:'#8E8E93',privat:'#0A84FF'};
 
 /* Termine (Platzhalter, würden aus Google Calendar kommen) */
 let EVENTS=[]; /* Bewusst leer — die frei erfundenen Platzhaltertermine waren nicht mehr aktuell.
    Ab dem Google-Login kommen hier nur noch echte Kalendertermine der eingeloggten Person rein. */
-const onDay=(ds,filter)=>EVENTS.filter(e=>e.d<=ds&&(e.end||e.d)>=ds&&(!filter||filter.has(e.type))).sort((a,b)=>(a.time||'00:00').localeCompare(b.time||'00:00'));
+const onDay=(ds,filter)=>EVENTS.filter(e=>e.d<=ds&&(e.end||e.d)>=ds&&(!filter||filter.has(e.art||e.type))).sort((a,b)=>(a.type==='belegt'?-1:0)-(b.type==='belegt'?-1:0)||(a.time||'00:00').localeCompare(b.time||'00:00'));
 
 /* Aufgaben kommen ausschließlich aus dem LeMatic-Kalender (Termine mit Markierung „lmTask“). */
 let TASKS=[];
@@ -3189,7 +3359,7 @@ function setPerson(code,silent){
   safe('prefs',()=>applyPrefs(prefsGet(code)));
   try{localStorage.setItem('lm_person',code)}catch(_){}
   const avEl=$('uAv');
-  if(avEl){avEl.style.padding='';avEl.textContent=code}
+  if(avEl){avEl.style.padding='';avEl.textContent=code;avEl.dataset.who=code}
   setText('uName',code==='MS'?'Martin Schmick':'Lennart Post');
   safe('personal',()=>personalizeFor(code));
   safe('intro',checkMartinIntro);
@@ -3202,6 +3372,8 @@ function setPerson(code,silent){
   safe('agLoad',agLoad);
   safe('tippsR',renderTipps);
   safe('funA',funApply);
+  safe('avA',applyAvatars);if(GAUTH)setTimeout(()=>safe('avS',avSyncDown),3000);
+  safe('ach',checkAchievements);
   if(GAUTH)safe('useView',viewEnter);
 }
 function askPerson(){
@@ -3333,7 +3505,7 @@ function taskRow(t){
   return `<div class="task${t.done?' done':''}">
     <input type="checkbox" class="chk" data-task="${t.id}" ${t.done?'checked':''} aria-label="${esc(t.t)} erledigt">
     <div><div class="tt">${esc(t.t)}</div><div class="sub">${kd}${t.by&&t.by!==t.who?`<span class="proj" style="color:var(--ink-3)">von ${esc(NAMES[t.by]||t.by)}</span>`:''}</div></div>
-    <div class="right"><span class="due ${cls}">${label}</span><span class="av us sm" title="${NAMES[t.who]||''}">${t.who}</span>${t.done?'':`<button class="icon-btn ghost tmv" data-tmove="${t.id}" aria-label="${esc(t.t)} verschieben" title="Verschieben oder übergeben">↪</button>`}<button class="icon-btn ghost del" data-tdel="${t.id}" aria-label="${esc(t.t)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button></div>
+    <div class="right"><span class="due ${cls}">${label}</span><span class="av us sm" title="${NAMES[t.who]||''}" data-who="${t.who}">${t.who}</span>${t.done?'':`<button class="icon-btn ghost tmv" data-tmove="${t.id}" aria-label="${esc(t.t)} verschieben" title="Verschieben oder übergeben">↪</button>`}<button class="icon-btn ghost del" data-tdel="${t.id}" aria-label="${esc(t.t)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button></div>
   </div>`;
 }
 /* ---------- Startbühne: Gruß, frecher Spruch, Suche, Vorschläge ---------- */
@@ -3408,7 +3580,7 @@ function renderHome(){
     const ds=addDays(sow,i),evs=onDay(ds);
     w+=`<button class="day${ds===TODAY?' today':''}" data-day="${ds}" aria-label="${wd(ds)} ${dm(ds)}, ${evs.length} Termine">
       <div class="day-h"><span>${wd(ds)}</span><b>${parse(ds).getDate()}</b></div>
-      ${evs.length?evs.slice(0,4).map(e=>`<span class="ev t-${e.type}">${e.time?e.time+' ':''}${esc(e.t)}</span>`).join('')+(evs.length>4?`<span class="more">+${evs.length-4} weitere</span>`:''):'<span class="none">Frei</span>'}
+      ${evs.length?evs.slice(0,4).map(e=>`<span class="ev t-${e.art||e.type}${e.done?' done':''}">${e.time?e.time+' ':''}${e.type==='belegt'?esc(NAMES[e.who]||'')+': ':''}${esc(e.t)}</span>`).join('')+(evs.length>4?`<span class="more">+${evs.length-4} weitere</span>`:''):'<span class="none">Frei</span>'}
     </button>`;
   }
   document.getElementById('week').innerHTML=w;
@@ -3457,7 +3629,8 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------- Kalender ---------- */
-let calMonth=new Date(NOW.getFullYear(),NOW.getMonth(),1),selDay=TODAY;
+let calMonth=new Date(NOW.getFullYear(),NOW.getMonth(),1),selDay=TODAY,calMode='month';
+try{calMode=localStorage.getItem('lm_calmode')||'month'}catch(_){}
 const calTypes=new Set(Object.keys(TYPES));
 document.getElementById('legendCal').innerHTML=legendHTML(calTypes);
 document.getElementById('legendCal').addEventListener('click',e=>{
@@ -3465,7 +3638,18 @@ document.getElementById('legendCal').addEventListener('click',e=>{
   const k=b.dataset.type;calTypes.has(k)?calTypes.delete(k):calTypes.add(k);
   b.setAttribute('aria-pressed',calTypes.has(k));renderCal();
 });
+const startOfWeekOf=ds=>{const d=parse(ds);const dow=(d.getDay()+6)%7;return addDays(ds,-dow)};
+function chipHTML(e,cls){
+  const a=e.art||e.type,id=e.gcalId||('t'+e.taskId);
+  return `<span class="ev t-${a}${e.done?' done':''}${cls?' '+cls:''}" data-entry="${esc(id)}" title="${esc(e.t)}">${e.type==='aufgabe'?`<i class="ev-chk${e.done?' on':''}"></i>`:''}${e.time&&!cls?'<b>'+e.time+'</b> ':''}${e.type==='belegt'?esc(NAMES[e.who]||'')+': ':''}${esc(e.t)}${e.type==='aufgabe'&&e.who?' <em>'+e.who+'</em>':''}</span>`;
+}
 function renderCal(){
+  document.querySelectorAll('#calMode [data-cm]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cm===calMode));
+  $('month').hidden=calMode!=='month';$('week7').hidden=calMode!=='week';
+  if(calMode==='week')renderWeek();else renderMonth();
+  renderDay();safe('avail',renderAvail);
+}
+function renderMonth(){
   const y=calMonth.getFullYear(),m=calMonth.getMonth();
   document.getElementById('calTitle').textContent=MONTHS[m]+' '+y;
   const first=new Date(y,m,1),offset=(first.getDay()+6)%7;
@@ -3474,21 +3658,44 @@ function renderCal(){
   let h=['Mo','Di','Mi','Do','Fr','Sa','So'].map(d=>`<div class="dow">${d}</div>`).join('');
   for(let i=0;i<cells;i++){
     const ds=addDays(start,i),d=parse(ds),evs=onDay(ds,calTypes);
-    h+=`<button class="cell${d.getMonth()!==m?' out':''}${ds===TODAY?' today':''}${ds===selDay?' sel':''}" data-cal="${ds}" aria-label="${d.getDate()}. ${MONTHS[d.getMonth()]}, ${evs.length} Termine">
-      <span class="dn">${d.getDate()}</span>
-      ${evs.slice(0,3).map(e=>`<span class="ev t-${e.type}">${esc(e.t)}</span>`).join('')}${evs.length>3?`<span class="more">+${evs.length-3}</span>`:''}
-    </button>`;
+    h+=`<div class="cell${d.getMonth()!==m?' out':''}${ds===TODAY?' today':''}${ds===selDay?' sel':''}" data-cal="${ds}" role="button" tabindex="0" aria-label="${d.getDate()}. ${MONTHS[d.getMonth()]}, ${evs.length} Einträge">
+      <span class="dn">${d.getDate()}</span><button class="cell-add" data-caladd="${ds}" aria-label="Eintrag am ${dm(ds)}" title="Eintrag anlegen"><svg class="i xs"><use href="#i-plus"/></svg></button>
+      ${evs.slice(0,3).map(e=>chipHTML(e,'mc')).join('')}${evs.length>3?`<span class="more">+${evs.length-3}</span>`:''}
+    </div>`;
   }
   document.getElementById('month').innerHTML=h;
-  renderDay();
+}
+const WK_H0=7,WK_H1=22,WK_PX=46;
+function renderWeek(){
+  const sow=startOfWeekOf(selDay),days=[...Array(7)].map((_,i)=>addDays(sow,i));
+  const s0=parse(days[0]),s6=parse(days[6]);
+  $('calTitle').textContent=s0.getDate()+'.'+(s0.getMonth()!==s6.getMonth()?' '+MONTHS[s0.getMonth()].slice(0,3)+'.':'')+' – '+s6.getDate()+'. '+MONTHS[s6.getMonth()]+' '+s6.getFullYear();
+  const toM=t=>{const [h,m]=t.split(':').map(Number);return h*60+m};
+  let head='<div class="wk-g"></div>',all='<div class="wk-g wk-gl">Ganztags</div>',cols='';
+  days.forEach(ds=>{
+    const d=parse(ds),evs=onDay(ds,calTypes);
+    head+=`<button class="wk-dh${ds===TODAY?' today':''}${ds===selDay?' sel':''}" data-wkday="${ds}"><span>${['So','Mo','Di','Mi','Do','Fr','Sa'][d.getDay()]}</span><b>${d.getDate()}</b></button>`;
+    all+=`<div class="wk-all" data-wkall="${ds}">${evs.filter(e=>!e.time).map(e=>chipHTML(e,'wa')).join('')}</div>`;
+    const timed=evs.filter(e=>e.time);
+    /* Überlappungen nebeneinander */
+    const lanes=[];timed.forEach(e=>{const st=toM(e.time),en=e.endTime&&e.endTime>e.time?toM(e.endTime):st+(e.type==='aufgabe'?30:60);e._s=st;e._e=en;let l=lanes.findIndex(x=>x<=st);if(l<0){l=lanes.length;lanes.push(en)}else lanes[l]=en;e._l=l});
+    const nl=Math.max(1,lanes.length);
+    cols+=`<div class="wk-col${ds===TODAY?' today':''}" data-wkcol="${ds}">${timed.map(e=>{const top=Math.max(0,(e._s-WK_H0*60)/60*WK_PX),hgt=Math.max(20,(e._e-e._s)/60*WK_PX-2);const a=e.art||e.type;
+      return `<div class="wk-ev t-${a}${e.done?' done':''}" data-entry="${esc(e.gcalId||('t'+e.taskId))}" style="top:${top}px;height:${hgt}px;left:calc(${e._l/nl*100}% + 2px);width:calc(${100/nl}% - 4px)"><b>${e.time}${e.endTime?'–'+e.endTime:''}</b><span>${e.type==='aufgabe'?'<i class="ev-chk'+(e.done?' on':'')+'"></i>':''}${esc(e.t)}</span></div>`}).join('')}${ds===TODAY?`<div class="wk-now" style="top:${(NOW.getHours()*60+NOW.getMinutes()-WK_H0*60)/60*WK_PX}px"></div>`:''}</div>`;
+  });
+  let gut='';for(let h=WK_H0;h<WK_H1;h++)gut+=`<div class="wk-hr" style="top:${(h-WK_H0)*WK_PX}px">${pad(h)}:00</div>`;
+  const el=$('week7');
+  const sc=el.querySelector('.wk-scroll');const keep=sc?sc.scrollTop:null;
+  el.innerHTML=`<div class="wk-head">${head}</div><div class="wk-allrow">${all}</div><div class="wk-scroll"><div class="wk-body" style="height:${(WK_H1-WK_H0)*WK_PX}px"><div class="wk-gut">${gut}</div>${cols}</div></div>`;
+  const sc2=el.querySelector('.wk-scroll');sc2.scrollTop=keep!=null?keep:(8-WK_H0)*WK_PX-6;
 }
 function renderDay(){
   const d=parse(selDay);
   document.getElementById('dayTitle').textContent=d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
   const evs=onDay(selDay,calTypes);
-  document.getElementById('daySub').textContent=evs.length?evs.length+(evs.length===1?' Termin':' Termine'):'Nichts geplant';
-  document.getElementById('dayList').innerHTML=evs.length?evs.map(e=>`
-    <div class="dayev"><time>${e.time||'Ganztags'}</time><div><h3>${esc(e.t)}</h3><p><span class="ev t-${e.type}">${TYPE_ONE[e.type]}</span>${e.kid?`<button class="kd" data-kopen="${e.kid}" style="border:0;background:none;cursor:pointer;font-size:12px;color:var(--brand)">${esc(e.p)}</button>`:`<span class="proj"><i style="background:${PROJ[e.p]||'#8E8E93'}"></i>${esc(e.p)}</span>`}${e.who?`<span class="av us sm">${e.who}</span>`:''}${e.link?`<a class="glink" href="${esc(e.link)}" target="_blank" rel="noopener">In Google öffnen</a>`:''}${e.gcalId?`<button class="ev-del" data-evdel="${esc(e.gcalId)}" aria-label="Termin ${esc(e.t)} löschen" title="Termin löschen"><svg class="i xs"><use href="#i-trash"/></svg>Löschen</button>`:''}</p>${e.place?`<p style="font-size:12px;color:var(--ink-3)">📍 ${esc(e.place)}</p>`:''}</div></div>`).join(''):'<p class="empty">Frei. Zeit für Schnitt oder Akquise.</p>';
+  document.getElementById('daySub').textContent=evs.length?evs.length+(evs.length===1?' Eintrag':' Einträge'):'Nichts geplant';
+  document.getElementById('dayList').innerHTML=evs.length?evs.map(e=>{const a=e.art||e.type;return `
+    <button class="dayev de-${a}${e.done?' done':''}" data-entry="${esc(e.gcalId||('t'+e.taskId))}"><time>${e.type==='belegt'?'bis '+dm(e.end||e.d):e.time?e.time+(e.endTime?'<small>'+e.endTime+'</small>':''):'Ganztags'}</time><div><h3>${e.type==='aufgabe'?'<i class="ev-chk'+(e.done?' on':'')+'"></i>':''}${esc(e.t)}</h3><p><span class="ev t-${a}">${artIc(a)}${TYPE_ONE[a]||a}</span>${e.who?`<span class="av us sm" data-who="${e.who}">${e.who}</span>`:''}${e.type==='belegt'&&e.stand!=null?`<span class="day-stand"><i style="width:${e.stand}%"></i></span><small>${e.stand} %</small>`:''}${e.kid?`<span class="proj">${esc(e.p)}</span>`:''}</p>${e.place?`<p class="dpl"><svg class="i xs"><use href="#i-pin"/></svg>${esc(e.place)}</p>`:''}</div></button>`}).join(''):'<button class="day-empty" data-caladd="'+selDay+'"><svg class="i sm"><use href="#i-plus"/></svg>Frei. Klick hier, um etwas einzutragen.</button>';
 }
 /* Termin löschen: erst nachfragen, dann aus dem Google-Kalender entfernen */
 document.addEventListener('click',e=>{
@@ -3505,13 +3712,26 @@ document.addEventListener('click',e=>{
   ]);
 },true);
 document.getElementById('month').addEventListener('click',e=>{
+  if(e.target.closest('[data-entry]'))return;
+  const add=e.target.closest('[data-caladd]');if(add){openEventDialog({date:add.dataset.caladd});return}
   const b=e.target.closest('[data-cal]');if(!b)return;
-  selDay=b.dataset.cal;
+  const was=selDay===b.dataset.cal;selDay=b.dataset.cal;
   const d=parse(selDay);if(d.getMonth()!==calMonth.getMonth())calMonth=new Date(d.getFullYear(),d.getMonth(),1);
-  renderCal();
+  renderCal();if(was&&GAUTH)openEventDialog({date:selDay});
 });
-document.getElementById('calPrev').addEventListener('click',()=>{calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()-1,1);renderCal()});
-document.getElementById('calNext').addEventListener('click',()=>{calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+1,1);renderCal()});
+document.addEventListener('click',e=>{const a=e.target.closest('.day-empty[data-caladd]');if(a)openEventDialog({date:a.dataset.caladd})});
+document.getElementById('week7').addEventListener('click',e=>{
+  if(e.target.closest('[data-entry]'))return;
+  const dh=e.target.closest('[data-wkday]');if(dh){selDay=dh.dataset.wkday;renderCal();return}
+  const al=e.target.closest('[data-wkall]');if(al){selDay=al.dataset.wkall;openEventDialog({date:selDay});renderDay();return}
+  const col=e.target.closest('[data-wkcol]');if(!col)return;
+  const y=e.clientY-col.getBoundingClientRect().top;const mins=WK_H0*60+Math.floor(y/WK_PX*2)*30;
+  selDay=col.dataset.wkcol;renderDay();
+  openEventDialog({date:selDay,time:pad(Math.floor(mins/60))+':'+pad(mins%60),timeEnd:pad(Math.floor(mins/60)+1)+':'+pad(mins%60)});
+});
+document.getElementById('calMode').addEventListener('click',e=>{const b=e.target.closest('[data-cm]');if(!b)return;calMode=b.dataset.cm;try{localStorage.setItem('lm_calmode',calMode)}catch(_){}renderCal()});
+document.getElementById('calPrev').addEventListener('click',()=>{if(calMode==='week'){selDay=addDays(selDay,-7);const d=parse(selDay);calMonth=new Date(d.getFullYear(),d.getMonth(),1)}else calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()-1,1);renderCal()});
+document.getElementById('calNext').addEventListener('click',()=>{if(calMode==='week'){selDay=addDays(selDay,7);const d=parse(selDay);calMonth=new Date(d.getFullYear(),d.getMonth(),1)}else calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+1,1);renderCal()});
 document.getElementById('calToday').addEventListener('click',()=>{calMonth=new Date(NOW.getFullYear(),NOW.getMonth(),1);selDay=TODAY;renderCal()});
 
 /* ---------- Aufgaben über Google Kalender ----------
@@ -3555,15 +3775,17 @@ function taskFromEvent(it){
     id:it.id,t:x.lmTitle||(it.summary||'').replace(/^[☐✓]\s*/,'').replace(/\s*\((Lennart|Martin)\)$/,''),
     who:x.lmWho==='MS'?'MS':'LP',by:x.lmBy||'',done:x.lmDone==='1',
     due:(it.start.dateTime||it.start.date).slice(0,10),time:allDay?null:it.start.dateTime.slice(11,16),
-    kid:x.lmKid||'',kname:x.lmKname||'',doneAt:x.lmDoneAt||'',doneBy:x.lmDoneBy||'',raw:x
+    kid:x.lmKid||'',kname:x.lmKname||'',doneAt:x.lmDoneAt||'',doneBy:x.lmDoneBy||'',raw:x,
+    art:x.lmArt||'aufgabe',note:x.lmNote||'',nid:x.lmNid||'',rem:(it.reminders&&it.reminders.overrides&&it.reminders.overrides[0]||{}).minutes,att:(it.attendees||[]).map(a=>a.email)
   };
 }
 function taskEventBody(t){
   const summary=(t.done?'✓ ':'☐ ')+t.t+' ('+NAMES[t.who]+')';
-  const priv={lmTask:'1',lmWho:t.who,lmDone:t.done?'1':'0',lmDoneAt:t.doneAt||'',lmDoneBy:t.doneBy||'',lmTitle:t.t.slice(0,900),lmKid:t.kid||'',lmKname:(t.kname||'').slice(0,200),lmBy:t.by||ME};
-  const description=['Aufgabe für '+NAMES[t.who],t.kname?'Kunde: '+t.kname:'','Angelegt von '+(NAMES[t.by]||USER)+' im LeMatic Studio'].filter(Boolean).join('\n');
+  const priv={lmTask:'1',lmWho:t.who,lmDone:t.done?'1':'0',lmDoneAt:t.doneAt||'',lmDoneBy:t.doneBy||'',lmTitle:t.t.slice(0,900),lmKid:t.kid||'',lmKname:(t.kname||'').slice(0,200),lmBy:t.by||ME,lmArt:t.art||'aufgabe',lmNote:String(t.note||'').slice(0,900),lmNid:t.nid||''};
+  const description=['Aufgabe für '+NAMES[t.who],t.note||'',t.kname?'Kunde: '+t.kname:'','Angelegt von '+(NAMES[t.by]||USER)+' im LeMatic Studio'].filter(Boolean).join('\n');
+  const rem=t.rem===0||t.rem===''?null:(t.rem!=null?+t.rem:(t.time?30:960));
   const body={summary,description,colorId:t.done?TASK_COLOR.done:TASK_COLOR[t.who],extendedProperties:{private:priv},transparency:'transparent',
-    reminders:t.done?{useDefault:false,overrides:[]}:{useDefault:false,overrides:[{method:'popup',minutes:t.time?30:960}]}};
+    reminders:t.done||rem==null?{useDefault:false,overrides:[]}:{useDefault:false,overrides:[{method:'popup',minutes:rem}]}};
   if(t.time){
     const [h,m]=t.time.split(':').map(Number);const end=new Date(2000,0,1,h,m+30);
     body.start={dateTime:t.due+'T'+t.time+':00',timeZone:'Europe/Berlin'};
@@ -3573,11 +3795,18 @@ function taskEventBody(t){
   }
   return body;
 }
-async function createTask({title,who,due,time,kid,kname}){
+async function createTask({title,who,due,time,kid,kname,art,note,rem,invite,nid}){
   if(!GAUTH)throw new Error('Bitte zuerst mit info@lematic.de anmelden');
-  const t={t:title,who:who||ME,due:due||addDays(TODAY,1),time:time||null,done:false,kid:kid||'',kname:kname||'',by:ME};
-  const r=await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events',{
-    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))
+  const t={t:title,who:who||ME,due:due||addDays(TODAY,1),time:time||null,done:false,kid:kid||'',kname:kname||'',by:ME,art:art||'aufgabe',note:note||'',rem,nid:nid||''};
+  /* Auch in Notion „Aufgaben“ führen, damit der Status dort stimmt (außer sie kam schon von dort) */
+  if(!t.nid){try{const props={'Aufgabe':{title:[{text:{content:t.t.slice(0,200)}}]},'Wer':{select:{name:NAMES[t.who]}},'Deadline':{date:{start:t.due}},'Quelle':{select:{name:'Studio'}},'Im Studio':{checkbox:true}};
+    const ber={dreh:'Dreh',schnitt:'Schnitt',akquise:'Akquise'}[t.art];if(ber)props['Bereich']={select:{name:ber}};
+    if(t.kid)props['Kunde']={relation:[{id:t.kid}]};
+    const pg=await notionCreate('aufgaben',props);t.nid=pg.id||''}catch(_){}}
+  const body=taskEventBody(t);
+  const em=invite?personMail(t.who):'';if(em)body.attendees=[{email:em}];
+  const r=await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events'+(em?'?sendUpdates=all':''),{
+    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)
   });
   const j=await r.json();
   t.id=j.id;TASKS.push(t);syncTaskEvents();
@@ -3592,6 +3821,7 @@ async function toggleTask(t,done){
     await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id),{
       method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))
     });
+    if(t.nid)notionUpdate('aufgaben',t.nid,{'Status':{status:{name:done?'Erledigt':'Nicht begonnen'}}}).catch(()=>{});
     if(done)safe('fun',()=>celebrateTask(t));
     if(done&&payOwned('feuerwerk'))safe('fw',()=>fireworks());
     syncTaskEvents();safe('kartR',renderKartei);if(kOpen)safe('ks',()=>renderKundeSheet(kOpen));
@@ -3609,7 +3839,7 @@ async function deleteTask(t){
   toast('Aufgabe gelöscht');
 }
 function syncTaskEvents(){
-  EVENTS=EVENTS.filter(e=>e.type!=='aufgabe').concat(TASKS.filter(t=>!t.done).map(t=>({d:t.due,time:t.time,t:t.t+' ('+t.who+')',type:'aufgabe',p:t.kname||'LeMatic',who:t.who,taskId:t.id})));
+  EVENTS=EVENTS.filter(e=>e.type!=='aufgabe').concat(TASKS.filter(t=>!t.done||(t.doneAt||'').slice(0,10)>=addDays(TODAY,-30)||t.due>=addDays(TODAY,-30)).map(t=>({d:t.due,time:t.time,t:t.t,type:'aufgabe',art:t.art||'aufgabe',p:t.kname||'LeMatic',who:t.who,taskId:t.id,done:t.done,note:t.note,kid:t.kid})));
 }
 document.getElementById('addTask').addEventListener('submit',async e=>{
   e.preventDefault();
@@ -3617,9 +3847,12 @@ document.getElementById('addTask').addEventListener('submit',async e=>{
   if(!title){document.getElementById('atTitle').focus();return}
   const kid=$('atKunde').value,k=KUNDEN.find(x=>x.id===kid);
   const who=$('atWho').value,btn=$('atGo');
+  const bz=busyFor(who,$('atDue').value||TODAY);
+  if(bz.length&&!e.target._ok){askConfirm(busyText(bz[0])+'. Aufgabe trotzdem anlegen?',()=>{e.target._ok=true;e.target.requestSubmit()},'Trotzdem anlegen');return}
+  e.target._ok=false;
   btn.disabled=true;
   try{
-    await createTask({title,who,due:$('atDue').value||TODAY,time:$('atTime').value||null,kid:k?k.id:'',kname:k?k.name:''});
+    await createTask({title,who,due:$('atDue').value||TODAY,time:$('atTime').value||null,kid:k?k.id:'',kname:k?k.name:'',invite:who!==ME});
     $('atTitle').value='';$('atTime').value='';
     toast('Im Kalender für '+NAMES[who]+' eingetragen');
   }catch(err){toast('Nicht angelegt: '+err.message)}
@@ -4227,7 +4460,7 @@ function leadHTML(l){
   return `<article class="lead" draggable="true" data-lid="${l.id}">
     <strong>${esc(l.n)}</strong><p>${esc(l.note||'')}</p>
     <div class="tags" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:7px">${l.seg?`<span class="tag">${esc(l.seg)}</span>`:''}${l.saison?`<span class="tag">${esc(l.saison)}</span>`:''}</div>
-    <div class="lf"><span class="av us sm">${l.who}</span>${l.val?`<span class="val">${eur(l.val)}</span>`:'<span class="val"></span>'}${next}
+    <div class="lf"><span class="av us sm" data-who="${l.who}">${l.who}</span>${l.val?`<span class="val">${eur(l.val)}</span>`:'<span class="val"></span>'}${next}
       <button class="next" data-ldel="${l.id}" aria-label="${esc(l.n)} ausblenden" title="Ausblenden"><svg class="i sm"><use href="#i-eyeoff"/></svg></button></div>
   </article>`;
 }
@@ -4385,7 +4618,10 @@ async function loadMyCalendar(){
       const time=allDay?null:it.start.dateTime.slice(11,16);
       const kid=x.lmKid||kundeIdForText(it.summary||'');
       const kk=kid&&KUNDEN.find(q=>q.id===kid);
-      evs.push({d,end,time,t:it.summary||'(ohne Titel)',type:'privat',p:kk?kk.name:'LeMatic',place:it.location||'',big:!!end,gcalId:it.id,link:it.htmlLink||'',kid:kid||''});
+      const art=x.lmArt||guessArt(it.summary);
+      const endTime=allDay?null:(it.end&&it.end.dateTime||'').slice(11,16)||null;
+      if(!allDay&&it.end&&it.end.dateTime){const e2=it.end.dateTime.slice(0,10);if(e2>d)end=e2}
+      evs.push({d,end,time,endTime,t:(art==='belegt'?String(x.lmTitle||it.summary||'').replace(/^Belegt:\s*/i,'').replace(/\s*\((Lennart|Martin)\)$/,''):(it.summary||'(ohne Titel)')),type:art==='belegt'?'belegt':art,art,who:x.lmWho||'',stand:x.lmStand!=null&&x.lmStand!==''?+x.lmStand:null,note:x.lmNote||'',p:kk?kk.name:'LeMatic',place:it.location||'',big:!!end,gcalId:it.id,link:it.htmlLink||'',kid:kid||'',rem:(it.reminders&&it.reminders.overrides&&it.reminders.overrides[0]||{}).minutes,att:(it.attendees||[]).map(a=>a.email)});
     });
     EVENTS=evs;TASKS=tasks;syncTaskEvents();
     MY_CAL_LOADED=CAL_LOADED=true;
@@ -4401,46 +4637,219 @@ async function loadMyCalendar(){
     if(pill)pill.innerHTML='<span class="pill warn"><i></i>Fehler</span>';
   }
 }
+/* ---------- Eintrag anlegen / bearbeiten ---------- */
+let EVD={art:'termin',edit:null};
+function personMail(code){const el=$(code==='MS'?'csMS':'csLP');const v=(el&&el.value||'').trim();return /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v)?v:''}
+function busyFor(who,from,to){to=to||from;return EVENTS.filter(e=>e.type==='belegt'&&(!who||e.who===who)&&e.d<=to&&(e.end||e.d)>=from)}
+function busyText(b){return NAMES[b.who]+' ist belegt'+(b.end&&b.end!==b.d?' bis '+wd(b.end)+' '+dm(b.end):' am '+dm(b.d))+': '+b.t+(b.stand!=null?' ('+b.stand+' %)':'')}
+function evRemOptions(timed,cur){
+  const o=timed?[['','Keine'],['10','10 Min. vorher'],['30','30 Min. vorher'],['60','1 Std. vorher'],['1440','1 Tag vorher']]:[['','Keine'],['960','Am Vortag, 8 Uhr'],['360','Am Vortag, 18 Uhr'],['2400','2 Tage vorher, 8 Uhr']];
+  const def=cur!=null&&cur!==''?String(cur):(timed?'30':'960');
+  $('evRem').innerHTML=o.map(([v,l])=>`<option value="${v}"${v===def?' selected':''}>${l}</option>`).join('');
+}
+function evRenderArt(){
+  const arts=['termin','aufgabe','dreh','schnitt','akquise','belegt'];
+  $('evArt').innerHTML=arts.map(a=>`<button type="button" class="ap t-${a}${EVD.art===a?' on':''}" data-evart="${a}" role="radio" aria-checked="${EVD.art===a}">${artIc(a,'sm')}<span>${TYPE_ONE[a]}</span></button>`).join('');
+  const a=EVD.art,task=a==='aufgabe',busy=a==='belegt';
+  $('evWhoL').hidden=false;
+  const wsel=$('evWho');wsel.querySelector('option[value=""]').hidden=task||busy;if((task||busy)&&!wsel.value)wsel.value=ME;
+  $('evEndL').hidden=!busy&&!(EVD.multi);$('evStandL').hidden=!busy;
+  $('evTimeL').hidden=busy;$('evTimeEndL').hidden=busy||task;$('evOrtL').hidden=busy||task;$('evKundeL').hidden=busy;
+  $('evRemL').hidden=busy;
+  $('ev-title').textContent=(EVD.edit?'Bearbeiten: ':'Neu: ')+TYPE_ONE[a];
+  $('evTitle').placeholder=busy?'Woran arbeitest du? Zum Beispiel: Schnitt Fronius':task?'Was ist zu tun?':a==='dreh'?'Zum Beispiel: Dreh GET Nord, Fronius':'Zum Beispiel: Call mit Körber';
+  $('evSub').textContent=busy?'Zeigt dem anderen, dass du in der Zeit belegt bist, und wie weit du bist.':task?'Wird eine Aufgabe mit Frist, mit Häkchen und Erinnerung.':'Landet im LeMatic-Kalender (info@lematic.de). Lennart und Martin sehen ihn beide.';
+  $('evGo').textContent=EVD.edit?'Speichern':'Anlegen';
+  evCheck();
+}
+function evCheck(){
+  const who=$('evWho').value,date=$('evDate').value,end=$('evEnd').value||date,a=EVD.art;
+  /* Einladung nur, wenn es für den anderen ist */
+  const other=who&&who!==ME,em=other?personMail(who):'';
+  $('evInvL').hidden=!(other&&em&&a!=='belegt');
+  $('evInvTxt').textContent=NAMES[who]+' per Kalender-Einladung erinnern ('+em+')';
+  const w=$('evWarn');const hits=a==='belegt'?[]:busyFor(who||'',date,a==='aufgabe'?date:end).filter(b=>!EVD.edit||b.gcalId!==EVD.edit.gcalId);
+  w.hidden=!hits.length;w.innerHTML=hits.length?`<svg class="i sm"><use href="#i-warn"/></svg><span>${hits.map(b=>esc(busyText(b))).join('<br>')}${hits.length?'<br><small>Trotzdem anlegen geht, '+(who?NAMES[who]:'die Person')+' sieht es dann als Hinweis.</small>':''}</span>`:'';
+}
 function openEventDialog(pre){
   const w=$('eventWrap');if(!w)return;pre=pre||{};
+  EVD={art:pre.art||'termin',edit:pre.edit||null,multi:!!pre.end&&pre.end!==pre.date};
   $('evTitle').value=pre.title||'';$('evErr').textContent='';
-  $('evDate').value=pre.date||selDay||TODAY;$('evTime').value=pre.time||'';
-  $('evKunde').innerHTML='<option value="">Kein Kunde</option>'+kSorted(KUNDEN.filter(k=>k.status!=='Archiv')).map(k=>`<option value="${k.id}">${esc(k.name)}</option>`).join('');
+  $('evDate').value=pre.date||selDay||TODAY;$('evEnd').value=pre.end||pre.date||selDay||TODAY;
+  $('evTime').value=pre.time||'';$('evTimeEnd').value=pre.timeEnd||'';
+  $('evWho').value=pre.who!=null?pre.who:(EVD.art==='aufgabe'||EVD.art==='belegt'?ME:'');
+  $('evStand').value=pre.stand||0;$('evStandV').textContent=(pre.stand||0)+' %';
+  $('evKunde').innerHTML='<option value="">Kein Kunde</option>'+kSorted(KUNDEN.filter(k=>k.status!=='Archiv'&&notPrivate(k.name))).map(k=>`<option value="${k.id}">${esc(k.name)}</option>`).join('');
   $('evKunde').value=pre.kid||'';$('evOrt').value=pre.ort||'';$('evNote').value=pre.note||'';
+  $('evInvite').checked=pre.invite!=null?pre.invite:true;
+  evRemOptions(!!pre.time,pre.rem);
+  evRenderArt();
   w.classList.add('show');w.setAttribute('aria-hidden','false');
   setTimeout(()=>$('evTitle').focus(),20);
 }
 function closeEventDialog(){const w=$('eventWrap');if(!w)return;w.classList.remove('show');w.setAttribute('aria-hidden','true')}
 on('openEvent','click',()=>{if(!GAUTH){toast('Dafür bitte zuerst mit Google anmelden');return}openEventDialog()});
+on('openBusy','click',()=>{if(!GAUTH){toast('Dafür bitte zuerst mit Google anmelden');return}openEventDialog({art:'belegt',who:ME,date:TODAY,end:addDays(TODAY,4)})});
+on('dayAdd','click',()=>{if(!GAUTH){toast('Dafür bitte zuerst mit Google anmelden');return}openEventDialog({date:selDay})});
 on('evCancel','click',closeEventDialog);
+document.addEventListener('click',e=>{const b=e.target.closest('[data-evart]');if(!b)return;EVD.art=b.dataset.evart;evRenderArt()});
+['evWho','evDate','evEnd'].forEach(id=>on(id,'change',()=>{if(id==='evDate'&&$('evEnd').value<$('evDate').value)$('evEnd').value=$('evDate').value;evCheck()}));
+on('evTime','change',()=>{const t=$('evTime').value;evRemOptions(!!t,$('evRem').value);if(t&&!$('evTimeEnd').value){const [h,m]=t.split(':').map(Number);$('evTimeEnd').value=pad(Math.min(23,h+1))+':'+pad(m)}});
+on('evStand','input',()=>{$('evStandV').textContent=$('evStand').value+' %'});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='evTitle'){e.preventDefault();$('evGo').click()}});
+function evBody(o){
+  const priv={lmArt:o.art,lmWho:o.who||'',lmNote:String(o.note||'').slice(0,900)};
+  if(o.art==='belegt'){priv.lmStand=String(o.stand||0);priv.lmTitle=o.title.slice(0,300)}
+  if(o.kid){priv.lmKid=o.kid;priv.lmKname=(o.kname||'').slice(0,200)}
+  const body={summary:o.art==='belegt'?'Belegt: '+o.title+' ('+NAMES[o.who]+')':o.title,colorId:ART_COLOR[o.art]||'5',extendedProperties:{private:priv},
+    description:[o.note,o.kname?'Kunde: '+o.kname:'',o.who?'Für '+NAMES[o.who]:'',(o.art==='belegt'?'Stand '+(o.stand||0)+' %':''),'Eingetragen von '+USER+' im LeMatic Studio'].filter(Boolean).join('\n')};
+  if(o.art==='belegt'||!o.time){body.start={date:o.date};body.end={date:addDays(o.end&&o.end>o.date?o.end:o.date,1)};body.transparency=o.art==='belegt'?'opaque':'transparent'}
+  else{let te=o.timeEnd;if(!te||te<=o.time){const [h,m]=o.time.split(':').map(Number);te=pad(Math.min(23,h+1))+':'+pad(m)}
+    body.start={dateTime:o.date+'T'+o.time+':00',timeZone:'Europe/Berlin'};body.end={dateTime:o.date+'T'+te+':00',timeZone:'Europe/Berlin'}}
+  body.location=o.ort||'';
+  body.reminders=o.rem===''||o.rem==null||o.art==='belegt'?{useDefault:false,overrides:[]}:{useDefault:false,overrides:[{method:'popup',minutes:+o.rem}]};
+  return body;
+}
 on('evGo','click',async()=>{
-  const title=($('evTitle').value||'').trim(),date=$('evDate').value||TODAY,time=$('evTime').value;
-  const dur=+$('evDur').value||60,kid=$('evKunde').value,k=KUNDEN.find(x=>x.id===kid),ort=($('evOrt').value||'').trim(),note=($('evNote').value||'').trim();
-  const err=$('evErr');
-  if(!title){err.textContent='Bitte einen Titel eintragen.';return}
-  err.textContent='';
-  let body;
-  if(time){
-    const [hh,mm]=time.split(':').map(Number);const st=new Date(2000,0,1,hh,mm),en=new Date(st.getTime()+dur*60000);
-    const endDate=en.getDate()>1?addDays(date,en.getDate()-1):date;
-    body={summary:title,start:{dateTime:date+'T'+time+':00',timeZone:'Europe/Berlin'},end:{dateTime:endDate+'T'+pad(en.getHours())+':'+pad(en.getMinutes())+':00',timeZone:'Europe/Berlin'}};
-  }else body={summary:title,start:{date},end:{date:addDays(date,1)}};
-  if(ort)body.location=ort;
-  body.reminders={useDefault:false,overrides:[{method:'popup',minutes:time?30:960}]};
-  body.description=[note,k?'Kunde: '+k.name:'','Angelegt von '+USER+' im LeMatic Studio'].filter(Boolean).join('\n');
-  if(k)body.extendedProperties={private:{lmKid:k.id,lmKname:k.name.slice(0,200)}};
+  const o={art:EVD.art,title:($('evTitle').value||'').trim(),who:$('evWho').value,date:$('evDate').value,end:$('evEnd').value,time:$('evTime').value,timeEnd:$('evTimeEnd').value,
+    stand:+$('evStand').value,rem:$('evRem').value,kid:$('evKunde').value,ort:($('evOrt').value||'').trim(),note:($('evNote').value||'').trim()};
+  const k=KUNDEN.find(x=>x.id===o.kid);o.kname=k?k.name:'';
+  const err=$('evErr'),btn=$('evGo');
+  if(!o.title){err.textContent='Bitte einen Titel eintragen.';$('evTitle').focus();return}
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(o.date||'')){err.textContent='Bitte ein Datum wählen.';return}
+  if(o.art==='belegt'&&!o.who){err.textContent='Bitte wählen, wer belegt ist.';return}
+  if(o.end&&o.end<o.date){err.textContent='Das Enddatum liegt vor dem Startdatum.';return}
+  if(o.time&&o.timeEnd&&o.timeEnd<=o.time&&o.art!=='aufgabe'){err.textContent='Die Endzeit liegt vor der Startzeit.';return}
+  const invite=!$('evInvL').hidden&&$('evInvite').checked;
+  err.textContent='';btn.disabled=true;const lbl=btn.textContent;btn.textContent='Wird gespeichert …';
+  const cal='https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events';
   try{
-    const r=await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events',{
-      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)
-    });
-    const j=await r.json();
-    EVENTS.push({d:date,time:time||null,t:title,type:'privat',p:k?k.name:'LeMatic',gcalId:j.id,link:j.htmlLink,kid:k?k.id:'',place:ort});
-    closeEventDialog();toast('Im Google-Kalender angelegt: '+title);
-    safe('calR',renderCal);safe('homeR',renderHome);
+    if(o.art==='aufgabe'){
+      const who=o.who||ME;
+      if(EVD.edit&&EVD.edit.taskId){const t=TASKS.find(x=>x.id===EVD.edit.taskId);if(!t)throw new Error('Aufgabe nicht mehr gefunden');
+        Object.assign(t,{t:o.title,who,due:o.date,time:o.time||null,kid:o.kid,kname:o.kname,note:o.note,rem:o.rem===''?'':+o.rem,art:'aufgabe'});
+        await gfetch(cal+'/'+encodeURIComponent(t.id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))});
+        if(t.nid)notionUpdate('aufgaben',t.nid,{'Aufgabe':{title:[{text:{content:t.t.slice(0,200)}}]},'Wer':{select:{name:NAMES[who]}},'Deadline':{date:{start:t.due}}}).catch(()=>{});
+        syncTaskEvents();
+      }else await createTask({title:o.title,who,due:o.date,time:o.time||null,kid:o.kid,kname:o.kname,art:'aufgabe',note:o.note,rem:o.rem===''?'':+o.rem,invite});
+      toast(EVD.edit?'Aufgabe gespeichert':'Aufgabe für '+NAMES[who]+(who!==ME&&invite?' angelegt, Einladung ist raus':' angelegt'));
+    }else{
+      const body=evBody(o);const em=invite&&o.who?personMail(o.who):'';
+      if(em)body.attendees=[{email:em}];
+      if(EVD.edit&&EVD.edit.gcalId){
+        await gfetch(cal+'/'+encodeURIComponent(EVD.edit.gcalId)+(em?'?sendUpdates=all':''),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        EVENTS=EVENTS.filter(x=>x.gcalId!==EVD.edit.gcalId);
+        EVENTS.push(evFromBody(o,EVD.edit.gcalId,EVD.edit.link));
+      }else{
+        const j=await (await gfetch(cal+(em?'?sendUpdates=all':''),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
+        EVENTS.push(evFromBody(o,j.id,j.htmlLink));track('act','Termin angelegt');
+      }
+      toast(o.art==='belegt'?(EVD.edit?'Belegung aktualisiert':'Eingetragen: '+NAMES[o.who]+' ist belegt bis '+dm(o.end||o.date)):(EVD.edit?'Gespeichert: ':'Im Kalender: ')+o.title);
+    }
+    closeEventDialog();safe('calR',renderCal);safe('homeR',renderHome);safe('avail',renderAvail);
   }catch(e){
-    err.textContent='Konnte nicht angelegt werden: '+e.message;
+    const m=String(e.message||e);
+    err.textContent=/insufficient|permission|403/i.test(m)?'Keine Berechtigung für den LeMatic-Kalender. Bitte mit info@lematic.de neu anmelden.':/Calendar API/.test(m)?m:/network|fetch/i.test(m)?'Keine Verbindung. Bitte Internet prüfen und nochmal versuchen.':'Nicht gespeichert: '+m;
   }
+  btn.disabled=false;btn.textContent=lbl;
 });
+function evFromBody(o,id,link){
+  const art=o.art,end=(art==='belegt'||o.end&&o.end>o.date)?(o.end&&o.end>o.date?o.end:null):null;
+  return {d:o.date,end,time:art==='belegt'?null:(o.time||null),endTime:o.time?(o.timeEnd||null):null,t:o.title,type:art==='belegt'?'belegt':art,art,who:o.who||'',stand:art==='belegt'?o.stand:null,note:o.note,p:o.kname||'LeMatic',place:o.ort,gcalId:id,link:link||'',kid:o.kid||'',rem:o.rem};
+}
+
+/* ---------- Klick auf einen Eintrag: Details, Art ändern, Erledigt, Löschen ---------- */
+let ENTRY_POP=null;
+function closeEntryPop(){if(ENTRY_POP){ENTRY_POP.remove();ENTRY_POP=null}}
+function entryOf(el){const id=el.dataset.entry;return EVENTS.find(x=>(x.gcalId||'t'+x.taskId)===id||(x.taskId&&'t'+x.taskId===id))}
+function showEntryPop(anchor,e){
+  closeEntryPop();closePopMenu();
+  const t=e.taskId?TASKS.find(x=>x.id===e.taskId):null;
+  const when=e.type==='belegt'?(dm(e.d)+(e.end?' bis '+wd(e.end)+' '+dm(e.end):'')):(wd(e.d)+', '+dm(e.d)+(e.time?' · '+e.time+(e.endTime?'–'+e.endTime:''):' · ganztags'));
+  const art=e.art||e.type;
+  const m=document.createElement('div');m.className='entry-pop glass';m.setAttribute('role','dialog');
+  m.innerHTML=`<div class="ep-head"><button class="ep-art t-${art}" data-epart title="Art ändern">${artIc(art,'xs')}${TYPE_ONE[art]||art}<svg class="i xs"><use href="#i-chev"/></svg></button><button class="icon-btn" data-epclose aria-label="Schließen"><svg class="i sm"><use href="#i-plus" style="transform:rotate(45deg);transform-origin:center"/></svg></button></div>
+    <h3 class="${t&&t.done?'ep-done':''}">${esc(e.t)}</h3>
+    <p class="ep-meta"><svg class="i xs"><use href="#i-clock"/></svg>${esc(when)}${e.who?` · <span class="av us sm" data-who="${e.who}">${e.who}</span> ${NAMES[e.who]||''}`:''}</p>
+    ${e.place?`<p class="ep-meta"><svg class="i xs"><use href="#i-pin"/></svg>${esc(e.place)}</p>`:''}
+    ${e.kid?`<p class="ep-meta"><svg class="i xs"><use href="#i-users"/></svg><button class="ep-link" data-kopen="${e.kid}">${esc(e.p)}</button></p>`:''}
+    ${e.note?`<p class="ep-note">${esc(e.note)}</p>`:''}
+    ${e.type==='belegt'?`<div class="ep-stand"><span>Stand</span><input type="range" min="0" max="100" step="10" value="${e.stand||0}" data-epstand><b>${e.stand||0} %</b></div>`:''}
+    <div class="ep-act">
+      ${t?(t.done?`<button class="btn btn-glass sm" data-epundo><svg class="i xs"><use href="#i-undo"/></svg>Wieder offen</button>`:`<button class="btn btn-primary sm" data-epdone><svg class="i xs"><use href="#i-check"/></svg>Erledigt</button><button class="btn btn-glass sm" data-tmove="${t.id}"><svg class="i xs"><use href="#i-skip"/></svg>Verschieben</button>`):''}
+      ${e.type==='belegt'&&e.end&&e.end>TODAY?`<button class="btn btn-glass sm" data-epfertig><svg class="i xs"><use href="#i-check"/></svg>Heute fertig</button>`:''}
+      <button class="btn btn-glass sm" data-epedit><svg class="i xs"><use href="#i-pencil"/></svg>Bearbeiten</button>
+      <button class="btn btn-glass sm ep-del" data-epdel><svg class="i xs"><use href="#i-trash"/></svg>Löschen</button>
+    </div>`;
+  document.body.append(m);ENTRY_POP=m;m._e=e;
+  const r=anchor.getBoundingClientRect(),w=m.offsetWidth,h=m.offsetHeight;
+  let x=r.right+8;if(x+w>innerWidth-10)x=Math.max(10,r.left-w-8);let y=Math.min(innerHeight-h-10,Math.max(10,r.top));
+  if(innerWidth<640){x=10;y=Math.max(10,innerHeight-h-10)}
+  m.style.left=x+'px';m.style.top=y+'px';
+}
+async function patchEvent(id,body){return gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})}
+document.addEventListener('click',async ev=>{
+  const ent=ev.target.closest('[data-entry]');
+  if(ent&&!ev.target.closest('.entry-pop')){ev.preventDefault();ev.stopPropagation();const e=entryOf(ent);if(e)showEntryPop(ent,e);return}
+  const m=ev.target.closest('.entry-pop');
+  if(!m){if(ENTRY_POP&&!ev.target.closest('.pop-menu'))closeEntryPop();return}
+  const e=m._e,t=e.taskId?TASKS.find(x=>x.id===e.taskId):null;
+  if(ev.target.closest('[data-epclose]')){closeEntryPop();return}
+  if(ev.target.closest('[data-epdone]')&&t){closeEntryPop();await toggleTask(t,true);syncTaskEvents();safe('calR',renderCal);return}
+  if(ev.target.closest('[data-epundo]')&&t){closeEntryPop();await toggleTask(t,false);syncTaskEvents();safe('calR',renderCal);return}
+  if(ev.target.closest('[data-epedit]')){closeEntryPop();
+    if(t)openEventDialog({art:'aufgabe',edit:{taskId:t.id},title:t.t,who:t.who,date:t.due,time:t.time,kid:t.kid,note:t.note,rem:t.rem});
+    else openEventDialog({art:e.art||e.type,edit:{gcalId:e.gcalId,link:e.link},title:e.t,who:e.who,date:e.d,end:e.end||e.d,time:e.time,timeEnd:e.endTime,stand:e.stand,kid:e.kid,ort:e.place,note:e.note,rem:e.rem,invite:false});
+    return}
+  if(ev.target.closest('[data-epfertig]')){closeEntryPop();try{await patchEvent(e.gcalId,{end:{date:addDays(TODAY,1)},extendedProperties:{private:{lmStand:'100'}}});e.end=TODAY>e.d?TODAY:null;e.stand=100;safe('calR',renderCal);safe('avail',renderAvail);toast('Eingetragen: ab morgen wieder frei')}catch(x){toast('Nicht gespeichert: '+x.message)}return}
+  const del=ev.target.closest('[data-epdel]');
+  if(del){
+    popMenu(del,'Wirklich löschen?',[{ic:'',label:t?'Ja, Aufgabe löschen':'Ja, löschen',danger:true,fn:async()=>{closeEntryPop();
+      if(t){await deleteTask(t);syncTaskEvents();safe('calR',renderCal);return}
+      const i=EVENTS.indexOf(e);EVENTS.splice(i,1);safe('calR',renderCal);safe('homeR',renderHome);safe('avail',renderAvail);
+      try{await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(e.gcalId),{method:'DELETE'});toast('Gelöscht: '+e.t);track('act','Termin gelöscht')}
+      catch(x){EVENTS.splice(i,0,e);safe('calR',renderCal);toast('Nicht gelöscht: '+x.message)}}},{ic:'',label:'Abbrechen',fn:()=>{}}]);
+    return}
+  const pa=ev.target.closest('[data-epart]');
+  if(pa){
+    const arts=t?['aufgabe','dreh','schnitt','akquise']:['termin','dreh','schnitt','akquise'];
+    popMenu(pa,'Art ändern',arts.map(a=>({label:TYPE_ONE[a],on:(e.art||e.type)===a,fn:async()=>{
+      const old=e.art;e.art=a;if(!t)e.type=a;closeEntryPop();safe('calR',renderCal);
+      try{if(t){t.art=a;await patchEvent(t.id,taskEventBody(t))}else await patchEvent(e.gcalId,{colorId:ART_COLOR[a],extendedProperties:{private:{lmArt:a}}});toast('Art: '+TYPE_ONE[a])}
+      catch(x){e.art=old;if(!t)e.type=old;if(t)t.art=old;safe('calR',renderCal);toast('Nicht geändert: '+x.message)}}})));
+    return}
+});
+document.addEventListener('change',async ev=>{
+  const r=ev.target.closest('[data-epstand]');if(!r||!ENTRY_POP)return;
+  const e=ENTRY_POP._e,v=+r.value;r.nextElementSibling.textContent=v+' %';
+  try{await patchEvent(e.gcalId,{extendedProperties:{private:{lmStand:String(v)}}});e.stand=v;safe('avail',renderAvail);safe('calR',()=>{if(location.hash==='#/kalender')renderDay()});toast('Stand: '+v+' %')}catch(x){toast('Nicht gespeichert: '+x.message)}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&ENTRY_POP)closeEntryPop()});
+
+/* ---------- Verfügbarkeit: wer ist belegt, wie weit, ab wann wieder frei ---------- */
+function nextWorkday(d){let x=addDays(d,1);while([0,6].includes(parse(x).getDay()))x=addDays(x,1);return x}
+function availInfo(code){
+  const cur=busyFor(code,TODAY).sort((a,b)=>(b.end||b.d).localeCompare(a.end||a.d))[0];
+  const next=EVENTS.filter(e=>e.type==='belegt'&&e.who===code&&e.d>TODAY&&e.d<=addDays(TODAY,21)).sort((a,b)=>a.d.localeCompare(b.d))[0];
+  return {cur,next};
+}
+function availCard(code){
+  const {cur,next}=availInfo(code);
+  const st=cur&&cur.stand!=null?cur.stand:null;
+  return `<div class="av-card${cur?' busy':''}" ${cur?`data-entry="${esc(cur.gcalId)}"`:''}>
+    <span class="av us" data-who="${code}">${code}</span>
+    <div class="av-txt"><b>${NAMES[code]}${code===ME?' (du)':''}</b>
+      ${cur?`<span class="av-st"><i></i>Belegt bis ${wd(cur.end||cur.d)} ${dm(cur.end||cur.d)}</span><small>${esc(cur.t)} · wieder frei ab ${wd(nextWorkday(cur.end||cur.d))} ${dm(nextWorkday(cur.end||cur.d))}</small>`
+        :`<span class="av-st free"><i></i>Frei</span><small>${next?'Belegt ab '+wd(next.d)+' '+dm(next.d)+': '+esc(next.t):'Nichts Größeres eingetragen'}</small>`}
+    </div>
+    ${cur&&st!=null?`<div class="av-prog" title="Stand ${st} %"><span style="width:${st}%"></span><b>${st} %</b></div>`:''}
+  </div>`;
+}
+function renderAvail(){
+  const html=`<div class="av-row">${['LP','MS'].map(availCard).join('')}</div>`;
+  const a=$('availBar');if(a)a.innerHTML=html;
+  const h=$('homeAvail');if(h)h.innerHTML=html;
+}
 
 /* ---------- Notion ---------- */
 /* Die Notion-API lässt sich aus dem Browser nicht direkt aufrufen: Notion erlaubt kein CORS,
@@ -4606,7 +5015,7 @@ async function loadKartei(){
     renderKartei();renderSideClients();
     if(GMAIL){safe('mailsR',renderMails)}
     if(kOpen&&$('kdWrap').classList.contains('show'))renderKundeSheet(kOpen);
-    if(MY_CAL_LOADED)safe('calKid',()=>EVENTS.forEach(e=>{if(!e.kid&&e.type==='privat'){const id=kundeIdForText(e.t);if(id){e.kid=id;e.p=(KUNDEN.find(k=>k.id===id)||{}).name||e.p}}}));
+    if(MY_CAL_LOADED)safe('calKid',()=>EVENTS.forEach(e=>{if(!e.kid&&isTermin(e)){const id=kundeIdForText(e.t);if(id){e.kid=id;e.p=(KUNDEN.find(k=>k.id===id)||{}).name||e.p}}}));
     safe('brain',renderBrain);safe('autoKontakt',autoLetzterKontakt);
   }catch(e){
     setText('kSummary','Kundenkartei nicht erreichbar: '+e.message);
@@ -4777,7 +5186,7 @@ function renderKundeSheet(id){
         <div class="sub kcontact">${k.raw['Telefon']?`<a class="tag" href="tel:${esc(String(k.raw['Telefon']).replace(/\s/g,''))}">📞 ${esc(k.raw['Telefon'])}</a>`:''}${k.email?`<a class="tag" href="mailto:${esc(k.email)}">✉️ ${esc(k.email)}</a>`:''}${k.raw['Website']?`<a class="tag" href="${esc(k.raw['Website'])}" target="_blank" rel="noopener">🌐 Website</a>`:''}${k.raw['Adresse']?`<span class="tag">📍 ${esc(String(k.raw['Adresse']).split('(')[0].trim())}</span>`:''}</div>
         <h3 class="khead" id="kdSecFacts">Auf einen Blick</h3>
         ${kFacts(k)}
-        <div class="kd-row" style="margin-top:14px"><button class="btn btn-primary sm" id="kdBrief">✨ Briefing</button><button class="btn btn-glass sm prem" data-premium="calls">🎙️ Anruf auswerten <span class="lock">🔒</span></button><button class="btn btn-glass sm prem" data-premium="offer">📄 Angebot erstellen <span class="lock">🔒</span></button>${k.raw['Nächster Schritt']&&!TASKS.some(t=>t.kid===k.id&&!t.done)?'<button class="btn btn-glass sm" data-nexttask>Nächster Schritt → Kalender</button>':''}<button class="btn btn-glass sm" id="kdTermin">Termin</button><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>Notion</a><button class="btn btn-glass sm" data-kmove="${k.id}">↪ Verschieben</button><button class="btn btn-glass sm" id="kdArchive">${k.status==='Archiv'?'Aus dem Archiv holen':'🗄 Ins Archiv'}</button></div>
+        <div class="kd-row" style="margin-top:14px"><button class="btn btn-primary sm" id="kdBrief">✨ Briefing</button><button class="btn btn-glass sm prem" data-premium="calls">🎙️ Anruf auswerten <span class="lock"><svg class="i xs"><use href="#i-lockk"/></svg></span></button><button class="btn btn-glass sm prem" data-premium="offer">📄 Angebot erstellen <span class="lock"><svg class="i xs"><use href="#i-lockk"/></svg></span></button>${k.raw['Nächster Schritt']&&!TASKS.some(t=>t.kid===k.id&&!t.done)?'<button class="btn btn-glass sm" data-nexttask>Nächster Schritt → Kalender</button>':''}<button class="btn btn-glass sm" id="kdTermin">Termin</button><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>Notion</a><button class="btn btn-glass sm" data-kmove="${k.id}">↪ Verschieben</button><button class="btn btn-glass sm" id="kdArchive">${k.status==='Archiv'?'Aus dem Archiv holen':'🗄 Ins Archiv'}</button></div>
       </div>
       <div class="khero-r">${kMapSVG(k)}</div>
       <button class="icon-btn kclose" id="kdClose" aria-label="Schließen">✕</button>
@@ -5189,7 +5598,7 @@ function kNext(k){
   return `<div class="ctx-box" style="margin-top:0"><div class="top"><b>Nächster Schritt</b>${lt?`<span class="age">letzter Kontakt ${dm(lt)}</span>`:''}</div><p>${esc(n)}</p>${hasTask?'':`<div class="kd-row"><button class="btn btn-glass sm" data-nexttask>Als Aufgabe für morgen</button></div>`}</div>`;
 }
 function kTermine(k){
-  const up=EVENTS.filter(e=>e.type==='privat'&&e.kid===k.id&&(e.end||e.d)>=TODAY).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||''))).slice(0,4);
+  const up=EVENTS.filter(e=>isTermin(e)&&e.kid===k.id&&(e.end||e.d)>=TODAY).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||''))).slice(0,4);
   if(!up.length)return '';
   return `<p class="grp" style="margin-top:12px">Nächste Termine</p>`+up.map(e=>`<div class="task"><span>📅</span><div><div class="tt">${esc(e.t)}</div><div class="sub"><span class="proj">${wd(e.d)}, ${dm(e.d)}${e.time?', '+e.time:''}${e.place?' · '+esc(e.place):''}</span></div></div><div class="right">${e.link?`<a class="link" href="${esc(e.link)}" target="_blank" rel="noopener">Google</a>`:''}</div></div>`).join('');
 }
@@ -5218,7 +5627,7 @@ function kundeContext(k){
   if(m.length)c+='\nLetzte Mails:\n'+m.map(x=>`- ${x.internal?iso(new Date(x.internal)):''} ${x.sent?'an Kunde':'vom Kunden'}: ${x.subj} — ${x.snip}`).join('\n')+'\n';
   const t=TASKS.filter(x=>x.kid===k.id&&!x.done);
   if(t.length)c+='\nOffene Aufgaben:\n'+t.map(x=>`- ${x.due} ${NAMES[x.who]}: ${x.t}`).join('\n')+'\n';
-  const ev=EVENTS.filter(e=>e.kid===k.id&&e.type==='privat'&&e.d>=TODAY).slice(0,3);
+  const ev=EVENTS.filter(e=>e.kid===k.id&&isTermin(e)&&e.d>=TODAY).slice(0,3);
   if(ev.length)c+='\nGeplante Termine:\n'+ev.map(e=>`- ${e.d} ${e.time||''} ${e.t}`).join('\n')+'\n';
   return c;
 }
@@ -5282,7 +5691,7 @@ on('radarAI','click',async()=>{
 /* Mails: Kundenkontext, Claude-Antwort, Termin */
 function mailCtxHTML(m){
   const k=m.client?kundeForName(m.client):null;
-  const btns=`<button class="btn btn-primary sm" data-maction="ai">✨ Antwort entwerfen</button><button class="btn btn-glass sm" data-maction="event">Termin daraus</button><button class="btn btn-glass sm prem" data-premium="offer">📄 Angebot daraus <span class="lock">🔒</span></button>${/rechnung|invoice|beleg/i.test(m.subj)?'<button class="btn btn-glass sm prem" data-premium="erechnung">📄 An Buchhaltung <span class="lock">🔒</span></button>':''}`;
+  const btns=`<button class="btn btn-primary sm" data-maction="ai">✨ Antwort entwerfen</button><button class="btn btn-glass sm" data-maction="event">Termin daraus</button><button class="btn btn-glass sm prem" data-premium="offer">📄 Angebot daraus <span class="lock"><svg class="i xs"><use href="#i-lockk"/></svg></span></button>${/rechnung|invoice|beleg/i.test(m.subj)?'<button class="btn btn-glass sm prem" data-premium="erechnung">📄 An Buchhaltung <span class="lock"><svg class="i xs"><use href="#i-lockk"/></svg></span></button>':''}`;
   if(!k)return `<div class="kd-row" style="margin:6px 0 12px">${btns}</div>`;
   const open=TASKS.filter(t=>t.kid===k.id&&!t.done).sort((a,b)=>a.due.localeCompare(b.due));
   const g=kGespr(k)[0];
@@ -5331,7 +5740,7 @@ function kStats(k){
     mails:kMails(k).length,
     open:tasks.filter(t=>!t.done).length,
     done:tasks.filter(t=>t.done).length,
-    termine:EVENTS.filter(e=>e.type==='privat'&&e.kid===k.id&&(e.end||e.d)>=TODAY).length,
+    termine:EVENTS.filter(e=>isTermin(e)&&e.kid===k.id&&(e.end||e.d)>=TODAY).length,
     projekte:(Array.isArray(k.raw['Projekte'])?k.raw['Projekte'].length:0),
     rechnungen:(Array.isArray(k.raw['Rechnungen & Angebote'])?k.raw['Rechnungen & Angebote'].length:0),
     leads:(Array.isArray(k.raw['Leads'])?k.raw['Leads'].length:0)
@@ -6331,7 +6740,7 @@ function track(kind,key,extra){
   else if(kind==='search'){u.search.unshift(d+' '+String(key).slice(0,60));u.search=u.search.slice(0,40)}
   else if(kind==='frage'){u.fragen.unshift(d+' '+String(key).slice(0,90));u.fragen=u.fragen.slice(0,30)}
   else if(kind==='err'){u.err.unshift(d+' '+String(key).slice(0,80));u.err=u.err.slice(0,25)}
-  useSave();
+  useSave();if(kind==='act'||kind==='view')safe('ach',checkAchievements);
 }
 function viewEnter(){
   const v=(location.hash.slice(2)||'heute').split('?')[0];
@@ -6635,7 +7044,7 @@ async function liRunAction(a){
     if(k)body.extendedProperties={private:{lmKid:k.id,lmKname:k.name.slice(0,200)}};
     body.reminders={useDefault:false,overrides:[{method:'popup',minutes:time?30:600}]};
     const j=await (await gfetch(cal,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
-    EVENTS.push({d:date,time:time||null,t:a.title,type:'privat',p:k?k.name:'LeMatic',gcalId:j.id,link:j.htmlLink,kid:k?k.id:'',place:a.ort||''});
+    EVENTS.push({d:date,time:time||null,t:a.title,type:'termin',art:'termin',p:k?k.name:'LeMatic',gcalId:j.id,link:j.htmlLink,kid:k?k.id:'',place:a.ort||''});
     safe('calR',renderCal);safe('homeR',renderHome);return 'angelegt';
   }
   if(a.type==='event_delete'){
@@ -7056,7 +7465,8 @@ async function importBotTasks(){
       if(TASKS.some(t=>t.t===title&&!t.done))continue;
       try{
         await notionUpdate('aufgaben',r.id,{'Im Studio':{checkbox:true}});
-        await createTask({title,who,due:String(r['Deadline']||'').slice(0,10)||addDays(TODAY,1),time:/T(\d\d:\d\d)/.test(r['Deadline']||'')?RegExp.$1:null,kid:k?k.id:'',kname:k?k.name:''});
+        const art={Dreh:'dreh',Schnitt:'schnitt',Akquise:'akquise'}[r['Bereich']]||'aufgabe';
+        await createTask({title,who,due:String(r['Deadline']||'').slice(0,10)||addDays(TODAY,1),time:/T(\d\d:\d\d)/.test(r['Deadline']||'')?RegExp.$1:null,kid:k?k.id:'',kname:k?k.name:'',art,nid:r.id});
         n++;
       }catch(e){try{await notionUpdate('aufgaben',r.id,{'Im Studio':{checkbox:false}})}catch(_){}}
     }
@@ -7070,6 +7480,44 @@ setInterval(()=>safe('botTasks',importBotTasks),120000);
 /* ---------- Echte Bezahlung (Stripe, Testmodus) ---------- */
 let PAY={mode:null,owned:{},err:''};
 const FREE_KEY=()=>'lm_free_'+ME;
+/* Erfolge: Spaß-Module werden erspielt, nicht einfach angeklickt */
+const CHALL={
+  feuerwerk:{t:'5 Aufgaben abhaken',n:5,v:u=>u.acts['Aufgabe abgehakt']||0},
+  klappe:{t:'3 Aufgaben anlegen',n:3,v:u=>u.acts['Aufgabe angelegt']||0},
+  kasse:{t:'Eine Rechnung hochladen und in Drive ablegen',n:1,v:u=>u.acts['Rechnung hochgeladen']||0},
+  kaffee:{t:'An 2 Tagen im Studio arbeiten',n:2,v:u=>u.days.length},
+  pflanze:{t:'10 Aufgaben abhaken',n:10,v:u=>u.acts['Aufgabe abgehakt']||0},
+  feierabend:{t:'Einen Termin oder eine Belegung eintragen',n:1,v:u=>u.acts['Termin angelegt']||0},
+  disco:{t:'Ein Angebot als PDF erstellen',n:1,v:u=>u.acts['Angebot als PDF erstellt']||0},
+  korn:{t:'5 Fragen an LeMatic Intelligence stellen',n:5,v:u=>u.acts['LI gefragt']||0},
+  drohne:{t:'Einen Kunden verschieben oder archivieren',n:1,v:u=>Object.keys(u.acts).filter(k=>k.startsWith('Kunde verschoben')).reduce((a,k)=>a+u.acts[k],0)},
+  keks:{t:'An 5 Tagen im Studio arbeiten',n:5,v:u=>u.days.length},
+  saison:{t:'Eine Empfehlung mit Daumen hoch bewerten',n:1,v:u=>u.acts['Empfehlung hilfreich']||0},
+  rahmen:{t:'20 Aufgaben abhaken',n:20,v:u=>u.acts['Aufgabe abgehakt']||0,name:'Goldrahmen',ic:'i-trophy',pitch:'Ein goldener Rahmen um dein Profilbild. Für Leute, die liefern.'}
+};
+const EARN_KEY=()=>'lm_earned_'+ME;
+function earned(k){if(!CHALL[k])return true;try{return !!(JSON.parse(localStorage.getItem(EARN_KEY())||'{}')||{})[k]||!!freeOwned(k)}catch(_){return !!freeOwned(k)}}
+function chProg(k){const c=CHALL[k];if(!c)return{v:1,n:1,done:true};let v=0;try{v=c.v(useGet())||0}catch(_){}return{v:Math.min(v,c.n),n:c.n,done:v>=c.n,t:c.t}}
+let ACH_T=null;
+function checkAchievements(){
+  clearTimeout(ACH_T);ACH_T=setTimeout(()=>{
+    if(!GAUTH)return;let o={};try{o=JSON.parse(localStorage.getItem(EARN_KEY())||'{}')||{}}catch(_){}
+    let mig=false;Object.keys(CHALL).forEach(k=>{if(!o[k]&&freeOwned(k)){o[k]=TODAY;mig=true}});
+    const fresh=Object.keys(CHALL).filter(k=>!o[k]&&chProg(k).done);
+    if(!fresh.length){if(mig)try{localStorage.setItem(EARN_KEY(),JSON.stringify(o))}catch(_){}return}
+    fresh.forEach(k=>{o[k]=TODAY;if(k!=='rahmen')freeSet(k,true)});
+    try{localStorage.setItem(EARN_KEY(),JSON.stringify(o))}catch(_){}
+    safe('avR',applyAvatars);safe('premR',()=>{if(location.hash==='#/premium')renderPremium()});
+    showReward(fresh[0],fresh.length-1);
+  },600);
+}
+function showReward(k,more){
+  const p=PREMIUM[k]||CHALL[k],c=CHALL[k];
+  const el=funLayerAdd(`<div class="fx-reward" role="dialog" aria-label="Erfolg freigeschaltet"><div class="rw-ic"><svg class="i"><use href="#${p.ic&&p.ic.startsWith('i-')?p.ic:'i-trophy'}"/></svg></div><small>Erfolg freigeschaltet</small><h3>${esc(p.name||'')}</h3><p>${esc(c.t)}. ${esc(p.pitch||'')}</p>${more>0?`<p class="rw-more">und ${more} weitere${more>1?'':'s'}</p>`:''}<div class="kd-row"><button class="btn btn-primary sm" data-rwok>Schön</button>${PREMIUM[k]?`<a class="btn btn-glass sm" href="#/premium" data-rwok>Im Shop ansehen</a>`:''}</div></div>`,0);
+  if(!el)return;el.addEventListener('click',e=>{if(e.target.closest('[data-rwok]'))el.remove()});setTimeout(()=>el&&el.remove(),12000);
+  if(typeof confetti==='function')try{confetti(70)}catch(_){}
+  if(PREMIUM[k])setTimeout(()=>safe('rwPrev',()=>funPreview(k)),700);
+}
 function freeOwned(k){try{return (JSON.parse(localStorage.getItem(FREE_KEY())||'{}')||{})[k]||null}catch(_){return null}}
 function freeSet(k,on){let o={};try{o=JSON.parse(localStorage.getItem(FREE_KEY())||'{}')||{}}catch(_){}if(on)o[k]={since:TODAY};else delete o[k];try{localStorage.setItem(FREE_KEY(),JSON.stringify(o))}catch(_){}applyPayState();safe('fun',funApply)}
 function payOwned(k){if(PREMIUM[k]&&PREMIUM[k].free)return !!freeOwned(k);return !!(PAY.owned[k]||PAY.owned.bundle)}
@@ -7096,8 +7544,17 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.16';
+const APP_VERSION='2026-10-31.17';
 const CHANGELOG=[
+  {v:'2026-10-31.17',d:'31.10.2026',items:[
+    'Kalender komplett neu: Monat und Woche mit Uhrzeiten, Eintrag per Klick auf Tag oder Uhrzeit, Arten mit eigenen Farben (Termin, Aufgabe, Dreh, Schnitt, Akquise), per Klick änderbar',
+    'Aufgaben im Kalender anklicken: Erledigt (auch in Notion), Verschieben, Bearbeiten, Löschen. Aufgaben für den anderen kommen als Kalender-Einladung mit Erinnerung',
+    'Verfügbarkeit: „Ich bin belegt“ mit Stand in Prozent und ab wann wieder frei. Das Studio warnt, wenn ihr jemandem in der Zeit etwas eintragt',
+    'Erfolge: Spaß-Module werden jetzt erspielt, etwa mit fünf abgehakten Aufgaben oder der ersten hochgeladenen Rechnung. Der Fortschritt steht im Shop, für 20 erledigte Aufgaben gibt es einen Goldrahmen ums Profilbild',
+    'Profilbilder unten links: Martins Foto ist hinterlegt, eigenes Bild per Klick auf den Avatar, für beide sichtbar',
+    'Schnellzugriff auf Kalender, Kunden, Angebot und Rechnungen jetzt auf der Startseite in beiden Looks',
+    'Keine Emojis mehr in der Oberfläche, überall eigene schlichte Symbole'
+  ]},
   {v:'2026-10-31.16',d:'31.10.2026',items:[
     '🎁 Zehn neue Spaß-Module im Shop, alle kostenlos: Klappe!, Kasse klingelt, Kaffee-Zähler, Studio-Pflanze, Feierabend-Countdown, Disco-Freitag, Filmkorn, Drohnen-Besuch, Glückskeks, Jahreszeiten',
     '🧠 LeMatic Intelligence kann jetzt auch Termine löschen, Aufgaben übergeben und Kunden ins Archiv oder in einen anderen Status verschieben'
@@ -7185,41 +7642,41 @@ function newsAfterLogin(){
 
 /* ---------- Zentrale Pro: gesperrte Premium-Module (Test, keine echten Käufe) ---------- */
 const PREMIUM={
-  calls:{ic:'🎙️',name:'Anruf-Assistent',price:39,pitch:'Telefonat aufnehmen oder hochladen, fertig ist das Gesprächsprotokoll.',
+  calls:{ic:'i-phone',name:'Anruf-Assistent',price:39,pitch:'Telefonat aufnehmen oder hochladen, fertig ist das Gesprächsprotokoll.',
     pts:['Transkript und Zusammenfassung in unter einer Minute','Aufgaben und Termine landen direkt im Kalender','Protokoll wird automatisch an die Kundenkarte gehängt','DSGVO-konform, Server in Deutschland']},
-  erechnung:{ic:'📄',name:'E-Rechnung-Autopilot',price:39,pitch:'Eingangsrechnungen aus dem Postfach erkennen und an die Buchhaltung geben.',
+  erechnung:{ic:'i-receipt',name:'E-Rechnung-Autopilot',price:39,pitch:'Eingangsrechnungen aus dem Postfach erkennen und an die Buchhaltung geben.',
     pts:['Liest XRechnung und ZUGFeRD automatisch aus','Übergabe an DATEV, sevDesk oder lexoffice','Erinnert an Zahlungsfristen und Skonto','Fit für die E-Rechnungspflicht ab 2027']},
-  report:{ic:'📊',name:'Montags-Bericht',price:29,pitch:'Jeden Montag um 8 Uhr: die Woche auf einer Seite, per Mail oder WhatsApp.',
+  report:{ic:'i-chart',name:'Montags-Bericht',price:29,pitch:'Jeden Montag um 8 Uhr: die Woche auf einer Seite, per Mail oder WhatsApp.',
     pts:['Offene Angebote, Umsatz, überfällige Rechnungen','Welche Kunden diese Woche dran sind','Termine und Fristen der Woche','Für Chef und Team getrennt einstellbar']},
-  whatsapp:{ic:'💬',name:'WhatsApp-Business-Inbox',price:39,pitch:'WhatsApp-Chats mit Kunden im selben Postfach wie die Mails.',
+  whatsapp:{ic:'i-chat',name:'WhatsApp-Business-Inbox',price:39,pitch:'WhatsApp-Chats mit Kunden im selben Postfach wie die Mails.',
     pts:['Chats werden automatisch dem richtigen Kunden zugeordnet','Antwortentwürfe von LeMatic Intelligence, auch per Sprachnachricht','Mehrere Nutzer auf einer Nummer','Verlauf erscheint in der Kundenkarte']},
-  offer:{ic:'✍️',name:'Angebots-Generator',price:35,pitch:'Aus Gesprächsnotizen und eurer Preisliste ein fertiges Angebot als PDF.',
+  offer:{ic:'i-pencil',name:'Angebots-Generator',price:35,pitch:'Aus Gesprächsnotizen und eurer Preisliste ein fertiges Angebot als PDF.',
     pts:['Positionen und Preise aus eurer Preisliste','Im eigenen Briefkopf, mit Nummernkreis','Mit einem Klick per Mail an den Kunden','Sieht, wann der Kunde das Angebot öffnet']},
-  reminders:{ic:'🔔',name:'Smart-Erinnerungen',price:29,pitch:'Push aufs Handy, wenn etwas passiert, das nicht liegen bleiben darf.',
+  reminders:{ic:'i-bell',name:'Smart-Erinnerungen',price:29,pitch:'Push aufs Handy, wenn etwas passiert, das nicht liegen bleiben darf.',
     pts:['Kunde hat das Angebot geöffnet: jetzt anrufen','Rechnung 7 Tage überfällig: Mahnung bereit','Wiedervorlage fällig, Termin in 30 Minuten','Ruhezeiten und Wochenende einstellbar']},
-  feuerwerk:{ic:'🎆',name:'Feuerwerk',price:0,free:true,pitch:'Jede erledigte Aufgabe wird kurz gefeiert: zwei Sekunden Feuerwerk über dem Bildschirm.',
+  feuerwerk:{ic:'i-firework',name:'Feuerwerk',price:0,free:true,pitch:'Jede erledigte Aufgabe wird kurz gefeiert: zwei Sekunden Feuerwerk über dem Bildschirm.',
     pts:['Startet, sobald eine Aufgabe auf Erledigt gesetzt wird','Zwei Sekunden, ohne Ton','Jederzeit wieder ausschaltbar','Kostenlos, rein zum Spaß']},
-  klappe:{ic:'🎬',name:'Klappe!',price:0,free:true,pitch:'Neue Aufgabe angelegt? Die Filmklappe schlägt zu: „Szene 14, Take 1“.',
+  klappe:{ic:'i-clap',name:'Klappe!',price:0,free:true,pitch:'Neue Aufgabe angelegt? Die Filmklappe schlägt zu: „Szene 14, Take 1“.',
     pts:['Bei jeder neuen Aufgabe eine kurze Filmklappe','Szenen werden pro Tag durchgezählt','Eine Sekunde, ohne Ton']},
-  kasse:{ic:'🪙',name:'Kasse klingelt',price:0,free:true,pitch:'Rechnung auf Bezahlt gesetzt? Es regnet Münzen über den Bildschirm.',
+  kasse:{ic:'i-coin',name:'Kasse klingelt',price:0,free:true,pitch:'Rechnung auf Bezahlt gesetzt? Es regnet Münzen über den Bildschirm.',
     pts:['Beim Markieren als bezahlt und beim Kontoauszug-Abgleich','Je höher der Betrag, desto mehr Münzen','Ohne Ton, nach 2 Sekunden vorbei']},
-  kaffee:{ic:'☕',name:'Kaffee-Zähler',price:0,free:true,pitch:'Ein Klick pro Tasse. Ab Tasse vier wird das Studio besorgt.',
+  kaffee:{ic:'i-coffee',name:'Kaffee-Zähler',price:0,free:true,pitch:'Ein Klick pro Tasse. Ab Tasse vier wird das Studio besorgt.',
     pts:['Zähler unten in der Seitenleiste','Setzt sich jeden Morgen zurück','Sprüche je nach Pegel']},
-  pflanze:{ic:'🌱',name:'Studio-Pflanze',price:0,free:true,pitch:'Eine kleine Pflanze, die mit jeder erledigten Aufgabe der Woche wächst.',
+  pflanze:{ic:'i-plant',name:'Studio-Pflanze',price:0,free:true,pitch:'Eine kleine Pflanze, die mit jeder erledigten Aufgabe der Woche wächst.',
     pts:['Vom Samen bis zum Baum in fünf Stufen','Gießen heißt: Aufgabe abhaken','Wird schlapp, wenn tagelang nichts passiert']},
-  feierabend:{ic:'🍻',name:'Feierabend-Countdown',price:0,free:true,pitch:'Wie lange noch bis 18 Uhr? Freitags zählt er bis zum Wochenende.',
+  feierabend:{ic:'i-moon',name:'Feierabend-Countdown',price:0,free:true,pitch:'Wie lange noch bis 18 Uhr? Freitags zählt er bis zum Wochenende.',
     pts:['Läuft unten in der Seitenleiste mit','Freitags mit Wochenend-Zähler','Nach 18 Uhr gibt es einen Spruch statt Zahlen']},
-  disco:{ic:'🪩',name:'Disco-Freitag',price:0,free:true,pitch:'Freitag ab 16 Uhr schimmern die Knöpfe in allen Farben.',
+  disco:{ic:'i-disco',name:'Disco-Freitag',price:0,free:true,pitch:'Freitag ab 16 Uhr schimmern die Knöpfe in allen Farben.',
     pts:['Nur freitags ab 16 Uhr','Sanftes Farbspiel auf Knöpfen und Navigation','Montags ist alles wieder seriös']},
-  korn:{ic:'🎞',name:'Filmkorn',price:0,free:true,pitch:'Leichtes Filmkorn und Vignette über dem Studio, wie bei einem Kodak-Scan.',
+  korn:{ic:'i-grain',name:'Filmkorn',price:0,free:true,pitch:'Leichtes Filmkorn und Vignette über dem Studio, wie bei einem Kodak-Scan.',
     pts:['Ganz dezent, stört beim Lesen nicht','Kostet keine Leistung, nichts bewegt sich','Für den Cinematic-Look im Büro']},
-  drohne:{ic:'🚁',name:'Drohnen-Besuch',price:0,free:true,pitch:'Ab und zu fliegt eine kleine Drohne durchs Studio. Fang sie!',
+  drohne:{ic:'i-drone',name:'Drohnen-Besuch',price:0,free:true,pitch:'Ab und zu fliegt eine kleine Drohne durchs Studio. Fang sie!',
     pts:['Etwa alle zehn Minuten ein Überflug','Anklicken zum Fangen, mit Zähler','Fliegt nur, wenn das Fenster offen ist']},
-  keks:{ic:'🥠',name:'Glückskeks',price:0,free:true,pitch:'Jeden Tag ein Glückskeks auf der Startseite, mit LeMatic-Weisheit.',
+  keks:{ic:'i-cookie',name:'Glückskeks',price:0,free:true,pitch:'Jeden Tag ein Glückskeks auf der Startseite, mit LeMatic-Weisheit.',
     pts:['Einmal am Tag knacken','Weisheiten aus Dreh, Schnitt und Akquise','Bleibt bis morgen lesbar']},
-  saison:{ic:'🍂',name:'Jahreszeiten',price:0,free:true,pitch:'Auf der Startseite fallen Blätter, Schnee oder Blüten, je nach Jahreszeit.',
+  saison:{ic:'i-leaf',name:'Jahreszeiten',price:0,free:true,pitch:'Auf der Startseite fallen Blätter, Schnee oder Blüten, je nach Jahreszeit.',
     pts:['Herbst Blätter, Winter Schnee, Frühling Blüten, Sommer Glühwürmchen','An Feiertagen eine kleine Überraschung','Nur auf der Startseite, ganz leicht']},
-  bundle:{ic:'✦',name:'Zentrale Pro Komplett',price:149,pitch:'Alle sechs Module zu einem Preis.',
+  bundle:{ic:'i-sparkle',name:'Zentrale Pro Komplett',price:149,pitch:'Alle sechs Module zu einem Preis.',
     pts:['Anruf-Assistent, E-Rechnung, Montags-Bericht','WhatsApp-Inbox, Angebots-Generator, Smart-Erinnerungen','Spart über 60 € im Monat gegenüber einzeln','Neue Module automatisch inklusive']}
 };
 const PREM_KEY='lm_prem_clicks';
@@ -7229,17 +7686,25 @@ function premShowOn(){try{return localStorage.getItem('lm_prem_off')!=='1'}catch
 function applyPremToggle(){document.body.classList.toggle('no-prem',!premShowOn());const t=$('premToggle');if(t)t.checked=premShowOn()}
 function openPaywall(key){
   const p=PREMIUM[key];if(!p)return;premCount(key,'open');
+  if(p.free&&!earned(key)){
+    const g=chProg(key);
+    $('paySheet').innerHTML=`<div class="ph"><div class="pc-ic"><svg class="i"><use href="#${p.ic}"/></svg></div><h2 id="payTitle">${esc(p.name)}</h2><p>${esc(p.pitch)}</p></div>
+    <div class="pb"><ul>${p.pts.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+    <div class="pay-chall"><small>So erspielst du es</small><b>${esc(g.t)}</b><i><span style="width:${Math.round(g.v/g.n*100)}%"></span></i><em>${g.v} von ${g.n}</em></div>
+    <div class="kd-row"><button class="btn btn-glass" data-freepreview="${key}">Vorschau</button><button class="btn btn-glass" data-payclose>Schließen</button></div></div>`;
+    const w=$('payWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');return;
+  }
   if(p.free){
     const own=payOwned(key);
-    $('paySheet').innerHTML=`<div class="ph"><div class="pc-ic">${p.ic}</div><h2 id="payTitle">${esc(p.name)}</h2><p>${esc(p.pitch)}</p></div>
+    $('paySheet').innerHTML=`<div class="ph"><div class="pc-ic"><svg class="i"><use href="#${p.ic}"/></svg></div><h2 id="payTitle">${esc(p.name)}</h2><p>${esc(p.pitch)}</p></div>
     <div class="pb"><ul>${p.pts.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
-    <div class="pp"><b>Kostenlos</b><span>keine Zahlung, keine Daten</span></div>
+    <div class="pp"><b>Erspielt</b><span>kostenlos, keine Daten verlassen den Browser</span></div>
     ${own?`<div class="pay-owned">✓ Freigeschaltet seit ${dm(freeOwned(key).since)}</div>`:''}
-    <div class="kd-row">${own?`<button class="btn btn-glass" data-freepreview="${key}">Vorschau</button><button class="btn btn-glass" data-freeoff="${key}">Ausschalten</button>`:`<button class="btn btn-primary" data-freeon="${key}">Kostenlos freischalten</button><button class="btn btn-glass" data-freepreview="${key}">Vorschau</button>`}<button class="btn btn-glass" data-payclose>Schließen</button></div></div>`;
+    <div class="kd-row">${own?`<button class="btn btn-glass" data-freepreview="${key}">Vorschau</button><button class="btn btn-glass" data-freeoff="${key}">Ausschalten</button>`:`<button class="btn btn-primary" data-freeon="${key}">Einschalten</button><button class="btn btn-glass" data-freepreview="${key}">Vorschau</button>`}<button class="btn btn-glass" data-payclose>Schließen</button></div></div>`;
     const w=$('payWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');return;
   }
   const sum=Object.entries(PREMIUM).filter(([k,v])=>k!=='bundle'&&!v.free).reduce((a,[,v])=>a+v.price,0);
-  $('paySheet').innerHTML=`<div class="ph"><div class="pc-ic">${p.ic}</div><h2 id="payTitle">${esc(p.name)}</h2><p>${esc(p.pitch)}</p></div>
+  $('paySheet').innerHTML=`<div class="ph"><div class="pc-ic"><svg class="i"><use href="#${p.ic}"/></svg></div><h2 id="payTitle">${esc(p.name)}</h2><p>${esc(p.pitch)}</p></div>
   <div class="pb"><ul>${p.pts.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
   <div class="pp"><b>${p.price} €</b><span>pro Monat zusätzlich, monatlich kündbar</span></div>
   ${payOwned(key)?`<div class="pay-owned">✓ Freigeschaltet${PAY.owned[key]?' seit '+dm(PAY.owned[key].since):' über Zentrale Pro Komplett'}${PAY.mode==='test'?' (Testmodus)':''}<small>Das Modul ist in Vorbereitung. Sobald es fertig ist, läuft es hier automatisch, ohne dass du etwas tun musst.</small></div>
@@ -7252,13 +7717,14 @@ function openPaywall(key){
 function closePaywall(){const w=$('payWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true')}
 function renderPremium(){
   const g=$('premGrid');if(!g)return;
-  const card=([k,p])=>`<article class="glass prem-card${payOwned(k)?' pc-unlocked':''}"><div class="pc-ic">${p.ic}</div><h3>${esc(p.name)}</h3><p>${esc(p.pitch)}</p><ul>${p.pts.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="pc-foot"><span>${p.free?'<b>Kostenlos</b>':`<b>${p.price} €</b> <small>/ Monat</small>`}</span>${payOwned(k)?`<button class="btn btn-glass sm pc-own" data-premium="${k}">${p.free?'✓ An':'✓ Gebucht'}</button>`:`<button class="btn btn-primary sm" data-premium="${k}">${p.free?'Ansehen':'Ansehen'}</button>`}</div></article>`;
+  const card=([k,p])=>`<article class="glass prem-card${payOwned(k)?' pc-unlocked':''}"><div class="pc-ic"><svg class="i"><use href="#${p.ic}"/></svg></div><h3>${esc(p.name)}</h3><p>${esc(p.pitch)}</p><ul>${p.pts.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="pc-foot"><span>${p.free?(earned(k)?'<b>Erspielt</b>':'<b>Zu erspielen</b>'):`<b>${p.price} €</b> <small>/ Monat</small>`}</span>${p.free&&!earned(k)?(()=>{const g=chProg(k);return `<button class="btn btn-glass sm" data-premium="${k}">${g.v}/${g.n}</button>`})():payOwned(k)?`<button class="btn btn-glass sm pc-own" data-premium="${k}">${p.free?'An':'Gebucht'}</button>`:`<button class="btn btn-primary sm" data-premium="${k}">${p.free?'Einschalten':'Ansehen'}</button>`}</div>${p.free&&!earned(k)?(()=>{const g=chProg(k);return `<div class="pc-chall"><span>Erspielen: ${esc(g.t)}</span><i><b style="width:${Math.round(g.v/g.n*100)}%"></b></i></div>`})():''}</article>`;
   const ent=Object.entries(PREMIUM).filter(([k])=>k!=='bundle');
-  const free=ent.filter(([,p])=>p.free),on=free.filter(([k])=>payOwned(k)).length;
-  g.innerHTML=ent.filter(([,p])=>!p.free).map(card).join('')+`<div class="pg-sep"><h3>Spaß-Module <span>kostenlos · ${on} von ${free.length} an</span></h3><p>Rein zum Spaß, jederzeit ein- und ausschaltbar. Keine Zahlung, nichts verlässt den Browser.</p>${on<free.length?'<button class="btn btn-glass sm" data-freeall>Alle einschalten</button>':''}</div>`+free.map(card).join('');
+  const free=ent.filter(([,p])=>p.free),ern=free.filter(([k])=>earned(k)).length;
+  const rg=chProg('rahmen'),rOk=earned('rahmen');
+  g.innerHTML=ent.filter(([,p])=>!p.free).map(card).join('')+`<div class="pg-sep"><h3>Spaß-Module <span>erspielt: ${ern} von ${free.length}</span></h3><p>Kostenlos, aber nicht geschenkt: Jedes Modul schaltet sich frei, sobald du die Aufgabe dahinter erledigt hast. Danach jederzeit ein- und ausschaltbar.</p></div>`+free.map(card).join('')+`<article class="glass prem-card${rOk?' pc-unlocked':''}"><div class="pc-ic"><svg class="i"><use href="#i-trophy"/></svg></div><h3>Goldrahmen</h3><p>${esc(CHALL.rahmen.pitch)}</p><div class="pc-foot"><span><b>${rOk?'Erspielt':'Belohnung'}</b></span><span class="pc-own">${rg.v}/${rg.n}</span></div>${rOk?'':`<div class="pc-chall"><span>Erspielen: ${esc(rg.t)}</span><i><b style="width:${Math.round(rg.v/rg.n*100)}%"></b></i></div>`}</article>`;
   const c=premClicks(),rows=Object.entries(PREMIUM).map(([k,p])=>({k,p,o:(c[k]||{}).open||0,b:(c[k]||{}).buy||0})).sort((a,b)=>b.o+b.b*3-(a.o+a.b*3));
   const max=Math.max(1,...rows.map(r=>r.o));
-  $('premStats').innerHTML=rows.some(r=>r.o)?rows.map(r=>`<div class="bar"><span>${r.p.ic} ${esc(r.p.name)}</span><span><i style="width:${Math.round(r.o/max*100)}%"></i></span><span title="${r.o}× geöffnet, ${r.b}× Kaufen geklickt">${r.o}/${r.b}</span></div>`).join('')+'<p class="pnote" style="font-size:12px;color:var(--ink-3);margin-top:8px">Zahl links: geöffnet, rechts: auf „Freischalten" geklickt.</p>':'<p class="empty-note">Noch keine Klicks. Einfach im Studio arbeiten, die 🔒-Knöpfe tauchen an den passenden Stellen auf.</p>';
+  $('premStats').innerHTML=rows.some(r=>r.o)?rows.map(r=>`<div class="bar"><span>${esc(r.p.name)}</span><span><i style="width:${Math.round(r.o/max*100)}%"></i></span><span title="${r.o}× geöffnet, ${r.b}× Kaufen geklickt">${r.o}/${r.b}</span></div>`).join('')+'<p class="pnote" style="font-size:12px;color:var(--ink-3);margin-top:8px">Zahl links: geöffnet, rechts: auf „Freischalten" geklickt.</p>':'<p class="empty-note">Noch keine Klicks. Einfach im Studio arbeiten, die 🔒-Knöpfe tauchen an den passenden Stellen auf.</p>';
 }
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-premium]');
@@ -7270,7 +7736,7 @@ document.addEventListener('click',e=>{
     napi('/api/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'checkout',module:k})})
       .then(j=>{location.href=j.url}).catch(x=>{b.disabled=false;b.textContent='Jetzt freischalten';toast('Bezahlung nicht möglich: '+x.message)});
     return}
-  const fo=e.target.closest('[data-freeon]');if(fo){const k=fo.dataset.freeon;premCount(k,'buy');freeSet(k,true);closePaywall();toast(PREMIUM[k].ic+' '+PREMIUM[k].name+' ist an');setTimeout(()=>funPreview(k),250);return}
+  const fo=e.target.closest('[data-freeon]');if(fo){const k=fo.dataset.freeon;premCount(k,'buy');freeSet(k,true);closePaywall();toast(PREMIUM[k].name+' ist an');setTimeout(()=>funPreview(k),250);return}
   const ff=e.target.closest('[data-freeoff]');if(ff){freeSet(ff.dataset.freeoff,false);closePaywall();toast(PREMIUM[ff.dataset.freeoff].name+' ist aus.');return}
   if(e.target.closest('[data-freepreview]')){const k=e.target.closest('[data-freepreview]').dataset.freepreview;closePaywall();setTimeout(()=>funPreview(k),200);return}
   if(e.target.closest('[data-freeall]')){Object.entries(PREMIUM).filter(([,p])=>p.free).forEach(([k])=>freeSet(k,true));renderPremium();toast('Alle Spaß-Module sind an.');return}
@@ -7282,6 +7748,69 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('payWrap').classL
 document.addEventListener('change',e=>{if(e.target.id==='premToggle'){try{localStorage.setItem('lm_prem_off',e.target.checked?'0':'1')}catch(_){}applyPremToggle()}});
 window.addEventListener('hashchange',()=>{if(location.hash==='#/premium')renderPremium()});
 applyPremToggle();if(location.hash==='#/premium')setTimeout(renderPremium,50);
+
+
+/* ---------- Profilbilder: Martins Foto ist hinterlegt, eigenes Bild per Klick auf den Avatar ---------- */
+const AV_DEFAULT={MS:'avatars/MS.jpg'};
+let AV_FILE={};
+function avGet(c){try{return localStorage.getItem('lm_avatar_'+c)||AV_DEFAULT[c]||''}catch(_){return AV_DEFAULT[c]||''}}
+function applyAvatars(){
+  ['LP','MS'].forEach(c=>{const u=avGet(c);document.documentElement.style.setProperty('--av-'+c,u?'url("'+u.replace(/"/g,'%22')+'")':'none');document.body.classList.toggle('av-'+c,!!u);
+    let gold=false;try{gold=c===ME?earned('rahmen'):!!(JSON.parse(localStorage.getItem('lm_earned_'+c)||'{}')||{}).rahmen}catch(_){}document.body.classList.toggle('gold-'+c,gold)});
+}
+const avFileName=c=>'Profilbild_'+(c==='MS'?'Martin':'Lennart')+'.jpg';
+async function avSyncDown(){
+  if(!GAUTH)return;const dir=await agDir();
+  for(const c of ['LP','MS']){try{const f=(await ddList(`'${dir}' in parents and name='${avFileName(c)}' and trashed=false`))[0];if(!f)continue;AV_FILE[c]=f.id;
+    const b=await (await gfetch('https://www.googleapis.com/drive/v3/files/'+f.id+'?alt=media&supportsAllDrives=true')).blob();
+    const url=await new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(b)});
+    try{localStorage.setItem('lm_avatar_'+c,url)}catch(_){}}catch(_){}}
+  applyAvatars();
+}
+async function avUpload(file){
+  const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=URL.createObjectURL(file)});
+  const S=256,c=document.createElement('canvas');c.width=c.height=S;const g=c.getContext('2d');const m=Math.min(img.width,img.height);
+  g.drawImage(img,(img.width-m)/2,(img.height-m)/2*0.6,m,m,0,0,S,S);
+  const url=c.toDataURL('image/jpeg',.86);try{localStorage.setItem('lm_avatar_'+ME,url)}catch(_){}
+  applyAvatars();toast('Profilbild gespeichert');
+  try{const blob=await (await fetch(url)).blob();const dir=await agDir();const name=avFileName(ME);
+    if(!AV_FILE[ME]){const f=(await ddList(`'${dir}' in parents and name='${name}' and trashed=false`))[0];AV_FILE[ME]=f?f.id:null}
+    if(AV_FILE[ME])await gfetch('https://www.googleapis.com/upload/drive/v3/files/'+AV_FILE[ME]+'?uploadType=media&supportsAllDrives=true',{method:'PATCH',headers:{'Content-Type':'image/jpeg'},body:blob});
+    else{const up=await driveUpload(new File([blob],name,{type:'image/jpeg'}),name,dir);AV_FILE[ME]=up.id}
+  }catch(x){toast('Bild nur auf diesem Gerät gespeichert: '+x.message)}
+}
+on('uAv','click',()=>{const f=$('uAvFile');f&&f.click()});
+on('uAvFile','change',e=>{const f=e.target.files[0];if(f)avUpload(f).catch(x=>toast('Bild nicht gespeichert: '+x.message));e.target.value=''});
+applyAvatars();
+
+/* ---------- Keine Emojis: überall, wo Text gerendert wird, eigene Icons statt Emojis ---------- */
+const EMO_IC={'💸':'i-coin','✅':'i-check','📅':'i-cal','🧭':'i-target','🗓':'i-cal','🕳':'i-clock','👤':'i-users','💬':'i-chat','✉':'i-mail','🎬':'i-clap','🎯':'i-target','📞':'i-phone','🎙':'i-mic','🤝':'i-handoff','📤':'i-send','📥':'i-inbox','🌐':'i-link','📍':'i-pin','🏭':'i-building','🗣':'i-chat','💶':'i-coin','📈':'i-chart','🖨':'i-print','🧾':'i-receipt','📝':'i-doc2','📁':'i-folder','📊':'i-chart','📽':'i-play','🖼':'i-image','📄':'i-doc2','🗂':'i-folder','⚡':'i-bolt','🏗':'i-building','🧩':'i-puzzle','🔔':'i-bell','✨':'i-sparkle','🔒':'i-lockk','⭐':'i-star','🔥':'i-flame','📨':'i-send','🧊':'i-snow','✋':'i-hand','🗄':'i-archive','☀':'i-sun','📆':'i-cal','⏭':'i-skip','🗑':'i-trash','☑':'i-check','⚙':'i-gear','🕘':'i-clock','💡':'i-sparkle','🏆':'i-trophy','✓':'i-ok','✔':'i-ok','✕':'i-x','✖':'i-x','✦':'i-sparkle','🎆':'i-firework','🪙':'i-coin','☕':'i-coffee','🌱':'i-plant','🍻':'i-moon','🪩':'i-disco','🎞':'i-grain','🚁':'i-drone','🥠':'i-cookie','🍂':'i-leaf','✍':'i-pencil','🧪':'i-bolt','🏠':'i-home','⏰':'i-clock','🔁':'i-undo','🔎':'i-search','📬':'i-mail','🧮':'i-table','💾':'i-save','📂':'i-folder','🖥':'i-board','💳':'i-coin','📭':'i-inbox','👍':'i-thumb-up','👎':'i-thumb-down','👌':'i-ok','🏖':'i-sun','🌅':'i-sun','📸':'i-camera2','🎥':'i-camera','🔔':'i-bell'};
+const EMO_RX=/(?:[\u{1F300}-\u{1FAFF}\u{1F000}-\u{1F2FF}☀-➿⭐⭕⏩-⏺⌚⌛⤴⤵〰〽])️?‍?/gu;
+const EMO_SKIP=new Set(['SCRIPT','STYLE','TEXTAREA','INPUT','OPTION','TITLE','svg','SVG','CANVAS']);
+function noEmo(t){try{return String(t==null?'':t).replace(EMO_RX,'').replace(/^\s+/,'').replace(/\s{2,}/g,' ')}catch(_){return String(t==null?'':t)}}
+function deEmoji(root){
+  if(!root)return;
+  const nodes=[];
+  if(root.nodeType===3)nodes.push(root);
+  else{if(root.nodeType!==1||EMO_SKIP.has(root.nodeName)||root.closest&&root.closest('svg'))return;
+    const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{const p=n.parentNode;return p&&!EMO_SKIP.has(p.nodeName)&&!(p.closest&&p.closest('svg,textarea,select'))&&/[☀-➿⭐⌚⌛⏩-⏺]|[\uD83C-\uD83E]/.test(n.nodeValue)?1:3}});
+    let n;while((n=w.nextNode()))nodes.push(n)}
+  nodes.forEach(n=>{
+    const t=n.nodeValue;EMO_RX.lastIndex=0;if(!EMO_RX.test(t))return;EMO_RX.lastIndex=0;
+    const f=document.createDocumentFragment();let last=0,m;
+    while((m=EMO_RX.exec(t))){
+      if(m.index>last)f.append(t.slice(last,m.index));
+      const key=m[0].replace(/[️‍]/g,''),ic=EMO_IC[key];
+      if(ic){const sv=document.createElementNS('http://www.w3.org/2000/svg','svg');sv.setAttribute('class','i emo');sv.setAttribute('aria-hidden','true');const u=document.createElementNS('http://www.w3.org/2000/svg','use');u.setAttribute('href','#'+ic);sv.append(u);f.append(sv)}
+      last=m.index+m[0].length;if(!ic&&t[last]===' ')last++;
+    }
+    if(last<t.length)f.append(t.slice(last));
+    n.parentNode&&n.parentNode.replaceChild(f,n);
+  });
+}
+let EMO_Q=new Set(),EMO_T=0;
+const emoObs=new MutationObserver(ms=>{ms.forEach(m=>{if(m.type==='characterData')EMO_Q.add(m.target);else m.addedNodes.forEach(x=>EMO_Q.add(x))});if(!EMO_T)EMO_T=requestAnimationFrame(()=>{EMO_T=0;const q=[...EMO_Q];EMO_Q.clear();emoObs.disconnect();q.forEach(x=>{if(x.isConnected)deEmoji(x)});emoObs.observe(document.body,{childList:true,subtree:true,characterData:true})})});
+deEmoji(document.body);emoObs.observe(document.body,{childList:true,subtree:true,characterData:true});
 
 /* ---------- Spaßebene: Feiern, Wochen-Duell, Sprüche, Easter Eggs ----------
    Alles rein optisch. Bei „Bewegung reduzieren“ im System gibt es keine Animationen. */
@@ -7361,7 +7890,7 @@ function coinRain(amount){
   if(REDUCED)return;
   const n=Math.max(12,Math.min(40,Math.round((amount||300)/60)));
   const wrap=funLayerAdd('<div class="fx-coins"></div>',2600);if(!wrap)return;
-  let h='';for(let i=0;i<n;i++){const x=Math.random()*100,d=Math.random()*.6,s=.9+Math.random()*.6,r=(Math.random()*720-360)|0;h+=`<i style="left:${x}vw;animation-delay:${d}s;--s:${s};--r:${r}deg">${Math.random()<.75?'🪙':'💶'}</i>`}
+  let h='';for(let i=0;i<n;i++){const x=Math.random()*100,d=Math.random()*.6,s=.9+Math.random()*.6,r=(Math.random()*720-360)|0;h+=`<i class="coin" style="left:${x}vw;animation-delay:${d}s;--s:${s};--r:${r}deg">€</i>`}
   wrap.innerHTML=h;
 }
 /* ☕ 🌱 🍻 in der Seitenleiste */
@@ -7370,24 +7899,34 @@ function plantStage(){
   const c=weekDone()[ME]||0;
   const lastDone=TASKS.filter(t=>t.done&&(t.doneBy||t.who)===ME&&t.doneAt).map(t=>t.doneAt.slice(0,10)).sort().pop()||'';
   const dry=lastDone&&diffDays(TODAY,lastDone)>=3&&c===0;
-  const st=dry?['🥀','Ich brauche Wasser. Also: eine Aufgabe.']:c>=10?['🌳','Ein Baum. Respekt.']:c>=6?['🪴','Prächtig. Weiter so.']:c>=3?['🌿','Wächst ordentlich.']:c>=1?['🌱','Ein Keimling!']:['🌰','Noch ein Samen. Hak was ab.'];
-  return {ic:st[0],txt:st[1],c};
+  const lv=dry?-1:c>=10?4:c>=6?3:c>=3?2:c>=1?1:0;
+  const txt=dry?'Ich brauche Wasser. Also: eine Aufgabe.':['Noch ein Samen. Hak was ab.','Ein Keimling!','Wächst ordentlich.','Prächtig. Weiter so.','Ein Baum. Respekt.'][lv];
+  return {ic:plantSVG(lv),txt,c};
+}
+function plantSVG(lv){
+  const col=lv<0?'#A3866A':'#2E8B57',leaf=(x,y,r,f)=>`<path d="M${x} ${y}c${f*5}-1 ${f*7}-5 ${f*7}-9c${-f*5} 1 ${-f*7} 5 ${-f*7} 9z" fill="${col}" opacity=".9" transform="rotate(${r} ${x} ${y})"/>`;
+  let g='';
+  if(lv===0)g='<ellipse cx="12" cy="17" rx="3" ry="2.2" fill="#8B6B4A"/>';
+  else{const h=[0,7,10,12,14][Math.max(1,lv)]||8;g=`<path d="M12 20V${20-h}" stroke="${col}" stroke-width="1.8" stroke-linecap="round" fill="none"${lv<0?' transform="rotate(14 12 20)"':''}/>`;
+    const pairs=lv<0?1:Math.min(lv,4);for(let i=0;i<pairs;i++){const y=20-h+3+i*3;g+=leaf(12,y,lv<0?40:-10,1)+leaf(12,y+1,lv<0?-40:10,-1)}
+    if(lv>=4)g+=`<circle cx="12" cy="${20-h-1}" r="4.5" fill="${col}" opacity=".85"/>`}
+  return `<svg class="plant-svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M7.5 20h9l-1 2.5h-7z" fill="#B0805A"/>${g}</svg>`;
 }
 function feierabendTxt(){
   const n=new Date(),d=n.getDay(),h=n.getHours()+n.getMinutes()/60;
-  if(d===0||d===6)return['🏖','Wochenende. Was machst du hier?'];
-  if(h>=18)return['🍻','Feierabend. Ernsthaft, geh.'];
+  if(d===0||d===6)return['i-sun','Wochenende. Was machst du hier?'];
+  if(h>=18)return['i-moon','Feierabend. Ernsthaft, geh.'];
   const left=Math.round((18-h)*60),hh=Math.floor(left/60),mm=left%60,t=(hh?hh+' h ':'')+mm+' min';
-  if(d===5)return['🎉','Wochenende in '+t];
-  if(h<9)return['🌅','Früh dran. Feierabend in '+t];
-  return['🍻','Feierabend in '+t];
+  if(d===5)return['i-sun','Wochenende in '+t];
+  if(h<9)return['i-sun','Früh dran. Feierabend in '+t];
+  return['i-moon','Feierabend in '+t];
 }
 function renderFunSide(){
   const el=$('funSide');if(!el)return;
   let h='';
-  if(funOn('kaffee')){const k=funStore('kaffee')||{};const n=k.d===TODAY?k.n:0;h+=`<button class="fs-pill" data-kaffee title="${esc(KAFFEE_TXT[Math.min(n,KAFFEE_TXT.length-1)])} Klick = noch eine Tasse"><span>☕</span><b>${n}</b></button>`}
+  if(funOn('kaffee')){const k=funStore('kaffee')||{};const n=k.d===TODAY?k.n:0;h+=`<button class="fs-pill" data-kaffee title="${esc(KAFFEE_TXT[Math.min(n,KAFFEE_TXT.length-1)])} Klick = noch eine Tasse"><svg class="i xs"><use href="#i-coffee"/></svg><b>${n}</b></button>`}
   if(funOn('pflanze')){const p=plantStage();h+=`<span class="fs-pill" title="${esc(p.txt)} (${p.c} erledigt diese Woche)"><span class="fs-plant">${p.ic}</span><b>${p.c}</b></span>`}
-  if(funOn('feierabend')){const f=feierabendTxt();const short=f[1].replace(/^(Feierabend|Wochenende|Früh dran\. Feierabend) in /,'');h+=`<span class="fs-pill fs-wide" title="${esc(f[1])}"><span>${f[0]}</span><b>${esc(/in /.test(f[1])?short:f[1].split('.')[0])}</b></span>`}
+  if(funOn('feierabend')){const f=feierabendTxt();const short=f[1].replace(/^(Feierabend|Wochenende|Früh dran\. Feierabend) in /,'');h+=`<span class="fs-pill fs-wide" title="${esc(f[1])}"><svg class="i xs"><use href="#${f[0]}"/></svg><b>${esc(/in /.test(f[1])?short:f[1].split('.')[0])}</b></span>`}
   el.innerHTML=h;el.hidden=!h;
 }
 document.addEventListener('click',e=>{
@@ -7415,7 +7954,7 @@ function funCookie(){
   const k=funStore('keks')||{};
   let txt=k.d===TODAY?k.t:KEKSE[(Math.floor(parse(TODAY)/864e5)+(ME==='MS'?3:0))%KEKSE.length];
   if(k.d!==TODAY)funStore('keks',{d:TODAY,t:txt});
-  const el=funLayerAdd(`<div class="fx-cookie" role="dialog" aria-label="Glückskeks"><span>🥠</span><p>${esc(txt)}</p><button class="btn btn-glass sm">Danke, Keks</button></div>`,0);
+  const el=funLayerAdd(`<div class="fx-cookie" role="dialog" aria-label="Glückskeks"><span><svg class="i" style="width:44px;height:44px;color:#C88A2E"><use href="#i-cookie"/></svg></span><p>${esc(txt)}</p><button class="btn btn-glass sm">Danke, Keks</button></div>`,0);
   el&&el.querySelector('button').addEventListener('click',()=>el.remove());
   setTimeout(()=>el&&el.remove(),9000);
 }
@@ -7425,7 +7964,12 @@ function renderSaison(){
   if(!funOn('saison')||REDUCED){if(lay)lay.remove();return}
   if(lay)return;
   const m=+TODAY.slice(5,7),md=TODAY.slice(5);
-  const set=md==='10-31'?['🎃','🦇','🍂']:md>='12-24'&&md<='12-26'?['❄️','⭐','🎄']:md==='12-31'||md==='01-01'?['✨','🎆','🥂']:m>=9&&m<=11?['🍂','🍁','🍂']:m===12||m<=2?['❄️','❅','❄️']:m<=5?['🌸','🌼','🌸']:['✨','✨','·'];
+  const L=(c)=>`<svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z" fill="${c}"/><path d="M5 19 13 11" stroke="rgba(0,0,0,.25)" stroke-width="1.2"/></svg>`;
+  const D=(c,r)=>`<svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="${r||5}" fill="${c}"/></svg>`;
+  const B=`<svg viewBox="0 0 24 24" width="20" height="20">${[0,72,144,216,288].map(a=>`<ellipse cx="12" cy="7" rx="3" ry="4.5" fill="#F4B6C8" transform="rotate(${a} 12 12)"/>`).join('')}<circle cx="12" cy="12" r="2" fill="#FCD717"/></svg>`;
+  const P=`<svg viewBox="0 0 24 24" width="22" height="22"><ellipse cx="12" cy="14" rx="8" ry="6.5" fill="#F08A24"/><path d="M12 7.5V4.5" stroke="#3E6B2E" stroke-width="2" stroke-linecap="round"/><path d="M9 14c0-3 1.3-5.5 3-6.5M15 14c0-3-1.3-5.5-3-6.5" stroke="rgba(0,0,0,.15)" fill="none"/></svg>`;
+  const S=`<svg viewBox="0 0 24 24" width="18" height="18"><path d="M11 4c.6 4.4 3 6.8 7.5 7.5C14 12.2 11.6 14.6 11 19c-.6-4.4-3-6.8-7.5-7.5C8 10.8 10.4 8.4 11 4z" fill="#E0B400"/></svg>`;
+  const set=md==='10-31'?[P,L('#D9772B'),L('#8C4A1E')]:md>='12-24'&&md<='12-26'?[D('#fff',4),S,D('#fff',3)]:md==='12-31'||md==='01-01'?[S,S,D('#FCD717',3)]:m>=9&&m<=11?[L('#D9772B'),L('#C2562A'),L('#E0A43A')]:m===12||m<=2?[D('#fff',4),D('#fff',3),D('#EAF2FF',5)]:m<=5?[B,B,D('#FFD6E2',3)]:[D('#FFE97A',2.5),D('#FCD717',2),D('#FFF6B0',3)];
   let h='';for(let i=0;i<18;i++){const x=Math.random()*100,d=-Math.random()*14,dur=10+Math.random()*8,s=.7+Math.random()*.7,sw=(Math.random()*60+20)|0;h+=`<i style="left:${x}%;animation-duration:${dur}s;animation-delay:${d}s;--s:${s};--sw:${sw}px">${set[i%set.length]}</i>`}
   lay=document.createElement('div');lay.className='fx-saison';lay.setAttribute('aria-hidden','true');lay.innerHTML=h;st.prepend(lay);
 }
@@ -7527,8 +8071,8 @@ document.addEventListener('click',e=>{
 /* Easter Egg 4: Emoji neben der Begrüßung anklicken → neue Laune */
 document.addEventListener('click',e=>{
   const m=e.target.closest('.mood-badge');if(!m)return;
-  const pool=['🎬','🎥','📸','🚁','🎞️','🔥','🦉','☕','🌈','🧃','🦖','🍕'];
-  m.textContent=pool[Math.floor(Math.random()*pool.length)];
+  const pool=['i-clap','i-camera','i-camera2','i-drone','i-grain','i-flame','i-coffee','i-sparkle','i-firework','i-disco'];
+  m.innerHTML='<svg class="i" style="width:22px;height:22px"><use href="#'+pool[Math.floor(Math.random()*pool.length)]+'"/></svg>';
   if(Math.random()<.15){confetti(50);toast('Glückstreffer. Heute klappt alles.')}
 });
 /* Easter Egg 5: Suche versteht ein paar geheime Wörter */
