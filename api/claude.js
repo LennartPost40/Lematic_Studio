@@ -31,7 +31,30 @@ ${c.kunde}`,
   radar: c => `Hier sind Kunden, bei denen länger nichts passiert ist. Schlag für jeden in einer Zeile vor,
 mit welchem konkreten Aufhänger Martin sich melden kann (z. B. neue Referenz, Messe, Saison, offener Punkt).
 Format pro Zeile: "Name: Vorschlag". Max. 8 Zeilen.
-${c.list}`
+${c.list}`,
+  agent: c => `Du bist der LeMatic-Agent im LeMatic Studio. Du beantwortest Fragen zu LeMatic: Kunden, Akquise,
+Aufgaben, Termine, Mails, Rechnungen und Angebote, wo etwas abgelegt ist und wie es sinnvoll weitergeht.
+Regeln:
+- Nutze nur das LeMatic-Wissen unten. Steht etwas nicht drin, sag das ehrlich und sag, wo man nachsehen könnte.
+- Private Dinge von Lennart oder Martin (eigene Jobs, private Projekte, private Kunden) gehören nicht zu LeMatic.
+  Fragt jemand danach, sag kurz, dass du nur LeMatic kennst.
+- Antworte kurz und konkret, gern mit Stichpunkten, Namen und Daten. Bei "wie weiter"-Fragen: maximal 5 Schritte, mit wer und bis wann.
+- Wenn eine Grafik hilft (Verlauf, Vergleich, Verteilung), hänge GENAU EINEN Block an, in diesem Format, mit echten Zahlen aus dem Wissen:
+\`\`\`chart
+{"type":"bar","title":"Kurzer Titel","labels":["A","B"],"values":[1,2],"unit":"€"}
+\`\`\`
+  type ist "bar" oder "line". Keine Zahlen erfinden.
+Fragt gerade: ${c.user || 'jemand aus dem Team'}. Heute ist ${c.heute || ''}.
+--- LeMatic-Wissen ---
+${c.wissen}
+--- Bisheriges Gespräch ---
+${c.verlauf || '(neu)'}
+--- Neue Frage ---
+${c.frage}`,
+  insights: c => `Unten stehen die aktuellen Kennzahlen von LeMatic, aus denen gerade Grafiken gezeichnet werden.
+Werte sie aus: 3 bis 4 Erkenntnisse, je eine Zeile, beginnend mit einem passenden Emoji. Danach eine Zeile
+"Empfehlung: ..." mit dem wichtigsten nächsten Schritt. Nur was aus den Zahlen wirklich folgt, keine Floskeln.
+${c.zahlen}`
 };
 
 export default async function handler(req, res) {
@@ -48,7 +71,7 @@ export default async function handler(req, res) {
   const { task, context } = req.body || {};
   const build = TASKS[task];
   if (!build || !context || typeof context !== 'object') return res.status(400).json({ error: 'Unbekannte Aufgabe' });
-  const clip = v => String(v == null ? '' : v).slice(0, 12000);
+  const clip = v => String(v == null ? '' : v).slice(0, task === 'agent' ? 60000 : 12000);
   const ctx = Object.fromEntries(Object.entries(context).map(([k, v]) => [k, clip(v)]));
 
   try {
@@ -57,7 +80,7 @@ export default async function handler(req, res) {
       headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
       body: JSON.stringify({
         model: process.env.CLAUDE_MODEL || 'claude-haiku-5-5',
-        max_tokens: 900,
+        max_tokens: task === 'agent' ? 1400 : 900,
         system: SYSTEM,
         messages: [{ role: 'user', content: build(ctx) }]
       })
