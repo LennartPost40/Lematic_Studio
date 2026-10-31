@@ -59,7 +59,7 @@ Regeln:
 [{"type":"task_create","title":"...","who":"LP oder MS","due":"JJJJ-MM-TT","time":"HH:MM oder leer","kunde_id":"ID oder leer"},
  {"type":"task_done","id":"Aufgabe-ID"},{"type":"task_move","id":"Aufgabe-ID","due":"JJJJ-MM-TT","time":"HH:MM oder leer"},
  {"type":"task_delete","id":"Aufgabe-ID"},{"type":"task_move","id":"Aufgabe-ID","who":"LP oder MS"} (übergeben),
- {"type":"event_create","title":"...","date":"JJJJ-MM-TT","time":"HH:MM oder leer","dauer_min":60,"ort":"","kunde_id":""},
+ {"type":"event_create","title":"...","art":"termin|dreh|schnitt|akquise|belegt","who":"LP, MS oder leer (für wen)","date":"JJJJ-MM-TT","bis":"JJJJ-MM-TT oder leer (mehrtägig, bei belegt: bis wann)","time":"HH:MM oder leer (leer = ganztags)","time_end":"HH:MM oder leer","ort":"","notiz":"","erinnerung_min":30,"kunde_id":""},
  {"type":"event_move","id":"Termin-ID","date":"JJJJ-MM-TT","time":"HH:MM oder leer"},
  {"type":"event_delete","id":"Termin-ID"},
  {"type":"kunde_status","kunde_id":"Kunde-ID","status":"Bestandskunde|Warm|Angefragt|Kalt|Abgesagt|Archiv"},
@@ -69,6 +69,18 @@ Regeln:
   Bei Aufgaben und Terminen zusätzlich "titel" mit dem Titel mitgeben (bei Terminen auch "datum"), als Rückfall.
   Passen mehrere Termine oder Aufgaben, frag kurz nach, welche gemeint ist. "who": Lennart = LP, Martin = MS; ohne Angabe die fragende Person.
   Relative Angaben wie "morgen" oder "Freitag" vom heutigen Datum aus ausrechnen.
+- Termine: "art" passend wählen (Dreh, Schnitt, Akquise-Termin, sonst termin). "belegt" heißt: die Person ist in der Zeit mit etwas beschäftigt
+  (z. B. "ich sitze bis Freitag am Schnitt Fronius") – dann art "belegt", who, date (Start, meist heute) und bis. Ohne Endzeit 1 Stunde.
+  Erinnerung: bei Terminen mit Uhrzeit 30, bei Drehs 1440 (Vortag), wenn nichts gesagt wird. Ist die Person laut Wissen in der Zeit belegt
+  (Einträge mit "Belegt"), sag das in einem Satz dazu.
+- Rückfragen: Fehlt für eine Aktion etwas, das du nicht sinnvoll annehmen kannst (bei Terminen das Datum, bei Drehs und Kundenterminen die Uhrzeit,
+  bei Aufgaben für wen, oder es ist unklar welcher Kunde/Termin gemeint ist), dann frag nach, statt zu raten. Dann KEINEN actions-Block,
+  sondern einen kurzen Satz und GENAU EINEN Block mit höchstens 2 Fragen, jede mit 2 bis 4 konkreten Antworten zum Anklicken:
+\`\`\`fragen
+[{"frage":"Um wie viel Uhr?","optionen":["10:00","14:00","Ganztags"]}]
+\`\`\`
+  Frag auch mit, was für die Vorbereitung fehlt, wenn es wirklich hilft (z. B. bei einem Dreh: Ort oder wer dreht). Nicht nachfragen, wenn alles
+  Wichtige klar ist oder ein vernünftiger Standard reicht (Dauer 1 Stunde, Erinnerung, Person = wer fragt). Nach der Antwort direkt den actions-Block.
 Fragt gerade: ${c.user || 'jemand aus dem Team'}. Heute ist ${c.heute || ''}.
 --- LeMatic-Wissen ---
 ${c.wissen}

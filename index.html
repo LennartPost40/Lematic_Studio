@@ -1377,6 +1377,119 @@ body.gold-MS .av.us[data-who="MS"],body.gold-LP .av.us[data-who="LP"]{box-shadow
 .fx-reward small{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8A6400}
 .fx-reward h3{font-size:20px;font-weight:700}.fx-reward p{font-size:13.5px;color:var(--ink-2)}.rw-more{font-weight:600}
 .pc-ic .i{width:26px;height:26px;color:var(--brand-2)}
+
+/* LI: Rückfragen */
+.li-qs{display:grid;gap:10px;margin-top:10px;padding:12px;border-radius:16px;background:rgba(252,215,23,.1);border:1px solid rgba(224,180,0,.25)}
+.li-qs.sent{opacity:.6;background:rgba(7,61,48,.04);border-color:var(--line)}
+.li-q{display:grid;gap:7px}.li-q b{font-size:13.5px;font-weight:600}
+.li-qo{display:flex;flex-wrap:wrap;gap:6px}
+.li-qb{border:1px solid var(--stroke);background:rgba(255,255,255,.9);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;transition:transform .25s cubic-bezier(.34,1.56,.64,1),background .15s}
+.li-qb:hover:not(:disabled){transform:translateY(-1px);background:#fff;border-color:var(--brand-2)}
+.li-qb.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.li-qhint{font-size:11.5px;color:var(--ink-3)}
+.li-warn{color:#B25E00!important;font-style:normal}
+.btn.xs{padding:4px 10px;font-size:12px;min-height:0}
+
+/* Kundenkartei: Übersicht, Board, Liste */
+#kOverview{margin-bottom:18px}
+.kov{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
+@media (max-width:1100px){.kov{grid-template-columns:1fr}}
+.kov-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kov-t{all:unset;box-sizing:border-box;display:grid;gap:3px;padding:14px 16px;border-radius:18px;background:var(--glass-hi,rgba(255,255,255,.75));border:1px solid var(--stroke);cursor:pointer;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+.kov-t:disabled{cursor:default}.kov-t:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 12px 26px -18px rgba(7,61,48,.5)}
+.kov-t span{font-size:11.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
+.kov-t b{font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--brand)}
+.kov-t small{font-size:12px;color:var(--ink-2);line-height:1.35}
+.kov-need{padding:14px 14px 8px;border-radius:20px}
+.kov-need h3{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);margin:0 4px 6px}
+.kov-row{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto minmax(0,150px) minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;padding:7px 6px;border-radius:12px;cursor:pointer}
+.kov-row:hover{background:rgba(255,255,255,.7)}
+.kov-row .kav{width:30px;height:30px;border-radius:9px;font-size:11px}
+.kov-n b{display:block;font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kov-n small{font-size:11.5px;color:var(--ink-3)}
+.kov-why{display:flex;flex-wrap:wrap;gap:5px}
+.kw{font-style:normal;font-size:11.5px;font-weight:500;padding:3px 8px;border-radius:999px;background:rgba(7,61,48,.07);color:var(--ink-2);white-space:nowrap}
+.kw.bad{background:rgba(215,0,21,.09);color:#B5000F}.kw.warn{background:rgba(252,215,23,.3);color:#6B5200}.kw.cold{background:rgba(70,110,170,.1);color:#2F5687}
+.kov-go{color:var(--ink-3)}.kov-ok{font-size:13px;color:var(--ink-2);padding:6px 4px 10px}
+.kartei-tools{flex-wrap:wrap}.kview{margin-left:auto}
+.kboard{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:14px;overflow-x:auto;padding-bottom:6px;align-items:start}
+.kb-col{background:rgba(255,255,255,.38);border:1px solid var(--stroke);border-radius:20px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:120px;transition:background .2s,box-shadow .2s}
+.kb-col.drop{background:rgba(252,215,23,.16);box-shadow:inset 0 0 0 2px rgba(224,180,0,.5)}
+.kb-h{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 4px}.kb-h small{font-size:12px;font-weight:600;color:var(--ink-3)}
+.kb-list{display:flex;flex-direction:column;gap:8px}.kb-empty{font-size:12px;color:var(--ink-3);text-align:center;padding:18px 0;border:1.5px dashed var(--line);border-radius:14px}
+.kb-card{all:unset;box-sizing:border-box;position:relative;display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:16px;background:rgba(255,255,255,.92);border:1px solid var(--stroke);cursor:pointer;box-shadow:0 1px 2px rgba(20,45,38,.05);transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+.kb-card:hover{transform:translateY(-2px);box-shadow:0 12px 26px -16px rgba(7,61,48,.45)}
+.kb-card:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.kb-card .kc-move{top:8px;right:8px}
+.kb-card:hover .kc-move{opacity:1}
+.kb-top{display:flex;gap:10px;align-items:center;padding-right:18px}.kb-top .kav{width:34px;height:34px;border-radius:10px;font-size:12px;flex:none}
+.kb-top b{display:block;font-size:14px;font-weight:600;line-height:1.25}.kb-top small{display:block;font-size:11.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.kb-next{display:flex;gap:6px;align-items:flex-start;font-size:12.5px;line-height:1.35;color:var(--ink);background:rgba(7,61,48,.045);border-radius:10px;padding:7px 9px}
+.kb-next .i{flex:none;margin-top:2px;color:var(--brand-2)}.kb-next em{margin-left:auto;font-style:normal;font-size:11px;color:var(--ink-3);white-space:nowrap;padding-left:6px}
+.kb-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:11.5px;color:var(--ink-3)}
+.kb-temp{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ink-2)}
+.kb-temp i{width:7px;height:7px;border-radius:50%;background:#9AA0A6}.kb-temp.hot i{background:#22A35A}.kb-temp.warm i{background:#E0B400}.kb-temp.cold i{background:#7C93B5}
+.kb-eur{font-weight:600;color:#8A6400;background:rgba(252,215,23,.22);padding:2px 7px;border-radius:999px}
+.kb-n{display:inline-flex;gap:3px;align-items:center}
+.klist{display:flex;flex-direction:column;background:rgba(255,255,255,.6);border:1px solid var(--stroke);border-radius:20px;overflow:hidden}
+.kl-head,.kl-row{display:grid;grid-template-columns:minmax(200px,1.6fr) 130px minmax(120px,1fr) 130px minmax(160px,1.6fr) 90px;gap:12px;align-items:center;padding:10px 16px}
+.kl-head{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);border-bottom:1px solid var(--line)}
+.kl-row{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(200px,1.6fr) 130px minmax(120px,1fr) 130px minmax(160px,1.6fr) 90px;gap:12px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13px}
+.kl-row:hover{background:rgba(255,255,255,.85)}.kl-row:last-child{border-bottom:0}
+.kl-name{display:flex;gap:10px;align-items:center;min-width:0}.kl-name .kav{width:30px;height:30px;border-radius:9px;font-size:11px;flex:none}
+.kl-name b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kl-name small{font-size:11.5px;color:var(--ink-3)}
+.kl-mut{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kl-head .r,.kl-row .r{text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:900px){.kl-head{display:none}.kl-row{grid-template-columns:1fr auto}.kl-row>span:nth-child(n+3):not(.r){display:none}}
+/* Detailkarte: Reiter */
+.khero-act{margin-top:14px;flex-wrap:wrap}.kd-more-act{display:contents}
+.kcontact .tag{display:inline-flex;align-items:center;gap:5px}
+.kl-name>span{min-width:0}.kov-need{align-self:start}
+.ktabs{position:sticky;top:-1px;z-index:3;display:flex;gap:4px;padding:6px;margin:0 0 16px;border-radius:16px;background:rgba(246,248,247,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--stroke);overflow-x:auto}
+.kt-b{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:11px;font-size:13.5px;font-weight:500;color:var(--ink-2);cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.kt-b:hover{background:rgba(255,255,255,.7);color:var(--ink)}
+.kt-b[aria-selected="true"]{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(20,45,38,.1)}
+.kt-b small{font-size:11px;font-weight:700;min-width:18px;height:18px;padding:0 5px;border-radius:9px;display:grid;place-items:center;background:rgba(7,61,48,.08);color:var(--ink-2)}
+.kt-b[aria-selected="true"] small{background:var(--yellow);color:var(--brand)}
+.kpanel{animation:kpIn .35s cubic-bezier(.22,1,.36,1)}@keyframes kpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.kd-col{display:flex;flex-direction:column;gap:18px;min-width:0}
+.kd-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.kd-h h3{margin:0}
+.kd-next{display:grid;gap:4px;background:linear-gradient(135deg,rgba(252,215,23,.2),rgba(255,255,255,.85))}
+.kd-next small{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8A6400}.kd-next b{font-size:16px;font-weight:600;line-height:1.35}.kd-next span{font-size:12.5px;color:var(--ink-2)}
+.kd-notebox .kd-note{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.nt{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.nt-i{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;position:relative;padding-bottom:16px}
+.nt-i:not(:last-child)::before{content:'';position:absolute;left:14.5px;top:32px;bottom:2px;width:1px;background:var(--line)}
+.nt-dot .av{width:30px;height:30px;font-size:10.5px}
+.nt-blank{display:block;width:12px;height:12px;margin:9px;border-radius:50%;background:rgba(7,61,48,.15)}
+.nt-h{display:flex;align-items:baseline;gap:8px;margin:5px 0 4px}.nt-h b{font-size:13px;font-weight:600}.nt-h time{font-size:12px;color:var(--ink-3)}
+.nt-b{font-size:13.5px;line-height:1.55;color:var(--ink);background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:10px 13px;display:grid;gap:4px}
+.nt-b p{margin:0}.nt-b ul{margin:0;padding-left:20px;display:grid;gap:2px;list-style:disc}.nt-b li::marker{color:var(--brand-2)}.nt-b b{font-weight:600}
+.nt-b.clamp{max-height:132px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}
+.nt-b.clamp.open{max-height:none;-webkit-mask-image:none;mask-image:none}
+.nt-more{all:unset;cursor:pointer;font-size:12px;font-weight:600;color:var(--brand-2);margin-top:5px}
+.nt-empty{font-size:13px;color:var(--ink-3);padding:4px 0 8px}
+
+/* Seitenleiste anpassen */
+.nav-set-row{display:flex;align-items:center;gap:4px}.nav-set-row .nav-settings{flex:1;margin-bottom:0}
+.nav-set-row{margin-bottom:8px}
+.nav-edit-b{border:0;background:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--ink-3);cursor:pointer;opacity:0;transition:opacity .2s,background .15s}
+.sidebar:hover .nav-edit-b,.nav-edit-b:focus-visible,body.nav-editing .nav-edit-b{opacity:1}.nav-edit-b:hover{background:rgba(255,255,255,.6);color:var(--ink)}
+body.nav-editing .nav-edit-b{background:var(--brand);color:#fff}
+.nav-grip,.nav-eye{display:none}
+.nav-hid{display:none!important}
+body.nav-editing .nav-hid{display:flex!important;opacity:.4}
+body.nav-editing .side-label.nav-hid{display:flex!important}
+body.nav-editing #sideClients.nav-hid{display:block!important}
+body.nav-editing .nav>a{cursor:grab;background:rgba(255,255,255,.45);margin-bottom:2px;animation:navWig .5s ease}
+body.nav-editing .nav>a.nav-dragging{opacity:.5;background:rgba(252,215,23,.3)}
+body.nav-editing .nav-grip{display:inline-grid;color:var(--ink-3);margin:0 -6px 0 -4px}
+body.nav-editing .nav-eye{display:grid;place-items:center;margin-left:auto;width:26px;height:26px;border-radius:8px;color:var(--ink-2);cursor:pointer}
+body.nav-editing .nav-eye:hover{background:rgba(7,61,48,.08)}
+body.nav-editing .nav>a .count{display:none}
+.side-label[data-navopt]{display:flex;align-items:center}
+body.nav-editing .side-label[data-navopt] .nav-eye{margin-left:auto}
+.nav-edit-bar{display:grid;gap:8px;margin:8px 4px 0;padding:10px;border-radius:14px;background:rgba(252,215,23,.14);border:1px solid rgba(224,180,0,.3);font-size:12px;color:var(--ink-2)}
+.nav-edit-bar[hidden]{display:none}.nav-edit-bar div{display:flex;gap:6px;justify-content:flex-end}
+@keyframes navWig{0%,100%{transform:none}30%{transform:rotate(-.6deg)}60%{transform:rotate(.6deg)}}
 /* Startbühne */
 .home-stage{min-height:calc(100vh - 40px);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:40px 16px 72px!important;margin-bottom:8px;background:none!important;border:0!important;box-shadow:none!important}
 .hst-in{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
@@ -1685,6 +1798,10 @@ body.dcut .bg{filter:grayscale(.4)}
   <symbol id="i-thumb-down" viewBox="0 0 24 24"><path d="M7.5 13.5V4h-3v9.5zM7.5 13.5l3.5 6.5a2 2 0 0 0 2.5-2.3L12.8 14H18a2 2 0 0 0 2-2.4l-1.4-6A2 2 0 0 0 16.6 4H7.5"/></symbol>
   <symbol id="i-ok" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="18" cy="12" r="1.3" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.2" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.6c.5-.1.9-.1 1.4-.1 6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-2.7 3.5M6.6 6.6C3.9 8.3 2.5 12 2.5 12s3.5 6.5 9.5 6.5c1.8 0 3.3-.5 4.6-1.2M9.9 9.9a2.8 2.8 0 0 0 4 4"/></symbol>
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></symbol>
   <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 13.5 6.2 5.8A1.5 1.5 0 0 1 7.6 4.7h8.8a1.5 1.5 0 0 1 1.4 1.1L20 13.5V18a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18z"/><path d="M4 13.5h4.5l1.5 2.5h4l1.5-2.5H20"/></symbol>
   <symbol id="i-board" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M9.2 4v16M14.8 4v16"/></symbol>
@@ -1750,14 +1867,15 @@ body.dcut .bg{filter:grayscale(.4)}
       <a href="#/kunden" data-route="kunden"><svg class="i"><use href="#i-users"/></svg>Kundenkartei</a>
       <a href="#/premium" data-route="premium" class="prem nav-prem"><span class="prem-ic">✦</span>Zentrale Pro<span class="count prem-count">NEU</span></a>
     </nav>
-    <p class="side-label">Kunden im Fokus</p>
+    <div class="nav-edit-bar" id="navEditBar" hidden><span>Ziehen zum Sortieren, Auge zum Ausblenden</span><div><button class="btn btn-glass xs" type="button" id="navReset">Zurücksetzen</button><button class="btn btn-primary xs" type="button" id="navDone">Fertig</button></div></div>
+    <p class="side-label" data-navopt="clients">Kunden im Fokus</p>
     <div class="clients" id="sideClients">
       <a href="#/kunde" data-route="kunde"><i></i>Mammutmarsch Portal</a>
     </div>
     <div class="side-bottom">
       <div class="fun-side" id="funSide"></div>
       <button class="nav-reload" id="appReload" title="Studio neu laden und alles aktualisieren"><span>↻</span>Neu laden<em id="updDot" hidden>Update</em></button>
-      <a class="nav-settings" href="#/einstellungen" data-route="einstellungen"><svg class="i"><use href="#i-gear"/></svg>Einstellungen</a>
+      <div class="nav-set-row"><a class="nav-settings" href="#/einstellungen" data-route="einstellungen"><svg class="i"><use href="#i-gear"/></svg>Einstellungen</a><button class="nav-edit-b" id="navEdit" type="button" title="Seitenleiste anpassen" aria-label="Seitenleiste anpassen"><svg class="i sm"><use href="#i-pencil"/></svg></button></div>
       <div class="user">
         <button class="av us lg av-me" id="uAv" data-who="LP" title="Profilbild ändern" aria-label="Profilbild ändern">LP</button><input type="file" id="uAvFile" accept="image/*" hidden>
         <div><strong id="uName">Lennart Post</strong><span id="uMail">Kamera und Schnitt</span></div>
@@ -2151,9 +2269,11 @@ body.dcut .bg{filter:grayscale(.4)}
           <button class="btn btn-primary" id="kNew"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Kunde anlegen</span></button>
         </div>
       </header>
+      <div id="kOverview"></div>
       <div class="kartei-tools">
         <input class="input" id="kSearch" type="search" placeholder="Name, Ansprechpartner, Notiz …" aria-label="Kundenkartei durchsuchen">
         <div class="seg" role="group" aria-label="Nach Status filtern" id="kFilter"></div>
+        <div class="seg kview" role="group" aria-label="Ansicht" id="kView"><button data-kv="board">Board</button><button data-kv="list">Liste</button></div>
       </div>
       <div class="kgrid" id="kGrid"></div>
     </section>
@@ -3374,6 +3494,7 @@ function setPerson(code,silent){
   safe('funA',funApply);
   safe('avA',applyAvatars);if(GAUTH)setTimeout(()=>safe('avS',avSyncDown),3000);
   safe('ach',checkAchievements);
+  safe('navA',applyNav);
   if(GAUTH)safe('useView',viewEnter);
 }
 function askPerson(){
@@ -4673,7 +4794,7 @@ function evCheck(){
 }
 function openEventDialog(pre){
   const w=$('eventWrap');if(!w)return;pre=pre||{};
-  EVD={art:pre.art||'termin',edit:pre.edit||null,multi:!!pre.end&&pre.end!==pre.date};
+  EVD={art:pre.art||'termin',edit:pre.edit||null,multi:!!pre.end&&pre.end!==pre.date,onSaved:pre.onSaved||null};
   $('evTitle').value=pre.title||'';$('evErr').textContent='';
   $('evDate').value=pre.date||selDay||TODAY;$('evEnd').value=pre.end||pre.date||selDay||TODAY;
   $('evTime').value=pre.time||'';$('evTimeEnd').value=pre.timeEnd||'';
@@ -4747,6 +4868,7 @@ on('evGo','click',async()=>{
       toast(o.art==='belegt'?(EVD.edit?'Belegung aktualisiert':'Eingetragen: '+NAMES[o.who]+' ist belegt bis '+dm(o.end||o.date)):(EVD.edit?'Gespeichert: ':'Im Kalender: ')+o.title);
     }
     closeEventDialog();safe('calR',renderCal);safe('homeR',renderHome);safe('avail',renderAvail);
+    if(EVD.onSaved)safe('evCb',EVD.onSaved);
   }catch(e){
     const m=String(e.message||e);
     err.textContent=/insufficient|permission|403/i.test(m)?'Keine Berechtigung für den LeMatic-Kalender. Bitte mit info@lematic.de neu anmelden.':/Calendar API/.test(m)?m:/network|fetch/i.test(m)?'Keine Verbindung. Bitte Internet prüfen und nochmal versuchen.':'Nicht gespeichert: '+m;
@@ -5051,7 +5173,50 @@ function lastNote(k){
   const n=String(k.notes||'').trim();if(!n)return'';
   return n.split(/\n\s*\n/)[0].replace(/^\[[^\]]*\]\s*/,'');
 }
+let KVIEW=(()=>{try{return localStorage.getItem('lm_kview')||'board'}catch(_){return 'board'}})();
+function kOpenSum(k){try{return kMoney(k).open||0}catch(_){return 0}}
+function kNeeds(k){
+  const out=[];if(['Kalt','Abgesagt','Archiv'].includes(k.status))return out;
+  let od=0;try{kMoney(k).rech.forEach(i=>{if(i.status!=='bezahlt'&&i.no){const d=invOverdue({no:i.no,date:i.date,kind:'Ausgang'});if(d>od)od=d}})}catch(_){}
+  if(od>0)out.push({w:3+od/30,t:'Rechnung '+od+' Tage überfällig',c:od>14?'bad':'warn'});
+  const late=TASKS.filter(t=>!t.done&&t.kid===k.id&&t.due<=TODAY);
+  if(late.length)out.push({w:2.5,t:late.length===1?'Aufgabe fällig: '+late[0].t.slice(0,40):late.length+' Aufgaben fällig',c:'warn'});
+  const tp=kTemp(k);
+  if((k.status==='Warm'||k.status==='Angefragt')&&(tp.d==null||tp.d>14))out.push({w:2+(tp.d||30)/30,t:tp.d==null?'Noch kein Kontakt erfasst':'Seit '+tp.d+' Tagen still',c:'cold'});
+  if(k.raw['Nächster Schritt']&&!TASKS.some(t=>t.kid===k.id&&!t.done)&&k.status!=='Bestandskunde')out.push({w:1,t:'Nächster Schritt ohne Termin',c:'info'});
+  return out;
+}
+function renderKOverview(){
+  const el=$('kOverview');if(!el)return;
+  if(!KARTEI_LOADED){el.innerHTML='';return}
+  const act=KUNDEN.filter(k=>['Bestandskunde','Warm','Angefragt'].includes(k.status));
+  const openSum=act.reduce((a,k)=>a+kOpenSum(k),0);
+  const tasks=TASKS.filter(t=>!t.done&&t.kid&&KUNDEN.some(k=>k.id===t.kid)).length;
+  const quiet=act.filter(k=>k.status!=='Bestandskunde'&&(kTemp(k).d==null||kTemp(k).d>14)).length;
+  const need=KUNDEN.map(k=>({k,n:kNeeds(k)})).filter(x=>x.n.length).sort((a,b)=>b.n.reduce((s,y)=>s+y.w,0)-a.n.reduce((s,y)=>s+y.w,0)).slice(0,5);
+  const tile=(l,v,sub,go)=>`<button type="button" class="kov-t" ${go?`data-kf="${go}"`:'disabled'}><span>${l}</span><b>${v}</b><small>${sub}</small></button>`;
+  el.innerHTML=`<div class="kov">
+    <div class="kov-tiles">
+      ${tile('Aktiv',act.length,KUNDEN.filter(k=>k.status==='Bestandskunde').length+' Bestand · '+KUNDEN.filter(k=>k.status==='Warm').length+' warm · '+KUNDEN.filter(k=>k.status==='Angefragt').length+' angefragt','laufend')}
+      ${tile('Offen bei Kunden',eur(openSum),'Rechnungen noch nicht bezahlt')}
+      ${tile('Aufgaben',tasks,'offen, mit Kunde verknüpft')}
+      ${tile('Lange still',quiet,'warm oder angefragt, über 14 Tage kein Kontakt','Warm')}
+    </div>
+    <div class="kov-need glass"><h3>Braucht Aufmerksamkeit</h3>${need.length?need.map(({k,n})=>`<button type="button" class="kov-row" data-kopen="${k.id}">${kAvatar(k)}<span class="kov-n"><b>${esc(k.name.split(/\s[–-]\s/)[0])}</b><small>${esc(k.status)}</small></span><span class="kov-why">${n.slice(0,2).map(x=>`<i class="kw ${x.c}">${esc(x.t)}</i>`).join('')}</span><svg class="i xs kov-go"><use href="#i-arrow-ur"/></svg></button>`).join(''):'<p class="kov-ok">Alles im grünen Bereich. Niemand wartet auf euch.</p>'}</div>
+  </div>`;
+}
+function kMiniCard(k){
+  const tp=kTemp(k),st=kStats(k),open=kOpenSum(k),nx=k.raw['Nächster Schritt']||'',nt=TASKS.filter(t=>!t.done&&t.kid===k.id).sort((a,b)=>a.due.localeCompare(b.due))[0];
+  return `<button class="kb-card" data-kopen="${k.id}" draggable="true" data-kdrag="${k.id}">
+    <span class="kc-move" role="button" tabindex="0" data-kmove="${k.id}" title="Verschieben" aria-label="${esc(k.name)} verschieben"><svg class="i xs"><use href="#i-dots"/></svg></span>
+    <span class="kb-top">${kAvatar(k)}<span><b>${esc(k.name.split(/\s[–-]\s/)[0])}</b><small>${esc(k.typ||'')}${kPeople(k)[0]?' · '+esc(kPeople(k)[0].split(/\s*[(,]/)[0]):''}</small></span></span>
+    ${nt?`<span class="kb-next"><svg class="i xs"><use href="#i-check"/></svg>${esc(nt.t.slice(0,60))}<em>${nt.due<=TODAY?'fällig':dm(nt.due)}</em></span>`:nx?`<span class="kb-next"><svg class="i xs"><use href="#i-target"/></svg>${esc(nx.slice(0,70))}</span>`:''}
+    <span class="kb-foot"><span class="kb-temp ${tp.c}"><i></i>${esc(tp.label)}</span>${open?`<span class="kb-eur">${eur(open)} offen</span>`:''}${st.termine?`<span class="kb-n" title="Termine"><svg class="i xs"><use href="#i-cal"/></svg>${st.termine}</span>`:''}</span>
+  </button>`;
+}
 function renderKartei(){
+  safe('kov',renderKOverview);
+  document.querySelectorAll('#kView [data-kv]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.kv===KVIEW)));
   const grid=$('kGrid');if(!grid)return;
   if(!KARTEI_LOADED){grid.innerHTML=GAUTH?'<p class="empty">Kundenkartei wird geladen …</p>':'<p class="empty">Nach dem Login mit info@lematic.de erscheint hier eure Kundenkartei aus Notion.</p>';return}
   const opts=(KSCHEMA&&KSCHEMA['Status']&&KSCHEMA['Status'].options||[]).map(o=>o.name);
@@ -5061,7 +5226,17 @@ function renderKartei(){
   $('kFilter').innerHTML=filters.map(([v,l])=>`<button aria-pressed="${kf===v}" data-kf="${esc(v)}">${esc(l)} <small>${cnt(v)}</small></button>`).join('');
   const q=($('kSearch').value||'').trim().toLowerCase();
   const list=kSorted(KUNDEN.filter(k=>kMatch(k,kf)&&(!q||[k.name,k.ap,k.email,k.notes,k.typ].join(' ').toLowerCase().includes(q))));
-  grid.innerHTML=list.length?list.map(k=>{
+  grid.className=KVIEW==='list'?'klist':'kboard';
+  if(!list.length){grid.innerHTML='<p class="empty">Keine Kunden mit diesem Filter.</p>'}
+  else if(KVIEW==='list'){
+    grid.innerHTML=`<div class="kl-head"><span>Kunde</span><span>Status</span><span>Ansprechpartner</span><span>Letzter Kontakt</span><span>Als Nächstes</span><span class="r">Offen</span></div>`+list.map(k=>{const tp=kTemp(k),nt=TASKS.filter(t=>!t.done&&t.kid===k.id).sort((a,b)=>a.due.localeCompare(b.due))[0],open=kOpenSum(k);
+      return `<button class="kl-row" data-kopen="${k.id}" draggable="true" data-kdrag="${k.id}"><span class="kl-name">${kAvatar(k)}<span><b>${esc(k.name)}</b><small>${esc(k.typ||'')}</small></span></span><span>${kPill(k.status)}</span><span class="kl-mut">${esc((kPeople(k)[0]||'–').split(/\s*\(/)[0])}</span><span class="kb-temp ${tp.c}"><i></i>${esc(tp.label)}</span><span class="kl-mut">${nt?esc(nt.t.slice(0,50))+' · '+(nt.due<=TODAY?'fällig':dm(nt.due)):esc((k.raw['Nächster Schritt']||'–').slice(0,60))}</span><span class="r">${open?eur(open):'–'}</span></button>`}).join('');
+  }else{
+    const cols=K_ORDER.filter(st=>list.some(k=>k.status===st)||(kf==='laufend'||kf==='all'||kf==='b2b'||kf==='events')&&['Bestandskunde','Warm','Angefragt'].includes(st));
+    const other=list.filter(k=>!K_ORDER.includes(k.status));
+    grid.innerHTML=cols.map(st=>{const ks=list.filter(k=>k.status===st);return `<div class="kb-col" data-kcol="${esc(st)}"><div class="kb-h">${kPill(st)}<small>${ks.length}</small></div><div class="kb-list">${ks.map(kMiniCard).join('')||'<p class="kb-empty">Hierher ziehen</p>'}</div></div>`}).join('')+(other.length?`<div class="kb-col"><div class="kb-h">${kPill('')}<small>${other.length}</small></div><div class="kb-list">${other.map(kMiniCard).join('')}</div></div>`:'');
+  }
+  if(false)grid.innerHTML=list.length?list.map(k=>{
     const open=TASKS.filter(t=>!t.done&&t.kid===k.id).sort((a,b)=>a.due.localeCompare(b.due));
     const mails=MAILS.filter(m=>m.client===k.name).length;
     const st=kStats(k),tp=kTemp(k);
@@ -5092,6 +5267,8 @@ function renderSideClients(){
 }
 on('kSearch','input',renderKartei);
 on('kFilter','click',e=>{const b=e.target.closest('[data-kf]');if(!b)return;kf=b.dataset.kf;renderKartei()});
+on('kOverview','click',e=>{const b=e.target.closest('[data-kf]');if(!b)return;kf=b.dataset.kf;renderKartei()});
+on('kView','click',e=>{const b=e.target.closest('[data-kv]');if(!b)return;KVIEW=b.dataset.kv;try{localStorage.setItem('lm_kview',KVIEW)}catch(_){}renderKartei()});
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-kopen]');if(!b)return;
   e.preventDefault();
@@ -5128,7 +5305,9 @@ document.addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{const mv=e.target.closest&&e.target.closest('.kc-move');if(mv&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();const k=KUNDEN.find(x=>x.id===mv.dataset.kmove);k&&kMoveMenu(mv,k)}},true);
 /* Ziehen: Karte auf einen Status-Filter oben ziehen */
 document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('[data-kdrag]');if(!c)return;e.dataTransfer.setData('text/lm-kunde',c.dataset.kdrag);e.dataTransfer.effectAllowed='move';document.body.classList.add('k-dragging')});
-document.addEventListener('dragend',()=>{document.body.classList.remove('k-dragging');document.querySelectorAll('#kFilter .drop').forEach(x=>x.classList.remove('drop'))});
+document.addEventListener('dragend',()=>{document.body.classList.remove('k-dragging');document.querySelectorAll('.kb-col.drop').forEach(x=>x.classList.remove('drop'));document.querySelectorAll('#kFilter .drop').forEach(x=>x.classList.remove('drop'))});
+document.addEventListener('dragover',e=>{const c=e.target.closest&&e.target.closest('[data-kcol]');if(c&&document.body.classList.contains('k-dragging')){e.preventDefault();document.querySelectorAll('.kb-col.drop').forEach(x=>x!==c&&x.classList.remove('drop'));c.classList.add('drop')}});
+document.addEventListener('drop',e=>{const c=e.target.closest&&e.target.closest('[data-kcol]');if(!c)return;const id=e.dataTransfer.getData('text/lm-kunde');if(!id)return;e.preventDefault();c.classList.remove('drop');const k=KUNDEN.find(x=>x.id===id);if(k)setKundeStatus(k,c.dataset.kcol)});
 document.addEventListener('dragover',e=>{const b=e.target.closest&&e.target.closest('#kFilter [data-kf]');if(!b||!document.body.classList.contains('k-dragging')||!kStatusOptions().includes(b.dataset.kf))return;e.preventDefault();document.querySelectorAll('#kFilter .drop').forEach(x=>x!==b&&x.classList.remove('drop'));b.classList.add('drop')});
 document.addEventListener('drop',e=>{const b=e.target.closest&&e.target.closest('#kFilter [data-kf]');if(!b)return;const id=e.dataTransfer.getData('text/lm-kunde');if(!id)return;e.preventDefault();const k=KUNDEN.find(x=>x.id===id);if(k&&kStatusOptions().includes(b.dataset.kf))setKundeStatus(k,b.dataset.kf)});
 
@@ -5136,7 +5315,7 @@ document.addEventListener('drop',e=>{const b=e.target.closest&&e.target.closest(
 function openKunde(id){
   const k=KUNDEN.find(x=>x.id===id);
   if(!k){if(!KARTEI_LOADED)toast('Kundenkartei lädt noch …');return}
-  kOpen=id;
+  if(kOpen!==id)KTAB='ueber';kOpen=id;
   const w=$('kdWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');
   renderKundeSheet(id);
   safe('kmails',()=>loadKundeMails(k));
@@ -5158,6 +5337,25 @@ function noteEntries(text){
     return m?{head:m[1],body:m[2]}:{head:'Ältere Notizen',body:part.trim()};
   });
 }
+let KTAB='ueber';
+function noteWho(head){return /martin/i.test(head)?'MS':/lennart/i.test(head)?'LP':''}
+function noteBodyHTML(b){
+  const lines=String(b||'').trim().split('\n');let h='',ul=false;
+  lines.forEach(l=>{const m=/^\s*(?:[-•*]|\d+\.)\s+(.*)/.exec(l);if(m){if(!ul){h+='<ul>';ul=true}h+='<li>'+esc(m[1])+'</li>'}else{if(ul){h+='</ul>';ul=false}if(l.trim())h+='<p>'+esc(l).replace(/^([A-ZÄÖÜa-zäöüß][^:]{1,28}):/,'<b>$1:</b>')+'</p>'}});
+  if(ul)h+='</ul>';return h;
+}
+function notesTimeline(k,limit){
+  const ns=noteEntries(k.notes);if(!ns.length)return '<p class="nt-empty">Noch keine Notizen. Was hat der Kunde gesagt, was braucht er, was ist der nächste Schritt?</p>';
+  const list=limit?ns.slice(0,limit):ns;
+  return `<ol class="nt">${list.map((n,i)=>{const who=noteWho(n.head);const parts=n.head.split(/\s*·\s*/);const date=parts[0]||'';const by=who?NAMES[who]:(parts[1]||'');const long=n.body.length>320||n.body.split('\n').length>6;
+    return `<li class="nt-i"><span class="nt-dot">${who?`<span class="av us sm" data-who="${who}">${who}</span>`:'<span class="nt-blank"></span>'}</span><div class="nt-c"><div class="nt-h"><b>${esc(by||'Notiz')}</b><time>${esc(date)}</time></div><div class="nt-b${long?' clamp':''}">${noteBodyHTML(n.body)}</div>${long?'<button type="button" class="nt-more" data-ntmore>Ganz lesen</button>':''}</div></li>`}).join('')}</ol>${limit&&ns.length>limit?`<button type="button" class="btn btn-glass sm" data-ktab="notes">Alle ${ns.length} Notizen</button>`:''}`;
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-ntmore]');if(!b)return;const bd=b.previousElementSibling;const open=bd.classList.toggle('open');b.textContent=open?'Weniger':'Ganz lesen'});
+document.addEventListener('click',e=>{const b=e.target.closest('#kdSheet [data-ktab]');if(!b)return;e.preventDefault();KTAB=b.dataset.ktab;
+  document.querySelectorAll('#kdSheet [data-ktab]').forEach(x=>x.classList.contains('kt-b')&&x.setAttribute('aria-selected',String(x.dataset.ktab===KTAB)));
+  document.querySelectorAll('#kdSheet [data-kpanel]').forEach(p=>p.hidden=p.dataset.kpanel!==KTAB);
+  const t=document.querySelector('#kdSheet .ktabs');if(t&&t.getBoundingClientRect().top<0)t.scrollIntoView({block:'start',behavior:REDUCED?'auto':'smooth'});
+});
 function fieldInput(name,def,val){
   const id='kf_'+btoa(unescape(encodeURIComponent(name))).replace(/[^A-Za-z0-9]/g,'');
   const v=val==null?'':val;
@@ -5178,79 +5376,70 @@ function renderKundeSheet(id){
   const tasks=TASKS.filter(t=>t.kid===k.id).sort((a,b)=>Number(a.done)-Number(b.done)||a.due.localeCompare(b.due));
   const notes=noteEntries(k.notes);
   const rel=['Projekte','Rechnungen & Angebote','Leads'].filter(n=>Array.isArray(k.raw[n])&&k.raw[n].length).map(n=>`${k.raw[n].length} ${esc(n)}`).join(' · ');
+  const st=kStats(k),mo=kMoney(k),openT=tasks.filter(t=>!t.done),nx=k.raw['Nächster Schritt']||'';
+  const tab=(id,l,n)=>`<button type="button" class="kt-b" role="tab" data-ktab="${id}" aria-selected="${KTAB===id}">${l}${n?`<small>${n}</small>`:''}</button>`;
+  const pan=(id,html)=>`<div class="kpanel" data-kpanel="${id}"${KTAB===id?'':' hidden'}>${html}</div>`;
   $('kdSheet').innerHTML=`
     <div class="khero">
       <div class="khero-l">
         <div class="kname">${kAvatar(k,true)}<div><h2 id="kdName">${esc(k.name)}</h2>
-          <div class="sub"><button class="kpill-btn" data-kmove="${k.id}" title="Status ändern">${kPill(k.status)}<span class="kpb-c">▾</span></button>${k.typ?`<span class="tag">${esc(k.typ)}</span>`:''}</div></div></div>
-        <div class="sub kcontact">${k.raw['Telefon']?`<a class="tag" href="tel:${esc(String(k.raw['Telefon']).replace(/\s/g,''))}">📞 ${esc(k.raw['Telefon'])}</a>`:''}${k.email?`<a class="tag" href="mailto:${esc(k.email)}">✉️ ${esc(k.email)}</a>`:''}${k.raw['Website']?`<a class="tag" href="${esc(k.raw['Website'])}" target="_blank" rel="noopener">🌐 Website</a>`:''}${k.raw['Adresse']?`<span class="tag">📍 ${esc(String(k.raw['Adresse']).split('(')[0].trim())}</span>`:''}</div>
-        <h3 class="khead" id="kdSecFacts">Auf einen Blick</h3>
-        ${kFacts(k)}
-        <div class="kd-row" style="margin-top:14px"><button class="btn btn-primary sm" id="kdBrief">✨ Briefing</button><button class="btn btn-glass sm prem" data-premium="calls">🎙️ Anruf auswerten <span class="lock"><svg class="i xs"><use href="#i-lockk"/></svg></span></button><button class="btn btn-glass sm prem" data-premium="offer">📄 Angebot erstellen <span class="lock"><svg class="i xs"><use href="#i-lockk"/></svg></span></button>${k.raw['Nächster Schritt']&&!TASKS.some(t=>t.kid===k.id&&!t.done)?'<button class="btn btn-glass sm" data-nexttask>Nächster Schritt → Kalender</button>':''}<button class="btn btn-glass sm" id="kdTermin">Termin</button><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>Notion</a><button class="btn btn-glass sm" data-kmove="${k.id}">↪ Verschieben</button><button class="btn btn-glass sm" id="kdArchive">${k.status==='Archiv'?'Aus dem Archiv holen':'🗄 Ins Archiv'}</button></div>
+          <div class="sub"><button class="kpill-btn" data-kmove="${k.id}" title="Status ändern">${kPill(k.status)}<span class="kpb-c">▾</span></button>${k.typ?`<span class="tag">${esc(k.typ)}</span>`:''}<span class="kb-temp ${kTemp(k).c}"><i></i>${esc(kTemp(k).label)}</span></div></div></div>
+        <div class="sub kcontact">${k.raw['Telefon']?`<a class="tag" href="tel:${esc(String(k.raw['Telefon']).replace(/\s/g,''))}"><svg class="i xs"><use href="#i-phone"/></svg>${esc(k.raw['Telefon'])}</a>`:''}${k.email?`<a class="tag" href="mailto:${esc(k.email)}"><svg class="i xs"><use href="#i-mail"/></svg>${esc(k.email)}</a>`:''}${k.raw['Website']?`<a class="tag" href="${esc(k.raw['Website'])}" target="_blank" rel="noopener"><svg class="i xs"><use href="#i-link"/></svg>Website</a>`:''}${k.raw['Adresse']?`<span class="tag"><svg class="i xs"><use href="#i-pin"/></svg>${esc(String(k.raw['Adresse']).split('(')[0].trim())}</span>`:''}</div>
+        <div class="kd-row khero-act"><button class="btn btn-primary sm" id="kdBrief"><svg class="i xs"><use href="#i-sparkle"/></svg>Briefing</button><button class="btn btn-glass sm" id="kdTermin"><svg class="i xs"><use href="#i-cal"/></svg>Termin</button><button class="btn btn-glass sm" data-ktab="notes"><svg class="i xs"><use href="#i-pencil"/></svg>Notiz</button>${nx&&!TASKS.some(t=>t.kid===k.id&&!t.done)?'<button class="btn btn-glass sm" data-nexttask>Nächster Schritt → Kalender</button>':''}<button class="btn btn-glass sm prem" data-premium="offer">Angebot erstellen <span class="lock"><svg class="i xs"><use href="#i-lockk"/></svg></span></button><span class="kd-more-act"><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>Notion</a><button class="btn btn-glass sm" id="kdArchive">${k.status==='Archiv'?'Aus dem Archiv holen':'Ins Archiv'}</button></span></div>
       </div>
       <div class="khero-r">${kMapSVG(k)}</div>
-      <button class="icon-btn kclose" id="kdClose" aria-label="Schließen">✕</button>
+      <button class="icon-btn kclose" id="kdClose" aria-label="Schließen"><svg class="i sm"><use href="#i-x"/></svg></button>
     </div>
     <div id="kdAI"></div>
-    <div id="kdKpis">${kKpisHTML(k)}</div>
-    <div class="kd-grid">
-      <div style="display:flex;flex-direction:column;gap:18px">
-        <section class="kd-box">
-          <h3>Ansprechpartner &amp; Kontakt</h3>
-          ${kContactHTML(k)}
-        </section>
-        <section class="kd-box">
-          <h3>Notizen</h3>
-          <div class="kd-note">
-            <textarea class="input" id="kdNoteText" placeholder="Was hat der Kunde gesagt? Was braucht er, Budget, nächster Schritt …"></textarea>
-            <div class="kd-row"><button class="btn btn-primary sm" id="kdNoteSave">Notiz speichern</button><span style="font-size:12px;color:var(--ink-3)">wird mit Datum und „${esc(USER)}“ oben eingetragen</span></div>
-            <p class="form-err" id="kdNoteErr" role="alert"></p>
+    <div class="ktabs" role="tablist">${tab('ueber','Überblick')}${tab('notes','Notizen',noteEntries(k.notes).length||'')}${tab('tasks','Aufgaben & Termine',openT.length||'')}${tab('verlauf','Verlauf',(st.gespr+st.mails)||'')}${tab('geld','Geld & Projekte',mo.items.length||'')}${tab('daten','Dateien & Daten')}</div>
+    ${pan('ueber',`
+      <div id="kdKpis">${kKpisHTML(k)}</div>
+      <div class="kd-grid">
+        <div class="kd-col">
+          ${nx?`<section class="kd-box kd-next"><small>Nächster Schritt</small><b>${esc(nx)}</b>${openT[0]?`<span>Im Kalender: ${esc(openT[0].t.slice(0,60))} · ${NAMES[openT[0].who]||''}, ${openT[0].due<=TODAY?'fällig':dm(openT[0].due)}</span>`:'<span>Noch nicht im Kalender.</span>'}</section>`:''}
+          <section class="kd-box"><h3 id="kdSecFacts">Auf einen Blick</h3>${kFacts(k)}</section>
+          <section class="kd-box"><h3>Ansprechpartner &amp; Kontakt</h3>${kContactHTML(k)}</section>
+        </div>
+        <div class="kd-col">
+          <section class="kd-box"><div class="kd-h"><h3>Letzte Notizen</h3><button type="button" class="btn btn-glass xs" data-ktab="notes">Neue Notiz</button></div>${notesTimeline(k,2)}</section>
+          <section class="kd-box"><div class="kd-h"><h3>Offene Aufgaben</h3><button type="button" class="btn btn-glass xs" data-ktab="tasks">Alle</button></div><div class="kd-list">${openT.length?openT.slice(0,4).map(taskRow).join(''):'<p class="nt-empty">Nichts offen.</p>'}</div></section>
+        </div>
+      </div>`)}
+    ${pan('notes',`
+      <section class="kd-box kd-notebox">
+        <div class="kd-note">
+          <textarea class="input" id="kdNoteText" placeholder="Was hat der Kunde gesagt? Was braucht er, Budget, nächster Schritt …"></textarea>
+          <div class="kd-row"><button class="btn btn-primary sm" id="kdNoteSave">Notiz speichern</button><span style="font-size:12px;color:var(--ink-3)">Steht danach oben, mit Datum und ${esc(USER)}</span></div>
+          <p class="form-err" id="kdNoteErr" role="alert"></p>
+        </div>
+        ${notesTimeline(k)}
+      </section>`)}
+    ${pan('tasks',`
+      <section class="kd-box">
+        <h3>Aufgaben im Kalender</h3>
+        <form class="kd-note" id="kdTaskForm">
+          <input class="input" id="kdTaskTitle" placeholder="Zum Beispiel: Angebot schicken">
+          <div class="kd-row">
+            <select class="input" id="kdTaskWho" style="width:auto"><option value="MS"${ME==='MS'?' selected':''}>Martin</option><option value="LP"${ME==='LP'?' selected':''}>Lennart</option></select>
+            <input class="input" type="date" id="kdTaskDue" value="${addDays(TODAY,1)}" style="width:auto">
+            <input class="input" type="time" id="kdTaskTime" style="width:auto" title="Optional">
+            <button class="btn btn-primary sm" type="submit">In den Kalender</button>
           </div>
-          <div class="kd-notes">${notes.length?notes.map(n=>`<p><b>${esc(n.head)}</b>${esc(n.body)}</p>`).join(''):'<p style="background:none;color:var(--ink-3)">Noch keine Notizen.</p>'}</div>
-        </section>
-        <details class="kd-box kd-details" id="kdSecData">
-          <summary><h3 style="display:inline">Stammdaten bearbeiten</h3>${rel?`<span style="font-size:12px;color:var(--ink-3);margin-left:8px">${rel} in Notion verknüpft</span>`:''}</summary>
-          <div class="kd-fields" style="margin-top:12px">${fields.map(n=>fieldInput(n,sch[n],k.raw[n])).join('')}</div>
-          <div class="kd-row" style="margin-top:12px"><button class="btn btn-glass sm" id="kdSave">Änderungen speichern</button><p class="form-err" id="kdSaveErr" role="alert" style="margin:0"></p></div>
-        </details>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:18px">
-        <section class="kd-box">
-          <h3>Geld: Rechnungen &amp; Angebote</h3>
-          <div id="kdMoney">${kMoneyHTML(k)}</div>
-        </section>
-        <section class="kd-box">
-          <h3>Projekte &amp; Akquise</h3>
-          <div id="kdProj"></div>
-        </section>
-        <section class="kd-box">
-          <h3>Aufgaben im Kalender</h3>
-          <form class="kd-note" id="kdTaskForm">
-            <input class="input" id="kdTaskTitle" placeholder="Zum Beispiel: Angebot schicken">
-            <div class="kd-row">
-              <select class="input" id="kdTaskWho" style="width:auto"><option value="MS"${ME==='MS'?' selected':''}>Martin</option><option value="LP"${ME==='LP'?' selected':''}>Lennart</option></select>
-              <input class="input" type="date" id="kdTaskDue" value="${addDays(TODAY,1)}" style="width:auto">
-              <input class="input" type="time" id="kdTaskTime" style="width:auto" title="Optional">
-              <button class="btn btn-primary sm" type="submit">In den Kalender</button>
-            </div>
-          </form>
-          <div class="kd-list" style="margin-top:8px">${tasks.length?tasks.map(taskRow).join(''):'<p class="empty" style="padding:12px">Keine Aufgaben zu diesem Kunden.</p>'}</div>
-          ${kTermine(k)}
-        </section>
-        <section class="kd-box">
-          <h3>Verlauf: Gespräche, Mails, Erledigtes</h3>
-          <div class="tl" id="kdVerlauf"></div>
-        </section>
-        <section class="kd-box kd-more">
-          <h3>Dateien in Drive</h3>
-          <div id="kdFiles"></div>
-        </section>
-        <section class="kd-box kd-more">
-          <h3>Inhalt der Notion-Seite</h3>
-          <div class="kd-doc" id="kdDoc"><p style="color:var(--ink-3)">Wird geladen …</p></div>
-        </section>
-      </div>
-    </div>`;
+        </form>
+        <div class="kd-list" style="margin-top:8px">${tasks.length?tasks.map(taskRow).join(''):'<p class="empty" style="padding:12px">Keine Aufgaben zu diesem Kunden.</p>'}</div>
+        ${kTermine(k)}
+      </section>`)}
+    ${pan('verlauf',`<section class="kd-box"><h3>Gespräche, Mails, Erledigtes</h3><div class="tl" id="kdVerlauf"></div></section>`)}
+    ${pan('geld',`<div class="kd-grid"><section class="kd-box"><h3>Rechnungen &amp; Angebote</h3><div id="kdMoney">${kMoneyHTML(k)}</div></section><section class="kd-box"><h3>Projekte &amp; Akquise</h3><div id="kdProj"></div></section></div>`)}
+    ${pan('daten',`<div class="kd-grid">
+      <div class="kd-col"><section class="kd-box"><h3>Dateien in Drive</h3><div id="kdFiles"></div></section>
+      <details class="kd-box kd-details" id="kdSecData" open>
+        <summary><h3 style="display:inline">Stammdaten bearbeiten</h3>${rel?`<span style="font-size:12px;color:var(--ink-3);margin-left:8px">${rel} in Notion verknüpft</span>`:''}</summary>
+        <div class="kd-fields" style="margin-top:12px">${fields.map(n=>fieldInput(n,sch[n],k.raw[n])).join('')}</div>
+        <div class="kd-row" style="margin-top:12px"><button class="btn btn-glass sm" id="kdSave">Änderungen speichern</button><p class="form-err" id="kdSaveErr" role="alert" style="margin:0"></p></div>
+      </details></div>
+      <section class="kd-box"><h3>Inhalt der Notion-Seite</h3><div class="kd-doc" id="kdDoc"><p style="color:var(--ink-3)">Wird geladen …</p></div></section>
+    </div>`)}`;
   renderVerlauf(k);
   safe('kproj',()=>renderKProjekte(k));
   safe('kfiles',()=>loadKFiles(k));
@@ -5778,7 +5967,6 @@ function kFacts(k){
   const g=kGespr(k)[0]||{};
   const ch=Array.isArray(k.raw['Bevorzugter Kanal'])?k.raw['Bevorzugter Kanal'].join(' · '):'';
   const tiles=[
-    ['🧭','Nächster Schritt',k.raw['Nächster Schritt']||'',true],
     ['🎯','Was sie brauchen',g.bedarf||''],
     ['💶','Budget',g.budget||''],
     ['📈','Chance',g.chance||''],
@@ -6400,7 +6588,7 @@ function agentWissen(){
   const done=TASKS.filter(t=>t.done&&notPrivate(t.t,t.kname)&&(t.doneAt||'').slice(0,10)>=addDays(TODAY,-21));
   if(done.length){L.push('\n## Erledigt in den letzten 3 Wochen');done.slice(0,40).forEach(t=>L.push(`- ${(t.doneAt||'').slice(0,10)} ${NAMES[t.doneBy||t.who]||''}: ${cut(t.t,100)}`))}
   const ev=EVENTS.filter(e=>e.type!=='aufgabe'&&(e.end||e.d)>=addDays(TODAY,-14)&&e.d<=addDays(TODAY,75)&&notPrivate(e.t,e.place)).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||'')));
-  if(ev.length){L.push('\n## Termine (letzte 2 Wochen bis in 10 Wochen)');ev.slice(0,80).forEach(e=>{const k=e.kid&&KUNDEN.find(q=>q.id===e.kid);L.push(`- ${e.d} ${e.time||''} ${cut(e.t,90)}${e.place?' @ '+cut(e.place,50):''}${k?' · Kunde: '+k.name:''}${e.gcalId?' [Termin-ID '+e.gcalId+']':''}`)})}
+  if(ev.length){L.push('\n## Termine (letzte 2 Wochen bis in 10 Wochen)');ev.slice(0,80).forEach(e=>{const k=e.kid&&KUNDEN.find(q=>q.id===e.kid);L.push(`- ${e.d}${e.end&&e.end!==e.d?' bis '+e.end:''} ${e.time||''}${e.endTime?'–'+e.endTime:''} ${cut(e.t,90)} (${TYPE_ONE[e.art||e.type]||'Termin'}${e.who?', '+NAMES[e.who]:''}${e.stand!=null&&e.type==='belegt'?', Stand '+e.stand+' %':''})${e.place?' @ '+cut(e.place,50):''}${k?' · Kunde: '+k.name:''}${e.gcalId?' [Termin-ID '+e.gcalId+']':''}`)})}
   L.push('\n## Kunden ('+KUNDEN.length+', wichtigste zuerst)');
   (typeof kSorted==='function'?kSorted(KUNDEN):KUNDEN).filter(k=>notPrivate(k.name)).slice(0,90).forEach(k=>{
     const r=k.raw||{},lt=lastTouch(k);
@@ -6571,7 +6759,7 @@ function agFormat(text){
 function agMsgHTML(m,mi){
   if(m.role==='user')return `<div class="ag-msg me"><span>${esc(m.text)}</span><small>${esc(NAMES[m.who]||'')}</small></div>`;
   const src=(m.src||[]).length?`<div class="ag-src"><span>Gefunden in:</span>${m.src.map(s=>`<a href="${esc(s.link)}" target="_blank" rel="noopener" title="${esc(s.where||'')}">${s.ic||'📄'} ${esc(String(s.name).slice(0,42))}</a>`).join('')}</div>`:'';
-  return `<div class="ag-msg bot${m.err?' err':''}"><div class="ag-av">LI</div><div class="ag-body">${m.err?esc(m.text):agFormat(m.text)}${liActionsHTML(m,mi)}${src}</div></div>`;
+  return `<div class="ag-msg bot${m.err?' err':''}"><div class="ag-av">LI</div><div class="ag-body">${m.err?esc(m.text):agFormat(m.text)}${liQsHTML(m,mi)}${liActionsHTML(m,mi)}${m.qs&&m.qs.length?'':src}</div></div>`;
 }
 function renderAgent(){
   const recent=AG_SESS.filter(s=>s.id!==AG_CUR).slice(0,4);
@@ -6667,9 +6855,10 @@ async function agentAsk(q){
     agWaitText('LeMatic Intelligence formuliert die Antwort');
     const verlauf=AG_CHAT.slice(-9,-1).map(m=>(m.role==='user'?(NAMES[m.who]||'Team'):'LI')+': '+String(m.text).replace(/```chart[\s\S]*?```/g,'[Grafik]').slice(0,800)).join('\n');
     const wissen=[agentWissen(),found.text,tree].filter(Boolean).join('\n\n');
-    const text=await askClaude('agent',{wissen,verlauf,frage:q,user:USER,heute:TODAY});
+    const nw=new Date();const text=await askClaude('agent',{wissen,verlauf,frage:q,user:USER,heute:wd(TODAY)+', '+TODAY+', '+pad(nw.getHours())+':'+pad(nw.getMinutes())+' Uhr'});
     const ex=liExtractActions(text||'');
-    AG_CHAT.push({role:'bot',text:ex.body.trim()||(ex.acts.length?'Das kann ich für dich erledigen:':'(keine Antwort)'),src:found.src,acts:ex.acts});
+    AG_CHAT.forEach(x=>{if(x.qs&&x.qs.length)x.qsSent=true});
+    AG_CHAT.push({role:'bot',text:ex.body.trim()||(ex.acts.length?'Das kann ich für dich erledigen:':ex.qs.length?'Kurz nachgefragt:':'(keine Antwort)'),src:found.src,acts:ex.qs.length?[]:ex.acts,qs:ex.qs});
   }catch(e){AG_CHAT.push({role:'bot',text:e.message,err:true})}
   agBusy=false;document.querySelectorAll('.ag-send').forEach(b=>b.disabled=false);agSave();renderAgent();
 }
@@ -6973,10 +7162,27 @@ on('onbReplay','click',()=>startOnboarding());
 
 /* ---------- LI kann Dinge erledigen: Aktionen mit Bestätigung ---------- */
 function liExtractActions(text){
-  let acts=[];
-  const body=String(text||'').replace(/```actions\s*([\s\S]*?)```/g,(_,j)=>{try{const a=JSON.parse(j);acts=acts.concat(Array.isArray(a)?a:[a])}catch(_){}return ''});
-  return{body,acts:acts.filter(a=>a&&a.type).slice(0,8)};
+  let acts=[],qs=[];
+  const body=String(text||'').replace(/```actions\s*([\s\S]*?)```/g,(_,j)=>{try{const a=JSON.parse(j);acts=acts.concat(Array.isArray(a)?a:[a])}catch(_){}return ''})
+    .replace(/```fragen\s*([\s\S]*?)```/g,(_,j)=>{try{const a=JSON.parse(j);qs=qs.concat(Array.isArray(a)?a:[a])}catch(_){}return ''});
+  return{body,acts:acts.filter(a=>a&&a.type).slice(0,8),qs:qs.filter(q=>q&&q.frage).slice(0,3).map(q=>({frage:String(q.frage),optionen:(Array.isArray(q.optionen)?q.optionen:[]).map(String).slice(0,5)}))};
 }
+/* Rückfragen der LI: Antworten zum Anklicken, eigene Antwort geht übers Eingabefeld */
+function liQsHTML(m,mi){
+  if(!m.qs||!m.qs.length)return '';
+  const qa=m.qa||{},sent=!!m.qsSent;
+  return `<div class="li-qs${sent?' sent':''}">${m.qs.map((q,qi)=>`<div class="li-q"><b>${esc(q.frage)}</b><div class="li-qo">${q.optionen.map(o=>`<button type="button" class="li-qb${qa[qi]===o?' on':''}" data-liq="${mi}:${qi}" data-liqv="${esc(o)}"${sent?' disabled':''}>${esc(o)}</button>`).join('')}</div></div>`).join('')}
+  ${sent?'':`<small class="li-qhint">${m.qs.length>1?'Wähl je Frage eine Antwort, dann geht es automatisch weiter. ':''}Oder schreib unten einfach selbst.</small>`}</div>`;
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-liq]');if(!b)return;
+  const [mi,qi]=b.dataset.liq.split(':').map(Number);const m=AG_CHAT[mi];if(!m||m.qsSent)return;
+  m.qa=m.qa||{};m.qa[qi]=b.dataset.liqv;
+  if(m.qs.every((_,i)=>m.qa[i]!=null)){
+    m.qsSent=true;agSave();
+    agentAsk(m.qs.length===1?m.qa[0]:m.qs.map((q,i)=>q.frage.replace(/\?$/,'')+': '+m.qa[i]).join(' · '));
+  }else{agSave();renderAgent()}
+});
 function liActLabel(a){
   const k=a.kunde_id&&KUNDEN.find(x=>x.id===a.kunde_id);
   const t=liFindTask(a),e=liFindEvent(a);
@@ -6986,7 +7192,8 @@ function liActLabel(a){
     case 'task_done':return['☑️','Als erledigt abhaken',t?t.t:'(Aufgabe nicht gefunden)'];
     case 'task_move':return['↪️',a.who&&!a.due?'Aufgabe übergeben':'Aufgabe verschieben',`${t?t.t:'(Aufgabe nicht gefunden)'} → ${[a.due?when(a.due,a.time):'',a.who?NAMES[a.who]:''].filter(Boolean).join(' · ')}`];
     case 'task_delete':return['🗑️','Aufgabe löschen',t?t.t:'(Aufgabe nicht gefunden)'];
-    case 'event_create':return['📅','Termin anlegen',`${a.title} · ${when(a.date,a.time)}${a.ort?' · '+a.ort:''}${k?' · '+k.name:''}`];
+    case 'event_create':{const art=liArt(a);const bis=a.bis&&a.bis>a.date?' bis '+when(a.bis):'';const busy=art==='belegt'?[]:busyFor(a.who||'',a.date||TODAY,a.bis||a.date||TODAY);
+      return[art==='belegt'?'⛔':art==='dreh'?'🎥':'📅',(art==='belegt'?'Belegung eintragen':TYPE_ONE[art]+' anlegen'),`${a.title} · ${when(a.date||TODAY,a.time)}${a.time&&a.time_end?'–'+a.time_end:''}${bis}${a.who?' · '+NAMES[a.who]:''}${a.ort?' · '+a.ort:''}${k?' · '+k.name:''}${a.erinnerung_min?' · Erinnerung '+remTxt(+a.erinnerung_min):''}`,busy.map(busyText).join(' · ')]}
     case 'event_move':return['↪️','Termin verschieben',`${e?e.t:'(Termin nicht gefunden)'} → ${when(a.date,a.time)}`];
     case 'event_delete':return['🗑️','Termin löschen',e?`${e.t} · ${when(e.d,e.time)}`:'(Termin nicht gefunden)'];
     case 'kunde_status':return['↪️','Kunde verschieben',`${k?k.name:'(Kunde nicht gefunden)'} → ${a.status||'?'}`];
@@ -6994,6 +7201,24 @@ function liActLabel(a){
     default:return['⚙️',a.type,''];
   }
 }
+const LI_ARTS=['termin','dreh','schnitt','akquise','belegt','aufgabe'];
+function liArt(a){const x=String(a.art||'').toLowerCase();return LI_ARTS.includes(x)&&x!=='aufgabe'?x:guessArt(a.title||'')==='aufgabe'?'termin':guessArt(a.title||'')}
+const remTxt=m=>m>=1440?Math.round(m/1440)+' Tag vorher':m>=60?Math.round(m/60)+' Std. vorher':m+' Min. vorher';
+function liEventObj(a){
+  const k=a.kunde_id&&KUNDEN.find(x=>x.id===a.kunde_id);const art=liArt(a);
+  let te=a.time_end||'';if(a.time&&!te&&+a.dauer_min){const [h,m]=a.time.split(':').map(Number);const t=h*60+m+(+a.dauer_min);te=pad(Math.min(23,Math.floor(t/60)))+':'+pad(t%60)}
+  return{art,title:String(a.title||'').slice(0,300),who:a.who==='LP'||a.who==='MS'?a.who:(art==='belegt'?ME:''),date:a.date||TODAY,end:a.bis||'',time:art==='belegt'?'':(a.time||''),timeEnd:te,
+    stand:+a.stand||0,rem:a.erinnerung_min!=null&&a.erinnerung_min!==''?String(a.erinnerung_min):(a.time?'30':'960'),kid:k?k.id:'',kname:k?k.name:'',ort:a.ort||'',note:a.notiz||''};
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-liedit]');if(!b)return;
+  const [mi,i]=b.dataset.liedit.split(':').map(Number);const m=AG_CHAT[mi];const a=m&&m.acts&&m.acts[i];if(!a)return;
+  let pre;
+  if(a.type==='task_create'){const k=a.kunde_id&&KUNDEN.find(x=>x.id===a.kunde_id);pre={art:'aufgabe',title:a.title,who:a.who||ME,date:a.due||addDays(TODAY,1),time:a.time||'',kid:k?k.id:''}}
+  else{const o=liEventObj(a);pre={art:o.art,title:o.title,who:o.who,date:o.date,end:o.end,time:o.time,timeEnd:o.timeEnd,stand:o.stand,rem:o.rem,kid:o.kid,ort:o.ort,note:o.note}}
+  pre.onSaved=()=>{a._st='ok';a._res='über den Dialog angelegt';agSave();renderAgent()};
+  closeLiDrawer();openEventDialog(pre);
+});
 function nextMonday(){const d=parse(TODAY);const add=((8-d.getDay())%7)||7;return addDays(TODAY,add)}
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-tmove]');if(!b)return;
@@ -7035,6 +7260,18 @@ async function liRunAction(a){
     syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome);return 'verschoben';
   }
   if(a.type==='event_create'){
+    const o=liEventObj(a);
+    if(!o.title)throw new Error('Kein Titel');
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(o.date))throw new Error('Datum fehlt');
+    const body=evBody(o);const em=o.who&&o.who!==ME&&o.art!=='belegt'?personMail(o.who):'';
+    if(em)body.attendees=[{email:em}];
+    body.description=(body.description||'').replace('im LeMatic Studio','über LeMatic Intelligence');
+    const j=await (await gfetch(cal+(em?'?sendUpdates=all':''),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
+    EVENTS.push(evFromBody(o,j.id,j.htmlLink));track('act','Termin angelegt');
+    safe('calR',renderCal);safe('homeR',renderHome);safe('avail',renderAvail);
+    return em?'angelegt, Einladung ist raus':'angelegt';
+  }
+  if(a.type==='event_create_alt'){
     const date=a.date||TODAY,time=a.time||'',dur=+a.dauer_min||60;let body;
     if(time){const [hh,mm]=time.split(':').map(Number);const st=new Date(date+'T00:00:00');st.setHours(hh,mm);const en=new Date(st.getTime()+dur*60000);
       body={summary:a.title,start:{dateTime:date+'T'+time+':00',timeZone:'Europe/Berlin'},end:{dateTime:iso(en)+'T'+pad(en.getHours())+':'+pad(en.getMinutes())+':00',timeZone:'Europe/Berlin'}}}
@@ -7087,7 +7324,7 @@ async function liRunAction(a){
 function liActionsHTML(m,mi){
   if(!m.acts||!m.acts.length)return '';
   const allDone=m.acts.every(a=>a._st==='ok');
-  return `<div class="li-acts">${m.acts.map((a,i)=>{const [ic,l,d]=liActLabel(a);return `<div class="li-act ${a._st||''}"><span class="ic">${ic}</span><span><b>${esc(l)}</b><small>${esc(d)}</small>${a._err?`<em>${esc(a._err)}</em>`:''}</span><span class="st">${a._st==='ok'?'✓ '+esc(a._res||'erledigt'):a._st==='err'?'Fehler':''}</span></div>`}).join('')}
+  return `<div class="li-acts">${m.acts.map((a,i)=>{const [ic,l,d,warn]=liActLabel(a);const editable=!a._st&&(a.type==='event_create'||a.type==='task_create');return `<div class="li-act ${a._st||''}"><span class="ic">${ic}</span><span><b>${esc(l)}</b><small>${esc(d)}</small>${warn?`<em class="li-warn">${esc(warn)}</em>`:''}${a._err?`<em>${esc(a._err)}</em>`:''}</span><span class="st">${a._st==='ok'?'✓ '+esc(a._res||'erledigt'):a._st==='err'?'Fehler':editable?`<button type="button" class="btn btn-glass xs" data-liedit="${mi}:${i}">Anpassen</button>`:''}</span></div>`}).join('')}
     ${allDone?'':`<div class="kd-row"><button class="btn btn-primary sm" data-lirun="${mi}">${m.acts.length>1?'Alle ausführen':'Ausführen'}</button><button class="btn btn-glass sm" data-lino="${mi}">Lieber nicht</button></div>`}</div>`;
 }
 document.addEventListener('click',async e=>{
@@ -7544,8 +7781,15 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.17';
+const APP_VERSION='2026-10-31.18';
 const CHANGELOG=[
+  {v:'2026-10-31.18',d:'31.10.2026',items:[
+    'Kundenkartei neu: oben die Übersicht mit „Braucht Aufmerksamkeit“ (überfällige Rechnungen, fällige Aufgaben, lange still), darunter Board nach Status zum Ziehen oder eine kompakte Liste',
+    'Kundenkarte in Reitern: Überblick, Notizen, Aufgaben und Termine, Verlauf, Geld und Projekte, Dateien. Notizen als Zeitleiste mit Person und Datum, lange Notizen aufklappbar',
+    'LeMatic Intelligence trägt Termine, Drehs, Schnitt und Belegungen direkt ein, mit Uhrzeit, Person, Erinnerung und Einladung. Fehlt etwas, fragt sie nach, mit Antworten zum Anklicken',
+    'Seitenleiste selbst anpassen: Stift neben Einstellungen, dann sortieren und ausblenden',
+    'Martins Profilbild etwas weiter rausgezoomt'
+  ]},
   {v:'2026-10-31.17',d:'31.10.2026',items:[
     'Kalender komplett neu: Monat und Woche mit Uhrzeiten, Eintrag per Klick auf Tag oder Uhrzeit, Arten mit eigenen Farben (Termin, Aufgabe, Dreh, Schnitt, Akquise), per Klick änderbar',
     'Aufgaben im Kalender anklicken: Erledigt (auch in Notion), Verschieben, Bearbeiten, Löschen. Aufgaben für den anderen kommen als Kalender-Einladung mit Erinnerung',
@@ -7750,8 +7994,53 @@ window.addEventListener('hashchange',()=>{if(location.hash==='#/premium')renderP
 applyPremToggle();if(location.hash==='#/premium')setTimeout(renderPremium,50);
 
 
+/* ---------- Seitenleiste selbst anpassen: Reihenfolge und Sichtbarkeit pro Person ---------- */
+const NAV_KEY=()=>'lm_nav_'+ME;
+function navGet(){try{return JSON.parse(localStorage.getItem(NAV_KEY())||'{}')||{}}catch(_){return{}}}
+function navSet(o){try{localStorage.setItem(NAV_KEY(),JSON.stringify(o))}catch(_){}}
+let NAV_DEF=null;
+function applyNav(){
+  const nav=document.querySelector('.sidebar .nav');if(!nav)return;
+  if(!NAV_DEF)NAV_DEF=[...nav.querySelectorAll(':scope>a[data-route]')].map(a=>a.dataset.route);
+  const o=navGet(),hid=new Set(o.hidden||[]);
+  const order=(o.order||[]).filter(r=>NAV_DEF.includes(r));NAV_DEF.forEach(r=>{if(!order.includes(r))order.splice(NAV_DEF.indexOf(r),0,r)});
+  order.forEach(r=>{const a=nav.querySelector(`:scope>a[data-route="${r}"]`);if(a)nav.append(a)});
+  nav.querySelectorAll(':scope>a[data-route]').forEach(a=>{const h=hid.has(a.dataset.route)&&a.dataset.route!=='heute';a.classList.toggle('nav-hid',h);
+    let t=a.querySelector('.nav-eye');if(!t){t=document.createElement('span');t.className='nav-eye';t.setAttribute('role','button');t.tabIndex=-1;a.append(t)}
+    t.innerHTML=a.dataset.route==='heute'?'':`<svg class="i xs"><use href="#${h?'i-eye-off':'i-eye'}"/></svg>`;t.title=h?'Einblenden':'Ausblenden';
+    let g=a.querySelector('.nav-grip');if(!g){g=document.createElement('span');g.className='nav-grip';g.innerHTML='<svg class="i xs"><use href="#i-grip"/></svg>';a.prepend(g)}});
+  const cl=hid.has('clients');document.querySelectorAll('[data-navopt="clients"],#sideClients').forEach(x=>x.classList.toggle('nav-hid',cl));
+  const lab=document.querySelector('[data-navopt="clients"]');if(lab){let t=lab.querySelector('.nav-eye');if(!t){t=document.createElement('span');t.className='nav-eye';t.setAttribute('role','button');lab.append(t)}t.innerHTML=`<svg class="i xs"><use href="#${cl?'i-eye-off':'i-eye'}"/></svg>`}
+}
+function navEditing(on){
+  document.body.classList.toggle('nav-editing',on);$('navEditBar').hidden=!on;
+  document.querySelectorAll('.sidebar .nav>a[data-route]').forEach(a=>{a.draggable=on});
+  if(on)toast('Seitenleiste anpassen: ziehen zum Sortieren, Auge zum Ausblenden');
+}
+on('navEdit','click',()=>navEditing(!document.body.classList.contains('nav-editing')));
+on('navDone','click',()=>{navEditing(false);toast('Seitenleiste gespeichert')});
+on('navReset','click',()=>{navSet({});const nav=document.querySelector('.sidebar .nav');NAV_DEF.forEach(r=>{const a=nav.querySelector(`:scope>a[data-route="${r}"]`);a&&nav.append(a)});applyNav();toast('Seitenleiste zurückgesetzt')});
+document.addEventListener('click',e=>{
+  if(!document.body.classList.contains('nav-editing'))return;
+  const a=e.target.closest('.sidebar .nav>a[data-route],.sidebar [data-navopt]');if(!a)return;
+  e.preventDefault();e.stopPropagation();
+  if(!e.target.closest('.nav-eye'))return;
+  const r=a.dataset.route||a.dataset.navopt;if(r==='heute')return;
+  const o=navGet(),h=new Set(o.hidden||[]);h.has(r)?h.delete(r):h.add(r);o.hidden=[...h];navSet(o);applyNav();
+},true);
+let NAV_DRAG=null;
+document.addEventListener('dragstart',e=>{const a=e.target.closest&&e.target.closest('.sidebar .nav>a[data-route]');if(!a||!document.body.classList.contains('nav-editing'))return;NAV_DRAG=a;a.classList.add('nav-dragging');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',a.dataset.route)}catch(_){}});
+document.addEventListener('dragover',e=>{if(!NAV_DRAG)return;const a=e.target.closest&&e.target.closest('.sidebar .nav>a[data-route]');if(!a||a===NAV_DRAG)return;e.preventDefault();const r=a.getBoundingClientRect();a.parentNode.insertBefore(NAV_DRAG,e.clientY<r.top+r.height/2?a:a.nextSibling)});
+document.addEventListener('dragend',()=>{if(!NAV_DRAG)return;NAV_DRAG.classList.remove('nav-dragging');NAV_DRAG=null;const o=navGet();o.order=[...document.querySelectorAll('.sidebar .nav>a[data-route]')].map(a=>a.dataset.route);navSet(o)});
+/* Tastatur: im Bearbeiten-Modus mit Pfeiltasten verschieben */
+document.addEventListener('keydown',e=>{if(!document.body.classList.contains('nav-editing'))return;const a=e.target.closest&&e.target.closest('.sidebar .nav>a[data-route]');if(!a)return;
+  if(e.key==='ArrowUp'&&a.previousElementSibling){e.preventDefault();a.parentNode.insertBefore(a,a.previousElementSibling);a.focus()}
+  else if(e.key==='ArrowDown'&&a.nextElementSibling){e.preventDefault();a.parentNode.insertBefore(a.nextElementSibling,a);a.focus()}else return;
+  const o=navGet();o.order=[...document.querySelectorAll('.sidebar .nav>a[data-route]')].map(x=>x.dataset.route);navSet(o)});
+applyNav();
+
 /* ---------- Profilbilder: Martins Foto ist hinterlegt, eigenes Bild per Klick auf den Avatar ---------- */
-const AV_DEFAULT={MS:'avatars/MS.jpg'};
+const AV_DEFAULT={MS:'avatars/MS.jpg?v=2'};
 let AV_FILE={};
 function avGet(c){try{return localStorage.getItem('lm_avatar_'+c)||AV_DEFAULT[c]||''}catch(_){return AV_DEFAULT[c]||''}}
 function applyAvatars(){
@@ -7784,7 +8073,7 @@ on('uAvFile','change',e=>{const f=e.target.files[0];if(f)avUpload(f).catch(x=>to
 applyAvatars();
 
 /* ---------- Keine Emojis: überall, wo Text gerendert wird, eigene Icons statt Emojis ---------- */
-const EMO_IC={'💸':'i-coin','✅':'i-check','📅':'i-cal','🧭':'i-target','🗓':'i-cal','🕳':'i-clock','👤':'i-users','💬':'i-chat','✉':'i-mail','🎬':'i-clap','🎯':'i-target','📞':'i-phone','🎙':'i-mic','🤝':'i-handoff','📤':'i-send','📥':'i-inbox','🌐':'i-link','📍':'i-pin','🏭':'i-building','🗣':'i-chat','💶':'i-coin','📈':'i-chart','🖨':'i-print','🧾':'i-receipt','📝':'i-doc2','📁':'i-folder','📊':'i-chart','📽':'i-play','🖼':'i-image','📄':'i-doc2','🗂':'i-folder','⚡':'i-bolt','🏗':'i-building','🧩':'i-puzzle','🔔':'i-bell','✨':'i-sparkle','🔒':'i-lockk','⭐':'i-star','🔥':'i-flame','📨':'i-send','🧊':'i-snow','✋':'i-hand','🗄':'i-archive','☀':'i-sun','📆':'i-cal','⏭':'i-skip','🗑':'i-trash','☑':'i-check','⚙':'i-gear','🕘':'i-clock','💡':'i-sparkle','🏆':'i-trophy','✓':'i-ok','✔':'i-ok','✕':'i-x','✖':'i-x','✦':'i-sparkle','🎆':'i-firework','🪙':'i-coin','☕':'i-coffee','🌱':'i-plant','🍻':'i-moon','🪩':'i-disco','🎞':'i-grain','🚁':'i-drone','🥠':'i-cookie','🍂':'i-leaf','✍':'i-pencil','🧪':'i-bolt','🏠':'i-home','⏰':'i-clock','🔁':'i-undo','🔎':'i-search','📬':'i-mail','🧮':'i-table','💾':'i-save','📂':'i-folder','🖥':'i-board','💳':'i-coin','📭':'i-inbox','👍':'i-thumb-up','👎':'i-thumb-down','👌':'i-ok','🏖':'i-sun','🌅':'i-sun','📸':'i-camera2','🎥':'i-camera','🔔':'i-bell'};
+const EMO_IC={'⛔':'i-busy','💸':'i-coin','✅':'i-check','📅':'i-cal','🧭':'i-target','🗓':'i-cal','🕳':'i-clock','👤':'i-users','💬':'i-chat','✉':'i-mail','🎬':'i-clap','🎯':'i-target','📞':'i-phone','🎙':'i-mic','🤝':'i-handoff','📤':'i-send','📥':'i-inbox','🌐':'i-link','📍':'i-pin','🏭':'i-building','🗣':'i-chat','💶':'i-coin','📈':'i-chart','🖨':'i-print','🧾':'i-receipt','📝':'i-doc2','📁':'i-folder','📊':'i-chart','📽':'i-play','🖼':'i-image','📄':'i-doc2','🗂':'i-folder','⚡':'i-bolt','🏗':'i-building','🧩':'i-puzzle','🔔':'i-bell','✨':'i-sparkle','🔒':'i-lockk','⭐':'i-star','🔥':'i-flame','📨':'i-send','🧊':'i-snow','✋':'i-hand','🗄':'i-archive','☀':'i-sun','📆':'i-cal','⏭':'i-skip','🗑':'i-trash','☑':'i-check','⚙':'i-gear','🕘':'i-clock','💡':'i-sparkle','🏆':'i-trophy','✓':'i-ok','✔':'i-ok','✕':'i-x','✖':'i-x','✦':'i-sparkle','🎆':'i-firework','🪙':'i-coin','☕':'i-coffee','🌱':'i-plant','🍻':'i-moon','🪩':'i-disco','🎞':'i-grain','🚁':'i-drone','🥠':'i-cookie','🍂':'i-leaf','✍':'i-pencil','🧪':'i-bolt','🏠':'i-home','⏰':'i-clock','🔁':'i-undo','🔎':'i-search','📬':'i-mail','🧮':'i-table','💾':'i-save','📂':'i-folder','🖥':'i-board','💳':'i-coin','📭':'i-inbox','👍':'i-thumb-up','👎':'i-thumb-down','👌':'i-ok','🏖':'i-sun','🌅':'i-sun','📸':'i-camera2','🎥':'i-camera','🔔':'i-bell'};
 const EMO_RX=/(?:[\u{1F300}-\u{1FAFF}\u{1F000}-\u{1F2FF}☀-➿⭐⭕⏩-⏺⌚⌛⤴⤵〰〽])️?‍?/gu;
 const EMO_SKIP=new Set(['SCRIPT','STYLE','TEXTAREA','INPUT','OPTION','TITLE','svg','SVG','CANVAS']);
 function noEmo(t){try{return String(t==null?'':t).replace(EMO_RX,'').replace(/^\s+/,'').replace(/\s{2,}/g,' ')}catch(_){return String(t==null?'':t)}}
