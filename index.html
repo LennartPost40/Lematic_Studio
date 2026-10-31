@@ -695,6 +695,7 @@ body.no-prem .prem{display:none!important}
 .prem-card .pc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:10px;border-top:1px solid var(--line)}
 .prem-card .pc-foot b{font-size:18px}
 .prem-card .pc-foot small{font-size:11.5px;color:var(--ink-3)}
+.prem-card.pc-unlocked::after{content:none}
 .prem-card::after{content:"🔒";position:absolute;top:14px;right:14px;font-size:14px;opacity:.6}
 .prem-sheet{width:min(520px,100%);padding:0;overflow:hidden}
 .prem-sheet .ph{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;padding:22px 24px}
@@ -1086,7 +1087,7 @@ textarea.input{font-family:inherit}
 body.k-dragging #kFilter [data-kf]{transition:transform .15s}
 body.k-dragging #kFilter .drop{background:var(--brand)!important;color:#fff!important;transform:scale(1.06)}
 body.li-open .remind-stack,body.onb-open .remind-stack{visibility:hidden}
-.tipps h2{display:block;text-align:left}.tipps h2 .lio{vertical-align:-5px;margin-right:9px}
+.tipps h2{display:block;text-align:left}.tipps h2 .nav-ag{width:24px;height:24px;border-radius:8px;vertical-align:-5px;margin-right:9px}
 .tp-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
 .tp-card{display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:20px;background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.95);box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 10px 30px -18px rgba(20,52,44,.3);animation:tpIn .45s cubic-bezier(.34,1.4,.64,1) both;animation-delay:var(--d,0ms);transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .25s}
 .tp-card:hover{transform:translateY(-2px)}
@@ -1102,14 +1103,12 @@ body.li-open .remind-stack,body.onb-open .remind-stack{visibility:hidden}
 .tp-voted{margin-right:auto;font-size:12px;color:var(--ok)}
 .tp-load{display:flex;align-items:center;gap:12px;padding:16px 4px;color:var(--ink-2)}
 .tp-radar{display:inline-block;margin-top:12px;font-size:13px;color:var(--ink-2)}.tp-radar:hover{color:var(--brand)}
-.lio{display:inline-block;width:34px;height:34px;border-radius:50%;flex:none;background:radial-gradient(circle at 32% 28%,#fff 0 6%,#FFF3A6 14%,#FCD717 34%,#5FB08A 64%,#0C5543 92%);box-shadow:0 8px 22px -6px rgba(12,85,67,.45),inset -4px -6px 12px rgba(7,61,48,.35),inset 3px 4px 8px rgba(255,255,255,.6)}
-.lio.sm{width:22px;height:22px}
-.tp-load .lio{animation:orbPulse 1.6s ease-in-out infinite}
+.tp-load .nav-ag{animation:orbPulse 1.6s ease-in-out infinite}
 @keyframes orbPulse{50%{transform:scale(1.08)}}
-@media (prefers-reduced-motion:reduce){.tp-card{animation:none}.tp-load .lio{animation:none}}
+@media (prefers-reduced-motion:reduce){.tp-card{animation:none}.tp-load .nav-ag{animation:none}}
 
 /* ============ Gelee-Look ============ */
-.gel-bg,.hst-orb,.hst-tiles,.hst-world{display:none}
+.gel-bg,.hst-tiles,.hst-world{display:none}
 body.look-gelee{--font:"Poppins",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;--r-panel:32px;--r-item:20px;
   --glass:rgba(255,255,255,.46);--glass-hi:rgba(255,255,255,.92);--stroke:rgba(255,255,255,.85);
   --shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(255,255,255,.35),0 30px 60px -38px rgba(20,52,44,.38),0 2px 10px -4px rgba(20,52,44,.08);
@@ -1166,14 +1165,9 @@ body.look-gelee .view.active .grid>*:nth-child(4){animation-delay:.12s}body.look
 @keyframes gelView{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes gelRise{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
 /* LI als Kugel */
-body.look-gelee .nav-ag,body.look-gelee .ag-av{border-radius:50%;color:transparent;background:radial-gradient(circle at 32% 28%,#fff 0 6%,#FFF3A6 14%,#FCD717 34%,#5FB08A 64%,#0C5543 92%);box-shadow:inset -2px -3px 6px rgba(7,61,48,.35),inset 2px 2px 4px rgba(255,255,255,.6)}
 body.look-gelee .li-fab{border-radius:999px}
 @media (max-width:640px){body:has(.view[data-view="heute"].active) .li-fab{display:none}}
-body.look-gelee .li-fab span,body.look-gelee .home-stage .nav-ag.lg{border-radius:50%;color:transparent;background:radial-gradient(circle at 32% 28%,#fff 0 6%,#FFF3A6 14%,#FCD717 34%,#5FB08A 64%,#0C5543 92%);box-shadow:inset -3px -4px 8px rgba(7,61,48,.35),inset 2px 3px 5px rgba(255,255,255,.6)}
-.lio.xl{width:84px;height:84px}
 /* Startbühne im Gelee-Look */
-body.look-gelee .hst-orb{display:block;margin-bottom:14px;animation:orbFloat 6s ease-in-out infinite}
-@keyframes orbFloat{50%{transform:translateY(-6px)}}
 body.look-gelee .hst-hi{font-weight:600;font-size:clamp(36px,5.2vw,60px);color:var(--ink)}
 body.look-gelee .hst-hi::first-line{color:var(--ink)}
 body.look-gelee .hst-line{font-size:clamp(18px,2.1vw,24px);color:var(--ink-2)}
@@ -1210,8 +1204,18 @@ body.look-gelee .hst-quick{margin-top:18px}
 .pps-prev.gel i{position:absolute;border-radius:14px;background:rgba(255,255,255,.7);border:1.5px solid #fff}
 .pps-prev.gel i:first-child{left:8px;top:8px;bottom:8px;width:22%;border-radius:12px}.pps-prev.gel i:last-child{left:32%;right:8px;top:8px;height:44%}
 .pp-w{background:conic-gradient(var(--c),var(--c2),var(--c3),var(--c))!important}
-@media (prefers-reduced-motion:reduce){body.look-gelee .gel-bg i,body.look-gelee .hst-orb,body.look-gelee .view.active,body.look-gelee .view.active .grid>*{animation:none}}
+@media (prefers-reduced-motion:reduce){body.look-gelee .gel-bg i,body.look-gelee .view.active,body.look-gelee .view.active .grid>*{animation:none}}
 
+
+/* LeMatic Intelligence: eigenes Zeichen (Funke) statt Buchstaben */
+.nav-ag,.ag-av,.li-fab span,.li-orb b{font-size:0!important;color:transparent!important;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23FCD717' d='M10.5 3.5c.65 4.9 3.6 7.85 8.5 8.5-4.9.65-7.85 3.6-8.5 8.5-.65-4.9-3.6-7.85-8.5-8.5 4.9-.65 7.85-3.6 8.5-8.5z'/%3E%3Cpath fill='%23FCD717' opacity='.85' d='M19 1.8c.28 1.75 1.27 2.74 3 3-1.73.26-2.72 1.25-3 3-.28-1.75-1.27-2.74-3-3 1.73-.26 2.72-1.25 3-3z'/%3E%3C/svg%3E") center/64% no-repeat,linear-gradient(140deg,#0C5543,#073D30)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 4px 12px -6px rgba(7,61,48,.6)}
+.li-orb b{background-size:58%,auto!important}
+.home-stage .nav-ag.lg{border-radius:14px}
+body.look-gelee .nav-ag,body.look-gelee .ag-av,body.look-gelee .li-fab span{border-radius:30%}
+body.look-gelee .home-stage .nav-ag.lg{border-radius:50%}
+.ev-del{display:inline-flex;align-items:center;gap:4px;margin-left:auto;border:0;background:none;font:inherit;font-size:12px;color:var(--ink-3);cursor:pointer;padding:3px 8px;border-radius:999px}
+.ev-del:hover{color:#B5000F;background:rgba(215,0,21,.07)}
+.pm-i.danger{color:#B5000F}.pm-i.danger:hover{background:rgba(215,0,21,.08)}
 /* Startbühne */
 .home-stage{min-height:calc(100vh - 40px);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:40px 16px 72px!important;margin-bottom:8px;background:none!important;border:0!important;box-shadow:none!important}
 .hst-in{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
@@ -1563,7 +1567,6 @@ body.dcut .bg{filter:grayscale(.4)}
     <section class="view" data-view="heute" aria-label="Heute">
       <section class="home-ask li-hero home-stage" id="homeStage" aria-label="Start">
         <div class="hst-in">
-          <span class="lio xl hst-orb" aria-hidden="true"></span>
           <p class="hst-date" id="hstDate"></p>
           <h1 class="hst-hi" id="hstHi">Hallo</h1>
           <button type="button" class="hst-world" id="hstWorld" title="Farbwelt wechseln" aria-label="Farbwelt wechseln"><i></i></button>
@@ -1615,7 +1618,7 @@ body.dcut .bg{filter:grayscale(.4)}
           <div class="week" id="week"></div>
         </section>
         <section class="glass panel c7 tipps" aria-labelledby="tp-title">
-          <div class="panel-head"><div><h2 id="tp-title"><span class="lio sm" aria-hidden="true"></span>LeMatic Intelligence empfiehlt</h2><p id="tpSub">Aus euren Daten und wie ihr das Studio nutzt. Lernt mit deinem Feedback.</p></div><button class="btn btn-glass sm" id="tpNew" title="Neue Empfehlungen">↻ Neu</button></div>
+          <div class="panel-head"><div><h2 id="tp-title"><span class="nav-ag" aria-hidden="true">LI</span>LeMatic Intelligence empfiehlt</h2><p id="tpSub">Aus euren Daten und wie ihr das Studio nutzt. Lernt mit deinem Feedback.</p></div><button class="btn btn-glass sm" id="tpNew" title="Neue Empfehlungen">↻ Neu</button></div>
           <div class="tp-list" id="tpList"><p class="empty">Wird nach dem Login vorbereitet.</p></div>
           <a class="tp-radar" href="#/kunden" id="tpRadar" hidden></a>
         </section>
@@ -3118,7 +3121,11 @@ const MARTIN_DISS=[
   'Kein Feedback in Notion seit Tagen, aber online bist du.',
   'Fünf Minuten zu spät wie immer, aber wenigstens da.',
   'Hydrogen Expo ruft noch immer nicht sich selbst an, Martin.',
-  'Schön, dass du da bist. Die GET NORD-Liste vermisst dich schon.'
+  'Schön, dass du da bist. Die GET NORD-Liste vermisst dich schon.',
+  'Oh, Martin. Wir dachten schon, du bist im Immobilien-Urlaub.',
+  'Die Kunden rufen nicht an. Du schon. Theoretisch.',
+  'Akquise-Status: Kaffee getrunken. Immerhin.',
+  'Ah, der Chef vom Nachfassen. Morgen dann, oder?'
 ];
 
 /* Beide arbeiten über dasselbe Konto (info@lematic.de). Wer gerade am Rechner sitzt,
@@ -3300,7 +3307,7 @@ function hstData(){
   if(unread>4)lines.push(`${unread} ungelesene Mails. Ich sag nur: Posteingang.`);
   /* allgemein */
   const gen=['Was gehen wir heute an?','Womit fangen wir an?','Was steht an?','Sag an, wo hakt es gerade?','Heute schon was verkauft?','Kleiner Schritt, großer Kunde. Was zuerst?'];
-  if(ME==='MS')gen.push('Na, schon Akquise gemacht oder erst Kaffee?','Wer wird heute angerufen?');
+  if(ME==='MS'){const ms=['Na Martin, heute schon jemanden angerufen oder nur drüber nachgedacht?','Die Akquise-Liste hat gefragt, ob du noch lebst.','Kaffee Nummer drei? Dann jetzt aber Kunden.','Lennart hat heute schon mehr gerendert als du gemailt hast.','Die Kundenkartei fühlt sich ein bisschen vernachlässigt.','„Ich meld mich nächste Woche“ zählt nicht als Akquise, Martin.','Fronius schreibt nicht von alleine zurück. Leider.','Du siehst ausgeruht aus. Verdächtig.','Rechnungen schreiben sich nicht selbst. Noch nicht.','Martin, das Telefon ist das Ding mit den Zahlen drauf.','Heute wäre ein guter Tag, einen Vertrag unterschreiben zu lassen. Nur so ein Gedanke.','Wer zuerst anruft, kriegt den Auftrag. Du bist dran.'];gen.push(...ms)}
   if(ME==='LP')gen.push('Weniger rendern, mehr rechnen? Nur ein Vorschlag.','Was bauen wir heute?');
   const h=new Date().getHours();if(h>=22||h<5)gen.push('Noch wach? Dann wenigstens was Sinnvolles.');if(NOW.getDay()===1)gen.push('Montag. Wochenplan in zwei Minuten?');if(NOW.getDay()===5&&h>=14)gen.push('Freitag. Was muss noch raus vor dem Wochenende?');
   chips.push({ic:'🗓',t:'Wie weiter diese Woche?',q:'Wie machen wir diese Woche am besten weiter? Gib mir die 5 wichtigsten Schritte mit wer und bis wann.'});
@@ -3313,7 +3320,7 @@ function renderStage(reroll){
   const hi=h<5?'Na':h<11?'Moin':h<18?'Hallo':'Guten Abend';
   $('hstHi').textContent=hi+' '+d.first+'.';
   $('hstDate').textContent=NOW.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
-  const pool=[...d.lines,...d.lines,...d.gen];
+  const pool=[...d.lines,...d.lines,...d.lines,...d.gen];
   if(reroll||HST_I<0||HST_I>=pool.length){let n;do{n=Math.floor(Math.random()*pool.length)}while(pool.length>1&&pool[n]===$('hstLine').textContent);HST_I=n}
   const el=$('hstLine');el.textContent=pool[HST_I]||'Was gehen wir heute an?';
   if(reroll&&!REDUCED){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')}
@@ -3427,8 +3434,22 @@ function renderDay(){
   const evs=onDay(selDay,calTypes);
   document.getElementById('daySub').textContent=evs.length?evs.length+(evs.length===1?' Termin':' Termine'):'Nichts geplant';
   document.getElementById('dayList').innerHTML=evs.length?evs.map(e=>`
-    <div class="dayev"><time>${e.time||'Ganztags'}</time><div><h3>${esc(e.t)}</h3><p><span class="ev t-${e.type}">${TYPE_ONE[e.type]}</span>${e.kid?`<button class="kd" data-kopen="${e.kid}" style="border:0;background:none;cursor:pointer;font-size:12px;color:var(--brand)">${esc(e.p)}</button>`:`<span class="proj"><i style="background:${PROJ[e.p]||'#8E8E93'}"></i>${esc(e.p)}</span>`}${e.who?`<span class="av us sm">${e.who}</span>`:''}${e.link?`<a class="glink" href="${esc(e.link)}" target="_blank" rel="noopener">In Google öffnen</a>`:''}</p>${e.place?`<p style="font-size:12px;color:var(--ink-3)">📍 ${esc(e.place)}</p>`:''}</div></div>`).join(''):'<p class="empty">Frei. Zeit für Schnitt oder Akquise.</p>';
+    <div class="dayev"><time>${e.time||'Ganztags'}</time><div><h3>${esc(e.t)}</h3><p><span class="ev t-${e.type}">${TYPE_ONE[e.type]}</span>${e.kid?`<button class="kd" data-kopen="${e.kid}" style="border:0;background:none;cursor:pointer;font-size:12px;color:var(--brand)">${esc(e.p)}</button>`:`<span class="proj"><i style="background:${PROJ[e.p]||'#8E8E93'}"></i>${esc(e.p)}</span>`}${e.who?`<span class="av us sm">${e.who}</span>`:''}${e.link?`<a class="glink" href="${esc(e.link)}" target="_blank" rel="noopener">In Google öffnen</a>`:''}${e.gcalId?`<button class="ev-del" data-evdel="${esc(e.gcalId)}" aria-label="Termin ${esc(e.t)} löschen" title="Termin löschen"><svg class="i xs"><use href="#i-trash"/></svg>Löschen</button>`:''}</p>${e.place?`<p style="font-size:12px;color:var(--ink-3)">📍 ${esc(e.place)}</p>`:''}</div></div>`).join(''):'<p class="empty">Frei. Zeit für Schnitt oder Akquise.</p>';
 }
+/* Termin löschen: erst nachfragen, dann aus dem Google-Kalender entfernen */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-evdel]');if(!b)return;
+  e.preventDefault();e.stopPropagation();
+  const id=b.dataset.evdel,ev=EVENTS.find(x=>x.gcalId===id);if(!ev)return;
+  popMenu(b,'„'+ev.t.slice(0,40)+'“ löschen?',[
+    {ic:'🗑',label:'Ja, Termin löschen',danger:true,fn:async()=>{
+      const i=EVENTS.indexOf(ev);EVENTS.splice(i,1);safe('calR',renderCal);safe('homeR',renderHome);
+      try{await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(id),{method:'DELETE'});toast('Termin gelöscht: '+ev.t);track('act','Termin gelöscht')}
+      catch(x){EVENTS.splice(i,0,ev);safe('calR',renderCal);safe('homeR',renderHome);toast('Nicht gelöscht: '+x.message)}
+    }},
+    {ic:'↩',label:'Abbrechen',fn:()=>{}}
+  ]);
+},true);
 document.getElementById('month').addEventListener('click',e=>{
   const b=e.target.closest('[data-cal]');if(!b)return;
   selDay=b.dataset.cal;
@@ -3518,6 +3539,7 @@ async function toggleTask(t,done){
       method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))
     });
     if(done)safe('fun',()=>celebrateTask(t));
+    if(done&&payOwned('feuerwerk'))safe('fw',()=>fireworks());
     syncTaskEvents();safe('kartR',renderKartei);if(kOpen)safe('ks',()=>renderKundeSheet(kOpen));
   }catch(e){
     t.done=before;t.doneAt=beforeAt;t.doneBy=beforeBy;safe('tasksR',renderTasks);safe('homeR',renderHome);
@@ -6324,7 +6346,7 @@ async function tpGenerate(force){
   const t=tpGet();
   if(!force&&t.date===TODAY&&t.items.length){renderTipps();return}
   if(!KARTEI_LOADED||!NOTION_LIVE){el.innerHTML='<p class="empty">Sobald Kartei und Rechnungen geladen sind, kommen hier die Empfehlungen.</p>';return}
-  TP_BUSY=true;el.innerHTML='<div class="tp-load"><span class="lio"></span><span class="ai-dots">LeMatic Intelligence schaut sich eure Lage an</span></div>';
+  TP_BUSY=true;el.innerHTML='<div class="tp-load"><span class="nav-ag lg"></span><span class="ai-dots">LeMatic Intelligence schaut sich eure Lage an</span></div>';
   try{
     t.items.filter(i=>!i.vote&&!i.done).forEach(i=>t.hist.push({art:i.art,titel:i.titel,vote:0,date:t.date}));
     const nutzung=useSummary()+(await useOther());
@@ -6969,7 +6991,10 @@ setInterval(()=>safe('botTasks',importBotTasks),120000);
 
 /* ---------- Echte Bezahlung (Stripe, Testmodus) ---------- */
 let PAY={mode:null,owned:{},err:''};
-function payOwned(k){return !!(PAY.owned[k]||PAY.owned.bundle)}
+const FREE_KEY=()=>'lm_free_'+ME;
+function freeOwned(k){try{return (JSON.parse(localStorage.getItem(FREE_KEY())||'{}')||{})[k]||null}catch(_){return null}}
+function freeSet(k,on){let o={};try{o=JSON.parse(localStorage.getItem(FREE_KEY())||'{}')||{}}catch(_){}if(on)o[k]={since:TODAY};else delete o[k];try{localStorage.setItem(FREE_KEY(),JSON.stringify(o))}catch(_){}applyPayState()}
+function payOwned(k){if(PREMIUM[k]&&PREMIUM[k].free)return !!freeOwned(k);return !!(PAY.owned[k]||PAY.owned.bundle)}
 function applyPayState(){
   const keys=Object.keys(PREMIUM);
   keys.forEach(k=>document.body.classList.toggle('own-'+k,payOwned(k)));
@@ -6993,8 +7018,13 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.14';
+const APP_VERSION='2026-10-31.15';
 const CHANGELOG=[
+  {v:'2026-10-31.15',d:'31.10.2026',items:[
+    '✦ LeMatic Intelligence hat ein eigenes Zeichen bekommen, die Kugel ist weg',
+    '🎆 Neu im Shop: „Feuerwerk“, kostenlos. Freischalten, Aufgabe abhaken, zwei Sekunden Feuerwerk',
+    '🗑 Kalender: Termine lassen sich jetzt löschen (Tag anklicken, beim Termin auf „Löschen“)'
+  ]},
   {v:'2026-10-31.14',d:'31.10.2026',items:[
     '🫧 Neuer Stil „Gelee“ (Einstellungen → Stil): weiche Glas-Karten, federnde Animationen und Farbverläufe in LeMatic-Farben. Fünf Farbwelten, auf der Startseite oben rechts durchschalten',
     '💡 „LeMatic Intelligence empfiehlt“ ersetzt Nachfassen auf der Startseite: was heute etwas bringt, was LeMatic besser machen kann und was am Studio fehlt',
@@ -7085,6 +7115,8 @@ const PREMIUM={
     pts:['Positionen und Preise aus eurer Preisliste','Im eigenen Briefkopf, mit Nummernkreis','Mit einem Klick per Mail an den Kunden','Sieht, wann der Kunde das Angebot öffnet']},
   reminders:{ic:'🔔',name:'Smart-Erinnerungen',price:29,pitch:'Push aufs Handy, wenn etwas passiert, das nicht liegen bleiben darf.',
     pts:['Kunde hat das Angebot geöffnet: jetzt anrufen','Rechnung 7 Tage überfällig: Mahnung bereit','Wiedervorlage fällig, Termin in 30 Minuten','Ruhezeiten und Wochenende einstellbar']},
+  feuerwerk:{ic:'🎆',name:'Feuerwerk',price:0,free:true,pitch:'Jede erledigte Aufgabe wird kurz gefeiert: zwei Sekunden Feuerwerk über dem Bildschirm.',
+    pts:['Startet, sobald eine Aufgabe auf Erledigt gesetzt wird','Zwei Sekunden, ohne Ton','Jederzeit wieder ausschaltbar','Kostenlos, rein zum Spaß']},
   bundle:{ic:'✦',name:'Zentrale Pro Komplett',price:149,pitch:'Alle sechs Module zu einem Preis.',
     pts:['Anruf-Assistent, E-Rechnung, Montags-Bericht','WhatsApp-Inbox, Angebots-Generator, Smart-Erinnerungen','Spart über 60 € im Monat gegenüber einzeln','Neue Module automatisch inklusive']}
 };
@@ -7095,7 +7127,16 @@ function premShowOn(){try{return localStorage.getItem('lm_prem_off')!=='1'}catch
 function applyPremToggle(){document.body.classList.toggle('no-prem',!premShowOn());const t=$('premToggle');if(t)t.checked=premShowOn()}
 function openPaywall(key){
   const p=PREMIUM[key];if(!p)return;premCount(key,'open');
-  const sum=Object.entries(PREMIUM).filter(([k])=>k!=='bundle').reduce((a,[,v])=>a+v.price,0);
+  if(p.free){
+    const own=payOwned(key);
+    $('paySheet').innerHTML=`<div class="ph"><div class="pc-ic">${p.ic}</div><h2 id="payTitle">${esc(p.name)}</h2><p>${esc(p.pitch)}</p></div>
+    <div class="pb"><ul>${p.pts.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+    <div class="pp"><b>Kostenlos</b><span>keine Zahlung, keine Daten</span></div>
+    ${own?`<div class="pay-owned">✓ Freigeschaltet seit ${dm(freeOwned(key).since)}<small>Hak eine Aufgabe ab und es knallt.</small></div>`:''}
+    <div class="kd-row">${own?`<button class="btn btn-glass" data-freepreview="${key}">Vorschau</button><button class="btn btn-glass" data-freeoff="${key}">Ausschalten</button>`:`<button class="btn btn-primary" data-freeon="${key}">Kostenlos freischalten</button><button class="btn btn-glass" data-freepreview="${key}">Vorschau</button>`}<button class="btn btn-glass" data-payclose>Schließen</button></div></div>`;
+    const w=$('payWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');return;
+  }
+  const sum=Object.entries(PREMIUM).filter(([k,v])=>k!=='bundle'&&!v.free).reduce((a,[,v])=>a+v.price,0);
   $('paySheet').innerHTML=`<div class="ph"><div class="pc-ic">${p.ic}</div><h2 id="payTitle">${esc(p.name)}</h2><p>${esc(p.pitch)}</p></div>
   <div class="pb"><ul>${p.pts.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
   <div class="pp"><b>${p.price} €</b><span>pro Monat zusätzlich, monatlich kündbar</span></div>
@@ -7109,7 +7150,7 @@ function openPaywall(key){
 function closePaywall(){const w=$('payWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true')}
 function renderPremium(){
   const g=$('premGrid');if(!g)return;
-  g.innerHTML=Object.entries(PREMIUM).filter(([k])=>k!=='bundle').map(([k,p])=>`<article class="glass prem-card"><div class="pc-ic">${p.ic}</div><h3>${esc(p.name)}</h3><p>${esc(p.pitch)}</p><ul>${p.pts.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="pc-foot"><span><b>${p.price} €</b> <small>/ Monat</small></span>${payOwned(k)?`<button class="btn btn-glass sm pc-own" data-premium="${k}">✓ Gebucht</button>`:`<button class="btn btn-primary sm" data-premium="${k}">Ansehen</button>`}</div></article>`).join('');
+  g.innerHTML=Object.entries(PREMIUM).filter(([k])=>k!=='bundle').map(([k,p])=>`<article class="glass prem-card${payOwned(k)?' pc-unlocked':''}"><div class="pc-ic">${p.ic}</div><h3>${esc(p.name)}</h3><p>${esc(p.pitch)}</p><ul>${p.pts.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="pc-foot"><span>${p.free?'<b>Kostenlos</b>':`<b>${p.price} €</b> <small>/ Monat</small>`}</span>${payOwned(k)?`<button class="btn btn-glass sm pc-own" data-premium="${k}">${p.free?'✓ An':'✓ Gebucht'}</button>`:`<button class="btn btn-primary sm" data-premium="${k}">Ansehen</button>`}</div></article>`).join('');
   const c=premClicks(),rows=Object.entries(PREMIUM).map(([k,p])=>({k,p,o:(c[k]||{}).open||0,b:(c[k]||{}).buy||0})).sort((a,b)=>b.o+b.b*3-(a.o+a.b*3));
   const max=Math.max(1,...rows.map(r=>r.o));
   $('premStats').innerHTML=rows.some(r=>r.o)?rows.map(r=>`<div class="bar"><span>${r.p.ic} ${esc(r.p.name)}</span><span><i style="width:${Math.round(r.o/max*100)}%"></i></span><span title="${r.o}× geöffnet, ${r.b}× Kaufen geklickt">${r.o}/${r.b}</span></div>`).join('')+'<p class="pnote" style="font-size:12px;color:var(--ink-3);margin-top:8px">Zahl links: geöffnet, rechts: auf „Freischalten" geklickt.</p>':'<p class="empty-note">Noch keine Klicks. Einfach im Studio arbeiten, die 🔒-Knöpfe tauchen an den passenden Stellen auf.</p>';
@@ -7124,6 +7165,9 @@ document.addEventListener('click',e=>{
     napi('/api/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'checkout',module:k})})
       .then(j=>{location.href=j.url}).catch(x=>{b.disabled=false;b.textContent='Jetzt freischalten';toast('Bezahlung nicht möglich: '+x.message)});
     return}
+  const fo=e.target.closest('[data-freeon]');if(fo){const k=fo.dataset.freeon;premCount(k,'buy');freeSet(k,true);openPaywall(k);toast('🎆 '+PREMIUM[k].name+' ist freigeschaltet');setTimeout(()=>fireworks(),250);return}
+  const ff=e.target.closest('[data-freeoff]');if(ff){freeSet(ff.dataset.freeoff,false);closePaywall();toast('Feuerwerk ist aus.');return}
+  if(e.target.closest('[data-freepreview]')){closePaywall();setTimeout(()=>fireworks(),200);return}
   if(e.target.closest('[data-payportal]')){napi('/api/pay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'portal'})}).then(j=>{location.href=j.url}).catch(x=>toast('Abo-Verwaltung nicht erreichbar: '+x.message));return}
   if(e.target.closest('[data-payclose]')||e.target.id==='payWrap')closePaywall();
   if(e.target.closest('#premReset')){try{localStorage.removeItem(PREM_KEY)}catch(_){}renderPremium()}
@@ -7165,6 +7209,35 @@ function renderFunStrip(){
   const line=!tot?'noch keiner hat diese Woche was abgehakt':lead?`${NAMES[lead]} führt${lead===ME?' — weiter so':' — da geht noch was'}`:'Gleichstand. Spannend.';
   el.innerHTML=`<span class="chip duel" title="Erledigte Aufgaben seit Montag">🏆 <b>${c.LP}</b> Lennart <span class="bar"><i style="width:${pct}%"></i><i style="width:${100-pct}%"></i></span> Martin <b>${c.MS}</b> · ${line}</span>
     <span class="chip quote">🎬 ${esc(SPRUECHE[dayIndex()%SPRUECHE.length])}</span>`;
+}
+
+/* Feuerwerk (Spaß-Modul): Raketen steigen auf und zerplatzen, nach 2 Sekunden ist Schluss. Ohne Ton.
+   Zeitbasiert gerechnet, damit es auf jedem Rechner gleich schnell aussieht. */
+let fwRun=false;
+function fireworks(){
+  if(REDUCED||fwRun)return;
+  const cv=$('fxCanvas');if(!cv)return;
+  const W=cv.width=innerWidth,H=cv.height=innerHeight,g=cv.getContext('2d');
+  const cols=['#0C5543','#E0A800','#FF7A00','#1F9E77','#D63A8A','#3A7BD5','#FCD717'];
+  const rockets=[],sparks=[];const t0=performance.now();let last=t0;fwRun=true;g.lineCap='round';
+  const launches=[0,140,300,460,640,820].map(d=>({d,done:false}));
+  function burst(x,y){const c=cols[Math.floor(Math.random()*cols.length)],c2=cols[Math.floor(Math.random()*cols.length)],n=64;
+    for(let i=0;i<n;i++){const a=i/n*Math.PI*2+Math.random()*.12,v=150+Math.random()*230;sparks.push({x,y,px:x,py:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,c:i%3?c:c2,t:0,max:.55+Math.random()*.35})}}
+  function tick(now){
+    const t=now-t0,dt=Math.min(.05,(now-last)/1000);last=now;
+    launches.forEach(l=>{if(!l.done&&t>=l.d){l.done=true;const ty=H*(.14+Math.random()*.3);rockets.push({x:W*(.14+Math.random()*.72),y:H+8,px:0,py:0,ty,vy:-Math.sqrt(2*4500*(H-ty))*1.02})}});
+    g.globalCompositeOperation='destination-out';g.fillStyle='rgba(0,0,0,'+Math.min(1,dt*14)+')';g.fillRect(0,0,W,H);g.globalCompositeOperation='source-over';
+    for(let i=rockets.length-1;i>=0;i--){const r=rockets[i];r.px=r.x;r.py=r.y;r.vy+=4500*dt;r.y+=r.vy*dt;
+      g.strokeStyle='#E0A800';g.lineWidth=3;g.beginPath();g.moveTo(r.px,r.py);g.lineTo(r.x,r.y);g.stroke();
+      if(r.y<=r.ty||r.vy>-120){burst(r.x,r.y);rockets.splice(i,1)}}
+    for(let i=sparks.length-1;i>=0;i--){const p=sparks[i];p.t+=dt;const a=1-p.t/p.max;if(a<=0){sparks.splice(i,1);continue}
+      p.px=p.x;p.py=p.y;const drag=Math.pow(.18,dt);p.vx*=drag;p.vy=p.vy*drag+260*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;
+      g.globalAlpha=a;g.strokeStyle=p.c;g.lineWidth=2.6;g.beginPath();g.moveTo(p.px,p.py);g.lineTo(p.x,p.y);g.stroke()}
+    g.globalAlpha=1;
+    if(t<2000&&(rockets.length||sparks.length||launches.some(l=>!l.done)))requestAnimationFrame(tick);
+    else{const fade=performance.now();(function out(n){const k=(n-fade)/250;cv.style.opacity=String(Math.max(0,1-k));if(k<1)requestAnimationFrame(out);else{g.clearRect(0,0,W,H);cv.style.opacity='';fwRun=false}})(fade)}
+  }
+  requestAnimationFrame(tick);
 }
 /* Konfetti */
 let fxParts=[],fxRun=false;
