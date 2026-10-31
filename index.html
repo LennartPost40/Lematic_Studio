@@ -1538,6 +1538,42 @@ body.ang-full .undo-dock{left:22px}
 .tr-row{display:flex;align-items:center;gap:12px;padding:10px 4px;border-top:1px solid var(--line)}.tr-t{flex:1;min-width:0}.tr-t b{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tr-t small{font-size:12px;color:var(--ink-3)}
 .wa-set{margin-top:14px;align-items:flex-start;gap:10px}.wa-set b{display:block;font-size:14px}.wa-set small{display:block;font-size:12.5px;color:var(--ink-2);line-height:1.45;margin-top:2px}
 #eventWrap input[type=date],#eventWrap input[type=time]{height:40px;border-radius:12px;border:1px solid rgba(29,29,31,.12);background:rgba(255,255,255,.92);padding:0 12px;font:inherit;font-size:14px;color:var(--ink);width:100%;min-width:0;margin-top:4px}
+
+/* Premium für alle */
+.prem .lock{display:none!important}
+[data-premium]:not(.pc-own)::after{content:none!important}
+.prem-free{background:linear-gradient(135deg,rgba(252,215,23,.3),rgba(255,255,255,.85))!important}
+.prem-free .prem-price b{font-size:44px;color:var(--brand)}
+.pc-how{font-size:13px;color:var(--ink-2);line-height:1.45;margin:2px 0 4px}
+.pc-foot s{opacity:.6}
+#dz.flash{animation:dzFlash 1.4s ease 2}@keyframes dzFlash{50%{box-shadow:0 0 0 4px rgba(252,215,23,.6)}}
+
+/* Mitteilungszentrale */
+.brand{position:relative}
+.bell-b{margin-left:auto;position:relative;border:0;background:rgba(255,255,255,.55);width:34px;height:34px;border-radius:11px;display:grid;place-items:center;color:var(--ink-2);cursor:pointer;flex:none;transition:background .15s,transform .3s cubic-bezier(.34,1.56,.64,1)}
+.bell-b:hover{background:#fff;color:var(--ink);transform:rotate(-8deg)}
+.bell-b em{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#D70015;color:#fff;font-style:normal;font-size:10.5px;font-weight:700;display:grid;place-items:center;box-shadow:0 0 0 2px #fff}
+.bell-b em[hidden]{display:none}
+.note-wrap{position:fixed;inset:0;z-index:95;pointer-events:none}
+.note-wrap.show{pointer-events:auto;background:rgba(10,30,24,.12)}
+.note-panel{position:absolute;top:16px;left:16px;bottom:16px;width:min(400px,calc(100vw - 32px));border-radius:24px;background:var(--panel-solid,#fbfcfb);box-shadow:0 30px 80px -24px rgba(7,40,32,.45);padding:18px;display:flex;flex-direction:column;gap:10px;transform:translateX(-24px);opacity:0;transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .25s}
+.note-wrap.show .note-panel{transform:none;opacity:1}
+.note-panel h2{margin:0;font-size:20px}
+.note-tools{display:flex;align-items:center;gap:10px}.note-tools .seg{margin-right:auto}
+.note-tools .link{border:0;background:none;color:var(--brand-2);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.note-list{flex:1;overflow:auto;display:flex;flex-direction:column;gap:2px;margin:0 -6px;padding:0 6px}
+.nt-day{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin:12px 4px 4px}
+.note-row{all:unset;box-sizing:border-box;display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:start;padding:9px 8px;border-radius:12px;cursor:pointer}
+.note-row:hover{background:rgba(7,61,48,.05)}
+.nr-ic{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(7,61,48,.07);color:var(--brand-2)}
+.k-remind .nr-ic{background:rgba(252,215,23,.3);color:#8A6400}.k-neu .nr-ic{background:rgba(26,107,86,.14);color:var(--brand)}.k-update .nr-ic{background:linear-gradient(135deg,#FCD717,#E0B400);color:#073D30}
+.nr-t b{display:block;font-size:13.5px;font-weight:500;line-height:1.35}.nr-t small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px;line-height:1.35}
+.note-row.unread .nr-t b{font-weight:650}.note-row.unread::before{content:'';position:absolute}
+.note-row time{font-size:11px;color:var(--ink-3);padding-top:2px}
+.note-row.unread time::after{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--brand-2);margin-left:6px;vertical-align:middle}
+.inv-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.inv-btns .btn[hidden]{display:none}.inv-btns:has(#invSaveMail[hidden]){grid-template-columns:1fr}
+.inv-dup{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:rgba(255,159,10,.14);color:#8A4B00;font-size:13px}.inv-dup[hidden]{display:none}.inv-dup a{color:inherit;font-weight:600}
+.prem-free h2,.prem-free p{color:var(--ink)!important}.prem-free .prem-kicker{color:#8A6400!important}.prem-free .prem-price span{color:var(--ink-2)!important}#payMode{display:none}
 /* Startbühne */
 .home-stage{min-height:calc(100vh - 40px);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:40px 16px 72px!important;margin-bottom:8px;background:none!important;border:0!important;box-shadow:none!important}
 .hst-in{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
@@ -1799,7 +1835,212 @@ body.dcut .bg{filter:grayscale(.4)}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+/* DARK-START */
+html.theme-dark{color-scheme:dark;--canvas:#0E1412;--ink:#E9EEEC;--ink-2:#A3ADA9;--ink-3:#7F8986;--line:rgba(255,255,255,.08);
+--glass:rgba(28,36,33,.66);--glass-hi:rgba(48,58,54,.92);--stroke:rgba(255,255,255,.07);--brand:#1C7A5E;--brand-2:#62C7A2;--yellow-soft:rgba(252,215,23,.22);
+--ok:#5FD68A;--warn:#FFB454;--info:#6CB4FF;--panel-solid:#161E1B;
+--shadow:0 1px 0 rgba(255,255,255,.04) inset,0 24px 60px -30px rgba(0,0,0,.6),0 2px 8px -3px rgba(0,0,0,.4)}
+html.theme-dark{--canvas:#0E1412!important;--brand:#23866A!important;--brand-2:#62C7A2!important}
+html.theme-dark body{background:var(--canvas);color:var(--ink)}
+html.theme-dark .blob.a{background:#4a3f0a;opacity:.32}html.theme-dark .blob.b{background:#0e4a37;opacity:.55}html.theme-dark .blob.c{background:#16304d;opacity:.4}
+html.theme-dark #topo{opacity:.12;filter:invert(1)}
+html.theme-dark .gel-bg{opacity:.35}
+html.theme-dark h1,html.theme-dark .topbar h1{color:var(--ink)}
+html.theme-dark .prem-free h2,html.theme-dark .prem-free p{color:var(--ink)!important}
+html.theme-dark img,html.theme-dark .kav img{filter:none}
+html.theme-dark .input,html.theme-dark input,html.theme-dark select,html.theme-dark textarea{color:var(--ink);background-color:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+html.theme-dark select option{background:#1c2421;color:#E9EEEC}
+html.theme-dark .btn-primary{color:#fff}
+html.theme-dark .av{border-color:#1c2421}
+html.theme-dark .pill.st-Warm,html.theme-dark .kw.warn{color:#FFD45C}
+html.theme-dark .toast{background:rgba(36,46,42,.96);color:#E9EEEC}
+html.theme-dark .note-panel,html.theme-dark .tour-sheet{background:#161E1B}
+html.theme-dark .tour-stage{background:radial-gradient(120% 90% at 0% 0%,rgba(252,215,23,.16),transparent 60%),radial-gradient(90% 90% at 100% 100%,rgba(26,107,86,.3),transparent 60%),#121a17}
+html.theme-dark .tour-foot{background:transparent}
+html.theme-dark iframe#angFrame{background:#EEF1EF;border-radius:20px}
+html.theme-dark .modal-wrap,html.theme-dark .kd-wrap,html.theme-dark #kdWrap{background:rgba(4,9,7,.6)}
+html.theme-dark .prem,html.theme-dark .prem-chip,html.theme-dark .prem-inline{color:#FFD45C!important}
+html.theme-dark .intern,html.theme-dark .prem-badge{color:#E9D46A!important}
+html.theme-dark .kb-eur{color:#FFD45C;background:rgba(252,215,23,.14)}
+html.theme-dark .pill{filter:brightness(1.35) saturate(1.1)}
+html.theme-dark .kchips span{background:rgba(10,132,255,.18);color:#9CC8FF}
+html.theme-dark .li-head b,html.theme-dark .li-head strong,html.theme-dark .li-panel h2,html.theme-dark .li-panel h3{color:var(--ink)}
+html.theme-dark .nt-b{background:rgba(255,255,255,.04)}
+html.theme-dark .kb-card,html.theme-dark .kl-row:hover{background:rgba(40,50,46,.9)}
+html.theme-dark .nav a:hover{background:rgba(34,43,40,.5)}
+html.theme-dark .clients a:hover{background:rgba(34,43,40,.5)}
+html.theme-dark .av{border:2px solid rgba(255,255,255,.1)}
+html.theme-dark .btn-glass:hover{background:#1c2421}
+html.theme-dark .seg button[aria-pressed="true"]{background:#1c2421}
+html.theme-dark .req{background:rgba(34,43,40,.5)}
+html.theme-dark .req select{border:1px solid rgba(255,255,255,0.16);background:#1c2421 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236E6E73' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center}
+html.theme-dark .col{background:rgba(34,43,40,.34)}
+html.theme-dark .card{background:rgba(34,43,40,.88);border:1px solid rgba(255,255,255,.1)}
+html.theme-dark .scope-steps li i{border:2px solid rgba(255,255,255,0.25)}
+html.theme-dark .box{background:rgba(34,43,40,.5)}
+html.theme-dark .todo input{border:1.5px solid rgba(255,255,255,0.31);background:#1c2421}
+html.theme-dark .money>div{background:rgba(34,43,40,.5)}
+html.theme-dark .feed .ic{background:rgba(34,43,40,.8)}
+html.theme-dark .conn .ic{background:rgba(34,43,40,.8)}
+html.theme-dark .modal-wrap{background:rgba(34,43,40,.4)}
+html.theme-dark .sheet{background:rgba(34,43,40,.82)}
+html.theme-dark .drop{background:rgba(34,43,40,.5)}
+html.theme-dark .fields input[type=text],html.theme-dark .fields select{border:1px solid rgba(255,255,255,0.16);background:#1c2421}
+html.theme-dark .switch input::after{background:#1c2421}
+html.theme-dark .input{border:1px solid rgba(255,255,255,0.16);background:rgba(34,43,40,.92)}
+html.theme-dark select.input{background:#1c2421 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%236E6E73' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center}
+html.theme-dark .chk{border:1.5px solid rgba(255,255,255,0.31);background:#1c2421}
+html.theme-dark .login{background:rgba(34,43,40,.5)}
+html.theme-dark .onb-ghost{background:rgba(34,43,40,.1)!important}
+html.theme-dark .onb-dots i{background:rgba(34,43,40,.22)}
+html.theme-dark .onb-src .src{background:rgba(34,43,40,.06)}
+html.theme-dark .onb-brief .bt{background:rgba(34,43,40,.07)}
+html.theme-dark .onb-brief .bt:hover{background:rgba(34,43,40,.11)}
+html.theme-dark .onb-how div{background:rgba(34,43,40,.07)}
+html.theme-dark .onb-ask .input{background:rgba(34,43,40,.95)}
+html.theme-dark .li-hero .chip-q{background:rgba(34,43,40,.12)}
+html.theme-dark .li-hero .chip-q:hover{background:rgba(34,43,40,.2)}
+html.theme-dark .li-drawer .li-panel{background:rgba(34,43,40,.97)}
+html.theme-dark .modal-wrap.kd-wrap{background:rgba(34,43,40,.72)}
+html.theme-dark .kkpi{background:rgba(34,43,40,.7)}
+html.theme-dark #kdSheet .kd-box{background:rgba(34,43,40,.66)}
+html.theme-dark .li-hero .li-mic{background:rgba(34,43,40,.14)}
+html.theme-dark .remind{background:rgba(34,43,40,.95)}
+html.theme-dark .tour-card{background:rgba(34,43,40,.98)}
+html.theme-dark .view-hint{background:linear-gradient(135deg,rgba(252,215,23,.2),rgba(34,43,40,.7))}
+html.theme-dark .pp-d{background:rgba(34,43,40,.7)}
+html.theme-dark .pp-d.on{background:#1c2421}
+html.theme-dark .pp-c{border:3px solid rgba(255,255,255,.1)}
+html.theme-dark .onb .pp-d{background:rgba(34,43,40,.07)}
+html.theme-dark .onb .pp-mini{background:rgba(34,43,40,.08)}
+html.theme-dark .onb .seg{background:rgba(34,43,40,.1)}
+html.theme-dark .onb-preview{color:#E9EEEC}
+html.theme-dark .pv-side{background:rgba(34,43,40,.7)}
+html.theme-dark .pv-hero em{background:rgba(34,43,40,.15)}
+html.theme-dark .pv-cards{background:rgba(34,43,40,.75)}
+html.theme-dark .pv-cards small{color:#A3ADA9}
+html.theme-dark .home-suggest{background:rgba(34,43,40,.98)}
+html.theme-dark .nav-reload:hover{background:rgba(34,43,40,.6)}
+html.theme-dark .upd-bar{background:rgba(34,43,40,.97)}
+html.theme-dark .ang-done-in{background:linear-gradient(135deg,rgba(52,199,89,.12),rgba(34,43,40,.8))}
+html.theme-dark .ap-card{background:rgba(34,43,40,.75)}
+html.theme-dark .chip-q{background:rgba(34,43,40,.7)}
+html.theme-dark .chip-q:hover{background:#1c2421}
+html.theme-dark .ag-hist{background:rgba(34,43,40,.98)!important}
+html.theme-dark .ag-rc{background:rgba(34,43,40,.7)}
+html.theme-dark .ag-body{background:rgba(34,43,40,.75)}
+html.theme-dark .prem-banner{background:linear-gradient(135deg,rgba(252,215,23,.18),rgba(34,43,40,.6))}
+html.theme-dark .kfact{background:rgba(34,43,40,.7)}
+html.theme-dark .kfact.wide{background:linear-gradient(135deg,rgba(252,215,23,.18),rgba(34,43,40,.7))}
+html.theme-dark .kmap-node{background:#1c2421}
+html.theme-dark .kmap-temp{background:#1c2421}
+html.theme-dark .ktemp.warm i{background:linear-gradient(90deg,#FCD717,#1c2421)}
+html.theme-dark .kav img{background:#1c2421}
+html.theme-dark .kd-box{background:rgba(34,43,40,.55)}
+html.theme-dark .who-pick button{background:#1c2421}
+html.theme-dark .ctx-box{background:rgba(34,43,40,.6)}
+html.theme-dark .lg{border:1px solid rgba(255,255,255,0.12);background:rgba(34,43,40,.6)}
+html.theme-dark .day{background:rgba(34,43,40,.45)}
+html.theme-dark .day:hover{background:rgba(34,43,40,.8)}
+html.theme-dark .day.today{background:#1c2421}
+html.theme-dark .add-task{background:rgba(34,43,40,.5)}
+html.theme-dark .dblock{background:#1c2421}
+html.theme-dark .goal-grid div{background:rgba(34,43,40,.55)}
+html.theme-dark .dow{background:rgba(34,43,40,.6)}
+html.theme-dark .cell{background:rgba(34,43,40,.66)}
+html.theme-dark .cell:hover{background:rgba(34,43,40,.9)}
+html.theme-dark .cell.out{background:rgba(34,43,40,.32)}
+html.theme-dark .sync{background:rgba(34,43,40,.5)}
+html.theme-dark .dropzone{background:rgba(34,43,40,.45)}
+html.theme-dark .dropzone:hover{background:rgba(34,43,40,.75)}
+html.theme-dark .dropzone.has{background:#1c2421}
+html.theme-dark .kstats div{background:rgba(34,43,40,.55)}
+html.theme-dark .tgl::after{background:#1c2421}
+html.theme-dark .connect-card .big-ic{background:#1c2421}
+html.theme-dark .mail:hover{background:rgba(34,43,40,.6)}
+html.theme-dark .mail.sel{background:#1c2421}
+html.theme-dark .attach{background:rgba(34,43,40,.75)}
+html.theme-dark .cmail:hover{background:rgba(34,43,40,.55)}
+html.theme-dark .hint-row{background:rgba(34,43,40,.5)}
+html.theme-dark .pop-menu{background:rgba(34,43,40,.98)!important}
+html.theme-dark .tp-card{background:rgba(34,43,40,.66);border:1px solid rgba(255,255,255,.1)}
+html.theme-dark body.look-gelee .nav a.active{background:rgba(34,43,40,.95)}
+html.theme-dark body.look-gelee .btn-glass{background:rgba(34,43,40,.75);border:1.5px solid rgba(255,255,255,.1)}
+html.theme-dark body.look-gelee .input{background:rgba(34,43,40,.8);border:1.5px solid rgba(255,255,255,.1)}
+html.theme-dark body.look-gelee .seg{background:rgba(34,43,40,.35)}
+html.theme-dark body.look-gelee .seg button[aria-pressed="true"]{background:#1c2421}
+html.theme-dark body.look-gelee .tp-card{background:rgba(34,43,40,.58)}
+html.theme-dark body.look-gelee .home-stage form{background:rgba(34,43,40,.88);border:1.5px solid rgba(255,255,255,.1)}
+html.theme-dark body.look-gelee .hst-chip{background:rgba(34,43,40,.6);border:1.5px solid rgba(255,255,255,.1)}
+html.theme-dark body.look-gelee .hst-world{border:1.5px solid rgba(255,255,255,.1);background:rgba(34,43,40,.6)}
+html.theme-dark .hst-tile{background:rgba(34,43,40,.7)}
+html.theme-dark .hst-tile::after{background:linear-gradient(180deg,transparent 30%,rgba(34,43,40,.75))}
+html.theme-dark .hst-tile i{background:#1c2421}
+html.theme-dark .pp-st{background:rgba(34,43,40,.7)}
+html.theme-dark .pps-prev.klar{background:#1a2220}
+html.theme-dark .pps-prev.klar i{background:#1c2421}
+html.theme-dark .pps-prev.gel i{background:rgba(34,43,40,.7);border:1.5px solid rgba(255,255,255,.1)}
+html.theme-dark .fs-pill{background:rgba(34,43,40,.55)}
+html.theme-dark .fs-row{background:rgba(34,43,40,.45)}
+html.theme-dark .fx-cookie{background:rgba(34,43,40,.98)}
+html.theme-dark .wk{background:rgba(34,43,40,.45)}
+html.theme-dark .dayev:hover{background:rgba(34,43,40,.6)}
+html.theme-dark .entry-pop{background:rgba(34,43,40,.98)!important}
+html.theme-dark .av-card{background:rgba(34,43,40,.6);border:1px solid rgba(255,255,255,.1)}
+html.theme-dark .av-card.busy{background:linear-gradient(135deg,rgba(229,72,77,.08),rgba(34,43,40,.7))}
+html.theme-dark body.gold-MS .av.us[data-who="MS"],html.theme-dark body.gold-LP .av.us[data-who="LP"]{box-shadow:0 0 0 2px #1c2421,0 0 0 4px #E0B400,0 4px 12px -4px rgba(224,180,0,.6)}
+html.theme-dark .fx-reward{background:rgba(34,43,40,.98)}
+html.theme-dark .li-qb{background:rgba(34,43,40,.9)}
+html.theme-dark .li-qb:hover:not(:disabled){background:#1c2421}
+html.theme-dark .kov-t{background:var(--glass-hi,rgba(34,43,40,.75))}
+html.theme-dark .kov-row:hover{background:rgba(34,43,40,.7)}
+html.theme-dark .kb-col{background:rgba(34,43,40,.38)}
+html.theme-dark .kb-card{background:rgba(34,43,40,.92)}
+html.theme-dark .klist{background:rgba(34,43,40,.6)}
+html.theme-dark .kl-row:hover{background:rgba(34,43,40,.85)}
+html.theme-dark .ktabs{background:rgba(34,43,40,.92)}
+html.theme-dark .kt-b:hover{background:rgba(34,43,40,.7)}
+html.theme-dark .kt-b[aria-selected="true"]{background:#1c2421}
+html.theme-dark .kd-next{background:linear-gradient(135deg,rgba(252,215,23,.2),rgba(34,43,40,.85))}
+html.theme-dark .nt-b{background:rgba(34,43,40,.7)}
+html.theme-dark .nav-edit-b:hover{background:rgba(34,43,40,.6)}
+html.theme-dark body.nav-editing .nav>a{background:rgba(34,43,40,.45)}
+html.theme-dark .tour-sheet{background:#1c2421}
+html.theme-dark .tour-stage{background:radial-gradient(120% 90% at 0% 0%,rgba(252,215,23,.38),transparent 60%),radial-gradient(90% 90% at 100% 100%,rgba(26,107,86,.35),transparent 60%),#1a2220}
+html.theme-dark .tour-img img{background:#1c2421}
+html.theme-dark .tour-x{background:rgba(34,43,40,.9)}
+@media (max-width:820px){html.theme-dark .tour-foot{background:#1c2421}}
+html.theme-dark .uc-x:hover{background:rgba(34,43,40,.12)}
+html.theme-dark #eventWrap input[type=date],html.theme-dark #eventWrap input[type=time]{border:1px solid rgba(255,255,255,0.16);background:rgba(34,43,40,.92)}
+html.theme-dark .prem-free{background:linear-gradient(135deg,rgba(252,215,23,.3),rgba(34,43,40,.85))!important}
+html.theme-dark .bell-b{background:rgba(34,43,40,.55)}
+html.theme-dark .bell-b:hover{background:#1c2421}
+html.theme-dark .bell-b em{box-shadow:0 0 0 2px #1c2421}
+html.theme-dark .note-panel{background:var(--panel-solid,#1a2220)}
+html.theme-dark .home-stage form{background:#1c2421;border:1px solid rgba(255,255,255,.1)}
+html.theme-dark .hst-chip{background:rgba(34,43,40,.7)}
+html.theme-dark .hst-chip:hover{background:#1c2421}
+html.theme-dark .drivecard{background:rgba(34,43,40,.5)}
+html.theme-dark .drivecard:hover{background:rgba(34,43,40,.8)}
+html.theme-dark .drivecard.sel{background:#1c2421}
+html.theme-dark .g-btn .g-dot{background:#1c2421}
+html.theme-dark .drivefiles .dfile .ic{background:rgba(34,43,40,.8)}
+html.theme-dark .mtile{background:rgba(34,43,40,.6)}
+html.theme-dark .dz-lg{background:rgba(34,43,40,.45)}
+html.theme-dark .dz-lg:hover{background:rgba(34,43,40,.75)}
+html.theme-dark .uprow{background:rgba(34,43,40,.6)}
+html.theme-dark .lead{background:rgba(34,43,40,.88);border:1px solid rgba(255,255,255,.1)}
+html.theme-dark .lstats div{background:rgba(34,43,40,.55)}
+html.theme-dark .add-lead{background:rgba(34,43,40,.5)}
+html.theme-dark .pal-wrap{background:rgba(34,43,40,.45)}
+html.theme-dark .pal{background:rgba(34,43,40,.86)}
+html.theme-dark .pal-res .pi{background:rgba(34,43,40,.9)}
+html.theme-dark .search-trigger .kbd{border:1px solid rgba(255,255,255,0.18)}
+html.theme-dark .fun-strip .chip{background:rgba(34,43,40,.7)}
+@media (max-width:860px){html.theme-dark .tabbar a.active{background:rgba(34,43,40,.85)}}
+/* DARK-END */
 </style>
+<script>(function(){try{var t=localStorage.getItem('lm_theme')||'auto';var d=t==='dark'||(t==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('theme-dark')}catch(e){}})()</script>
 </head>
 <body>
 
@@ -1900,6 +2141,7 @@ body.dcut .bg{filter:grayscale(.4)}
     <div class="brand">
       <div class="mark" aria-hidden="true">L</div>
       <div><strong>LeMatic Studio</strong><span>Interne Ansicht</span></div>
+      <button class="bell-b" id="bellBtn" type="button" title="Mitteilungen" aria-label="Mitteilungen"><svg class="i sm"><use href="#i-bell"/></svg><em id="bellN" hidden>0</em></button>
     </div>
     <nav class="nav">
       <a href="#/heute" data-route="heute"><svg class="i"><use href="#i-home"/></svg>Heute</a>
@@ -2146,15 +2388,15 @@ body.dcut .bg{filter:grayscale(.4)}
         </div>
       </header>
       <p class="dd-status" style="margin:-6px 0 12px"></p>
-      <button class="glass prem prem-banner" data-premium="erechnung"><span class="pb-ic">📄</span><span><b>E-Rechnungen automatisch aus dem Postfach holen</b><small>Erkennt Rechnungen in Mails, liest XRechnung/ZUGFeRD aus und schickt sie an DATEV oder sevDesk. Ab 2027 Pflicht.</small></span><span class="pb-cta">39 €/Monat 🔒</span></button>
+      <button class="glass prem prem-banner" data-premium="erechnung"><span class="pb-ic">📄</span><span><b>Rechnung als PDF reinziehen, der Rest passiert von selbst</b><small>Nummer, Datum, Fälligkeit, Kunde und Betrag werden erkannt, in den Ordner des Kunden gelegt und in Notion eingetragen.</small></span><span class="pb-cta">Jetzt für alle</span></button>
       <div class="grid">
         <section class="glass panel c5" aria-labelledby="up2-title">
           <div class="panel-head"><div><h2 id="up2-title">Rechnung hochladen</h2><p>Einfach reinziehen: LeMatic Intelligence erkennt Art, Kunde, Betrag und den richtigen Drive-Ordner</p></div></div>
           <label class="dropzone" id="dz">
             <input type="file" id="invFile" accept=".pdf,.jpg,.jpeg,.png" hidden>
             <svg class="i"><use href="#i-upload"/></svg>
-            <b id="dzTitle">Datei hierher ziehen</b>
-            <span id="dzSub">oder klicken zum Auswählen</span>
+            <b id="dzTitle">PDF hier ablegen</b>
+            <span id="dzSub">reinziehen oder klicken, um eine Datei zu wählen</span>
           </label>
           <div class="inv-auto" id="invAuto" hidden aria-live="polite"></div>
           <div class="form2">
@@ -2170,7 +2412,10 @@ body.dcut .bg{filter:grayscale(.4)}
             <label>Rechnungsnummer<input class="input" id="invNo"></label>
             <label>Datum<input class="input" type="date" id="invDate"></label>
             <label>Betrag in €<input class="input" id="invAmount" inputmode="decimal" placeholder="4500"></label>
-            <label class="full" id="dueField" hidden><span>Fällig bis</span><input class="input" type="date" id="invDue"></label>
+            <label class="full" id="dueField" hidden><span>Fällig am</span><input class="input" type="date" id="invDue"></label>
+            <label class="full" id="adrField" hidden><span>Adresse des Kunden</span><input class="input" id="invAdr" placeholder="Straße, PLZ Ort"></label>
+            <label class="full" id="leistField" hidden><span>Leistung</span><input class="input" id="invLeist" placeholder="Zum Beispiel Aftermovie Dynabeat 2026"></label>
+            <div class="full inv-dup" id="invDup" hidden role="alert"></div>
             <label class="full" id="angStatusField" hidden><span>Status</span><select class="input" id="invAngStatus"><option>Offen</option><option>Angenommen</option><option>Unterschrieben</option><option>Abgelehnt</option></select></label>
             <label>Projekt<select class="input" id="invProj"></select></label>
             <p class="kind-note" id="kindNote"></p>
@@ -2179,7 +2424,7 @@ body.dcut .bg{filter:grayscale(.4)}
           <div class="target">Wird abgelegt unter<div class="path" id="invPath"></div><div class="fname" id="invName"></div><p class="dc-note" id="invFolderNote" style="margin-top:8px"></p></div>
           <label class="switch" id="newFolderBox" hidden style="cursor:pointer"><span id="newFolderLabel">Neuen Kundenordner anlegen</span><input type="checkbox" id="newFolderChk" checked aria-label="Neuen Kundenordner in Drive anlegen"></label>
           <p class="form-err" id="invErr" role="alert"></p>
-          <button class="btn btn-primary wide" id="invSave"><svg class="i sm"><use href="#i-upload"/></svg>Hochladen und ablegen</button>
+          <div class="inv-btns"><button class="btn btn-primary wide" id="invSave"><svg class="i sm"><use href="#i-upload"/></svg>Ablegen</button><button class="btn btn-glass wide" id="invSaveMail" hidden><svg class="i sm"><use href="#i-mail"/></svg>Ablegen + Mail-Entwurf</button></div>
         </section>
         <section class="glass panel c7" aria-labelledby="inv-title">
           <div class="bank-box">
@@ -2385,17 +2630,17 @@ body.dcut .bg{filter:grayscale(.4)}
           <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
           <span class="intern prem-badge">✦ Zentrale Pro</span>
           <h1>Zentrale Pro</h1>
-          <p class="summary">Mehr Zeit für die Arbeit, weniger Zeit im Büro. Einzelne Module ab 29 € im Monat oder alles zusammen.</p>
+          <p class="summary">Alles, was früher extra kostete, gehört jetzt allen. Kein Abo, keine Karte, kein Kleingedrucktes.</p>
         </div>
       </header>
       <p class="pay-mode" id="payMode"></p>
-      <section class="glass prem-bundle">
-        <div><span class="prem-kicker">Alles drin</span><h2>Zentrale Pro Komplett</h2><p>Alle sechs Module, ein Preis. Spart gegenüber einzeln über 60 € im Monat.</p></div>
-        <div class="prem-price"><b>149 €</b><span>pro Monat, monatlich kündbar</span><button class="btn btn-primary" data-premium="bundle">Komplett freischalten</button></div>
+      <section class="glass prem-bundle prem-free">
+        <div><span class="prem-kicker">Für alle freigeschaltet</span><h2>Zentrale Pro gehört jetzt allen</h2><p>Sechs Module, die bisher hinter einem Schloss lagen. Ab heute einfach da, für Lennart und Martin, ohne Preis.</p></div>
+        <div class="prem-price"><b>0 €</b><span>für immer, für alle</span></div>
       </section>
       <div class="prem-grid" id="premGrid"></div>
       <section class="glass panel prem-stats" aria-labelledby="ps-title">
-        <div class="panel-head"><div><h2 id="ps-title">Testauswertung</h2><p>Wie oft auf gesperrte Funktionen geklickt wurde (nur in diesem Browser gezählt)</p></div><button class="btn btn-glass sm" id="premReset">Zurücksetzen</button></div>
+        <div class="panel-head"><div><h2 id="ps-title">Testauswertung</h2><p>Wie oft früher auf die gesperrten Funktionen geklickt wurde (nur in diesem Browser gezählt)</p></div><button class="btn btn-glass sm" id="premReset">Zurücksetzen</button></div>
         <div id="premStats"></div>
       </section>
     </section>
@@ -2422,13 +2667,14 @@ body.dcut .bg{filter:grayscale(.4)}
         </section>
         <section class="glass panel c12" aria-labelledby="look-title">
           <div class="panel-head"><div><h2 id="look-title">Dein Studio</h2><p>Ansicht und Look gelten nur für dich (pro Person und Gerät gemerkt)</p></div></div>
+          <div class="setting theme-set"><span><b>Darstellung</b><small>Automatisch folgt dem Gerät: tagsüber hell, abends dunkel, wenn das Handy oder der Mac es so eingestellt hat.</small></span><div class="seg" id="themeSeg" role="group" aria-label="Darstellung"><button data-theme="auto">Automatisch</button><button data-theme="light">Hell</button><button data-theme="dark">Dunkel</button></div></div>
           <div id="setPrefs"></div>
         </section>
         <section class="glass panel c12" aria-labelledby="onb-title">
           <div class="setting" style="border:0;padding:0"><span><b id="onb-title" style="font-size:15px">Willkommen mit LeMatic Intelligence</b><small>Den Start-Rundgang noch einmal ansehen, so wie ihn neue Nutzer beim ersten Login sehen.</small></span><span style="display:flex;gap:8px"><button class="btn btn-glass sm" data-shownews>Was ist neu</button><button class="btn btn-glass sm" id="onbReplay">Willkommen</button><button class="btn btn-primary sm" id="tourReplay">Rundgang</button></span></div>
         </section>
         <section class="glass panel c12" aria-labelledby="pt-title">
-          <div class="setting" style="border:0;padding:0"><span><b id="pt-title" style="font-size:15px">Premium-Test anzeigen</b><small>Zeigt die gesperrten Zentrale-Pro-Funktionen überall im Studio. Für den Alltag ausschalten.</small></span><input type="checkbox" id="premToggle" class="chk" aria-label="Premium-Test anzeigen"></div>
+          <div class="setting" style="border:0;padding:0"><span><b id="pt-title" style="font-size:15px">Zentrale-Pro-Knöpfe anzeigen</b><small>Zeigt die Zusatzknöpfe (Wochenbericht, Angebot aus Mail, Mitteilungen) überall im Studio.</small></span><input type="checkbox" id="premToggle" class="chk" aria-label="Premium-Test anzeigen"></div>
         </section>
         <section class="glass panel c12" aria-labelledby="fb-title">
           <div class="panel-head"><div><h2 id="fb-title">Verbesserungsvorschlag</h2><p>Landet als Aufgabe für Lennart im LeMatic-Kalender</p></div></div>
@@ -2797,6 +3043,11 @@ body.dcut .bg{filter:grayscale(.4)}
 <div class="remind-stack" id="remindStack" aria-live="polite"></div>
 <div class="tour" id="tour" hidden><div class="tour-spot" id="tourSpot"></div><div class="tour-card glass" id="tourCard" role="dialog" aria-label="Rundgang"></div></div>
 <div class="upd-bar glass" id="updBar" hidden><span>✨ Neue Version des Studios ist da.</span><button class="btn btn-primary sm" data-appreload>Jetzt neu laden</button><button class="icon-btn" id="updLater" aria-label="Später">✕</button></div>
+<div class="note-wrap" id="noteWrap" aria-hidden="true"><aside class="note-panel" role="dialog" aria-modal="true" aria-labelledby="noteTitle">
+  <div class="kd-h"><h2 id="noteTitle">Mitteilungen</h2><button class="icon-btn" data-noteclose aria-label="Schließen"><svg class="i sm"><use href="#i-x"/></svg></button></div>
+  <div class="note-tools"><div class="seg" id="noteF" role="group" aria-label="Filter"><button data-nf="all">Alle</button><button data-nf="wichtig">Wichtig</button></div><button class="link" data-noteread>Alle gelesen</button><button class="link" data-noteclear>Leeren</button></div>
+  <div class="note-list" id="noteList"></div>
+</aside></div>
 <div class="modal-wrap" id="trashWrap" aria-hidden="true"><div class="glass sheet trash-sheet" role="dialog" aria-modal="true" aria-labelledby="trashTitle"><div class="kd-h"><h2 id="trashTitle">Zuletzt gelöscht</h2><button class="icon-btn" data-trclose aria-label="Schließen"><svg class="i sm"><use href="#i-x"/></svg></button></div><p class="tr-sub">Gelöschte Termine und Aufgaben der letzten 30 Tage, von Lennart und Martin. Wiederherstellen legt sie wieder in den LeMatic-Kalender.</p><div id="trashList"></div></div></div>
 <div class="modal-wrap tour-wrap" id="tourWrap" aria-hidden="true"><div class="tour-sheet" role="dialog" aria-modal="true" aria-labelledby="tourTitle" id="tourSheet"></div></div>
 <div class="modal-wrap" id="newsWrap" aria-hidden="true"><div class="glass sheet news-sheet" role="dialog" aria-modal="true" aria-labelledby="newsTitle" id="newsSheet"></div></div>
@@ -2840,6 +3091,7 @@ body.dcut .bg{filter:grayscale(.4)}
 const toastEl=document.getElementById('toast');let tt;
 function toast(msg,opt){
   if(typeof noEmo==='function')msg=noEmo(msg);
+  if(!(opt&&opt.noLog))try{noteLog({t:msg,kind:'info'})}catch(_){}
   toastEl.querySelector('span').textContent=msg;
   let ub=toastEl.querySelector('.toast-undo');if(ub)ub.remove();
   if(opt&&opt.undo){ub=document.createElement('button');ub.className='toast-undo';ub.textContent='Rückgängig';ub.onclick=()=>{ub.remove();toastEl.classList.remove('show');opt.undo()};toastEl.append(ub)}
@@ -2886,6 +3138,8 @@ function askConfirm(text,fn,label){
   w.classList.add('show');w.setAttribute('aria-hidden','false');
   setTimeout(()=>{const b=$('cfNo');if(b)b.focus()},20);
 }
+function askYesNo(text,yes,no){return new Promise(res=>{const n=$('cfNo');const old=n?n.textContent:'';if(n&&no)n.textContent=no;let done=false;const fin=v=>{if(done)return;done=true;if(n)n.textContent=old;res(v)};
+  askConfirm(text,()=>fin(true),yes);const w=$('confirmWrap');if(!w){fin(false);return}const obs=new MutationObserver(()=>{if(!w.classList.contains('show')){obs.disconnect();setTimeout(()=>fin(false),0)}});obs.observe(w,{attributes:true,attributeFilter:['class']})})}
 function closeConfirm(){
   const w=$('confirmWrap');if(!w)return;
   w.classList.remove('show');w.setAttribute('aria-hidden','true');
@@ -3582,7 +3836,7 @@ function setPerson(code,silent){
   safe('intro',checkMartinIntro);
   safe('home',renderHome);
   if(!silent){
-    if(code==='MS')toast(MARTIN_DISS[Math.floor(Math.random()*MARTIN_DISS.length)]);
+    if(code==='MS')toast(MARTIN_DISS[Math.floor(Math.random()*MARTIN_DISS.length)],{noLog:true});
     else toast('Hallo Lennart');
   }
   safe('streak',()=>bumpStreak(code));
@@ -3592,6 +3846,7 @@ function setPerson(code,silent){
   safe('avA',applyAvatars);if(GAUTH)setTimeout(()=>safe('avS',avSyncDown),3000);
   safe('ach',checkAchievements);
   safe('navA',applyNav);
+  safe('bell',renderBell);
   if(GAUTH)safe('useView',viewEnter);
 }
 function askPerson(){
@@ -4099,6 +4354,8 @@ function setKind(k){
   document.getElementById('kindNote').textContent=k==='Ausgang'?'Rechnung in sevDesk schreiben, als PDF exportieren und hier hochladen — landet automatisch im richtigen Kundenordner.':k==='Angebot'?'Landet im Ordner Angebote_und_Kostenvoranschlaege und als Eintrag in Rechnungen & Angebote. Zählt nicht ins Umsatzziel.':'Belege von Freelancern, Equipment oder Reisen. Landen hier im Drive, in sevDesk tragt ihr sie separat ein.';
   document.getElementById('catField').hidden=k!=='Eingang';
   document.getElementById('dueField').hidden=k!=='Ausgang';
+  document.getElementById('adrField').hidden=k!=='Ausgang';document.getElementById('leistField').hidden=k==='Eingang';document.getElementById('invSaveMail').hidden=k!=='Ausgang';
+  safe('dup',invDupCheck);
   document.getElementById('angStatusField').hidden=k!=='Angebot';
   if(k==='Ausgang'&&!document.getElementById('invDue').value)document.getElementById('invDue').value=addDays(document.getElementById('invDate').value||TODAY,14);
   document.getElementById('partyList').innerHTML=PARTY_SUGGEST[k].map(v=>`<option value="${esc(v)}">`).join('');
@@ -4136,6 +4393,22 @@ function updatePath(){
   document.getElementById('invFolderNote').textContent=note;
 }
 document.getElementById('invKind').addEventListener('click',e=>{const b=e.target.closest('[data-kind]');if(b)setKind(b.dataset.kind)});
+/* Doppelte Rechnungsnummern erkennen */
+function invDupFind(no){
+  const n=String(no||'').trim().toUpperCase();if(!n)return null;
+  const a=INVOICES.find(i=>(i.no||'').trim().toUpperCase()===n&&(i.kind==='Ausgang'||i.kind==='Angebot'));
+  if(a)return{no:a.no,date:a.date,party:a.party,amount:a.amount,link:a.drive};
+  const d=(typeof driveDocsLI==='function'?driveDocsLI():[]).find(x=>(x.no||'').trim().toUpperCase()===n&&x.kind!=='Eingang');
+  return d?{no:d.no,date:d.date,party:d.party,amount:d.amount,link:d.link}:null;
+}
+function invDupCheck(){
+  const el=$('invDup');if(!el)return null;
+  const hit=invKind==='Eingang'?null:invDupFind($('invNo').value);
+  el.hidden=!hit;
+  el.innerHTML=hit?`<svg class="i sm"><use href="#i-warn"/></svg><span><b>${esc(hit.no)} gibt es schon</b>${hit.date?' vom '+esc(dm(String(hit.date).slice(0,10))+String(hit.date).slice(2,4)):''}${hit.party&&hit.party!=='—'?', '+esc(hit.party):''}${hit.amount?', '+eur(hit.amount):''}. Bitte die Nummer prüfen.${hit.link?` <a href="${esc(hit.link)}" target="_blank" rel="noopener">Ansehen</a>`:''}</span>`:'';
+  return hit;
+}
+$('invNo').addEventListener('input',invDupCheck);
 ['invParty','invNo','invDate'].forEach(id=>document.getElementById(id).addEventListener('input',updatePath));
 document.getElementById('invCat').addEventListener('change',updatePath);
 function setFile(f){
@@ -4149,7 +4422,10 @@ fileIn.addEventListener('change',()=>setFile(fileIn.files[0]));
 ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('over')}));
 ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('over')}));
 dz.addEventListener('drop',e=>setFile(e.dataTransfer.files[0]));
+let INV_WITH_MAIL=false;
+on('invSaveMail','click',()=>{INV_WITH_MAIL=true;$('invSave').click()});
 document.getElementById('invSave').addEventListener('click',async()=>{
+  const withMail=INV_WITH_MAIL;INV_WITH_MAIL=false;
   const err=document.getElementById('invErr');
   const party=document.getElementById('invParty').value.trim();
   const amount=parseFloat(document.getElementById('invAmount').value.replace(/\./g,'').replace(',','.'));
@@ -4157,6 +4433,24 @@ document.getElementById('invSave').addEventListener('click',async()=>{
   if(!party){err.textContent=(invKind==='Ausgang'?'Bitte den Kunden eintragen.':'Bitte den Lieferanten eintragen.');return}
   if(!(amount>0)){err.textContent='Bitte einen Betrag eintragen.';return}
   err.textContent='';
+  /* Doppelte Nummer? */
+  const dup=invKind!=='Eingang'&&invDupFind(document.getElementById('invNo').value);
+  if(dup&&!(await askYesNo(dup.no+' gibt es schon'+(dup.party&&dup.party!=='—'?' ('+dup.party+')':'')+'. Trotzdem ablegen?','Trotzdem ablegen','Abbrechen')))return;
+  /* Kunde in der Kartei? Sonst nach Rückfrage anlegen */
+  let kunde=null;const adr=($('invAdr').value||'').trim(),leist=($('invLeist').value||'').trim();
+  if(invKind==='Ausgang'&&GAUTH&&KARTEI_LOADED){
+    kunde=customerFor(party)||null;
+    if(!kunde){
+      const yes=await askYesNo('„'+party+'“ steht noch nicht in „Kunden & Kontakte“. Neu anlegen'+(adr?' mit Adresse '+adr:'')+'?','Kunde anlegen','Ohne Kunde ablegen');
+      if(yes){try{
+        const props={[kTitleKey()]:{title:[{text:{content:party.slice(0,200)}}]},'Status':{select:{name:'Bestandskunde'}}};
+        if(adr)props['Adresse']={rich_text:[{text:{content:adr.slice(0,500)}}]};
+        const pg=await notionCreate('kunden',props);
+        const raw={id:pg.id,url:pg.url||'',[kTitleKey()]:party,Name:party,Status:'Bestandskunde',Adresse:adr,_edited:new Date().toISOString()};
+        kunde=rowToKunde(raw);KUNDEN.push(kunde);safe('kart',renderKartei);safe('ksel',fillKundenSelects);toast('Neuer Kunde in der Kartei: '+party);
+      }catch(x){toast('Kunde nicht angelegt: '+x.message)}}
+    }else if(adr&&!(kunde.raw||{})['Adresse']){notionUpdate('kunden',kunde.id,{'Adresse':{rich_text:[{text:{content:adr.slice(0,500)}}]}}).then(()=>{kunde.raw['Adresse']=adr}).catch(()=>{})}
+  }
   const date=document.getElementById('invDate').value||TODAY;
   const dueVal=document.getElementById('invDue').value;
   const angStatusVal=(document.getElementById('invAngStatus').value||'Offen');
@@ -4181,9 +4475,9 @@ document.getElementById('invSave').addEventListener('click',async()=>{
       driveLink=up.webViewLink||driveLink;driveFileId=up.id||null;realUpload=true;
     }catch(e){
       err.textContent='Upload fehlgeschlagen: '+e.message+'. Hat dieses Google-Konto Schreibrechte auf den Ordner?';
-      btn.disabled=false;btn.lastChild.textContent='Hochladen und ablegen';return;
+      btn.disabled=false;btn.lastChild.textContent='Ablegen';return;
     }
-    btn.disabled=false;btn.lastChild.textContent='Hochladen und ablegen';
+    btn.disabled=false;btn.lastChild.textContent='Ablegen';
   }
   const localStatus=invKind==='Eingang'?'bezahlt':(invKind==='Angebot'?angStatusVal.toLowerCase():'offen');
   const inv={id:Date.now(),kind:invKind,no:document.getElementById('invNo').value.trim(),party,note:fname,date,amount,status:localStatus,rawStatus:invKind==='Ausgang'?'Offen':'',faellig:invKind==='Ausgang'?(dueVal||addDays(date,14)):'',p:$('invProj').value,drive:driveLink,driveFileId,fresh:true};
@@ -4191,17 +4485,21 @@ document.getElementById('invSave').addEventListener('click',async()=>{
   toast(realUpload?(wantsNewFolder?'Neuer Ordner „'+party+'“ angelegt, Datei abgelegt':'In Drive abgelegt: '+invPathParts.join(' / ')):'Demo: nicht wirklich hochgeladen, dafür mit Google anmelden');
   if(realUpload)loadDriveFiles();
   if(realUpload&&(invKind==='Ausgang'||invKind==='Angebot')){
+    if(driveFileId)PDF_CACHE[driveFileId]={blob:invFile,name:fname};
+    const done={no:inv.no,customer:party,title:leist,email:kunde?kunde.email:'',contact:kunde?String((kunde.raw||{})['Ansprechpartner']||'').split(/[,·(]/)[0].trim():'',id:driveFileId,link:driveLink,kind:invKind,amount,due:inv.faellig,notion:null};
     notionCreateRechnung({
       no:inv.no,art:invKind==='Angebot'?'Angebot':'Rechnung',status:invKind==='Angebot'?angStatusVal:'Offen',
-      betrag:amount,leistung:party+(inv.note?': '+fname:''),datum:date,datei:driveLink,
+      betrag:amount,leistung:leist||(party+(inv.note?': '+fname:'')),datum:date,datei:driveLink,kid:kunde?kunde.id:'',
       faellig:invKind==='Ausgang'?(dueVal||addDays(date,14)):''
-    }).then(r=>{inv.nid=r.id;toast('Auch in Notion angelegt: '+party)})
-      .catch(e=>toast('In Drive abgelegt, aber Notion-Eintrag fehlgeschlagen: '+e.message));
+    }).then(r=>{inv.nid=r.id;done.notion=true;invDone(done)})
+      .catch(e=>{done.notion=e.message;invDone(done)});
+    invDone(done);
+    if(withMail&&invKind==='Ausgang')invMakeDraft(done);
   }
   invFile=null;fileIn.value='';dz.classList.remove('has');
-  document.getElementById('dzTitle').textContent='Datei hierher ziehen';
-  document.getElementById('dzSub').textContent='oder klicken zum Auswählen';
-  document.getElementById('invParty').value='';document.getElementById('invAmount').value='';
+  document.getElementById('dzTitle').textContent='PDF hier ablegen';
+  document.getElementById('dzSub').textContent='reinziehen oder klicken, um eine Datei zu wählen';
+  document.getElementById('invParty').value='';document.getElementById('invAmount').value='';$('invAdr').value='';$('invLeist').value='';
   setKind(invKind);renderInvoices();renderHome();
 });
 document.getElementById('invFilter').addEventListener('click',e=>{
@@ -4853,6 +5151,7 @@ async function loadMyCalendar(){
     if(pill)pill.innerHTML='<span class="pill ok"><i></i>Verbunden</span>';
     safe('cal2',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
     if(TRASH===null)trashLoad().then(()=>safe('trashR',renderTrashBtn)).catch(()=>{});
+    safe('notesCal',notesFromCalendar);
     safe('home2',renderHome);safe('tasks2',renderTasks);safe('kart2',renderKartei);safe('brainC',renderBrain);
   }catch(e){
     console.warn('Google Kalender nicht geladen:',e.message);
@@ -5096,7 +5395,33 @@ async function notionUpdate(db,pageId,properties){
     method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({properties})
   });
 }
-async function notionCreateRechnung({no,art,status,betrag,leistung,datum,datei,faellig}){
+/* Ergebnis nach dem Ablegen, mit Mail-Entwurf */
+let INV_DONE=null;
+function invDone(o){
+  INV_DONE=o;const b=$('invAuto');if(!b)return;b.hidden=false;b.className='inv-auto ok';
+  b.innerHTML=`<div><b>${esc(o.kind==='Angebot'?'Angebot':'Rechnung')} ${esc(o.no||'')} ist abgelegt</b><br><small>Drive: im Ordner des Kunden · Notion: ${o.notion===true?'eingetragen'+(o.kid!==''?'':''):o.notion?'nicht eingetragen ('+esc(o.notion)+')':'wird eingetragen …'}${o.draft?' · Mail-Entwurf liegt in Gmail'+(o.draft.to?' (an '+esc(o.draft.to)+')':' (Empfänger noch eintragen)'):''}</small></div>
+    <div class="ia-act">${o.link?`<a class="btn btn-glass sm" href="${esc(o.link)}" target="_blank" rel="noopener">In Drive</a>`:''}${o.kind==='Ausgang'?(o.draft?`<a class="btn btn-primary sm" href="${esc(draftUrl(o.draft))}" target="_blank" rel="noopener">Entwurf öffnen</a>`:`<button class="btn btn-primary sm" data-invdraft>Als Mail-Entwurf</button>`):''}</div>`;
+}
+function invMailText(o){
+  return offerGreeting(o)+',\n\nanbei erhalten Sie unsere Rechnung '+(o.no||'')+(o.title?' für '+o.title:'')+' über '+eur(o.amount)+'.'+(o.due?' Bitte überweisen Sie den Betrag bis zum '+new Date(o.due).toLocaleDateString('de-DE')+'.':'')+
+    '\n\nVielen Dank für die Zusammenarbeit. Bei Fragen melden Sie sich gern jederzeit.\n\nViele Grüße\n'+(FULLNAME[ME]||USER)+'\nLeMatic Videoproduction\ninfo@lematic.de · lematic.de';
+}
+async function invMakeDraft(o){
+  const b=document.querySelector('[data-invdraft]');if(b){b.disabled=true;b.textContent='Wird angelegt …'}
+  try{
+    if(!COMPOSE_OK)await composeToken();
+    const pdf=await drivePdf(o.id);
+    const fname=String(pdf.name||'Rechnung.pdf').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\w.\-]+/g,'_');
+    const subj='Rechnung '+(o.no||'')+(o.title?' – '+o.title:'')+' | LeMatic';const bd='lm_'+Date.now().toString(36);const enc=t=>'=?UTF-8?B?'+b64utf8(t)+'?=';
+    const mime=['MIME-Version: 1.0',...(o.email?['To: '+o.email]:[]),'Subject: '+enc(subj),'Content-Type: multipart/mixed; boundary="'+bd+'"','','--'+bd,'Content-Type: text/plain; charset="UTF-8"','Content-Transfer-Encoding: base64','',wrap76(b64utf8(invMailText(o))),
+      '--'+bd,'Content-Type: application/pdf; name="'+fname+'"','Content-Disposition: attachment; filename="'+fname+'"','Content-Transfer-Encoding: base64','',wrap76(await blobB64(pdf.blob)),'--'+bd+'--',''].join('\r\n');
+    const raw=btoa(mime).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    const j=await (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/drafts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:{raw}})})).json();
+    o.draft={id:j.id,mid:j.message&&j.message.id,to:o.email||''};invDone(o);toast(o.email?'Mail-Entwurf an '+o.email+' liegt in Gmail':'Mail-Entwurf liegt in Gmail, Empfänger noch eintragen');track('act','Mail-Entwurf angelegt');
+  }catch(x){toast('Mail-Entwurf nicht angelegt: '+x.message);if(b){b.disabled=false;b.textContent='Als Mail-Entwurf'}}
+}
+document.addEventListener('click',e=>{if(e.target.closest('[data-invdraft]')&&INV_DONE)invMakeDraft(INV_DONE)});
+async function notionCreateRechnung({no,art,status,betrag,leistung,datum,datei,faellig,kid}){
   const props={
     'Nummer':{title:[{text:{content:(no||leistung||'Ohne Nummer').slice(0,80)}}]},
     'Art':{select:{name:art}},
@@ -5107,6 +5432,7 @@ async function notionCreateRechnung({no,art,status,betrag,leistung,datum,datei,f
   };
   if(datei)props['Datei']={url:datei};
   if(faellig&&/^\d{4}-\d{2}-\d{2}$/.test(faellig))props['Fällig am']={date:{start:faellig}};
+  if(kid)props['Kunde']={relation:[{id:kid}]};
   return notionCreate('rechnungen',props);
 }
 async function notionCreate(db,properties){
@@ -6587,12 +6913,17 @@ async function autoDetectInvoice(f){
   try{
     const text=await readUploadText(f).catch(()=>'');
     const own=/lematic\s*(→|->|>|-)\s*friedrich|IHR ANSPRECHPARTNER\s+(Lennart Post|Martin Schmick)/i.test(text);
+    let j={};
+    try{const ctx=text.trim().length>80?{text:text.slice(0,8000)}:(f.size<3*1048576?{file:await fileToB64(f),mime:f.type||'application/pdf'}:{text:'Dateiname: '+f.name});
+      const out=await napi('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:'beleg',context:ctx})});
+      j=JSON.parse(String(out.text||'{}').replace(/^[^{]*/,'').replace(/[^}]*$/,''))||{}}catch(_){j={}}
     if(own){
       const isOffer=/\bAngebot\b/i.test(text)&&!/Rechnung Nr/i.test(text);
       const p=ddParse(text,{name:f.name,kind:isOffer?'Angebot':'Ausgang',path:['',''],modifiedTime:''});
-      let party=p.party;
-
-      r={kind:isOffer?'Angebot':'Ausgang',party,no:p.no,date:p.date,amount:p.amount,due:p.due,src:'pdf'};
+      r={kind:isOffer?'Angebot':'Ausgang',party:p.party||j.partei||'',no:p.no||j.nummer||'',date:p.date||j.datum||'',amount:p.amount||+j.betrag||0,due:p.due||j.faellig||'',adr:j.adresse||'',leist:j.beschreibung||'',src:'pdf'};
+    }else if(j.art){
+      const art=/ausgang|rechnung an/i.test(j.art||'')?'Ausgang':/angebot/i.test(j.art||'')?'Angebot':'Eingang';
+      r={kind:art,party:j.partei||'',no:j.nummer||'',date:j.datum||'',amount:+j.betrag||0,due:j.faellig||'',adr:j.adresse||'',leist:j.beschreibung||'',cat:EINGANG_FOLDERS[j.kategorie]?j.kategorie:guessEinCat((j.partei||'')+' '+(j.beschreibung||'')+' '+text),src:'li'};
     }else{
       /* Fremdbeleg: LI liest Lieferant, Betrag, Datum, Nummer und die passende Kategorie */
       const ctx=text.trim().length>80?{text:text.slice(0,8000)}:(f.size<3*1048576?{file:await fileToB64(f),mime:f.type||'application/pdf'}:{text:'(Datei zu groß zum Lesen) Dateiname: '+f.name});
@@ -6609,15 +6940,16 @@ async function autoDetectInvoice(f){
   if(/^\d{4}-\d{2}-\d{2}$/.test(r.date||''))$('invDate').value=r.date;
   if(r.amount)$('invAmount').value=String(r.amount).replace('.',',');
   if(r.kind==='Ausgang'&&/^\d{4}-\d{2}-\d{2}$/.test(r.due||''))$('invDue').value=r.due;
+  if(r.adr)$('invAdr').value=r.adr;if(r.leist)$('invLeist').value=r.leist;
+  if(r.kind==='Ausgang'&&!r.adr){const k=customerFor(r.party);if(k&&(k.raw||{})['Adresse'])$('invAdr').value=String(k.raw['Adresse'])}
+  const dup=invDupCheck();
   if(r.kind==='Eingang'){const sel=$('invCat');sel.value=EINGANG_FOLDERS[r.cat]?r.cat:'Sonstiges'}
   updatePath();
   const ok=r.party&&r.amount>0;
   const what=r.kind==='Ausgang'?'Rechnung an':r.kind==='Angebot'?'Angebot an':'Beleg von';
   if(!ok){box.className='inv-auto warn';box.innerHTML=`Erkannt: ${what} <b>${esc(r.party||'?')}</b>${r.amount?', '+eur(r.amount):''}. ${!r.party?'Kunde/Lieferant':'Betrag'} fehlt noch, bitte ergänzen und auf „Hochladen und ablegen“ klicken.`;return}
-  let n=5;
-  const tick=()=>{box.className='inv-auto ok';box.innerHTML=`<div><b>✓ Erkannt:</b> ${what} <b>${esc($('invParty').value)}</b> · ${esc($('invNo').value||'ohne Nummer')} · ${eur(r.amount)} · ${esc(dm($('invDate').value||TODAY))}<br><small>Landet in ${esc(invPathParts.slice(2).join(' / '))}${invNewFolder?' (neuer Ordner)':''}. Wird in ${n} s automatisch abgelegt.</small></div><div class="ia-act"><button class="btn btn-primary sm" data-iago>Jetzt ablegen</button><button class="btn btn-glass sm" data-iastop>Stopp, ich prüfe selbst</button></div>`;
-    if(n--<=0){box.hidden=true;$('invSave').click();return}autoT=setTimeout(tick,1000)};
-  tick();
+  const known=r.kind!=='Ausgang'||customerFor($('invParty').value);
+  box.className='inv-auto ok';box.innerHTML=`<div><b>Erkannt:</b> ${what} <b>${esc($('invParty').value)}</b> · ${esc($('invNo').value||'ohne Nummer')} · ${eur(r.amount)} · ${esc(dm($('invDate').value||TODAY))}${r.kind==='Ausgang'&&$('invDue').value?' · fällig '+esc(dm($('invDue').value)):''}<br><small>Bitte unten prüfen und bei Bedarf korrigieren, dann „Ablegen“. Landet in ${esc(invPathParts.slice(2).join(' / '))}${invNewFolder?' (neuer Ordner)':''}.${known?'':' Den Kunden gibt es noch nicht in der Kartei, beim Ablegen wird gefragt.'}${dup?' Achtung: Die Nummer gibt es schon.':''}</small></div>`;
 }
 document.addEventListener('click',e=>{
   if(e.target.closest('[data-iago]')){clearTimeout(autoT);$('invAuto').hidden=true;$('invSave').click()}
@@ -7541,7 +7873,7 @@ function remindShow(key,title,body,go){
   const box=$('remindStack');if(!box)return;
   const el=document.createElement('div');el.className='remind glass';
   el.innerHTML=`<span class="rb">🔔</span><span><b>${esc(title)}</b><small>${esc(body)}</small></span><span class="ra">${go?`<button class="btn btn-primary sm" data-rgo="${esc(go)}">Öffnen</button>`:''}<button class="icon-btn" data-rx aria-label="Erinnerung schließen">✕</button></span>`;
-  box.appendChild(el);remindNotify(title,body);
+  box.appendChild(el);remindNotify(title,body);try{noteLog({t:title,s:body,kind:'remind',go})}catch(_){}
   if('Notification' in window&&Notification.permission==='default'&&!remindSeen._asked){remindSeen._asked=1;
     const ask=document.createElement('div');ask.className='remind glass soft';ask.innerHTML='<span class="rb">💡</span><span><b>Auch als Mitteilung aufs Gerät?</b><small>Dann erscheinen Erinnerungen auch, wenn das Studio im Hintergrund offen ist.</small></span><span class="ra"><button class="btn btn-glass sm" data-rperm>Erlauben</button><button class="icon-btn" data-rx aria-label="Schließen">✕</button></span>';box.appendChild(ask)}
 }
@@ -7930,7 +8262,38 @@ function showReward(k,more){
 }
 function freeOwned(k){try{return (JSON.parse(localStorage.getItem(FREE_KEY())||'{}')||{})[k]||null}catch(_){return null}}
 function freeSet(k,on){let o={};try{o=JSON.parse(localStorage.getItem(FREE_KEY())||'{}')||{}}catch(_){}if(on)o[k]={since:TODAY};else delete o[k];try{localStorage.setItem(FREE_KEY(),JSON.stringify(o))}catch(_){}applyPayState();safe('fun',funApply)}
-function payOwned(k){if(PREMIUM[k]&&PREMIUM[k].free)return !!freeOwned(k);return !!(PAY.owned[k]||PAY.owned.bundle)}
+function payOwned(k){if(PREMIUM[k]&&PREMIUM[k].free)return !!freeOwned(k);return true}
+/* Was hinter den früheren Premium-Knöpfen jetzt wirklich passiert */
+const PREM_GO={
+  offer:{ok:true,label:'Angebot erstellen',how:'Öffnet den Angebotsrechner, der Kunde ist schon eingetragen.'},
+  report:{ok:true,label:'Wochenbericht holen',how:'LeMatic Intelligence schreibt die Woche auf eine Seite: offene Angebote, Umsatz, überfällige Rechnungen, Termine.'},
+  reminders:{ok:true,label:'Mitteilungen einschalten',how:'Erinnerungen kommen als Mitteilung aufs Gerät, auch wenn das Studio im Hintergrund läuft.'},
+  calls:{ok:true,label:'Gespräche ansehen',how:'Der WhatsApp-Bot wertet Sprachnachrichten und Telefonate aus und legt sie bei den Kunden unter „Verlauf“ ab.'},
+  erechnung:{ok:true,label:'Rechnung ablegen',how:'Rechnung als PDF reinziehen: Nummer, Daten, Kunde und Betrag werden erkannt, abgelegt und in Notion eingetragen. Der automatische Abruf aus dem Postfach folgt.'},
+  whatsapp:{ok:false,label:'In Arbeit',how:'Die WhatsApp-Chats im Postfach sind noch nicht fertig. Bis dahin landet alles mit Kundenbezug über den Bot in der Kundenkartei.'}
+};
+async function angOpenFor(name){
+  location.hash='#/angebot';
+  const c=(window.studioCustomers?window.studioCustomers():[]).find(x=>name&&(x.customerCompany||'').toLowerCase()===String(name).replace(/\s+[–-]\s+.*$/,'').toLowerCase());
+  for(let i=0;i<40;i++){const w=(()=>{try{return $('angFrame').contentWindow}catch(_){return null}})();if(w&&typeof w.applyCustomer==='function'){if(c){try{w.showStep&&w.showStep(1);w.applyCustomer(c)}catch(_){}toast('Angebot für '+c.customerCompany+' angefangen')}return}await new Promise(r=>setTimeout(r,250))}
+}
+function premGo(k,el){
+  const kd=el&&el.closest('#kdSheet'),k0=kd&&KUNDEN.find(x=>x.id===kOpen);
+  if(k==='offer'){const m=el&&el.closest('[data-view="mails"]')&&typeof mailSel!=='undefined'&&MAILS.find(x=>x.id===mailSel);if(k0)closeKunde();angOpenFor(k0?k0.name:(m&&m.client)||'');return}
+  if(k==='report'){openLiDrawer('Schreib mir den Wochenbericht für LeMatic auf einer Seite: offene Angebote, Umsatz diesen Monat, überfällige Rechnungen, Termine und Fristen diese Woche, welche Kunden dran sind.');return}
+  if(k==='reminders'){try{Notification.requestPermission().then(p=>toast(p==='granted'?'Mitteilungen sind an.':'Mitteilungen bleiben aus. Im Browser unter Website-Einstellungen änderbar.'))}catch(_){toast('Dieser Browser kann keine Mitteilungen.')}return}
+  if(k==='calls'){if(k0){KTAB='verlauf';renderKundeSheet(k0.id)}else location.hash='#/kunden';return}
+  if(k==='erechnung'){location.hash='#/rechnungen';setTimeout(()=>{const d=$('dz');d&&d.scrollIntoView({block:'center',behavior:REDUCED?'auto':'smooth'});d&&d.classList.add('flash')},250);return}
+  if(k==='whatsapp'){toast('WhatsApp im Postfach ist noch in Arbeit. Kundeninfos aus den Gruppen landen über den Bot in der Kundenkartei.');return}
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-premium]');if(!b)return;const k=b.dataset.premium;const p=PREMIUM[k];
+  if(!p||p.free)return;
+  if(b.closest('#premGrid')&&!e.target.closest('[data-premgo]'))return;
+  e.preventDefault();e.stopImmediatePropagation();
+  if(k==='bundle'){toast('Schon alles frei. Für alle.');return}
+  premGo(k,b);
+},true);
 function applyPayState(){
   const keys=Object.keys(PREMIUM);
   keys.forEach(k=>document.body.classList.toggle('own-'+k,payOwned(k)));
@@ -7954,8 +8317,28 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.20';
+const APP_VERSION='2026-10-31.22';
 const CHANGELOG=[
+  {v:'2026-10-31.22',d:'31.10.2026',tour:[
+    {img:'whatsnew/v22-mitteilungen.webp',t:'Die Mitteilungszentrale',txt:'Alles, was das Studio euch gemeldet hat, steht jetzt an einem Ort. Nichts geht mehr verloren, nur weil eine Meldung zu schnell wieder weg war.',
+     steps:['Oben links neben „LeMatic Studio“ auf die Glocke','Die rote Zahl zählt, was wichtig ist: Erinnerungen, Aufgaben und Termine, die der andere für dich eingetragen hat, und Updates','„Wichtig“ blendet die kleinen Bestätigungen aus','Klick auf eine Mitteilung öffnet direkt den passenden Bereich']},
+    {img:'whatsnew/v22-dunkel.webp',t:'Dunkel, ganz von selbst',txt:'Abends wird das Studio dunkel, wenn Handy oder Mac auf dunkel stehen. Und Lennarts Profilbild ist jetzt auch drin.',
+     steps:['Nichts tun: „Automatisch“ folgt dem Gerät','Lieber fest hell oder dunkel? Einstellungen, ganz oben bei „Darstellung“','Profilbild ändern geht weiter per Klick auf das eigene Bild unten links']},
+    {img:'whatsnew/v22-rechnungen.webp',t:'Rechnungen ablegen, der Rest passiert von selbst',txt:'PDF reinziehen, kurz prüfen, ablegen. Das Studio liest Nummer, Datum, Fälligkeit, Kunde mit Adresse, Leistung und Betrag.',
+     steps:['Rechnungen öffnen und die PDF ins Feld „PDF hier ablegen“ ziehen','Erkannte Daten prüfen und falls nötig korrigieren','„Ablegen“: PDF in den Drive-Ordner des Kunden, Eintrag in Notion mit Kunde, Fälligkeit und Link','Neuer Kunde? Das Studio fragt vorher. Doppelte Nummer? Das Studio warnt','„Ablegen + Mail-Entwurf“ legt die Mail mit Rechnung gleich in die Gmail-Entwürfe']}
+  ],items:[
+    'Mitteilungszentrale: Glocke oben links, alle Meldungen zum Nachlesen, Wichtiges mit roter Zahl',
+    'Dunkler Modus, automatisch nach Gerät oder fest in den Einstellungen',
+    'Lennarts Profilbild ist hinterlegt',
+    'Rechnungen: PDF ablegen, Daten werden erkannt und sind vorher korrigierbar, Ablage im Kundenordner, Notion-Eintrag mit Kunde, neuer Kunde nach Rückfrage, Warnung bei doppelter Nummer, Mail-Entwurf mit Anhang'
+  ]},
+  {v:'2026-10-31.21',d:'31.10.2026',tour:[
+    {img:'whatsnew/v21-premium.webp',t:'Zentrale Pro gehört jetzt allen',txt:'Jahrelang wurde gefragt. Es wurden Briefe geschrieben, Kerzen angezündet, ganze Generationen sind ohne Wochenbericht aufgewachsen. Heute ist es so weit: Was bisher nur der Premium-Elite vorbehalten war, gibt es ab sofort für alle. Auch für die, die es sich nie leisten konnten. Ihr müsst nichts tun, außer euch zu freuen.',
+     steps:['In der Seitenleiste „Zentrale Pro“ öffnen und kurz innehalten','Jedes Modul hat jetzt einen Knopf, der wirklich etwas tut, zum Beispiel „Wochenbericht holen“ oder „Angebot erstellen“','Die alten Preise stehen nur noch durchgestrichen da, als Erinnerung an dunkle Zeiten','Ehrlich gesagt: WhatsApp im Postfach ist noch in Arbeit. Alles andere läuft']}
+  ],items:[
+    'Zentrale Pro für alle: Alle Premium-Module sind kostenlos freigeschaltet, Schlösser und Preise sind weg',
+    'Die Knöpfe führen jetzt zu echten Funktionen: Wochenbericht, Angebot für den Kunden, Mitteilungen aufs Gerät, Gespräche im Verlauf, Rechnung ablegen'
+  ]},
   {v:'2026-10-31.20',d:'31.10.2026',tour:[
     {img:'whatsnew/v20-benachrichtigen.webp',t:'Für den anderen eintragen',txt:'Wer einen Termin oder eine Aufgabe für den anderen anlegt, sagt automatisch Bescheid.',
      steps:['Bei „Für“ den anderen auswählen, Häkchen „benachrichtigen“ bleibt an','Er bekommt eine Kalender-Einladung von Google, mit Erinnerung','Dazu kommt in der WhatsApp-Gruppe „01_LeMatic_Allgemein“: „Neu für …: Titel, Datum (von …)“','Gilt auch, wenn LeMatic Intelligence einträgt oder du eine Aufgabe übergibst']},
@@ -8068,7 +8451,7 @@ function showNews(all,asList){
   let seen='';try{seen=localStorage.getItem('lm_seen_version')||''}catch(_){}
   const list=all?CHANGELOG:CHANGELOG.filter(c=>!seen||c.v>seen);
   if(!list.length)return;
-  const slides=(all?CHANGELOG.filter(c=>c.tour).slice(0,3):list).flatMap(c=>(c.tour||[]));
+  const slides=(all?CHANGELOG.filter(c=>c.tour).slice(0,3):list).slice().reverse().flatMap(c=>(c.tour||[]));
   if(slides.length&&!asList){showUpd(slides);return}
   $('newsSheet').innerHTML=`<p class="onb-kicker" style="color:var(--brand)">Was ist neu</p><h2 id="newsTitle">Das Studio hat ein Update bekommen</h2>${list.map(c=>`<div class="news-block"><small>${esc(c.d)}</small><ul>${c.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}<div class="sheet-actions"><button class="btn btn-primary sm" id="newsOk">Alles klar</button></div>`;
   const w=$('newsWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');
@@ -8127,6 +8510,7 @@ setInterval(checkUpdate,5*60000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpdate()});
 function newsAfterLogin(){
   let seen='';try{seen=localStorage.getItem('lm_seen_version')||''}catch(_){}
+  try{if(seen&&seen!==APP_VERSION){const c=CHANGELOG.filter(x=>x.v>seen);c.slice().reverse().forEach(x=>noteLog({t:'Update auf v.'+x.v.split('.').pop()+': '+(x.tour&&x.tour[0]?x.tour[0].t:'Neue Funktionen'),s:x.items.slice(0,2).join(' · '),kind:'update'}))}}catch(_){}
   if(!seen){try{localStorage.setItem('lm_seen_version',APP_VERSION)}catch(_){}return} /* Erstbesuch: Willkommen statt Update-Liste */
   if(seen!==APP_VERSION&&$('onb').hidden)setTimeout(()=>showNews(false),1200);
 }
@@ -8208,7 +8592,7 @@ function openPaywall(key){
 function closePaywall(){const w=$('payWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true')}
 function renderPremium(){
   const g=$('premGrid');if(!g)return;
-  const card=([k,p])=>`<article class="glass prem-card${payOwned(k)?' pc-unlocked':''}"><div class="pc-ic"><svg class="i"><use href="#${p.ic}"/></svg></div><h3>${esc(p.name)}</h3><p>${esc(p.pitch)}</p><ul>${p.pts.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="pc-foot"><span>${p.free?(earned(k)?'<b>Erspielt</b>':'<b>Zu erspielen</b>'):`<b>${p.price} €</b> <small>/ Monat</small>`}</span>${p.free&&!earned(k)?(()=>{const g=chProg(k);return `<button class="btn btn-glass sm" data-premium="${k}">${g.v}/${g.n}</button>`})():payOwned(k)?`<button class="btn btn-glass sm pc-own" data-premium="${k}">${p.free?'An':'Gebucht'}</button>`:`<button class="btn btn-primary sm" data-premium="${k}">${p.free?'Einschalten':'Ansehen'}</button>`}</div>${p.free&&!earned(k)?(()=>{const g=chProg(k);return `<div class="pc-chall"><span>Erspielen: ${esc(g.t)}</span><i><b style="width:${Math.round(g.v/g.n*100)}%"></b></i></div>`})():''}</article>`;
+  const card=([k,p])=>`<article class="glass prem-card${payOwned(k)?' pc-unlocked':''}"><div class="pc-ic"><svg class="i"><use href="#${p.ic}"/></svg></div><h3>${esc(p.name)}</h3><p>${esc(p.pitch)}</p>${!p.free&&PREM_GO[k]?`<p class="pc-how">${esc(PREM_GO[k].how)}</p>`:`<ul>${p.pts.slice(0,3).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`}<div class="pc-foot"><span>${p.free?(earned(k)?'<b>Erspielt</b>':'<b>Zu erspielen</b>'):PREM_GO[k]&&!PREM_GO[k].ok?'<b>Frei</b> <small>in Arbeit</small>':`<b>Frei</b> <small><s>${p.price} €</s></small>`}</span>${p.free&&!earned(k)?(()=>{const g=chProg(k);return `<button class="btn btn-glass sm" data-premium="${k}">${g.v}/${g.n}</button>`})():!p.free&&PREM_GO[k]?`<button class="btn ${PREM_GO[k].ok?'btn-primary':'btn-glass'} sm" data-premium="${k}" data-premgo>${esc(PREM_GO[k].label)}</button>`:payOwned(k)?`<button class="btn btn-glass sm pc-own" data-premium="${k}">${p.free?'An':'Gebucht'}</button>`:`<button class="btn btn-primary sm" data-premium="${k}">${p.free?'Einschalten':'Ansehen'}</button>`}</div>${p.free&&!earned(k)?(()=>{const g=chProg(k);return `<div class="pc-chall"><span>Erspielen: ${esc(g.t)}</span><i><b style="width:${Math.round(g.v/g.n*100)}%"></b></i></div>`})():''}</article>`;
   const ent=Object.entries(PREMIUM).filter(([k])=>k!=='bundle');
   const free=ent.filter(([,p])=>p.free),ern=free.filter(([k])=>earned(k)).length;
   const rg=chProg('rahmen'),rOk=earned('rahmen');
@@ -8356,6 +8740,59 @@ async function waNotify(who,title,when){
   }catch(e){console.warn('WhatsApp-Hinweis',e)}
 }
 
+/* ---------- Mitteilungszentrale: alles, was das Studio gemeldet hat, zum Nachlesen ---------- */
+const NOTE_KEY=()=>'lm_notes_'+ME;let NOTES=null,NOTES_ME=null;
+function notesGet(){if(NOTES&&NOTES_ME===ME)return NOTES;NOTES_ME=ME;try{NOTES=JSON.parse(localStorage.getItem(NOTE_KEY())||'[]')||[]}catch(_){NOTES=[]}return NOTES}
+function notesSave(){try{localStorage.setItem(NOTE_KEY(),JSON.stringify(NOTES.slice(0,120)))}catch(_){}}
+function noteLog(n){
+  if(!n||!n.t)return;const l=notesGet();const now=Date.now();
+  if(l[0]&&l[0].t===n.t&&now-l[0].at<15000)return;
+  l.unshift({id:now.toString(36)+Math.random().toString(36).slice(2,5),at:now,read:false,kind:n.kind||'info',t:String(n.t).slice(0,200),s:n.s?String(n.s).slice(0,240):'',go:n.go||''});
+  NOTES=l.slice(0,120);notesSave();renderBell();
+  if($('noteWrap')&&$('noteWrap').classList.contains('show'))renderNotes();
+}
+function renderBell(){const n=notesGet().filter(x=>!x.read&&x.kind!=='info').length;const e=$('bellN');if(!e)return;e.hidden=!n;e.textContent=n>9?'9+':String(n)}
+const NOTE_IC={info:'i-check',remind:'i-bell',neu:'i-handoff',update:'i-sparkle',geld:'i-coin'};
+let noteF='all';
+function renderNotes(){
+  const l=notesGet().filter(n=>noteF==='all'||(noteF==='wichtig'&&n.kind!=='info'));
+  const day=t=>{const d=iso(new Date(t));return d===TODAY?'Heute':d===addDays(TODAY,-1)?'Gestern':wd(d)+', '+dm(d)};
+  let last='';
+  $('noteList').innerHTML=l.length?l.map(n=>{const g=day(n.at);const h=g!==last?`<h4 class="nt-day">${esc(g)}</h4>`:'';last=g;
+    return h+`<button type="button" class="note-row k-${n.kind}${n.read?'':' unread'}" data-noteid="${n.id}"><span class="nr-ic"><svg class="i sm"><use href="#${NOTE_IC[n.kind]||'i-check'}"/></svg></span><span class="nr-t"><b>${esc(n.t)}</b>${n.s?`<small>${esc(n.s)}</small>`:''}</span><time>${new Date(n.at).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}</time></button>`}).join(''):'<p class="empty">Noch keine Mitteilungen.</p>';
+  document.querySelectorAll('#noteF [data-nf]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.nf===noteF)));
+}
+function openNotes(){const w=$('noteWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');renderNotes()}
+function closeNotes(){const w=$('noteWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true');notesGet().forEach(n=>n.read=true);notesSave();renderBell()}
+on('bellBtn','click',()=>{$('noteWrap').classList.contains('show')?closeNotes():openNotes()});
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#noteWrap'))return;
+  if(e.target.id==='noteWrap'||e.target.closest('[data-noteclose]')){closeNotes();return}
+  const f=e.target.closest('[data-nf]');if(f){noteF=f.dataset.nf;renderNotes();return}
+  if(e.target.closest('[data-noteread]')){notesGet().forEach(n=>n.read=true);notesSave();renderNotes();renderBell();return}
+  if(e.target.closest('[data-noteclear]')){NOTES=[];notesSave();renderNotes();renderBell();return}
+  const r=e.target.closest('[data-noteid]');if(r){const n=notesGet().find(x=>x.id===r.dataset.noteid);if(n){n.read=true;notesSave();if(n.go){closeNotes();location.hash='#/'+n.go}else renderNotes();renderBell()}}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('noteWrap')&&$('noteWrap').classList.contains('show'))closeNotes()});
+/* Neu für mich: vom anderen eingetragene Aufgaben und Termine einmal melden */
+function notesFromCalendar(){
+  if(!GAUTH)return;let seen={};try{seen=JSON.parse(localStorage.getItem('lm_notes_seen_'+ME)||'{}')||{}}catch(_){}
+  const first=!Object.keys(seen).length;let n=0;
+  TASKS.filter(t=>!t.done&&t.who===ME&&t.by&&t.by!==ME).forEach(t=>{if(seen['t'+t.id])return;seen['t'+t.id]=1;if(!first&&n++<6)noteLog({t:'Neu von '+NAMES[t.by]+': '+t.t,s:fmtWhen(t.due,t.time,true)+(t.kname?' · '+t.kname:''),kind:'neu',go:'aufgaben'})});
+  EVENTS.filter(e=>isTermin(e)&&e.who===ME&&e.gcalId&&e.d>=TODAY).forEach(e=>{if(seen['e'+e.gcalId])return;seen['e'+e.gcalId]=1;if(!first&&n++<6)noteLog({t:'Für dich eingetragen: '+e.t,s:fmtWhen(e.d,e.time),kind:'neu',go:'kalender'})});
+  try{localStorage.setItem('lm_notes_seen_'+ME,JSON.stringify(seen))}catch(_){}
+}
+
+/* ---------- Hell / Dunkel ---------- */
+const THEME_MQ=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):null;
+function themeGet(){try{return localStorage.getItem('lm_theme')||'auto'}catch(_){return 'auto'}}
+function applyTheme(){const t=themeGet();const d=t==='dark'||(t==='auto'&&THEME_MQ&&THEME_MQ.matches);document.documentElement.classList.toggle('theme-dark',!!d);
+  document.querySelectorAll('#themeSeg [data-theme]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.theme===t)));
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=d?'#0E1412':'#EEF1EF'}
+if(THEME_MQ){try{THEME_MQ.addEventListener('change',applyTheme)}catch(_){THEME_MQ.addListener&&THEME_MQ.addListener(applyTheme)}}
+on('themeSeg','click',e=>{const b=e.target.closest('[data-theme]');if(!b)return;try{localStorage.setItem('lm_theme',b.dataset.theme)}catch(_){}applyTheme();toast(b.dataset.theme==='auto'?'Darstellung folgt jetzt dem Gerät':b.dataset.theme==='dark'?'Dunkel':'Hell',{noLog:true})});
+applyTheme();
+
 /* ---------- Seitenleiste selbst anpassen: Reihenfolge und Sichtbarkeit pro Person ---------- */
 const NAV_KEY=()=>'lm_nav_'+ME;
 function navGet(){try{return JSON.parse(localStorage.getItem(NAV_KEY())||'{}')||{}}catch(_){return{}}}
@@ -8402,7 +8839,7 @@ document.addEventListener('keydown',e=>{if(!document.body.classList.contains('na
 applyNav();
 
 /* ---------- Profilbilder: Martins Foto ist hinterlegt, eigenes Bild per Klick auf den Avatar ---------- */
-const AV_DEFAULT={MS:'avatars/MS.jpg?v=2'};
+const AV_DEFAULT={MS:'avatars/MS.jpg?v=2',LP:'avatars/LP.jpg?v=1'};
 let AV_FILE={};
 function avGet(c){try{return localStorage.getItem('lm_avatar_'+c)||AV_DEFAULT[c]||''}catch(_){return AV_DEFAULT[c]||''}}
 function applyAvatars(){
@@ -8731,7 +9168,7 @@ document.addEventListener('input',e=>{
   if(e.target.id!=='palQ')return;
   const q=e.target.value.trim().toLowerCase();
   if(q==='action'){showWrap('<span class="clapper">🎬</span><br>Und … Action!',1600)}
-  if(q==='martin'&&ME==='LP'){toast(MARTIN_DISS[Math.floor(Math.random()*MARTIN_DISS.length)])}
+  if(q==='martin'&&ME==='LP'){toast(MARTIN_DISS[Math.floor(Math.random()*MARTIN_DISS.length)],{noLog:true})}
   if(q==='lennart'&&ME==='MS'){toast(['Lennart rendert gerade. Wie immer.','Frag ihn nicht nach dem Look. Er hat einen Skill dafür.','Wahrscheinlich gerade in Blender verschwunden.','Er sagt „nur kurz“. Plan zwei Stunden ein.'][Math.floor(Math.random()*4)])}
   if(q==='geld'||q==='umsatz'){location.hash='#/rechnungen'}
 });

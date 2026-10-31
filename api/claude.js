@@ -91,7 +91,9 @@ ${c.frage}`,
   beleg: c => `Lies den Beleg und gib NUR ein JSON-Objekt zurück, ohne Text davor oder danach:
 {"art":"Eingang|Ausgang|Angebot","partei":"Firmenname des Lieferanten bzw. Kunden","nummer":"Rechnungsnummer oder leer",
 "datum":"JJJJ-MM-TT","betrag":Bruttobetrag als Zahl,"faellig":"JJJJ-MM-TT (Fälligkeitsdatum; steht nur ein Zahlungsziel in Tagen da, z. B. zahlbar innerhalb von 30 Tagen, dann Rechnungsdatum plus diese Tage) oder leer",
-"kategorie":"Equipment|Programme|Domain|Buchhaltung|Sonstiges","beschreibung":"max. 8 Wörter, was gekauft/geleistet wurde"}
+"kategorie":"Equipment|Programme|Domain|Buchhaltung|Sonstiges","beschreibung":"max. 8 Wörter, was gekauft/geleistet wurde (bei Rechnungen von LeMatic: die Leistung, z. B. Aftermovie Dynabeat 2026)",
+"adresse":"Postadresse des Rechnungsempfängers bei Ausgangsrechnungen bzw. des Lieferanten bei Eingangsrechnungen, einzeilig: Straße Nr, PLZ Ort; sonst leer"}
+Steht "zahlbar bis zum …" oder "fällig am …", ist das "faellig". Bei Rechnungen von LeMatic an Kunden ist "partei" der Kunde (Empfänger), nicht LeMatic.
 LeMatic (Lennart Post / Martin Schmick, Geesthacht) ist der Empfänger, wenn es eine Eingangsrechnung ist.
 Kategorien: Equipment = Kamera, Licht, Ton, Technik; Programme = Software, Abos, KI-Tools; Domain = Domain, Hosting, Server;
 Buchhaltung = Steuer, Buchhaltung, Versicherung, Bank; sonst Sonstiges.
