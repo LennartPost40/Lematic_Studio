@@ -1861,6 +1861,18 @@ html.theme-dark iframe#angFrame{background:#EEF1EF;border-radius:20px}
 html.theme-dark .modal-wrap,html.theme-dark .kd-wrap,html.theme-dark #kdWrap{background:rgba(4,9,7,.6)}
 html.theme-dark .prem,html.theme-dark .prem-chip,html.theme-dark .prem-inline{color:#FFD45C!important}
 html.theme-dark .intern,html.theme-dark .prem-badge{color:#E9D46A!important}
+html.theme-dark .t-termin{background:rgba(64,156,255,.42);color:#EAF3FF}
+html.theme-dark .t-dreh{background:#1FA77C;color:#fff}
+html.theme-dark .t-schnitt{background:rgba(160,115,245,.46);color:#F4EDFF}
+html.theme-dark .t-akquise{background:rgba(255,158,40,.44);color:#FFF3E2}
+html.theme-dark .t-aufgabe{background:rgba(252,215,23,.46);color:#FFF9D9}
+html.theme-dark .t-belegt{background:repeating-linear-gradient(135deg,rgba(255,92,98,.42) 0 6px,rgba(255,92,98,.56) 6px 12px);color:#FFECEC}
+html.theme-dark .t-lieferung{background:rgba(255,170,60,.42);color:#FFF3E2}
+html.theme-dark .t-meeting{background:rgba(64,156,255,.42);color:#EAF3FF}
+html.theme-dark .t-frist{background:rgba(255,80,70,.44);color:#FFECEA}
+html.theme-dark .t-privat{background:rgba(30,190,165,.42);color:#E6FFFA}
+html.theme-dark .t-intern{background:rgba(255,255,255,.18);color:#F2F4F3}
+html.theme-dark .ev,html.theme-dark .wk-ev{box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 3px 10px -4px rgba(0,0,0,.6)}
 html.theme-dark .kb-eur{color:#FFD45C;background:rgba(252,215,23,.14)}
 html.theme-dark .pill{filter:brightness(1.35) saturate(1.1)}
 html.theme-dark .kchips span{background:rgba(10,132,255,.18);color:#9CC8FF}
@@ -3538,6 +3550,9 @@ const endOfWeek=()=>{const d=parse(TODAY);const dow=(d.getDay()+6)%7;d.setDate(d
 const startOfWeek=()=>{const d=parse(TODAY);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return iso(d)};
 
 /* Rechnungen und Angebote – Stand aus eurer Notion-Datenbank „Rechnungen & Angebote" */
+const nId=x=>String(x||'').replace(/-/g,'').toLowerCase();
+let INV_FRESH=false;
+const invIsOpen=i=>i&&i.kind==='Ausgang'&&String(i.rawStatus||'')==='Offen';
 let INVOICES=[
   {id:1,kind:'Ausgang',src:'notion',no:'RE-1015',party:'Felix Michalski',note:'Dreharbeiten Airbeat One, 08.–12.07.',date:'2026-07-15',amount:500,status:'bezahlt',p:'Dreh'},
   {id:2,kind:'Angebot',src:'notion',no:'LM-2605-0005',party:'Radio NRJ',note:'Energy Live Recap, von 3.000 auf 1.900 gedrückt',date:'2026-07-13',amount:1900,status:'abgelehnt',p:'Akquise'},
@@ -4486,7 +4501,7 @@ document.getElementById('invSave').addEventListener('click',async()=>{
     btn.disabled=false;btn.lastChild.textContent='Ablegen';
   }
   const localStatus=invKind==='Eingang'?'bezahlt':(invKind==='Angebot'?angStatusVal.toLowerCase():'offen');
-  const inv={id:Date.now(),kind:invKind,no:document.getElementById('invNo').value.trim(),party,note:fname,date,amount,status:localStatus,rawStatus:invKind==='Ausgang'?'Offen':'',faellig:invKind==='Ausgang'?(dueVal||addDays(date,14)):'',p:$('invProj').value,drive:driveLink,driveFileId,fresh:true};
+  const inv={id:Date.now(),kind:invKind,no:document.getElementById('invNo').value.trim(),party,note:fname,date,amount,status:localStatus,rawStatus:invKind==='Ausgang'?'Offen':'',kids:kunde?[nId(kunde.id)]:[],faellig:invKind==='Ausgang'?(dueVal||addDays(date,14)):'',p:$('invProj').value,drive:driveLink,driveFileId,fresh:true};
   INVOICES.unshift(inv);
   toast(realUpload?(wantsNewFolder?'Neuer Ordner „'+party+'“ angelegt, Datei abgelegt':'In Drive abgelegt: '+invPathParts.join(' / ')):'Demo: nicht wirklich hochgeladen, dafür mit Google anmelden');
   if(realUpload)loadDriveFiles();
@@ -4515,7 +4530,7 @@ document.getElementById('invFilter').addEventListener('click',e=>{
 function renderInvoices(){
   const y=TODAY.slice(0,4);
   const rev=INVOICES.filter(i=>i.kind==='Ausgang'&&i.date.startsWith(y)).reduce((a,i)=>a+i.amount,0);
-  const open=INVOICES.filter(i=>i.kind==='Ausgang'&&i.status!=='bezahlt');
+  const open=INVOICES.filter(invIsOpen);
   const signed=INVOICES.filter(i=>i.kind==='Angebot'&&i.status==='unterschrieben').reduce((a,i)=>a+i.amount,0);
   document.getElementById('invStats').innerHTML=`
     <div><strong>${eur(rev)}</strong><span>Berechnet ${y}</span></div>
@@ -5474,8 +5489,10 @@ async function loadNotion(){
       INVOICES=rech.map((r,i)=>({
         id:'n'+i,nid:r.id,src:'notion',kind:kind(r['Art']),no:r['Nummer']||'',
         party:'—',note:(r['Leistung']||'').slice(0,80),date:r['Datum']||TODAY,faellig:String(r['Fällig am']||'').slice(0,10),
-        amount:+r['Betrag']||0,status:stat(r['Status']),rawStatus:r['Status']||'',p:'LeMatic',drive:r['Datei']||''
+        amount:+r['Betrag']||0,status:stat(r['Status']),rawStatus:r['Status']||'',p:'LeMatic',drive:r['Datei']||'',
+        kids:(Array.isArray(r['Kunde'])?r['Kunde']:[]).map(nId)
       }));
+      INV_FRESH=true;
     }
     NOTION_LIVE=true;
     notionStatus('ok','Live aus dem LeMatic OS: Kundenkartei, '+rech.length+' Rechnungen und Angebote, '+akq.length+' Leads');
@@ -5609,7 +5626,13 @@ function lastNote(k){
   return n.split(/\n\s*\n/)[0].replace(/^\[[^\]]*\]\s*/,'');
 }
 let KVIEW=(()=>{try{return localStorage.getItem('lm_kview')||'board'}catch(_){return 'board'}})();
-function kOpenSum(k){try{return kMoney(k).open||0}catch(_){return 0}}
+/* Offen = Summe ALLER mit dem Kunden verknüpften Rechnungen mit Status „Offen“, immer frisch aus Notion */
+function kOpenInv(k){
+  if(!k||!INV_FRESH)return[];
+  const rel=new Set((Array.isArray(k.raw&&k.raw['Rechnungen & Angebote'])?k.raw['Rechnungen & Angebote']:[]).map(nId)),kid=nId(k.id);
+  return INVOICES.filter(i=>invIsOpen(i)&&((i.kids||[]).includes(kid)||(i.nid&&rel.has(nId(i.nid)))));
+}
+function kOpenSum(k){return kOpenInv(k).reduce((a,i)=>a+(+i.amount||0),0)}
 function kNeeds(k){
   const out=[];if(['Kalt','Abgesagt','Archiv'].includes(k.status))return out;
   let od=0;try{kMoney(k).rech.forEach(i=>{if(i.status!=='bezahlt'&&i.no){const d=invOverdue({no:i.no,date:i.date,kind:'Ausgang'});if(d>od)od=d}})}catch(_){}
@@ -5625,7 +5648,9 @@ function renderKOverview(){
   const el=$('kOverview');if(!el)return;
   if(!KARTEI_LOADED){el.innerHTML='';return}
   const act=KUNDEN.filter(k=>['Bestandskunde','Warm','Angefragt'].includes(k.status));
-  const openSum=act.reduce((a,k)=>a+kOpenSum(k),0);
+  const openSum=KUNDEN.reduce((a,k)=>a+kOpenSum(k),0);
+  const invOpenSum=INVOICES.filter(invIsOpen).reduce((a,i)=>a+(+i.amount||0),0);
+  const unlinked=invOpenSum-openSum;
   const tasks=TASKS.filter(t=>!t.done&&t.kid&&KUNDEN.some(k=>k.id===t.kid)).length;
   const quiet=act.filter(k=>k.status!=='Bestandskunde'&&(kTemp(k).d==null||kTemp(k).d>14)).length;
   const need=KUNDEN.map(k=>({k,n:kNeeds(k)})).filter(x=>x.n.length).sort((a,b)=>b.n.reduce((s,y)=>s+y.w,0)-a.n.reduce((s,y)=>s+y.w,0)).slice(0,5);
@@ -5633,7 +5658,7 @@ function renderKOverview(){
   el.innerHTML=`<div class="kov">
     <div class="kov-tiles">
       ${tile('Aktiv',act.length,KUNDEN.filter(k=>k.status==='Bestandskunde').length+' Bestand · '+KUNDEN.filter(k=>k.status==='Warm').length+' warm · '+KUNDEN.filter(k=>k.status==='Angefragt').length+' angefragt','laufend')}
-      ${tile('Offen bei Kunden',eur(openSum),'Rechnungen noch nicht bezahlt')}
+      ${tile('Offen bei Kunden',INV_FRESH?eur(openSum):'…',INV_FRESH?(Math.abs(unlinked)>0.005?eur(unlinked)+' offen ohne verknüpften Kunden':'alle offenen Rechnungen, Status „Offen“'):'wird aus Notion geladen')}
       ${tile('Aufgaben',tasks,'offen, mit Kunde verknüpft')}
       ${tile('Lange still',quiet,'warm oder angefragt, über 14 Tage kein Kontakt','Warm')}
     </div>
@@ -7092,7 +7117,7 @@ function kMoney(k){
   items.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   const rech=items.filter(i=>i.kind==='Ausgang'),ang=items.filter(i=>i.kind==='Angebot');
   const sum=a=>a.reduce((x,i)=>x+(i.amount||0),0);
-  return{items,rech,ang,total:sum(rech),paid:sum(rech.filter(i=>i.status==='bezahlt')),open:sum(rech.filter(i=>i.status!=='bezahlt')),angOpen:sum(ang.filter(i=>i.status==='offen'||i.status==='nicht in Notion')),angWon:sum(ang.filter(i=>i.status==='unterschrieben'))};
+  return{items,rech,ang,total:sum(rech),paid:sum(rech.filter(i=>i.status==='bezahlt')),open:kOpenSum(k),angOpen:sum(ang.filter(i=>i.status==='offen'||i.status==='nicht in Notion')),angWon:sum(ang.filter(i=>i.status==='unterschrieben'))};
 }
 let PROJEKTE=null,PROJ_LOADING=null;
 function loadProjekte(){
@@ -8426,8 +8451,12 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.23';
+const APP_VERSION='2026-10-31.24';
 const CHANGELOG=[
+  {v:'2026-10-31.24',d:'31.10.2026',items:[
+    'Kundenkartei: „offen“ ist jetzt die Summe aller mit dem Kunden verknüpften Rechnungen mit Status „Offen“, immer frisch aus Notion. Die Summe über alle Kunden stimmt mit „offen“ unter Rechnungen überein',
+    'Dunkler Modus: Termine, Drehs, Aufgaben und Belegungen im Kalender heller und kräftiger'
+  ]},
   {v:'2026-10-31.23',d:'31.10.2026',tour:[
     {img:'whatsnew/v23-angebote.webp',t:'Angebote ablegen, ohne Durcheinander',txt:'Im Angebotsrechner unter „7. Vorschau“ gibt es jetzt drei klare Knöpfe. Und das Studio passt auf, dass es keine doppelten Angebote gibt.',
      steps:['„Im Drive ablegen“: PDF in den Ordner des Kunden, Eintrag in Notion. Danach steht ein Link zum Ordner zum Prüfen da','„In Gmail-Entwürfe legen“: Mail an die Kunden-Mail aus Notion, Betreff „Angebot Nummer – Projekt“, PDF im Anhang. Gesendet wird nichts','Solange das Angebot nicht verschickt ist, ersetzt jedes Ablegen die alte Datei, den Notion-Eintrag und den alten Entwurf','Verschickt (Mail mit der Nummer im Gesendet-Ordner oder Haken „verschickt“): Die nächste Änderung wird V2 und liegt neben der alten, die alte steht in Notion auf „Ersetzt“']}
