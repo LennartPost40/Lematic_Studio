@@ -378,6 +378,38 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 #uName{cursor:pointer}
 #uName:hover{text-decoration:underline}
 .mail-more{display:flex;justify-content:center;padding:10px}
+/* Gehirn: Radar, Feed, Verlauf, Claude */
+.radar,.feed{display:flex;flex-direction:column}
+.radar .row,.feed .row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 4px;border-top:1px solid var(--line)}
+.radar .row:first-child,.feed .row:first-child{border-top:0}
+.radar h3,.feed h3{font-size:14px;font-weight:600;line-height:1.3}
+.radar p,.feed p{font-size:12.5px;color:var(--ink-2);margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.radar .act{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.age{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(255,159,10,.15);color:#7A4100;white-space:nowrap}
+.age.hot{background:rgba(255,59,48,.12);color:#A8231B}
+.ch{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px}
+.ch.Hoch{background:rgba(52,199,89,.15);color:#1d7a35}.ch.Mittel{background:rgba(252,215,23,.3);color:#6b5400}.ch.Niedrig{background:rgba(255,59,48,.12);color:#A8231B}
+.tl{display:flex;flex-direction:column;gap:0;max-height:420px;overflow:auto}
+.tl .it{display:grid;grid-template-columns:26px minmax(0,1fr) auto;gap:10px;padding:9px 2px;border-top:1px solid var(--line);text-align:left;background:none;border-left:0;border-right:0;border-bottom:0;font:inherit;color:inherit;width:100%}
+.tl .it:first-child{border-top:0}
+.tl button.it{cursor:pointer}
+.tl .it .ic{font-size:16px;line-height:1.2}
+.tl .it b{font-size:13.5px;font-weight:600;display:block}
+.tl .it span{font-size:12.5px;color:var(--ink-2);display:block;white-space:pre-wrap}
+.tl .it time{font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+.ai-box{border:1px solid rgba(7,61,48,.18);background:linear-gradient(135deg,rgba(252,215,23,.12),rgba(7,61,48,.05));border-radius:14px;padding:14px;margin-bottom:16px}
+.ai-box h3{font-size:13px;font-weight:600;color:var(--brand);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.ai-box .txt{font-size:13.5px;line-height:1.55;white-space:pre-wrap}
+textarea.input{font-family:inherit}
+.ai-box textarea{width:100%;min-height:170px;padding:10px 12px;font-size:13.5px;line-height:1.5;resize:vertical;height:auto}
+.ai-dots::after{content:"…";animation:dots 1s steps(4) infinite}
+@keyframes dots{0%{content:""}33%{content:"."}66%{content:".."}100%{content:"…"}}
+.ctx-box{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0 14px;background:rgba(255,255,255,.6)}
+.ctx-box .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ctx-box .top b{font-size:14px}
+.ctx-box p{font-size:13px;color:var(--ink-2);margin-top:6px}
+.ctx-box .kd-row{margin-top:10px}
+.dayev a.glink{font-size:12px;color:var(--brand);margin-left:6px}
 .legend{display:flex;gap:6px;flex-wrap:wrap}
 .lg{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:4px 10px;border-radius:999px;border:1px solid rgba(29,29,31,.08);background:rgba(255,255,255,.6);color:var(--ink-2);cursor:pointer}
 .lg i{width:8px;height:8px;border-radius:50%}
@@ -930,6 +962,15 @@ body.dcut .bg{filter:grayscale(.4)}
             <div class="head-right"><div class="legend static" id="legendHome"></div><a class="link" href="#/kalender">Kalender öffnen</a></div>
           </div>
           <div class="week" id="week"></div>
+        </section>
+        <section class="glass panel c7" aria-labelledby="hr-title">
+          <div class="panel-head"><div><h2 id="hr-title">Nachfassen</h2><p>Laufende Kunden ohne offene Aufgabe und seit über 10 Tagen ohne Kontakt</p></div><button class="btn btn-glass sm" id="radarAI">✨ Ideen von Claude</button></div>
+          <div id="radarAIOut"></div>
+          <div class="radar" id="homeRadar"><p class="empty">Wird nach dem Login berechnet.</p></div>
+        </section>
+        <section class="glass panel c5" aria-labelledby="hf-title">
+          <div class="panel-head"><div><h2 id="hf-title">Neu aus Gesprächen</h2><p>Telefonate, Treffen und WhatsApp-Infos der letzten 14 Tage</p></div></div>
+          <div class="feed" id="homeFeed"><p class="empty">Wird nach dem Login geladen.</p></div>
         </section>
         <section class="glass panel c7" aria-labelledby="ht-title">
           <div class="panel-head"><div><h2 id="ht-title">Aufgaben</h2><p>Fällig bis Sonntag, aus dem LeMatic-Kalender</p></div><a class="link" href="#/aufgaben">Alle Aufgaben</a></div>
@@ -1546,9 +1587,13 @@ body.dcut .bg{filter:grayscale(.4)}
     <h2 id="ev-title">Termin anlegen</h2>
     <p>Landet im LeMatic-Kalender (info@lematic.de), Lennart und Martin sehen ihn beide.</p>
     <div class="fields">
-      <label class="full">Titel<input type="text" id="evTitle" placeholder="Zum Beispiel: Anruf Aussteller GET NORD"></label>
+      <label class="full">Titel<input type="text" id="evTitle" placeholder="Zum Beispiel: Call mit Körber, Frau Voigt"></label>
       <label>Datum<input type="date" id="evDate"></label>
       <label>Uhrzeit<input type="time" id="evTime"></label>
+      <label>Dauer<select id="evDur"><option value="30">30 Min.</option><option value="60" selected>1 Std.</option><option value="90">1,5 Std.</option><option value="120">2 Std.</option><option value="240">4 Std.</option><option value="600">Drehtag (10 Std.)</option></select></label>
+      <label>Kunde<select id="evKunde"></select></label>
+      <label class="full">Ort oder Link<input type="text" id="evOrt" placeholder="Adresse, Teams- oder Meet-Link"></label>
+      <label class="full">Notiz<input type="text" id="evNote" placeholder="Worum geht's?"></label>
     </div>
     <p class="form-err" id="evErr" role="alert"></p>
     <div class="sheet-actions">
@@ -2033,7 +2078,7 @@ const onDay=(ds,filter)=>EVENTS.filter(e=>e.d<=ds&&(e.end||e.d)>=ds&&(!filter||f
 /* Aufgaben kommen ausschließlich aus dem LeMatic-Kalender (Termine mit Markierung „lmTask“). */
 let TASKS=[];
 /* Kundenkartei aus Notion „Kunden & Kontakte“ */
-let KUNDEN=[],KSCHEMA=null,KARTEI_LOADED=false;
+let KUNDEN=[],KSCHEMA=null,KARTEI_LOADED=false,GESPR=[],GESPR_ERR='';
 const endOfWeek=()=>{const d=parse(TODAY);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()+(6-dow));return iso(d)};
 const startOfWeek=()=>{const d=parse(TODAY);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return iso(d)};
 
@@ -2451,6 +2496,7 @@ function renderHome(){
     <div class="fulltime"><div><span>Bis zur Vollzeit-Selbstständigkeit</span></div><div><strong>${toFull}</strong> <span>Tage</span></div></div>`;
   updateBadges();
   safe('funStrip',renderFunStrip);
+  safe('brain',()=>typeof renderBrain==='function'&&renderBrain());
 }
 document.getElementById('week').addEventListener('click',e=>{
   const b=e.target.closest('[data-day]');if(!b)return;
@@ -2499,7 +2545,7 @@ function renderDay(){
   const evs=onDay(selDay,calTypes);
   document.getElementById('daySub').textContent=evs.length?evs.length+(evs.length===1?' Termin':' Termine'):'Nichts geplant';
   document.getElementById('dayList').innerHTML=evs.length?evs.map(e=>`
-    <div class="dayev"><time>${e.time||'Ganztags'}</time><div><h3>${esc(e.t)}</h3><p><span class="ev t-${e.type}">${TYPE_ONE[e.type]}</span><span class="proj"><i style="background:${PROJ[e.p]||'#8E8E93'}"></i>${esc(e.p)}</span>${e.who?`<span class="av us sm">${e.who}</span>`:''}</p></div></div>`).join(''):'<p class="empty">Frei. Zeit für Schnitt oder Akquise.</p>';
+    <div class="dayev"><time>${e.time||'Ganztags'}</time><div><h3>${esc(e.t)}</h3><p><span class="ev t-${e.type}">${TYPE_ONE[e.type]}</span>${e.kid?`<button class="kd" data-kopen="${e.kid}" style="border:0;background:none;cursor:pointer;font-size:12px;color:var(--brand)">${esc(e.p)}</button>`:`<span class="proj"><i style="background:${PROJ[e.p]||'#8E8E93'}"></i>${esc(e.p)}</span>`}${e.who?`<span class="av us sm">${e.who}</span>`:''}${e.link?`<a class="glink" href="${esc(e.link)}" target="_blank" rel="noopener">In Google öffnen</a>`:''}</p>${e.place?`<p style="font-size:12px;color:var(--ink-3)">📍 ${esc(e.place)}</p>`:''}</div></div>`).join(''):'<p class="empty">Frei. Zeit für Schnitt oder Akquise.</p>';
 }
 document.getElementById('month').addEventListener('click',e=>{
   const b=e.target.closest('[data-cal]');if(!b)return;
@@ -2929,7 +2975,7 @@ async function loadGmail(opts={}){
     const gp=$('setGmail');if(gp)gp.innerHTML='<span class="pill ok"><i></i>Verbunden</span>';
     if(!mailSel&&MAILS[0])mailSel=MAILS[0].id;
     if(opts.quiet&&fresh.length&&fresh.some(m=>m.unread&&!m.sent))toast(fresh.filter(m=>m.unread&&!m.sent).length+' neue Mail(s)');
-    renderMails();renderClientMails();safe('kartM',renderKartei);
+    renderMails();renderClientMails();safe('kartM',renderKartei);safe('brainM',renderBrain);if(!opts.quiet&&!opts.more)safe('autoKontakt',autoLetzterKontakt);
   }catch(e){
     if(!opts.quiet){
       GMAIL=false;
@@ -2993,6 +3039,7 @@ async function renderMailRead(){
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${m.client?`<span class="auto"><svg class="i xs"><use href="#i-check"/></svg>Zugeordnet: ${esc(m.client)}</span>`:''}${m.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
     <h2>${esc(m.subj)}</h2>
     <div class="from"><span class="av">${m.ini}</span><div><strong>${esc(m.from)}</strong><span>${esc(m.addr)}</span></div><time>${gmailWhen(m.dateHeader)}</time></div>
+    ${mailCtxHTML(m)}
     ${!m.client&&!m.sent?`<div class="kd-row" style="margin:8px 0"><span style="font-size:12px;color:var(--ink-3)">Keinem Kunden zugeordnet.</span><button class="btn btn-glass sm" data-maction="tokunde">Absender zu Kunde zuordnen</button></div>`:''}
     <div class="body">${esc(full.body).split('\n').filter(Boolean).map(p=>`<p>${p}</p>`).join('')}</div>
     ${full.attachments.map((a,i)=>`<div class="attach"><svg class="i"><use href="#i-receipt"/></svg><div>${esc(a.filename)}<small>${a.mimeType||''}, ${Math.round((a.size||0)/1024)} KB</small></div><button class="icon-btn ghost" data-att="${i}" aria-label="${esc(a.filename)} als Rechnung ablegen" style="margin-left:auto"><svg class="i sm"><use href="#i-receipt"/></svg></button></div>`).join('')}
@@ -3053,6 +3100,22 @@ on('mRead','click',async e=>{
     }catch(err){toast('Nicht angelegt: '+err.message)}
   }
   if(act&&act.dataset.maction==='tokunde'){openAssign(m)}
+  if(act&&act.dataset.maction==='event'){
+    const k=m.client?kundeForName(m.client):null;
+    location.hash='#/kalender';setTimeout(()=>openEventDialog({title:m.subj.replace(/^(re|aw|wg|fwd):\s*/i,''),kid:k?k.id:'',note:'Aus Mail von '+m.from}),80);
+  }
+  if(act&&act.dataset.maction==='ai'){
+    let box=$('mailAI');if(!box){act.closest('.kd-row').insertAdjacentHTML('afterend','<div id="mailAI"></div>');box=$('mailAI')}
+    const k=m.client?kundeForName(m.client):null;
+    box.innerHTML=aiBoxHTML({loading:true,title:'Antwortentwurf'});
+    try{
+      const full=mailBodyCache[m.id]||{body:m.snip};
+      const text=await askClaude('reply',{from:USER,mailFrom:m.from+' <'+m.addr+'>',subject:m.subj,body:String(full.body||'').slice(0,6000),kunde:k?kundeContext(k):''});
+      box.innerHTML=`<div class="ai-box"><h3>✨ Antwortentwurf von Claude</h3><textarea class="input" id="aiReply">${esc(text)}</textarea>
+        <div class="kd-row" style="margin-top:8px"><button class="btn btn-primary sm" id="aiCopy">Kopieren</button><a class="btn btn-glass sm" href="https://mail.google.com/mail/?authuser=info@lematic.de#all/${encodeURIComponent(m.threadId||m.id)}" target="_blank" rel="noopener">In Gmail antworten</a><span style="font-size:12px;color:var(--ink-3)">Bitte prüfen, bevor es rausgeht.</span></div></div>`;
+      $('aiCopy').onclick=async()=>{try{await navigator.clipboard.writeText($('aiReply').value);toast('Kopiert — in Gmail einfügen')}catch(_){$('aiReply').select();toast('Markiert — mit Cmd+C kopieren')}};
+    }catch(x){box.innerHTML=aiBoxHTML({title:'Antwortentwurf',err:x.message})}
+  }
 });
 function renderClientMails(){
   const el=$('clientMails');if(!el)return;
@@ -3355,7 +3418,9 @@ async function loadMyCalendar(){
       let end=null;
       if(allDay&&it.end&&it.end.date){const e=addDays(it.end.date,-1);if(e>d)end=e}
       const time=allDay?null:it.start.dateTime.slice(11,16);
-      evs.push({d,end,time,t:it.summary||'(ohne Titel)',type:'privat',p:'LeMatic',place:it.location||'',big:!!end,gcalId:it.id});
+      const kid=x.lmKid||kundeIdForText(it.summary||'');
+      const kk=kid&&KUNDEN.find(q=>q.id===kid);
+      evs.push({d,end,time,t:it.summary||'(ohne Titel)',type:'privat',p:kk?kk.name:'LeMatic',place:it.location||'',big:!!end,gcalId:it.id,link:it.htmlLink||'',kid:kid||''});
     });
     EVENTS=evs;TASKS=tasks;syncTaskEvents();
     MY_CAL_LOADED=CAL_LOADED=true;
@@ -3363,17 +3428,19 @@ async function loadMyCalendar(){
     setHTML('calSync','<svg class="i sm"><use href="#i-check"/></svg>LeMatic-Kalender abgeglichen um '+at+' Uhr');
     if(pill)pill.innerHTML='<span class="pill ok"><i></i>Verbunden</span>';
     safe('cal2',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
-    safe('home2',renderHome);safe('tasks2',renderTasks);safe('kart2',renderKartei);
+    safe('home2',renderHome);safe('tasks2',renderTasks);safe('kart2',renderKartei);safe('brainC',renderBrain);
   }catch(e){
     console.warn('Google Kalender nicht geladen:',e.message);
     setHTML('calSync','<svg class="i sm"><use href="#i-warn"/></svg>Kalender nicht erreichbar: '+esc(e.message));
     if(pill)pill.innerHTML='<span class="pill warn"><i></i>Fehler</span>';
   }
 }
-function openEventDialog(){
-  const w=$('eventWrap');if(!w)return;
-  $('evTitle').value='';$('evErr').textContent='';
-  $('evDate').value=selDay||TODAY;$('evTime').value='';
+function openEventDialog(pre){
+  const w=$('eventWrap');if(!w)return;pre=pre||{};
+  $('evTitle').value=pre.title||'';$('evErr').textContent='';
+  $('evDate').value=pre.date||selDay||TODAY;$('evTime').value=pre.time||'';
+  $('evKunde').innerHTML='<option value="">Kein Kunde</option>'+kSorted(KUNDEN.filter(k=>k.status!=='Archiv')).map(k=>`<option value="${k.id}">${esc(k.name)}</option>`).join('');
+  $('evKunde').value=pre.kid||'';$('evOrt').value=pre.ort||'';$('evNote').value=pre.note||'';
   w.classList.add('show');w.setAttribute('aria-hidden','false');
   setTimeout(()=>$('evTitle').focus(),20);
 }
@@ -3382,18 +3449,25 @@ on('openEvent','click',()=>{if(!GAUTH){toast('Dafür bitte zuerst mit Google anm
 on('evCancel','click',closeEventDialog);
 on('evGo','click',async()=>{
   const title=($('evTitle').value||'').trim(),date=$('evDate').value||TODAY,time=$('evTime').value;
+  const dur=+$('evDur').value||60,kid=$('evKunde').value,k=KUNDEN.find(x=>x.id===kid),ort=($('evOrt').value||'').trim(),note=($('evNote').value||'').trim();
   const err=$('evErr');
   if(!title){err.textContent='Bitte einen Titel eintragen.';return}
   err.textContent='';
-  const body=time
-    ?{summary:title,start:{dateTime:date+'T'+time+':00',timeZone:'Europe/Berlin'},end:{dateTime:(+time.slice(0,2)>=23?addDays(date,1)+'T00:'+time.slice(3):date+'T'+pad(+time.slice(0,2)+1)+':'+time.slice(3))+':00',timeZone:'Europe/Berlin'}}
-    :{summary:title,start:{date},end:{date:addDays(date,1)}};
+  let body;
+  if(time){
+    const [hh,mm]=time.split(':').map(Number);const st=new Date(2000,0,1,hh,mm),en=new Date(st.getTime()+dur*60000);
+    const endDate=en.getDate()>1?addDays(date,en.getDate()-1):date;
+    body={summary:title,start:{dateTime:date+'T'+time+':00',timeZone:'Europe/Berlin'},end:{dateTime:endDate+'T'+pad(en.getHours())+':'+pad(en.getMinutes())+':00',timeZone:'Europe/Berlin'}};
+  }else body={summary:title,start:{date},end:{date:addDays(date,1)}};
+  if(ort)body.location=ort;
+  body.description=[note,k?'Kunde: '+k.name:'','Angelegt von '+USER+' im LeMatic Studio'].filter(Boolean).join('\n');
+  if(k)body.extendedProperties={private:{lmKid:k.id,lmKname:k.name.slice(0,200)}};
   try{
     const r=await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events',{
       method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)
     });
     const j=await r.json();
-    EVENTS.push({d:date,time:time||null,t:title,type:'privat',p:'LeMatic',gcalId:j.id});
+    EVENTS.push({d:date,time:time||null,t:title,type:'privat',p:k?k.name:'LeMatic',gcalId:j.id,link:j.htmlLink,kid:k?k.id:'',place:ort});
     closeEventDialog();toast('Im Google-Kalender angelegt: '+title);
     safe('calR',renderCal);safe('homeR',renderHome);
   }catch(e){
@@ -3546,10 +3620,12 @@ function rebuildMailMap(){
 }
 async function loadKartei(){
   try{
-    const [sch,rows]=await Promise.all([
+    const [sch,rows,gs]=await Promise.all([
       KSCHEMA?Promise.resolve({props:KSCHEMA}):napi('/api/notion?db=kunden&schema=1'),
-      notionGet('kunden')
+      notionGet('kunden'),
+      notionGet('gespraeche').catch(e=>{console.warn('Kundengespräche nicht erreichbar:',e.message);GESPR_ERR=e.message;return null})
     ]);
+    if(gs){GESPR_ERR='';GESPR=gs.map(r=>({id:r.id,url:r.url,title:r['Titel']||'(ohne Titel)',date:(r['Datum']||r._created||'').slice(0,10),art:r['Art']||'',chance:r['Chance']||'',bedarf:r['Wünsche / Bedarf']||'',budget:r['Budget']||'',next:r['Nächster Schritt']||'',einsch:r['Einschätzung']||'',quelle:r['Quelle']||'',aufnahme:r['Aufnahme']||'',kids:Array.isArray(r['Kunde'])?r['Kunde']:[]})).sort((a,b)=>b.date.localeCompare(a.date))}
     KSCHEMA=sch.props||{};
     KUNDEN=rows.map(rowToKunde).filter(k=>!/^Privat/.test(k.status)); /* Private Einträge von Lennart erscheinen im gemeinsamen Studio gar nicht */
     KARTEI_LOADED=true;
@@ -3558,6 +3634,8 @@ async function loadKartei(){
     renderKartei();renderSideClients();
     if(GMAIL){safe('mailsR',renderMails)}
     if(kOpen&&$('kdWrap').classList.contains('show'))renderKundeSheet(kOpen);
+    if(MY_CAL_LOADED)safe('calKid',()=>EVENTS.forEach(e=>{if(!e.kid&&e.type==='privat'){const id=kundeIdForText(e.t);if(id){e.kid=id;e.p=(KUNDEN.find(k=>k.id===id)||{}).name||e.p}}}));
+    safe('brain',renderBrain);safe('autoKontakt',autoLetzterKontakt);
   }catch(e){
     setText('kSummary','Kundenkartei nicht erreichbar: '+e.message);
     $('kGrid').innerHTML='<p class="empty">Die Kartei konnte nicht geladen werden ('+esc(e.message)+').</p>';
@@ -3687,8 +3765,10 @@ function renderKundeSheet(id){
       <div class="kname">${kAvatar(k,true)}<div><h2 id="kdName">${esc(k.name)}</h2>
         <div class="sub">${kPill(k.status)}${k.typ?`<span class="tag">${esc(k.typ)}</span>`:''}${rel?`<span style="font-size:12px;color:var(--ink-3)">${rel} in Notion verknüpft</span>`:''}</div>
         <div class="sub">${kChannels(k)}${k.raw['Telefon']?`<a class="tag" href="tel:${esc(String(k.raw['Telefon']).replace(/\s/g,''))}">📞 ${esc(k.raw['Telefon'])}</a>`:''}${k.email?`<a class="tag" href="mailto:${esc(k.email)}">✉️ ${esc(k.email)}</a>`:''}${k.raw['Website']?`<a class="tag" href="${esc(k.raw['Website'])}" target="_blank" rel="noopener">🌐 Website</a>`:''}</div></div></div>
-      <div class="kd-row"><button class="btn btn-glass sm" id="kdArchive">${k.status==='Archiv'?'Aus dem Archiv holen':'Ins Archiv'}</button><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Notion</a><button class="btn btn-glass sm" id="kdClose">Schließen</button></div>
+      <div class="kd-row"><button class="btn btn-primary sm" id="kdBrief">✨ Briefing</button><button class="btn btn-glass sm" id="kdTermin">Termin</button><button class="btn btn-glass sm" id="kdArchive">${k.status==='Archiv'?'Aus dem Archiv holen':'Ins Archiv'}</button><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Notion</a><button class="btn btn-glass sm" id="kdClose">Schließen</button></div>
     </div>
+    <div id="kdAI"></div>
+    ${kNext(k)}
     <div class="kd-grid">
       <div style="display:flex;flex-direction:column;gap:18px">
         <section class="kd-box">
@@ -3719,10 +3799,11 @@ function renderKundeSheet(id){
             </div>
           </form>
           <div class="kd-list" style="margin-top:8px">${tasks.length?tasks.map(taskRow).join(''):'<p class="empty" style="padding:12px">Keine Aufgaben zu diesem Kunden.</p>'}</div>
+          ${kTermine(k)}
         </section>
         <section class="kd-box">
-          <h3>Mails</h3>
-          <div class="kd-list" id="kdMails"><p class="empty" style="padding:12px">${GAUTH?'Wird gesucht …':'Nach dem Login sichtbar.'}</p></div>
+          <h3>Verlauf: Gespräche, Mails, Erledigtes</h3>
+          <div class="tl" id="kdVerlauf"></div>
         </section>
         <section class="kd-box">
           <h3>Inhalt der Notion-Seite</h3>
@@ -3730,12 +3811,24 @@ function renderKundeSheet(id){
         </section>
       </div>
     </div>`;
-  if(k._mails)renderKundeMails(k);
+  renderVerlauf(k);
   if(k._doc)renderKundeDoc(k);
+  if(k._ai)showKdAI(k._ai);
 }
 on('kdSheet','click',async e=>{
   if(e.target.closest('#kdClose')){closeKunde();return}
   const k=KUNDEN.find(x=>x.id===kOpen);if(!k)return;
+  if(e.target.closest('#kdBrief')){
+    const b=e.target.closest('#kdBrief');b.disabled=true;showKdAI({loading:true,title:'Briefing'});
+    try{const text=await askClaude('brief',{kunde:kundeContext(k)});k._ai={title:'Briefing für '+k.name,text};showKdAI(k._ai)}
+    catch(x){showKdAI({title:'Briefing',err:x.message})}
+    b.disabled=false;return;
+  }
+  if(e.target.closest('#kdTermin')){closeKunde();location.hash='#/kalender';setTimeout(()=>openEventDialog({kid:k.id,title:'Termin '+k.name.split(/\s[–-]\s/)[0]}),80);return}
+  const nt=e.target.closest('[data-nexttask]');
+  if(nt){try{await createTask({title:k.raw['Nächster Schritt'].slice(0,200),who:ME,due:addDays(TODAY,1),kid:k.id,kname:k.name});toast('Nächster Schritt steht morgen im Kalender');renderKundeSheet(k.id)}catch(x){toast('Nicht angelegt: '+x.message)}return}
+  const vm=e.target.closest('[data-vmail]');
+  if(vm){const m=(k._mails||[]).find(x=>x.id===vm.dataset.vmail)||MAILS.find(x=>x.id===vm.dataset.vmail);if(m&&!MAILS.find(x=>x.id===m.id)){MAILS.push(m);MAILS.sort((a,b)=>b.internal-a.internal)}mailSel=vm.dataset.vmail;closeKunde();location.hash='#/mails';safe('mr',renderMails);return}
   if(e.target.closest('#kdArchive')){
     const to=k.status==='Archiv'?'Warm':'Archiv';
     try{
@@ -3829,7 +3922,8 @@ async function loadKundeMails(k){
   }catch(e){k._mails=[];k._mailsErr=e.message}
   if(kOpen===k.id)renderKundeMails(k);
 }
-function renderKundeMails(k){
+function renderKundeMails(k){renderVerlauf(k)}
+function renderKundeMailsOld(k){
   const el=$('kdMails');if(!el)return;
   if(k._mailsErr){el.innerHTML='<p class="empty" style="padding:12px">Mails nicht abrufbar: '+esc(k._mailsErr)+'</p>';return}
   const list=k._mails||[];
@@ -4039,6 +4133,156 @@ on('fbSend','click',async()=>{
   btn.disabled=false;btn.textContent='Absenden';
 });
 
+
+
+/* ---------- Gehirn: alles zusammenführen ----------
+   Kundengespräche (vom WhatsApp-Bot in Notion), Mails, Kalender, Aufgaben und Claude
+   laufen hier pro Kunde zusammen. */
+const ART_IC={Telefonat:'📞',Sprachnachricht:'🎙️',Text:'💬',Treffen:'🤝',Mail:'✉️'};
+function kundeIdForText(t){
+  const s=String(t||'').toLowerCase();if(!s||!KUNDEN.length)return '';
+  for(const k of KUNDEN){
+    const base=k.name.split(/\s[–-]\s|\s\(/)[0].replace(/\b(gmbh|ag|se|ug|kg)\b/gi,'').trim().toLowerCase();
+    if(base.length>=4&&s.includes(base))return k.id;
+  }
+  return '';
+}
+function kGespr(k){return GESPR.filter(g=>g.kids.includes(k.id))}
+function kMails(k){return (k._mails&&k._mails.length?k._mails:MAILS.filter(m=>m.client===k.name))}
+function lastTouch(k){
+  const ds=[];
+  const lk=k.raw['Letzter Kontakt'];if(lk)ds.push(String(lk).slice(0,10));
+  const g=kGespr(k)[0];if(g&&g.date)ds.push(g.date);
+  kMails(k).forEach(m=>{if(m.internal)ds.push(iso(new Date(m.internal)))});
+  TASKS.filter(t=>t.kid===k.id&&t.done&&t.doneAt).forEach(t=>ds.push(iso(new Date(t.doneAt))));
+  return ds.filter(d=>d<=TODAY).sort().pop()||'';
+}
+function kNext(k){
+  const n=k.raw['Nächster Schritt'];if(!n)return '';
+  const hasTask=TASKS.some(t=>t.kid===k.id&&!t.done);
+  const lt=lastTouch(k);
+  return `<div class="ctx-box" style="margin-top:0"><div class="top"><b>Nächster Schritt</b>${lt?`<span class="age">letzter Kontakt ${dm(lt)}</span>`:''}</div><p>${esc(n)}</p>${hasTask?'':`<div class="kd-row"><button class="btn btn-glass sm" data-nexttask>Als Aufgabe für morgen</button></div>`}</div>`;
+}
+function kTermine(k){
+  const up=EVENTS.filter(e=>e.type==='privat'&&e.kid===k.id&&(e.end||e.d)>=TODAY).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||''))).slice(0,4);
+  if(!up.length)return '';
+  return `<p class="grp" style="margin-top:12px">Nächste Termine</p>`+up.map(e=>`<div class="task"><span>📅</span><div><div class="tt">${esc(e.t)}</div><div class="sub"><span class="proj">${wd(e.d)}, ${dm(e.d)}${e.time?', '+e.time:''}${e.place?' · '+esc(e.place):''}</span></div></div><div class="right">${e.link?`<a class="link" href="${esc(e.link)}" target="_blank" rel="noopener">Google</a>`:''}</div></div>`).join('');
+}
+function renderVerlauf(k){
+  const el=$('kdVerlauf');if(!el)return;
+  const items=[];
+  kGespr(k).forEach(g=>items.push({d:g.date,ic:ART_IC[g.art]||'💬',
+    b:g.title,s:[g.bedarf&&('Bedarf: '+g.bedarf),g.budget&&('Budget: '+g.budget),g.next&&('Nächster Schritt: '+g.next),g.einsch&&('Einschätzung: '+g.einsch)].filter(Boolean).join('\n'),extra:g.chance?`<span class="ch ${esc(g.chance)}">Chance ${esc(g.chance)}</span>`:'',url:g.url}));
+  kMails(k).forEach(m=>items.push({d:m.internal?iso(new Date(m.internal)):'',ic:m.sent?'📤':'📥',b:m.subj,s:(m.sent?'Gesendet · ':m.from+' · ')+m.snip,mail:m.id}));
+  TASKS.filter(t=>t.kid===k.id&&t.done).forEach(t=>items.push({d:t.doneAt?iso(new Date(t.doneAt)):t.due,ic:'✅',b:t.t,s:'Erledigt von '+(NAMES[t.doneBy||t.who]||'')}));
+  items.sort((a,b)=>(b.d||'').localeCompare(a.d||''));
+  const note=GESPR_ERR?`<p style="font-size:12px;color:var(--ink-3);margin-bottom:6px">Gespräche aus Notion nicht erreichbar (${esc(GESPR_ERR)}). In Notion die Datenbank „Kundengespräche“ mit der Integration verbinden.</p>`:'';
+  const loading=GAUTH&&!k._mails&&!k._mailsErr;
+  el.innerHTML=note+(items.length?items.slice(0,25).map(x=>{
+    const inner=`<span class="ic">${x.ic}</span><div><b>${esc(x.b)}</b>${x.s?`<span>${esc(x.s)}</span>`:''}${x.extra||''}</div><time>${x.d?dm(x.d):''}</time>`;
+    return x.mail?`<button class="it" data-vmail="${x.mail}">${inner}</button>`:x.url?`<a class="it" href="${esc(x.url)}" target="_blank" rel="noopener" style="text-decoration:none">${inner}</a>`:`<div class="it">${inner}</div>`;
+  }).join('')+(loading?'<p style="font-size:12px;color:var(--ink-3);padding:8px 2px">Mails werden noch gesucht …</p>':''):(loading?'<p class="empty" style="padding:12px">Wird geladen …</p>':'<p class="empty" style="padding:12px">Noch nichts im Verlauf.</p>'));
+}
+function kundeContext(k){
+  const f=n=>k.raw[n]?n+': '+(Array.isArray(k.raw[n])?k.raw[n].join(', '):k.raw[n])+'\n':'';
+  let c='Kunde: '+k.name+'\n'+f('Status')+f('Typ')+f('Branche')+f('Ansprechpartner')+f('Bevorzugter Kanal')+f('Nächster Schritt')+f('Letzter Kontakt');
+  c+='\nNotizen:\n'+(k.notes||'(keine)').slice(0,3000)+'\n';
+  const g=kGespr(k).slice(0,8);
+  if(g.length)c+='\nGespräche (neueste zuerst):\n'+g.map(x=>`- ${x.date} ${x.art}: ${x.title}. Bedarf: ${x.bedarf||'-'}. Budget: ${x.budget||'-'}. Nächster Schritt: ${x.next||'-'}`).join('\n')+'\n';
+  const m=kMails(k).slice(0,8);
+  if(m.length)c+='\nLetzte Mails:\n'+m.map(x=>`- ${x.internal?iso(new Date(x.internal)):''} ${x.sent?'an Kunde':'vom Kunden'}: ${x.subj} — ${x.snip}`).join('\n')+'\n';
+  const t=TASKS.filter(x=>x.kid===k.id&&!x.done);
+  if(t.length)c+='\nOffene Aufgaben:\n'+t.map(x=>`- ${x.due} ${NAMES[x.who]}: ${x.t}`).join('\n')+'\n';
+  const ev=EVENTS.filter(e=>e.kid===k.id&&e.type==='privat'&&e.d>=TODAY).slice(0,3);
+  if(ev.length)c+='\nGeplante Termine:\n'+ev.map(e=>`- ${e.d} ${e.time||''} ${e.t}`).join('\n')+'\n';
+  return c;
+}
+async function askClaude(task,context){
+  try{return (await napi('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task,context})})).text||''}
+  catch(e){if(/ANTHROPIC_API_KEY|501/.test(e.message))throw new Error('Claude ist noch nicht freigeschaltet: In Vercel die Umgebungsvariable ANTHROPIC_API_KEY eintragen.');throw e}
+}
+function aiBoxHTML(o){
+  if(o.loading)return `<div class="ai-box"><h3>✨ ${esc(o.title||'Claude')}</h3><div class="txt ai-dots">Claude denkt nach</div></div>`;
+  if(o.err)return `<div class="ai-box"><h3>✨ ${esc(o.title||'Claude')}</h3><div class="txt" style="color:#A8231B">${esc(o.err)}</div></div>`;
+  return `<div class="ai-box"><h3>✨ ${esc(o.title||'Claude')}</h3><div class="txt">${esc(o.text)}</div></div>`;
+}
+function showKdAI(o){const el=$('kdAI');if(el)el.innerHTML=aiBoxHTML(o)}
+
+/* Startseite: Nachfass-Radar und Gesprächs-Feed */
+function radarList(){
+  return kSorted(KUNDEN.filter(k=>['Warm','Angefragt','Bestandskunde'].includes(k.status)))
+    .filter(k=>!TASKS.some(t=>t.kid===k.id&&!t.done))
+    .map(k=>({k,lt:lastTouch(k)}))
+    .filter(x=>!x.lt||diffDays(TODAY,x.lt)>=10)
+    .sort((a,b)=>kFocus(a.k)-kFocus(b.k)||(a.lt||'').localeCompare(b.lt||''));
+}
+function renderBrain(){
+  const r=$('homeRadar');
+  if(r){
+    if(!KARTEI_LOADED){r.innerHTML='<p class="empty">Wird nach dem Login berechnet.</p>'}
+    else{
+      const list=radarList().slice(0,6);
+      r.innerHTML=list.length?list.map(({k,lt})=>{const d=lt?diffDays(TODAY,lt):null;
+        return `<div class="row">${kAvatar(k)}<div><h3>${esc(k.name)} ${d==null?'<span class="age">kein Kontakt erfasst</span>':`<span class="age${d>=21?' hot':''}">seit ${d} Tagen</span>`}</h3><p>${esc(k.raw['Nächster Schritt']||lastNote(k)||k.ap||'')}</p></div>
+        <div class="act"><button class="btn btn-glass sm" data-radartask="${k.id}">Nachfassen morgen</button><button class="btn btn-glass sm" data-kopen="${k.id}">Öffnen</button></div></div>`}).join(''):'<p class="empty">Alle laufenden Kunden sind versorgt. 👌</p>';
+    }
+  }
+  const f=$('homeFeed');
+  if(f){
+    const since=addDays(TODAY,-14);
+    const g=GESPR.filter(x=>x.date>=since).slice(0,6);
+    f.innerHTML=!KARTEI_LOADED?'<p class="empty">Wird nach dem Login geladen.</p>':GESPR_ERR?`<p class="empty">Gespräche aus Notion nicht erreichbar. In Notion die Datenbank „Kundengespräche“ mit der Integration verbinden.</p>`:
+      g.length?g.map(x=>{const k=KUNDEN.find(q=>x.kids.includes(q.id));
+        return `<div class="row"><span class="kav">${ART_IC[x.art]||'💬'}</span><div><h3>${esc(x.title)}</h3><p>${k?esc(k.name)+' · ':''}${esc(x.next||x.bedarf||'')}</p></div><div class="act">${x.chance?`<span class="ch ${esc(x.chance)}">${esc(x.chance)}</span>`:''}<time style="font-size:11.5px;color:var(--ink-3)">${dm(x.date)}</time>${k?`<button class="btn btn-glass sm" data-kopen="${k.id}">Kunde</button>`:''}</div></div>`}).join(''):'<p class="empty">In den letzten 14 Tagen nichts Neues.</p>';
+  }
+}
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-radartask]');if(!b)return;
+  const k=KUNDEN.find(x=>x.id===b.dataset.radartask);if(!k)return;
+  b.disabled=true;
+  try{await createTask({title:'Nachfassen: '+k.name.split(/\s[–-]\s|\s\(/)[0]+(k.raw['Nächster Schritt']?' — '+k.raw['Nächster Schritt'].slice(0,120):''),who:'MS',due:addDays(TODAY,1),kid:k.id,kname:k.name});toast('Steht morgen bei Martin im Kalender');renderBrain()}
+  catch(x){toast('Nicht angelegt: '+x.message);b.disabled=false}
+});
+on('radarAI','click',async()=>{
+  const out=$('radarAIOut');const list=radarList().slice(0,8);
+  if(!KARTEI_LOADED){toast('Kundenkartei lädt noch …');return}
+  if(!list.length){toast('Keiner muss gerade nachgefasst werden.');return}
+  out.innerHTML=aiBoxHTML({loading:true,title:'Aufhänger zum Nachfassen'});
+  try{
+    const text=await askClaude('radar',{list:list.map(({k,lt})=>`${k.name} (${k.typ||''}, ${k.status}, letzter Kontakt ${lt||'unbekannt'}): ${(k.raw['Nächster Schritt']||'')} ${lastNote(k).slice(0,300)} ${kGespr(k)[0]?'Letztes Gespräch: '+kGespr(k)[0].title:''}`).join('\n')});
+    out.innerHTML=aiBoxHTML({title:'Aufhänger zum Nachfassen',text});
+  }catch(x){out.innerHTML=aiBoxHTML({title:'Aufhänger zum Nachfassen',err:x.message})}
+});
+
+/* Mails: Kundenkontext, Claude-Antwort, Termin */
+function mailCtxHTML(m){
+  const k=m.client?kundeForName(m.client):null;
+  const btns=`<button class="btn btn-primary sm" data-maction="ai">✨ Antwort mit Claude</button><button class="btn btn-glass sm" data-maction="event">Termin daraus</button>`;
+  if(!k)return `<div class="kd-row" style="margin:6px 0 12px">${btns}</div>`;
+  const open=TASKS.filter(t=>t.kid===k.id&&!t.done).sort((a,b)=>a.due.localeCompare(b.due));
+  const g=kGespr(k)[0];
+  return `<div class="ctx-box"><div class="top">${kAvatar(k)}<b>${esc(k.name)}</b>${kPill(k.status)}${kChannels(k)}</div>
+    ${k.raw['Nächster Schritt']?`<p><b>Nächster Schritt:</b> ${esc(k.raw['Nächster Schritt'])}</p>`:''}
+    ${g?`<p><b>Letztes Gespräch (${dm(g.date)}):</b> ${esc(g.title)}</p>`:''}
+    <p>${open.length?`${open.length} offene ${open.length===1?'Aufgabe':'Aufgaben'}, nächste: ${esc(open[0].t)}`:'Keine offene Aufgabe zu diesem Kunden.'}</p>
+    <div class="kd-row">${btns}<button class="btn btn-glass sm" data-kopen="${k.id}">Kundenkarte</button></div></div>`;
+}
+let autoKontaktDone=new Set();
+async function autoLetzterKontakt(){
+  if(!KARTEI_LOADED||!GMAIL||!KSCHEMA||!KSCHEMA['Letzter Kontakt'])return;
+  let n=0;
+  for(const k of KUNDEN){
+    if(n>=8)break;if(autoKontaktDone.has(k.id))continue;
+    const ms=MAILS.filter(m=>m.client===k.name&&m.internal);if(!ms.length)continue;
+    const last=iso(new Date(Math.max(...ms.map(m=>m.internal))));
+    const cur=String(k.raw['Letzter Kontakt']||'').slice(0,10);
+    autoKontaktDone.add(k.id);
+    if(last>cur&&last<=TODAY){
+      try{await notionUpdate('kunden',k.id,{'Letzter Kontakt':{date:{start:last}}});k.raw['Letzter Kontakt']=last;n++}catch(_){}
+    }
+  }
+  if(n)safe('brainR',renderBrain);
+}
 
 /* ---------- Spaßebene: Feiern, Wochen-Duell, Sprüche, Easter Eggs ----------
    Alles rein optisch. Bei „Bewegung reduzieren“ im System gibt es keine Animationen. */

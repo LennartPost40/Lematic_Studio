@@ -15,39 +15,11 @@ const DS = {
   akquise:    'c33aace4-5c10-42c7-88d6-08a9fb7af12d',
   projekte:   'ff5a312a-562f-48bb-a320-f32ab245ba81',
   kunden:     '1a47c61b-a5b6-416e-b4f2-d32454de35f2',
+  gespraeche: 'cb294d68-10dd-4427-aa3b-ba6eda7086ec',
   laufwerke:  '0bba1261-69bd-49c1-ab22-beaf50ead987'
 };
 
-const ALLOWED_DOMAINS = ['lematic.de'];
-const ALLOWED_EMAILS = (process.env.ALLOWED_EMAILS || '')
-  .split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-
-// Kurzer Cache, damit nicht jede Anfrage erneut bei Google nachfragt.
-const authCache = new Map();
-async function checkGoogle(req) {
-  const h = req.headers.authorization || '';
-  const token = h.startsWith('Bearer ') ? h.slice(7) : '';
-  if (!token) return { ok: false, status: 401, error: 'Nicht angemeldet' };
-  const hit = authCache.get(token);
-  if (hit && hit.until > Date.now()) return hit.res;
-  const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-    headers: { Authorization: 'Bearer ' + token }
-  });
-  let res;
-  if (!r.ok) {
-    res = { ok: false, status: 401, error: 'Google-Anmeldung abgelaufen' };
-  } else {
-    const me = await r.json();
-    const email = (me.email || '').toLowerCase();
-    const domain = email.split('@')[1] || '';
-    const allowed = me.email_verified !== false &&
-      (ALLOWED_DOMAINS.includes(domain) || ALLOWED_EMAILS.includes(email));
-    res = allowed ? { ok: true, email } : { ok: false, status: 403, error: email + ' ist nicht freigegeben' };
-  }
-  authCache.set(token, { res, until: Date.now() + 5 * 60 * 1000 });
-  if (authCache.size > 200) authCache.delete(authCache.keys().next().value);
-  return res;
-}
+import { checkGoogle } from './_auth.js';
 
 const txt = arr => (arr || []).map(t => t.plain_text).join('');
 const plain = p => {
