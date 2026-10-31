@@ -44,7 +44,16 @@ ul,ol{list-style:none}
 
 .glass{background:var(--glass);-webkit-backdrop-filter:blur(30px) saturate(180%);backdrop-filter:blur(30px) saturate(180%);border:1px solid var(--stroke);border-radius:var(--r-panel);box-shadow:var(--shadow)}
 
-.app{display:grid;grid-template-columns:252px minmax(0,1fr);gap:20px;padding:20px;max-width:1580px;margin:0 auto;min-height:100vh}
+.app{display:grid;grid-template-columns:252px minmax(0,1fr);gap:20px;padding:20px;max-width:none;margin:0 auto;min-height:100vh}
+body.w-center .app{max-width:1580px}
+@media (min-width:1900px){
+  .app{grid-template-columns:272px minmax(0,1fr);gap:26px;padding:24px 32px}
+  #kdSheet.sheet.wide{width:min(1760px,96vw)}
+  .kfiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ang-frame-wrap{height:calc(100vh - 170px)}
+  .li-drawer .li-panel{width:min(560px,40vw)}
+}
+@media (min-width:2400px){.app{padding:28px 48px}#kdSheet .kd-grid{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}}
 .sidebar{position:sticky;top:20px;height:calc(100vh - 40px);display:flex;flex-direction:column;padding:18px 14px;overflow:auto}
 .brand{display:flex;align-items:center;gap:12px;padding:6px 8px 22px}
 .mark{width:40px;height:40px;border-radius:12px;background:var(--brand);color:var(--yellow);display:grid;place-items:center;font-weight:800;font-size:19px;overflow:hidden;flex:none}
@@ -5107,12 +5116,28 @@ window.studioCustomers=function(){
 };
 window.studioSaveOffer=async function(blob,filename,meta){
   if(!GAUTH){toast('Angebot heruntergeladen. Für die Ablage in Drive mit dem LeMatic-Konto anmelden.');return}
-  const name=[TODAY,slug(meta.no||'Angebot'),slug(meta.customer||'Kunde')].join('_')+'.pdf';
+  meta=meta||{};
+  const name=String(filename||'').toLowerCase().endsWith('.pdf')?filename:[TODAY,slug(meta.no||'Angebot'),slug(meta.customer||'Kunde')].join('_')+'.pdf';
   const file=new File([blob],name,{type:'application/pdf'});
-  const up=await driveUpload(file,name,ANGEBOT_ID);
+  /* Richtiger Ordner: Kunden-Unterordner unter Angebote_und_Kostenvoranschlaege, sonst neu anlegen (NN_Kunde_Jahr) */
+  let folderId=ANGEBOT_ID,folderName='Angebote_und_Kostenvoranschlaege';
+  try{
+    const subs=await ddList(`'${ANGEBOT_ID}' in parents and trashed=false and mimeType='application/vnd.google-apps.folder'`);
+    const toks=kTokens({name:meta.customer||''});
+    const year=TODAY.slice(0,4);
+    const hits=subs.filter(f=>meta.customer&&toks.some(t=>f.name.toLowerCase().replace(/[_.]/g,' ').includes(t)));
+    const hit=hits.find(f=>f.name.includes(year))||hits[0];
+    if(hit){folderId=hit.id;folderName=hit.name}
+    else if(meta.customer){
+      const nums=subs.map(f=>+(/^(\d+)[_.]/.exec(f.name)||[0,0])[1]);
+      const nn=String(Math.max(0,...nums)+1).padStart(2,'0')+'_'+String(meta.customer).replace(/\s+(GmbH|UG|AG|KG|SE|e\.?V\.?)(\s.*)?$/i,'').normalize('NFC').replace(/[^\wÄÖÜäöüß&-]+/g,'_').replace(/^_|_$/g,'')+'_'+year;
+      const nf=await driveCreateFolder(nn,ANGEBOT_ID);folderId=nf.id;folderName=nf.name||nn;
+    }
+  }catch(e){console.warn('Angebotsordner',e)}
+  const up=await driveUpload(file,name,folderId);
   const inv={id:Date.now(),kind:'Angebot',no:meta.no||'',party:meta.customer||'—',note:(meta.title||name).slice(0,80),date:TODAY,amount:+meta.total||0,status:'offen',p:'Akquise',drive:up.webViewLink||ANGEBOT_URL,driveFileId:up.id,fresh:true};
   INVOICES.unshift(inv);safe('inv',renderInvoices);
-  toast('Angebot '+(meta.no||'')+' in Drive abgelegt: Angebote_und_Kostenvoranschlaege');
+  toast('✓ Angebot '+(meta.no||'')+' abgelegt in Drive: Angebote / '+folderName);
   notionCreateRechnung({no:inv.no,art:'Angebot',status:'Offen',betrag:inv.amount,leistung:(meta.customer||'')+(meta.title?': '+meta.title:''),datum:TODAY,datei:inv.drive})
     .then(r=>{inv.nid=r.id}).catch(()=>{});
   setTimeout(()=>safe('dd',()=>scanDriveInvoices()),1500);
@@ -5978,6 +6003,7 @@ function applyPrefs(p){
   r.setProperty('--brand',a.c[0]);r.setProperty('--brand-2',a.c[1]);r.setProperty('--canvas',b.c);
   document.body.classList.remove('dens-min','dens-mid','dens-full');document.body.classList.add('dens-'+(DENS[p.density]?p.density:'mid'));
   document.body.classList.toggle('fs-lg',p.size==='l');
+  document.body.classList.toggle('w-center',p.width==='center');
   safe('hk',renderHomeKpis);
   const s=$('setPrefs');if(s)s.innerHTML=prefsPickerHTML(p,'set');
 }
@@ -5985,6 +6011,7 @@ function prefsPickerHTML(p,ctx,only){
   const dens=`<div class="pp-group"><span class="pp-l">Ansicht</span><div class="pp-dens">${Object.entries(DENS).map(([k,v])=>`<button class="pp-d ${p.density===k?'on':''}" data-pref="density" data-val="${k}" data-ctx="${ctx}"><span class="pp-mini m-${k}"><i></i><i></i><i></i><i></i><i></i><i></i></span><b>${v.n}</b><small>${v.d}</small></button>`).join('')}</div></div>`;
   const look=`<div class="pp-group"><span class="pp-l">Akzentfarbe</span><div class="pp-sw">${Object.entries(ACCENTS).map(([k,v])=>`<button class="pp-c ${p.accent===k?'on':''}" data-pref="accent" data-val="${k}" data-ctx="${ctx}" title="${v.n}" aria-label="${v.n}" style="--c:${v.c[0]};--c2:${v.c[1]}"></button>`).join('')}</div></div>
   <div class="pp-group"><span class="pp-l">Hintergrund</span><div class="pp-sw">${Object.entries(BGS).map(([k,v])=>`<button class="pp-c pp-bgc ${p.bg===k?'on':''}" data-pref="bg" data-val="${k}" data-ctx="${ctx}" title="${v.n}" aria-label="${v.n}" style="--c:${v.c};--c2:${v.c}"></button>`).join('')}</div></div>
+  <div class="pp-group"><span class="pp-l">Breite (für große Monitore)</span><div class="seg"><button aria-pressed="${p.width!=='center'}" data-pref="width" data-val="full" data-ctx="${ctx}">Volle Breite</button><button aria-pressed="${p.width==='center'}" data-pref="width" data-val="center" data-ctx="${ctx}">Zentriert</button></div></div>
   <div class="pp-group"><span class="pp-l">Schrift</span><div class="seg"><button aria-pressed="${p.size!=='l'}" data-pref="size" data-val="m" data-ctx="${ctx}">Normal</button><button aria-pressed="${p.size==='l'}" data-pref="size" data-val="l" data-ctx="${ctx}">Groß</button></div></div>`;
   return only==='dens'?dens:only==='look'?look:dens+look;
 }
@@ -6144,8 +6171,12 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.9';
+const APP_VERSION='2026-10-31.10';
 const CHANGELOG=[
+  {v:'2026-10-31.10',d:'31.10.2026',items:[
+    '🖥️ Ultra-Wide: Das Studio nutzt jetzt die volle Fensterbreite. Wer es lieber kompakt mag: Einstellungen → Dein Studio → Breite „Zentriert“',
+    '📁 Angebotsrechner: Das PDF landet automatisch im richtigen Kundenordner unter Angebote (z. B. 07_Fronius_Get_Nord_2026), fehlt einer, wird er angelegt'
+  ]},
   {v:'2026-10-31.9',d:'31.10.2026',items:[
     '⏰ Rechnungen zeigen jetzt, seit wie vielen Tagen sie überfällig sind (rot ab 14 Tagen), offene zeigen „Fällig in X Tagen“',
     '🔔 Einmal am Tag eine Erinnerung, wenn Rechnungen überfällig sind',
