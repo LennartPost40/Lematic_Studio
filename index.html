@@ -1333,6 +1333,7 @@ body.fun-korn::after{content:"";position:fixed;inset:0;z-index:97;pointer-events
 .art-pick{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}
 .art-pick .ap{display:inline-flex;align-items:center;gap:6px;border:1.5px solid transparent;border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;opacity:.6;transition:opacity .15s,transform .3s cubic-bezier(.34,1.56,.64,1),border-color .15s}
 .art-pick .ap:hover{opacity:.9}.art-pick .ap.on{opacity:1;border-color:currentColor;transform:scale(1.04)}
+.art-pick .ap.t-dreh:not(.on){background:rgba(7,61,48,.1);color:var(--brand)}.art-pick .ap.t-dreh.on{border-color:var(--yellow)}
 .ev-sheet .fields label[hidden]{display:none}
 .ev-sheet textarea.input{resize:vertical;min-height:52px}
 .chkline{display:flex!important;flex-direction:row!important;align-items:center;gap:8px;font-size:13.5px}
@@ -1490,6 +1491,37 @@ body.nav-editing .side-label[data-navopt] .nav-eye{margin-left:auto}
 .nav-edit-bar{display:grid;gap:8px;margin:8px 4px 0;padding:10px;border-radius:14px;background:rgba(252,215,23,.14);border:1px solid rgba(224,180,0,.3);font-size:12px;color:var(--ink-2)}
 .nav-edit-bar[hidden]{display:none}.nav-edit-bar div{display:flex;gap:6px;justify-content:flex-end}
 @keyframes navWig{0%,100%{transform:none}30%{transform:rotate(-.6deg)}60%{transform:rotate(.6deg)}}
+.chkline[hidden],.ev-warn[hidden],#evWarn[hidden]{display:none!important}
+
+/* Update-Fenster mit Bildern */
+.tour-wrap{z-index:120;align-items:center;padding:16px;background:rgba(10,30,24,.35)}
+.tour-sheet{position:relative;width:min(1240px,96vw);height:min(780px,94vh);display:grid;grid-template-columns:minmax(0,1.75fr) minmax(320px,1fr);border-radius:30px;overflow:hidden;background:#fff;box-shadow:0 40px 120px -30px rgba(7,40,32,.55)}
+.tour-stage{position:relative;display:grid;place-items:center;padding:26px;background:radial-gradient(120% 90% at 0% 0%,rgba(252,215,23,.38),transparent 60%),radial-gradient(90% 90% at 100% 100%,rgba(26,107,86,.35),transparent 60%),#EEF3F0;overflow:hidden}
+.tour-img{width:100%;height:100%;display:grid;place-items:center}
+.tour-img img{max-width:100%;max-height:100%;object-fit:contain;border-radius:16px;box-shadow:0 24px 60px -24px rgba(7,40,32,.5),0 0 0 1px rgba(7,61,48,.08);background:#fff}
+.tour-side{display:flex;flex-direction:column;padding:38px 34px 26px;min-height:0;overflow:auto}
+.tour-k{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand-2);display:flex;justify-content:space-between;gap:8px;margin:0;padding-right:44px}
+.tour-k span{color:var(--ink-3);letter-spacing:.02em}
+.tour-side h2{font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:10px 0 10px}
+.tour-txt{font-size:15px;line-height:1.5;color:var(--ink-2);margin:0 0 18px}
+.tour-steps{background:rgba(7,61,48,.045);border-radius:18px;padding:14px 16px}
+.tour-steps small{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#8A6400}
+.tour-steps ol{margin:8px 0 0;padding:0;list-style:none;counter-reset:ts;display:grid;gap:9px}
+.tour-steps li{counter-increment:ts;display:grid;grid-template-columns:24px minmax(0,1fr);gap:10px;font-size:14px;line-height:1.45}
+.tour-steps li::before{content:counter(ts);width:24px;height:24px;border-radius:50%;background:var(--brand);color:var(--yellow);font-size:12px;font-weight:700;display:grid;place-items:center}
+.tour-foot{margin-top:auto;padding-top:20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tour-dots{display:flex;gap:6px;flex-wrap:wrap}
+.tour-dots button{width:8px;height:8px;border-radius:4px;border:0;padding:0;background:rgba(7,61,48,.18);cursor:pointer;transition:width .35s cubic-bezier(.34,1.56,.64,1),background .2s}
+.tour-dots button.on{width:24px;background:var(--brand)}
+.tour-nav{display:flex;gap:8px}
+.tour-x{position:absolute;top:14px;right:14px;z-index:2;background:rgba(255,255,255,.9)}
+.in-r{animation:tourR .45s cubic-bezier(.22,1,.36,1)}.in-l{animation:tourL .45s cubic-bezier(.22,1,.36,1)}
+@keyframes tourR{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes tourL{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+.tour-wrap.show .tour-sheet{animation:tourIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes tourIn{from{opacity:0;transform:scale(.94) translateY(14px)}to{opacity:1;transform:none}}
+@media (max-width:820px){.tour-sheet{grid-template-columns:1fr;grid-template-rows:minmax(0,45%) minmax(0,1fr);height:94vh}.tour-stage{padding:18px}.tour-side{padding:22px 20px 18px}.tour-side h2{font-size:22px}.tour-foot{position:sticky;bottom:-18px;background:#fff;padding:12px 0 18px;margin-bottom:-18px}}
+@media (prefers-reduced-motion:reduce){.in-r,.in-l,.tour-wrap.show .tour-sheet{animation:none}}
 /* Startbühne */
 .home-stage{min-height:calc(100vh - 40px);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:40px 16px 72px!important;margin-bottom:8px;background:none!important;border:0!important;box-shadow:none!important}
 .hst-in{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
@@ -2747,6 +2779,7 @@ body.dcut .bg{filter:grayscale(.4)}
 <div class="remind-stack" id="remindStack" aria-live="polite"></div>
 <div class="tour" id="tour" hidden><div class="tour-spot" id="tourSpot"></div><div class="tour-card glass" id="tourCard" role="dialog" aria-label="Rundgang"></div></div>
 <div class="upd-bar glass" id="updBar" hidden><span>✨ Neue Version des Studios ist da.</span><button class="btn btn-primary sm" data-appreload>Jetzt neu laden</button><button class="icon-btn" id="updLater" aria-label="Später">✕</button></div>
+<div class="modal-wrap tour-wrap" id="tourWrap" aria-hidden="true"><div class="tour-sheet" role="dialog" aria-modal="true" aria-labelledby="tourTitle" id="tourSheet"></div></div>
 <div class="modal-wrap" id="newsWrap" aria-hidden="true"><div class="glass sheet news-sheet" role="dialog" aria-modal="true" aria-labelledby="newsTitle" id="newsSheet"></div></div>
 <!-- Willkommen mit LeMatic Intelligence -->
 <div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="Willkommen bei LeMatic Intelligence">
@@ -6134,9 +6167,79 @@ window.studioCustomers=function(){
       customerEmail:r['E-Mail']||'',customerPhone:r['Telefon']||'',customerStreet:m?m[1].replace(/,\s*$/,''):adr,customerPostalCode:m?m[2]:'',customerCity:m?m[3]:''};
   });
 };
+/* Ablage in Drive (einmal pro Angebotsnummer; erneut = Datei aktualisieren) und Eintrag in Notion */
+const ANG_SAVED={};
+async function angStore(blob,filename,meta){
+  if(!GAUTH)throw new Error('Bitte mit dem LeMatic-Konto anmelden');
+  meta=meta||{};
+  const prev=meta.no&&ANG_SAVED[meta.no];
+  if(prev){
+    await gfetch('https://www.googleapis.com/upload/drive/v3/files/'+prev.id+'?uploadType=media&supportsAllDrives=true',{method:'PATCH',headers:{'Content-Type':'application/pdf'},body:blob});
+    PDF_CACHE[prev.id]={blob,name:prev.name};Object.assign(prev,{title:meta.title||prev.title,email:meta.email||prev.email,phone:meta.phone||prev.phone,contact:meta.contact||prev.contact});
+    return prev;
+  }
+  const name=String(filename||'').toLowerCase().endsWith('.pdf')?filename:[TODAY,slug(meta.no||'Angebot'),slug(meta.customer||'Kunde')].join('_')+'.pdf';
+  const file=new File([blob],name,{type:'application/pdf'});
+  let folderId=ANGEBOT_ID,folderName='Angebote_und_Kostenvoranschlaege';
+  try{
+    const subs=await ddList(`'${ANGEBOT_ID}' in parents and trashed=false and mimeType='application/vnd.google-apps.folder'`);
+    const toks=kTokens({name:meta.customer||''});const year=TODAY.slice(0,4);
+    const hits=subs.filter(f=>meta.customer&&toks.some(t=>f.name.toLowerCase().replace(/[_.]/g,' ').includes(t)));
+    const hit=hits.find(f=>f.name.includes(year))||hits[0];
+    if(hit){folderId=hit.id;folderName=hit.name}
+    else if(meta.customer){
+      const nums=subs.map(f=>+(/^(\d+)[_.]/.exec(f.name)||[0,0])[1]);
+      const nn=String(Math.max(0,...nums)+1).padStart(2,'0')+'_'+String(meta.customer).replace(/\s+(GmbH|UG|AG|KG|SE|e\.?V\.?)(\s.*)?$/i,'').normalize('NFC').replace(/[^\wÄÖÜäöüß&-]+/g,'_').replace(/^_|_$/g,'')+'_'+year;
+      const nf=await driveCreateFolder(nn,ANGEBOT_ID);folderId=nf.id;folderName=nf.name||nn;
+    }
+  }catch(e){console.warn('Angebotsordner',e)}
+  const up=await driveUpload(file,name,folderId);
+  const inv={id:Date.now(),kind:'Angebot',no:meta.no||'',party:meta.customer||'—',note:(meta.title||name).slice(0,80),date:TODAY,amount:+meta.total||0,status:'offen',p:'Akquise',drive:up.webViewLink||ANGEBOT_URL,driveFileId:up.id,fresh:true};
+  INVOICES.unshift(inv);safe('inv',renderInvoices);
+  PDF_CACHE[up.id]={blob,name};
+  safe('angPast',renderAngPast);
+  const done={no:meta.no,title:meta.title||'',customer:meta.customer,contact:meta.contact||'',salutation:meta.salutation||'',email:meta.email||'',phone:meta.phone||'',folder:folderName,link:up.webViewLink||driveUrl(folderId),id:up.id,name,draft:null,draftErr:'',notion:false};
+  if(meta.no)ANG_SAVED[meta.no]=done;
+  try{const r=await notionCreateRechnung({no:inv.no,art:'Angebot',status:'Offen',betrag:inv.amount,leistung:(meta.customer||'')+(meta.title?': '+meta.title:''),datum:TODAY,datei:inv.drive});inv.nid=r.id;done.notion=true}catch(_){}
+  track('act','Angebot als PDF erstellt');
+  setTimeout(()=>safe('dd',()=>scanDriveInvoices()),1500);
+  return done;
+}
+async function angWhatsApp(o,win){
+  const url=await shareLink(o.id);
+  const txt=offerGreeting(o)+',\nhier ist unser Angebot '+(o.no||'')+(o.title?' für „'+o.title+'“':'')+' als PDF:\n'+url+'\n\nViele Grüße\n'+(FULLNAME[ME]||USER)+' · LeMatic';
+  const ph=waNumber(o.phone||((customerFor(o.customer)||{}).raw||{})['Telefon']);
+  const u=(ph?'https://wa.me/'+ph:'https://wa.me/')+'?text='+encodeURIComponent(txt);
+  if(win)win.location=u;else window.open(u,'_blank');
+  return ph;
+}
+/* Knöpfe im Rechner: Alles ablegen, Drive, Gmail-Entwurf, WhatsApp */
+window.studioOfferAction=async function(act,blob,filename,meta,opt){
+  opt=opt||{};const st=opt.onStatus||(()=>{});const rows=[];const show=()=>st(rows.slice());
+  const k=customerFor(meta.customer);if(k){meta.email=meta.email||k.email||'';meta.phone=meta.phone||(k.raw||{})['Telefon']||''}
+  rows.push({st:'wait',text:'Wird in Drive abgelegt …'});show();
+  let o;try{o=await angStore(blob,filename,meta)}catch(x){rows[0]={st:'err',text:'Drive: '+x.message};show();if(opt.win)opt.win.close();throw x}
+  rows[0]={st:'ok',text:'In Drive: Angebote / '+o.folder+(o.notion?' · in Notion eingetragen':''),link:o.link,linkText:'Ordner'};show();
+  if(act==='draft'||act==='all'){
+    rows.push({st:'wait',text:'Mail-Entwurf mit PDF wird angelegt …'});show();
+    try{const d=await makeOfferDraft(o,true);o.draft=d;rows[rows.length-1]={st:'ok',text:'Mail-Entwurf liegt in Gmail'+(d.to?' · an '+d.to:' · Empfänger noch eintragen'),link:draftUrl(d),linkText:'Entwurf öffnen'};track('act','Mail-Entwurf angelegt')}
+    catch(x){rows[rows.length-1]={st:'err',text:'Mail-Entwurf nicht angelegt: '+x.message}}
+    show();
+  }
+  if(act==='wa'){
+    rows.push({st:'wait',text:'WhatsApp wird vorbereitet …'});show();
+    try{const ph=await angWhatsApp(o,opt.win);rows[rows.length-1]={st:'ok',text:ph?'WhatsApp ist offen, Nachricht an '+(o.contact||o.customer||'den Kunden')+' vorbereitet':'WhatsApp ist offen, Kontakt dort auswählen (keine Nummer in der Kartei)'}}
+    catch(x){if(opt.win)opt.win.close();rows[rows.length-1]={st:'err',text:'WhatsApp nicht vorbereitet: '+x.message}}
+    show();
+  }
+  safe('angDone',()=>showAngDone(o,true));
+  toast(act==='all'?'Angebot '+(o.no||'')+' abgelegt: Drive, Notion, Mail-Entwurf':act==='draft'?'Mail-Entwurf mit PDF liegt in Gmail':act==='wa'?'WhatsApp ist vorbereitet':'Angebot '+(o.no||'')+' liegt in Drive');
+  return o;
+};
 window.studioSaveOffer=async function(blob,filename,meta){
   if(!GAUTH){toast('Angebot heruntergeladen. Für die Ablage in Drive mit dem LeMatic-Konto anmelden.');return}
   meta=meta||{};
+  if(meta.no&&ANG_SAVED[meta.no]){const o=await angStore(blob,filename,meta);toast('Heruntergeladen, die Datei in Drive ist aktualisiert');safe('angDone',()=>showAngDone(o,true));return}
   const name=String(filename||'').toLowerCase().endsWith('.pdf')?filename:[TODAY,slug(meta.no||'Angebot'),slug(meta.customer||'Kunde')].join('_')+'.pdf';
   const file=new File([blob],name,{type:'application/pdf'});
   /* Richtiger Ordner: Kunden-Unterordner unter Angebote_und_Kostenvoranschlaege, sonst neu anlegen (NN_Kunde_Jahr) */
@@ -6161,6 +6264,7 @@ window.studioSaveOffer=async function(blob,filename,meta){
   PDF_CACHE[up.id]={blob,name};
   safe('angPast',renderAngPast);
   const done={no:meta.no,title:meta.title||'',customer:meta.customer,contact:meta.contact||'',salutation:meta.salutation||'',email:meta.email||'',phone:meta.phone||'',folder:folderName,link:up.webViewLink||driveUrl(folderId),id:up.id,name,draft:null,draftErr:''};
+  if(meta.no)ANG_SAVED[meta.no]=done;
   safe('angDone',()=>showAngDone(done));
   /* Gleich als Mail-Entwurf mit PDF in Gmail legen */
   makeOfferDraft(done).then(d=>{done.draft=d;safe('angDone',()=>showAngDone(done,true))}).catch(x=>{done.draftErr=x.message;safe('angDone',()=>showAngDone(done,true))});
@@ -6375,11 +6479,7 @@ document.addEventListener('click',async e=>{
   const wa=e.target.closest('[data-wa]');
   if(wa){
     const win=window.open('about:blank','_blank');
-    try{const o=$('angDone')._o||{};const url=await shareLink(wa.dataset.wa);
-      const txt=offerGreeting(o)+',\nhier ist unser Angebot '+(o.no||'')+(o.title?' für „'+o.title+'“':'')+' als PDF:\n'+url+'\n\nViele Grüße\n'+(FULLNAME[ME]||USER)+' · LeMatic';
-      const u=(wa.dataset.phone?'https://wa.me/'+wa.dataset.phone:'https://wa.me/')+'?text='+encodeURIComponent(txt);
-      if(win)win.location=u;else window.open(u,'_blank');
-    }catch(x){if(win)win.close();toast('WhatsApp nicht vorbereitet: '+x.message)}
+    try{const o=Object.assign({},$('angDone')._o||{},{id:wa.dataset.wa});await angWhatsApp(o,win)}catch(x){if(win)win.close();toast('WhatsApp nicht vorbereitet: '+x.message)}
     return}
   const md=e.target.closest('[data-mkdraft]');
   if(md){
@@ -7781,16 +7881,39 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.18';
+const APP_VERSION='2026-10-31.19';
 const CHANGELOG=[
-  {v:'2026-10-31.18',d:'31.10.2026',items:[
+  {v:'2026-10-31.19',d:'31.10.2026',tour:[
+    {img:'whatsnew/v19-angebot.webp',t:'Angebote direkt ablegen und verschicken',txt:'Im letzten Schritt des Angebotsrechners gibt es jetzt vier Knöpfe, nicht mehr nur „Herunterladen“.',
+     steps:['Angebot wie gewohnt ausfüllen und bis zur Vorschau gehen','„Alles ablegen“ drücken: Das PDF landet im Drive-Ordner des Kunden, in Notion und als fertige Mail mit Anhang in den Gmail-Entwürfen','Oder einzeln: nur Drive, nur Mail-Entwurf oder per WhatsApp mit Link zum PDF','Nochmal drücken aktualisiert dieselbe Datei, es entstehen keine Doppelten']}
+  ],items:[
+    'Angebotsrechner: Im letzten Schritt Knöpfe für „Alles ablegen“ (Drive, Notion, Gmail-Entwurf), nur Drive, nur Mail-Entwurf und WhatsApp',
+    'Bei größeren Updates erklärt ein Fenster mit Bildern, was neu ist und wie es geht'
+  ]},
+  {v:'2026-10-31.18',d:'31.10.2026',tour:[
+    {img:'whatsnew/v18-kunden.webp',t:'Kundenkartei mit Überblick',txt:'Auf einen Blick, wer gerade wartet, statt vieler einzelner Kacheln.',
+     steps:['Oben steht, wer Aufmerksamkeit braucht und warum, zum Beispiel eine überfällige Rechnung','Eine Karte in eine andere Spalte ziehen ändert den Status','Oben rechts zwischen Board und Liste wechseln']},
+    {img:'whatsnew/v18-kundenkarte.webp',t:'Kundenkarte aufgeräumt',txt:'Die Karte ist jetzt in Reiter aufgeteilt, die Notizen stehen als Zeitleiste mit Person und Datum.',
+     steps:['Karte öffnen: Der Überblick zeigt den nächsten Schritt, die letzten Notizen und offene Aufgaben','Reiter „Notizen“: neue Notiz oben eintragen, darunter alles Bisherige','Lange Notizen mit „Ganz lesen“ aufklappen']},
+    {img:'whatsnew/v18-li.webp',t:'Termine über LeMatic Intelligence',txt:'Einfach hinschreiben, was eingetragen werden soll. Fehlt etwas, fragt LI nach.',
+     steps:['Zum Beispiel: „Trag einen Dreh mit Fronius am Mittwoch ein“','Rückfragen beantwortest du mit einem Klick auf die passende Antwort','Vorschlag prüfen und „Ausführen“ drücken oder mit „Anpassen“ im Termin-Fenster ändern']},
+    {img:'whatsnew/v18-seitenleiste.webp',t:'Deine Seitenleiste',txt:'Sortier die Bereiche so, wie du sie brauchst, und blende aus, was du nie nutzt.',
+     steps:['Mit der Maus über die Seitenleiste fahren, dann den Stift neben „Einstellungen“ klicken','Einträge ziehen zum Sortieren, Auge zum Ausblenden','„Fertig“ drücken']}
+  ],items:[
     'Kundenkartei neu: oben die Übersicht mit „Braucht Aufmerksamkeit“ (überfällige Rechnungen, fällige Aufgaben, lange still), darunter Board nach Status zum Ziehen oder eine kompakte Liste',
     'Kundenkarte in Reitern: Überblick, Notizen, Aufgaben und Termine, Verlauf, Geld und Projekte, Dateien. Notizen als Zeitleiste mit Person und Datum, lange Notizen aufklappbar',
     'LeMatic Intelligence trägt Termine, Drehs, Schnitt und Belegungen direkt ein, mit Uhrzeit, Person, Erinnerung und Einladung. Fehlt etwas, fragt sie nach, mit Antworten zum Anklicken',
     'Seitenleiste selbst anpassen: Stift neben Einstellungen, dann sortieren und ausblenden',
     'Martins Profilbild etwas weiter rausgezoomt'
   ]},
-  {v:'2026-10-31.17',d:'31.10.2026',items:[
+  {v:'2026-10-31.17',d:'31.10.2026',tour:[
+    {img:'whatsnew/v17-kalender.webp',t:'Kalender mit Wochenansicht',txt:'Monat oder Woche mit Uhrzeiten, jede Art mit eigener Farbe.',
+     steps:['Oben zwischen Monat und Woche umschalten','Auf einen Tag oder eine Uhrzeit klicken, um direkt etwas einzutragen','Eintrag anklicken: erledigt, verschieben, bearbeiten oder löschen']},
+    {img:'whatsnew/v17-belegt.webp',t:'Zeigen, woran du sitzt',txt:'Damit der andere weiß, wann du keine Zeit hast und wie weit dein Projekt ist.',
+     steps:['Im Kalender oben „Ich bin belegt“ drücken','Eintragen, woran du arbeitest, bis wann und wie weit du bist','Wer dir in der Zeit etwas einträgt, bekommt eine Warnung']},
+    {img:'whatsnew/v17-erfolge.webp',t:'Spaß-Module erspielen',txt:'Die Spaß-Module gibt es nicht mehr geschenkt, man schaltet sie beim Arbeiten frei.',
+     steps:['Im Shop steht bei jedem Modul, was man dafür tun muss','Der Balken füllt sich beim normalen Arbeiten von selbst','Für 20 erledigte Aufgaben gibt es einen Goldrahmen ums Profilbild']}
+  ],items:[
     'Kalender komplett neu: Monat und Woche mit Uhrzeiten, Eintrag per Klick auf Tag oder Uhrzeit, Arten mit eigenen Farben (Termin, Aufgabe, Dreh, Schnitt, Akquise), per Klick änderbar',
     'Aufgaben im Kalender anklicken: Erledigt (auch in Notion), Verschieben, Bearbeiten, Löschen. Aufgaben für den anderen kommen als Kalender-Einladung mit Erinnerung',
     'Verfügbarkeit: „Ich bin belegt“ mit Stand in Prozent und ab wann wieder frei. Das Studio warnt, wenn ihr jemandem in der Zeit etwas eintragt',
@@ -7856,13 +7979,52 @@ const CHANGELOG=[
     '💶 Geldeingänge: Kontist-Export reinziehen, bezahlte Rechnungen werden erkannt'
   ]}
 ];
-function showNews(all){
+function showNews(all,asList){
   let seen='';try{seen=localStorage.getItem('lm_seen_version')||''}catch(_){}
   const list=all?CHANGELOG:CHANGELOG.filter(c=>!seen||c.v>seen);
   if(!list.length)return;
+  const slides=(all?CHANGELOG.filter(c=>c.tour).slice(0,3):list).flatMap(c=>(c.tour||[]));
+  if(slides.length&&!asList){showUpd(slides);return}
   $('newsSheet').innerHTML=`<p class="onb-kicker" style="color:var(--brand)">Was ist neu</p><h2 id="newsTitle">Das Studio hat ein Update bekommen</h2>${list.map(c=>`<div class="news-block"><small>${esc(c.d)}</small><ul>${c.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}<div class="sheet-actions"><button class="btn btn-primary sm" id="newsOk">Alles klar</button></div>`;
   const w=$('newsWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');
 }
+/* Großes Update-Fenster: ein Bild pro Neuerung, darunter was zu tun ist */
+let UPD={slides:[],i:0};
+function showUpd(slides){
+  UPD={slides,i:0};
+  slides.forEach(sl=>{const im=new Image();im.src=sl.img});
+  const w=$('tourWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');renderUpd(0);
+  setTimeout(()=>{const b=$('tourNext');b&&b.focus({preventScroll:true})},60);
+}
+function renderUpd(dir){
+  const {slides,i}=UPD,sl=slides[i],last=i===slides.length-1;
+  $('tourSheet').innerHTML=`<button class="icon-btn tour-x" data-tourclose aria-label="Schließen"><svg class="i sm"><use href="#i-x"/></svg></button>
+    <div class="tour-stage"><div class="tour-img ${dir>0?'in-r':dir<0?'in-l':''}"><img src="${esc(sl.img)}" alt="${esc(sl.t)}"></div></div>
+    <div class="tour-side ${dir>0?'in-r':dir<0?'in-l':''}">
+      <p class="tour-k">Neu im Studio <span>${i+1} von ${slides.length}</span></p>
+      <h2 id="tourTitle">${esc(sl.t)}</h2>
+      <p class="tour-txt">${esc(sl.txt)}</p>
+      <div class="tour-steps"><small>So geht's</small><ol>${sl.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>
+      <div class="tour-foot">
+        <div class="tour-dots">${slides.map((_,j)=>`<button class="${j===i?'on':''}" data-tourgo="${j}" aria-label="Neuerung ${j+1}"></button>`).join('')}</div>
+        <div class="tour-nav">${i?'<button class="btn btn-glass sm" data-tourprev>Zurück</button>':'<button class="btn btn-glass sm" data-tourlist>Als Liste</button>'}<button class="btn btn-primary sm" id="tourNext" data-tournext>${last?'Los geht\'s':'Weiter'}</button></div>
+      </div>
+    </div>`;
+}
+function updGo(j){const n=UPD.slides.length;if(j<0||j>=n)return;const d=j>UPD.i?1:-1;UPD.i=j;renderUpd(d)}
+function closeUpd(){const w=$('tourWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true');try{localStorage.setItem('lm_seen_version',APP_VERSION)}catch(_){}}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#tourWrap'))return;
+  if(e.target.id==='tourWrap'||e.target.closest('[data-tourclose]')){closeUpd();return}
+  if(e.target.closest('[data-tournext]')){UPD.i===UPD.slides.length-1?closeUpd():updGo(UPD.i+1);return}
+  if(e.target.closest('[data-tourprev]')){updGo(UPD.i-1);return}
+  if(e.target.closest('[data-tourlist]')){closeUpd();showNews(true,true);return}
+  const g=e.target.closest('[data-tourgo]');if(g)updGo(+g.dataset.tourgo);
+});
+document.addEventListener('keydown',e=>{
+  if(!$('tourWrap')||!$('tourWrap').classList.contains('show'))return;
+  if(e.key==='ArrowRight'){e.preventDefault();updGo(UPD.i+1)}else if(e.key==='ArrowLeft'){e.preventDefault();updGo(UPD.i-1)}else if(e.key==='Escape')closeUpd();
+});
 function closeNews(){const w=$('newsWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true');try{localStorage.setItem('lm_seen_version',APP_VERSION)}catch(_){}}
 document.addEventListener('click',e=>{
   if(e.target.closest('#newsOk')||e.target.id==='newsWrap'){closeNews();return}

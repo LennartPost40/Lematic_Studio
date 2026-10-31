@@ -2249,6 +2249,25 @@ input,select,textarea{border-radius:12px;background:#fff;border:1px solid rgba(2
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-2)}
 button.secondary,button.ghost{border-radius:999px;background:rgba(255,255,255,.8);border:1px solid var(--line);color:#1D1D1F}
 #downloadPdfBtn,#nextBtn{background:#FCD717;color:#073D30;border-color:#FCD717;font-weight:650}
+/* Versand direkt aus dem Rechner */
+.send-box{margin-top:16px;padding:16px;border-radius:18px;background:linear-gradient(135deg,rgba(252,215,23,.16),rgba(255,255,255,.9));border:1px solid rgba(7,61,48,.1);display:grid;gap:12px}
+.send-head b{display:block;font-size:15px;color:#073D30}.send-head small{font-size:12.5px;color:#6E6E73}
+.send-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:900px){.send-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.send-b{display:flex!important;align-items:center;gap:10px;text-align:left;padding:12px!important;border-radius:14px!important;background:#fff!important;color:#1D1D1F!important;border:1px solid rgba(29,29,31,.1)!important;min-height:0;cursor:pointer;transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
+.send-b:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 22px -14px rgba(7,61,48,.5)}
+.send-b:disabled{opacity:.6;cursor:wait}
+.send-b svg{width:22px;height:22px;flex:none;fill:none;stroke:#0C5543;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.send-b b{display:block;font-size:13.5px;font-weight:650}.send-b small{display:block;font-size:11.5px;color:#6E6E73;font-weight:400}
+.send-b.send-all{background:#073D30!important;color:#fff!important;border-color:#073D30!important}.send-b.send-all svg{stroke:#FCD717}.send-b.send-all small{color:rgba(255,255,255,.7)}
+.send-status{display:grid;gap:6px}.send-status:empty{display:none}
+.ss-row{display:flex;align-items:center;gap:8px;font-size:13px;color:#1D1D1F;background:rgba(255,255,255,.85);border-radius:10px;padding:8px 10px}
+.ss-row svg{width:16px;height:16px;flex:none;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ss-row.ok svg{stroke:#1F8A4C}.ss-row.err{color:#B5000F}.ss-row.err svg{stroke:#D70015}.ss-row.wait svg{stroke:#8A6400;animation:ssSpin 1s linear infinite}
+.ss-row a{margin-left:auto;color:#0C5543;font-weight:600;text-decoration:none;white-space:nowrap}
+@keyframes ssSpin{to{transform:rotate(360deg)}}
+html.lm-embed #downloadPdfBtn{background:rgba(255,255,255,.85);color:#1D1D1F;border:1px solid rgba(29,29,31,.12);font-weight:500}
+
 .customer-box span,.draft-box span{color:var(--primary-2);letter-spacing:.08em;font-size:11px;font-weight:700}
 .customer-box strong,.draft-box strong{font-size:15px;color:#1D1D1F}
 .customer-box small,.draft-box small{font-size:12px;font-weight:500}
@@ -2633,6 +2652,16 @@ try{if(window.parent!==window){const cs=parent.getComputedStyle(parent.document.
 
         <section id="step-7" class="step">
           <div id="preview" class="preview"></div>
+          <div class="send-box" id="sendBox" hidden>
+            <div class="send-head"><b>Angebot fertig? Direkt ablegen und verschicken</b><small>Alles landet im LeMatic-Konto: Drive-Ordner des Kunden, Notion „Rechnungen &amp; Angebote“ und Gmail-Entwürfe.</small></div>
+            <div class="send-grid">
+              <button type="button" class="send-b send-all" data-send="all"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg><span><b>Alles ablegen</b><small>Drive + Notion + Mail-Entwurf</small></span></button>
+              <button type="button" class="send-b" data-send="drive"><svg viewBox="0 0 24 24"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6H9l2 2h8.5A1.5 1.5 0 0 1 21 9.5v8a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 17.5z"/></svg><span><b>In Drive speichern</b><small>im Ordner des Kunden</small></span></button>
+              <button type="button" class="send-b" data-send="draft"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6 8.5-6"/></svg><span><b>In Gmail-Entwürfe</b><small>Mail mit PDF, nur noch senden</small></span></button>
+              <button type="button" class="send-b" data-send="wa"><svg viewBox="0 0 24 24"><path d="M20 11.6a8 8 0 0 1-11.8 7L4 20l1.4-4.1A8 8 0 1 1 20 11.6z"/></svg><span><b>Per WhatsApp</b><small>mit Link zum PDF</small></span></button>
+            </div>
+            <div class="send-status" id="sendStatus" aria-live="polite"></div>
+          </div>
           <div class="actions bottom-actions">
             <button id="downloadPdfBtn">PDF herunterladen</button>
           </div>
@@ -6620,6 +6649,57 @@ function saveCustomTemplate() {
   }
   alert("Vorlage gespeichert.");
 }
+
+/* Baut das PDF und die Angaben für die Ablage; null, wenn etwas fehlt */
+async function buildOfferPdf() {
+  const values = getFormData();
+  const issues = generateIssues(values);
+  const criticalCount = issues.filter((issue) => issue.severity === "kritisch").length;
+  if (criticalCount > 0) {
+    alert(`Noch ${criticalCount} kritische Punkte offen. Bitte zuerst in Schritt 6 klären.`);
+    showStep(6);
+    return null;
+  }
+  let savedEntry = null;
+  try { savedEntry = saveCurrentOffer({ silent: true }); } catch (e) { console.warn("Entwurf", e); }
+  Object.assign(values, getFormData());
+  updatePreview();
+  const docNode = refs.preview.querySelector(".offer-doc");
+  if (!docNode) { alert("PDF konnte nicht erstellt werden."); return null; }
+  const offerNumber = savedEntry ? savedEntry.offerNumber : getEffectiveOfferNumber(values);
+  const customer = (values.customerCompany || "Kunde").replace(/[^a-zA-Z0-9-_]+/g, "_");
+  const filename = `Angebot_${customer}_${offerNumber}.pdf`;
+  const blob = await createPdfBlob(docNode);
+  if (!blob) { alert("PDF konnte nicht erzeugt werden."); return null; }
+  return { blob, filename, meta: {
+    no: offerNumber, customer: values.customerCompany || "", contact: values.customerContact || "",
+    salutation: values.customerSalutation || "", email: values.customerEmail || "", phone: values.customerPhone || "",
+    title: values.projectTitle || "", total: getPayableTotal(values) } };
+}
+const SS_IC = { ok: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>', err: '<svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>', wait: '<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg>' };
+function sendStatus(rows) {
+  const el = document.getElementById("sendStatus"); if (!el) return;
+  el.innerHTML = rows.map((r) => `<div class="ss-row ${r.st}">${SS_IC[r.st] || ""}<span>${escapeHtml(r.text)}</span>${r.link ? `<a href="${escapeHtml(r.link)}" target="_blank" rel="noopener">${escapeHtml(r.linkText || "Öffnen")}</a>` : ""}</div>`).join("");
+}
+async function sendOffer(act, btn) {
+  const api = window.parent && window.parent.studioOfferAction;
+  if (!api) return;
+  /* WhatsApp braucht das Fenster sofort, sonst blockt der Browser */
+  const win = act === "wa" ? window.open("about:blank", "_blank") : null;
+  const btns = document.querySelectorAll("[data-send]"); btns.forEach((b) => (b.disabled = true));
+  sendStatus([{ st: "wait", text: "PDF wird erstellt …" }]);
+  try {
+    const pdf = await buildOfferPdf();
+    if (!pdf) { sendStatus([]); if (win) win.close(); return; }
+    await api(act, pdf.blob, pdf.filename, pdf.meta, { win, onStatus: sendStatus });
+  } catch (e) {
+    if (win) try { win.close(); } catch (_) {}
+    sendStatus([{ st: "err", text: "Nicht geklappt: " + (e && e.message ? e.message : e) }]);
+  }
+  btns.forEach((b) => (b.disabled = false));
+}
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-send]"); if (b) sendOffer(b.dataset.send, b); });
+if (window.LM_EMBED) { const sb = document.getElementById("sendBox"); if (sb) sb.hidden = false; }
 
 async function downloadPdf() {
   const values = getFormData();
