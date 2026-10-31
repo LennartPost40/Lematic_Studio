@@ -51,18 +51,23 @@ Regeln:
 {"type":"bar","title":"Kurzer Titel","labels":["A","B"],"values":[1,2],"unit":"€"}
 \`\`\`
   type ist "bar" oder "line". Keine Zahlen erfinden.
-- Du kannst Dinge erledigen. Wenn die Person etwas anlegen, verschieben, abhaken, löschen oder notieren will, beschreibe
-  in einem Satz, was du vorschlägst, und hänge GENAU EINEN Block an (die Person bestätigt danach per Knopf, du führst nichts selbst aus):
+- Du kannst Dinge erledigen: Aufgaben und Termine anlegen, verschieben, löschen, abhaken, Aufgaben an Lennart oder Martin
+  übergeben, Kunden in einen anderen Status oder ins Archiv verschieben, Notizen speichern. Sag NIE, dass du das nicht kannst.
+  Wenn die Person so etwas will, beschreibe in einem Satz, was du vorschlägst, und hänge IMMER GENAU EINEN Block an
+  (die Person bestätigt danach per Knopf „Ausführen“, erst dann passiert es):
 \`\`\`actions
 [{"type":"task_create","title":"...","who":"LP oder MS","due":"JJJJ-MM-TT","time":"HH:MM oder leer","kunde_id":"ID oder leer"},
  {"type":"task_done","id":"Aufgabe-ID"},{"type":"task_move","id":"Aufgabe-ID","due":"JJJJ-MM-TT","time":"HH:MM oder leer"},
- {"type":"task_delete","id":"Aufgabe-ID"},
+ {"type":"task_delete","id":"Aufgabe-ID"},{"type":"task_move","id":"Aufgabe-ID","who":"LP oder MS"} (übergeben),
  {"type":"event_create","title":"...","date":"JJJJ-MM-TT","time":"HH:MM oder leer","dauer_min":60,"ort":"","kunde_id":""},
  {"type":"event_move","id":"Termin-ID","date":"JJJJ-MM-TT","time":"HH:MM oder leer"},
+ {"type":"event_delete","id":"Termin-ID"},
+ {"type":"kunde_status","kunde_id":"Kunde-ID","status":"Bestandskunde|Warm|Angefragt|Kalt|Abgesagt|Archiv"},
  {"type":"note_add","kunde_id":"Kunde-ID","text":"..."}]
 \`\`\`
-  Nur die Einträge, die wirklich gebraucht werden. IDs exakt aus dem Wissen übernehmen, nie erfinden; findest du die passende
-  Aufgabe oder den Termin nicht, frag nach. "who": Lennart = LP, Martin = MS; ohne Angabe die fragende Person.
+  Nur die Einträge, die wirklich gebraucht werden. IDs exakt aus dem Wissen übernehmen (stehen in eckigen Klammern), nie erfinden.
+  Bei Aufgaben und Terminen zusätzlich "titel" mit dem Titel mitgeben (bei Terminen auch "datum"), als Rückfall.
+  Passen mehrere Termine oder Aufgaben, frag kurz nach, welche gemeint ist. "who": Lennart = LP, Martin = MS; ohne Angabe die fragende Person.
   Relative Angaben wie "morgen" oder "Freitag" vom heutigen Datum aus ausrechnen.
 Fragt gerade: ${c.user || 'jemand aus dem Team'}. Heute ist ${c.heute || ''}.
 --- LeMatic-Wissen ---
@@ -114,7 +119,7 @@ export default async function handler(req, res) {
   const { task, context } = req.body || {};
   const build = TASKS[task];
   if (!build || !context || typeof context !== 'object') return res.status(400).json({ error: 'Unbekannte Aufgabe' });
-  const clip = v => String(v == null ? '' : v).slice(0, task === 'agent' ? 60000 : task === 'tipps' ? 30000 : 12000);
+  const clip = v => String(v == null ? '' : v).slice(0, task === 'agent' ? 120000 : task === 'tipps' ? 30000 : 12000);
   // Beleg als Datei (Foto oder gescanntes PDF): separat, nicht abschneiden
   const file = task === 'beleg' && typeof context.file === 'string' && context.file.length < 6_000_000 ? context.file : null;
   const mime = String(context.mime || '');
