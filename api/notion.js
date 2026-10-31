@@ -16,7 +16,9 @@ const DS = {
   projekte:   'ff5a312a-562f-48bb-a320-f32ab245ba81',
   kunden:     '1a47c61b-a5b6-416e-b4f2-d32454de35f2',
   gespraeche: 'cb294d68-10dd-4427-aa3b-ba6eda7086ec',
-  laufwerke:  '0bba1261-69bd-49c1-ab22-beaf50ead987'
+  laufwerke:  '0bba1261-69bd-49c1-ab22-beaf50ead987',
+  // Nur als Eingang für neue Aufgaben vom WhatsApp-Bot (Filter "Im Studio" = nein, siehe ?neu=1)
+  aufgaben:   'cc64b42c-e0db-4186-a540-7c824cfa8bb1'
 };
 
 import { checkGoogle } from './_auth.js';
@@ -117,6 +119,10 @@ export default async function handler(req, res) {
       for (let i = 0; i < 5; i++) {
         const body = { page_size: 100 };
         if (cursor) body.start_cursor = cursor;
+        if (db === 'aufgaben') body.filter = { and: [
+          { property: 'Im Studio', checkbox: { equals: false } },
+          { timestamp: 'created_time', created_time: { on_or_after: '2026-10-31' } }
+        ] };
         const r = await fetch(`https://api.notion.com/v1/databases/${dsId}/query`, {
           method: 'POST', headers, body: JSON.stringify(body)
         });

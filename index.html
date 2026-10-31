@@ -2778,7 +2778,9 @@ async function gfetch(url,opts={},retry=true){
   const t=await getToken();
   const r=await fetch(url,{...opts,headers:{...(opts.headers||{}),Authorization:'Bearer '+t}});
   if(r.status===401&&retry){accessToken=null;return gfetch(url,opts,false)}
-  if(!r.ok){let m='HTTP '+r.status;try{const j=await r.json();m=(j.error&&j.error.message)||m}catch(_){}throw new Error(m)}
+  if(!r.ok){let m='HTTP '+r.status;try{const j=await r.json();m=(j.error&&j.error.message)||m}catch(_){}
+    if(/Calendar API has not been used|calendar-json\.googleapis\.com/.test(m))m='Der Google-Kalender ist im Google-Cloud-Projekt noch nicht freigeschaltet (Calendar API aktivieren).';
+    throw new Error(m)}
   return r;
 }
 function initials(name){return (name||'?').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')}
@@ -3952,6 +3954,7 @@ async function loadMyCalendar(){
     });
     EVENTS=evs;TASKS=tasks;syncTaskEvents();
     MY_CAL_LOADED=CAL_LOADED=true;
+    setTimeout(()=>safe('botTasks',importBotTasks),1500);
     const at=new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     setHTML('calSync','<svg class="i sm"><use href="#i-check"/></svg>LeMatic-Kalender abgeglichen um '+at+' Uhr');
     if(pill)pill.innerHTML='<span class="pill ok"><i></i>Verbunden</span>';
@@ -6048,6 +6051,34 @@ on('csGo','click',async()=>{
   }catch(e){msg.style.color='';msg.textContent='Nicht freigegeben: '+e.message}
   btn.disabled=false;
 });
+
+
+/* ---------- Aufgaben vom WhatsApp-Bot übernehmen ----------
+   Der Bot legt Aufgaben in Notion „Aufgaben“ an (Wer, Deadline, Kunde, Quelle). Das Studio holt alle,
+   die noch nicht „Im Studio“ sind, legt sie als Studio-Aufgabe an und hakt „Im Studio“ ab. */
+let botBusy=false;
+async function importBotTasks(){
+  if(!GAUTH||!CAL_LOADED||botBusy)return;botBusy=true;
+  try{
+    const rows=(await notionGet('aufgaben')).filter(r=>r['Im Studio']!==true&&r['Status']!=='Erledigt'&&String(r['Aufgabe']||'').trim());
+    let n=0;
+    for(const r of rows){
+      const title=String(r['Aufgabe']).trim().slice(0,300);
+      const who=r['Wer']==='Lennart'?'LP':r['Wer']==='Martin'?'MS':/\blennart\b/i.test(title)?'LP':'MS';
+      const kids=(Array.isArray(r['Kunde'])?r['Kunde']:[]).map(x=>String(x).replace(/-/g,''));
+      const k=KUNDEN.find(q=>kids.includes(String(q.id).replace(/-/g,'')))||(typeof kundeIdForText==='function'?KUNDEN.find(q=>q.id===kundeIdForText(title)):null);
+      if(TASKS.some(t=>t.t===title&&!t.done))continue;
+      try{
+        await notionUpdate('aufgaben',r.id,{'Im Studio':{checkbox:true}});
+        await createTask({title,who,due:String(r['Deadline']||'').slice(0,10)||addDays(TODAY,1),time:/T(\d\d:\d\d)/.test(r['Deadline']||'')?RegExp.$1:null,kid:k?k.id:'',kname:k?k.name:''});
+        n++;
+      }catch(e){try{await notionUpdate('aufgaben',r.id,{'Im Studio':{checkbox:false}})}catch(_){}}
+    }
+    if(n)toast('📥 '+n+(n===1?' neue Aufgabe':' neue Aufgaben')+' übernommen (WhatsApp/Notion)');
+  }catch(_){}
+  botBusy=false;
+}
+setInterval(()=>safe('botTasks',importBotTasks),120000);
 
 /* ---------- Zentrale Pro: gesperrte Premium-Module (Test, keine echten Käufe) ---------- */
 const PREMIUM={
