@@ -1574,6 +1574,21 @@ body.ang-full .undo-dock{left:22px}
 .inv-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.inv-btns .btn[hidden]{display:none}.inv-btns:has(#invSaveMail[hidden]){grid-template-columns:1fr}
 .inv-dup{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:rgba(255,159,10,.14);color:#8A4B00;font-size:13px}.inv-dup[hidden]{display:none}.inv-dup a{color:inherit;font-weight:600}
 .prem-free h2,.prem-free p{color:var(--ink)!important}.prem-free .prem-kicker{color:#8A6400!important}.prem-free .prem-price span{color:var(--ink-2)!important}#payMode{display:none}
+
+/* Update-Fenster ohne eigenes Bild */
+.upd-gen{width:100%;max-width:620px;display:grid;gap:22px;justify-items:center}
+.ug-v{font-size:64px;font-weight:800;letter-spacing:-.04em;color:var(--brand);background:rgba(255,255,255,.75);padding:6px 26px;border-radius:26px;box-shadow:0 20px 50px -24px rgba(7,40,32,.5);animation:rwPop .7s cubic-bezier(.34,1.56,.64,1)}
+.ug-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,240px));justify-content:center;gap:12px;width:100%}
+@media (max-width:700px){.ug-v{font-size:40px;padding:4px 18px;border-radius:18px}.ug-grid{grid-template-columns:repeat(2,1fr);gap:8px}.ug-card{padding:12px;gap:8px;border-radius:16px}.ug-card span{width:32px;height:32px;border-radius:10px}.ug-card b{font-size:13px}.upd-gen{gap:14px}}
+.ug-card{display:grid;gap:10px;justify-items:start;padding:16px;border-radius:20px;background:rgba(255,255,255,.88);box-shadow:0 14px 34px -20px rgba(7,40,32,.5);animation:ugIn .6s cubic-bezier(.34,1.56,.64,1) both}
+.ug-card span{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#FCD717,#E0B400);color:#073D30}
+.ug-card b{font-size:14.5px;line-height:1.3;color:var(--ink)}
+@keyframes ugIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+html.theme-dark .ug-v{background:rgba(255,255,255,.08);color:#62C7A2}
+html.theme-dark .ug-card{background:rgba(40,50,46,.92)}
+html.theme-dark .tour-dots button{background:rgba(255,255,255,.22)}
+html.theme-dark .tour-dots button.on{background:#62C7A2}
+@media (prefers-reduced-motion:reduce){.ug-card,.ug-v{animation:none}}
 /* Startbühne */
 .home-stage{min-height:calc(100vh - 40px);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:40px 16px 72px!important;margin-bottom:8px;background:none!important;border:0!important;box-shadow:none!important}
 .hst-in{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
@@ -8451,8 +8466,11 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.24';
+const APP_VERSION='2026-10-31.25';
 const CHANGELOG=[
+  {v:'2026-10-31.25',d:'31.10.2026',items:[
+    'Update-Fenster: Jedes Update kommt jetzt im großen Fenster, auch kleine. Die kurze Liste gibt es weiter über „Als Liste“'
+  ]},
   {v:'2026-10-31.24',d:'31.10.2026',items:[
     'Kundenkartei: „offen“ ist jetzt die Summe aller mit dem Kunden verknüpften Rechnungen mit Status „Offen“, immer frisch aus Notion. Die Summe über alle Kunden stimmt mit „offen“ unter Rechnungen überein',
     'Dunkler Modus: Termine, Drehs, Aufgaben und Belegungen im Kalender heller und kräftiger'
@@ -8594,11 +8612,13 @@ const CHANGELOG=[
     '💶 Geldeingänge: Kontist-Export reinziehen, bezahlte Rechnungen werden erkannt'
   ]}
 ];
+const vKey=v=>String(v||'').split(/[-.]/).map(n=>String(+n||0).padStart(5,'0')).join('.');
+const vNewer=(a,b)=>vKey(a)>vKey(b);
 function showNews(all,asList){
   let seen='';try{seen=localStorage.getItem('lm_seen_version')||''}catch(_){}
-  const list=all?CHANGELOG:CHANGELOG.filter(c=>!seen||c.v>seen);
+  const list=all?CHANGELOG:CHANGELOG.filter(c=>!seen||vNewer(c.v,seen));
   if(!list.length)return;
-  const slides=(all?CHANGELOG.filter(c=>c.tour).slice(0,3):list).slice().reverse().flatMap(c=>(c.tour||[]));
+  const slides=(all?CHANGELOG.slice(0,4):list.slice().reverse()).flatMap(updSlides);
   if(slides.length&&!asList){showUpd(slides);return}
   $('newsSheet').innerHTML=`<p class="onb-kicker" style="color:var(--brand)">Was ist neu</p><h2 id="newsTitle">Das Studio hat ein Update bekommen</h2>${list.map(c=>`<div class="news-block"><small>${esc(c.d)}</small><ul>${c.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}<div class="sheet-actions"><button class="btn btn-primary sm" id="newsOk">Alles klar</button></div>`;
   const w=$('newsWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');
@@ -8607,19 +8627,32 @@ function showNews(all,asList){
 let UPD={slides:[],i:0};
 function showUpd(slides){
   UPD={slides,i:0};
-  slides.forEach(sl=>{const im=new Image();im.src=sl.img});
+  slides.forEach(sl=>{if(sl.img){const im=new Image();im.src=sl.img}});
   const w=$('tourWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');renderUpd(0);
   setTimeout(()=>{const b=$('tourNext');b&&b.focus({preventScroll:true})},60);
+}
+/* Jedes Update kommt im großen Fenster: ohne eigene Bilder wird eine Übersichtsseite gebaut */
+const UPD_IC=[[/dunkel|hell/i,'i-moon'],[/kalender|termin|dreh|belegt/i,'i-cal'],[/kunde/i,'i-users'],[/rechnung|offen|€/i,'i-receipt'],[/angebot/i,'i-pencil'],[/mitteil|glocke|erinner/i,'i-bell'],[/whatsapp|mail|gmail/i,'i-mail'],[/intelligence|LI\b/i,'i-sparkle'],[/seitenleiste|profil/i,'i-users'],[/fehler|warn/i,'i-warn']];
+const updIc=t=>(UPD_IC.find(([r])=>r.test(t))||[0,'i-sparkle'])[1];
+const updLabel=t=>{const a=String(t).split(/:\s/)[0];return a.length<=34?a:String(t).split(/\s+/).slice(0,4).join(' ')+' …'};
+function updSlides(c){
+  if(c.tour&&c.tour.length)return c.tour;
+  const v='v.'+String(c.v).split('.').pop();
+  return[{gen:true,v,t:c.items.length===1?updLabel(c.items[0]):'Kleines Update, '+v,txt:'Kurz zusammengefasst, was sich geändert hat. Du musst nichts weiter tun.',steps:c.items}];
+}
+function updStage(sl){
+  if(!sl.gen)return `<img src="${esc(sl.img)}" alt="${esc(sl.t)}">`;
+  return `<div class="upd-gen"><span class="ug-v">${esc(sl.v)}</span><div class="ug-grid">${sl.steps.map((x,j)=>`<div class="ug-card" style="animation-delay:${80+j*90}ms"><span><svg class="i"><use href="#${updIc(x)}"/></svg></span><b>${esc(updLabel(x))}</b></div>`).join('')}</div></div>`;
 }
 function renderUpd(dir){
   const {slides,i}=UPD,sl=slides[i],last=i===slides.length-1;
   $('tourSheet').innerHTML=`<button class="icon-btn tour-x" data-tourclose aria-label="Schließen"><svg class="i sm"><use href="#i-x"/></svg></button>
-    <div class="tour-stage"><div class="tour-img ${dir>0?'in-r':dir<0?'in-l':''}"><img src="${esc(sl.img)}" alt="${esc(sl.t)}"></div></div>
+    <div class="tour-stage"><div class="tour-img ${dir>0?'in-r':dir<0?'in-l':''}">${updStage(sl)}</div></div>
     <div class="tour-side ${dir>0?'in-r':dir<0?'in-l':''}">
       <p class="tour-k">Neu im Studio <span>${i+1} von ${slides.length}</span></p>
       <h2 id="tourTitle">${esc(sl.t)}</h2>
       <p class="tour-txt">${esc(sl.txt)}</p>
-      <div class="tour-steps"><small>So geht's</small><ol>${sl.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>
+      <div class="tour-steps"><small>${sl.gen?'Was neu ist':'So geht\'s'}</small><ol>${sl.steps.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></div>
       <div class="tour-foot">
         <div class="tour-dots">${slides.map((_,j)=>`<button class="${j===i?'on':''}" data-tourgo="${j}" aria-label="Neuerung ${j+1}"></button>`).join('')}</div>
         <div class="tour-nav">${i?'<button class="btn btn-glass sm" data-tourprev>Zurück</button>':'<button class="btn btn-glass sm" data-tourlist>Als Liste</button>'}<button class="btn btn-primary sm" id="tourNext" data-tournext>${last?'Los geht\'s':'Weiter'}</button></div>
@@ -8657,7 +8690,7 @@ setInterval(checkUpdate,5*60000);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpdate()});
 function newsAfterLogin(){
   let seen='';try{seen=localStorage.getItem('lm_seen_version')||''}catch(_){}
-  try{if(seen&&seen!==APP_VERSION){const c=CHANGELOG.filter(x=>x.v>seen);c.slice().reverse().forEach(x=>noteLog({t:'Update auf v.'+x.v.split('.').pop()+': '+(x.tour&&x.tour[0]?x.tour[0].t:'Neue Funktionen'),s:x.items.slice(0,2).join(' · '),kind:'update'}))}}catch(_){}
+  try{if(seen&&seen!==APP_VERSION){const c=CHANGELOG.filter(x=>vNewer(x.v,seen));c.slice().reverse().forEach(x=>noteLog({t:'Update auf v.'+x.v.split('.').pop()+': '+(x.tour&&x.tour[0]?x.tour[0].t:'Neue Funktionen'),s:x.items.slice(0,2).join(' · '),kind:'update'}))}}catch(_){}
   if(!seen){try{localStorage.setItem('lm_seen_version',APP_VERSION)}catch(_){}return} /* Erstbesuch: Willkommen statt Update-Liste */
   if(seen!==APP_VERSION&&$('onb').hidden)setTimeout(()=>showNews(false),1200);
 }
