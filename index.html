@@ -2598,7 +2598,7 @@ const onDay=(ds,filter)=>EVENTS.filter(e=>e.d<=ds&&(e.end||e.d)>=ds&&(!filter||f
 /* Aufgaben kommen ausschließlich aus dem LeMatic-Kalender (Termine mit Markierung „lmTask“). */
 let TASKS=[];
 /* Kundenkartei aus Notion „Kunden & Kontakte“ */
-let KUNDEN=[],KSCHEMA=null,KARTEI_LOADED=false,GESPR=[],GESPR_ERR='';
+let KUNDEN=[],KSCHEMA=null,KARTEI_LOADED=false,GESPR=[],GESPR_ERR='',PRIV_IDS=new Set();
 const endOfWeek=()=>{const d=parse(TODAY);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()+(6-dow));return iso(d)};
 const startOfWeek=()=>{const d=parse(TODAY);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return iso(d)};
 
@@ -4155,9 +4155,10 @@ async function loadKartei(){
       notionGet('kunden'),
       notionGet('gespraeche').catch(e=>{console.warn('Kundengespräche nicht erreichbar:',e.message);GESPR_ERR=e.message;return null})
     ]);
-    if(gs){GESPR_ERR='';GESPR=gs.map(r=>({id:r.id,url:r.url,title:r['Titel']||'(ohne Titel)',date:(r['Datum']||r._created||'').slice(0,10),art:r['Art']||'',chance:r['Chance']||'',bedarf:r['Wünsche / Bedarf']||'',budget:r['Budget']||'',next:r['Nächster Schritt']||'',einsch:r['Einschätzung']||'',quelle:r['Quelle']||'',aufnahme:r['Aufnahme']||'',kids:Array.isArray(r['Kunde'])?r['Kunde']:[]})).sort((a,b)=>b.date.localeCompare(a.date))}
+    if(gs){GESPR_ERR='';GESPR=gs.filter(r=>{const ks=Array.isArray(r['Kunde'])?r['Kunde']:[];return !(ks.length&&ks.every(id=>PRIV_IDS.has(String(id).replace(/-/g,''))))&&notPrivate(r['Titel'])}).map(r=>({id:r.id,url:r.url,title:r['Titel']||'(ohne Titel)',date:(r['Datum']||r._created||'').slice(0,10),art:r['Art']||'',chance:r['Chance']||'',bedarf:r['Wünsche / Bedarf']||'',budget:r['Budget']||'',next:r['Nächster Schritt']||'',einsch:r['Einschätzung']||'',quelle:r['Quelle']||'',aufnahme:r['Aufnahme']||'',kids:Array.isArray(r['Kunde'])?r['Kunde']:[]})).sort((a,b)=>b.date.localeCompare(a.date))}
     KSCHEMA=sch.props||{};
     KUNDEN=rows.map(rowToKunde).filter(k=>!/^Privat/.test(k.status)); /* Private Einträge von Lennart erscheinen im gemeinsamen Studio gar nicht */
+    safe('priv',()=>setPrivate(rows.filter(r=>/^Privat/.test(r['Status']||''))));
     KARTEI_LOADED=true;
     safe('invParty',linkInvoicesToKunden);
     rebuildMailMap();
@@ -5182,7 +5183,7 @@ function kProjekte(k){
   if(!PROJEKTE)return null;
   const norm=x=>String(x||'').replace(/-/g,'');
   const ids=new Set((Array.isArray(k.raw['Projekte'])?k.raw['Projekte']:[]).map(norm));
-  return PROJEKTE.filter(p=>ids.has(norm(p.id))||kMatches(k,p['Projekt'])).filter(p=>notPrivate(p['Projekt']));
+  return PROJEKTE.filter(p=>ids.has(norm(p.id))||kMatches(k,p['Projekt'])).filter(p=>notPrivate(p['Projekt'],p['Ergebnis/KPI'])&&!(Array.isArray(p['Kunde'])&&p['Kunde'].some(id=>PRIV_IDS.has(norm(id)))));
 }
 function kSince(k){
   const ds=[String(k.raw._created||'').slice(0,10)];
@@ -5250,7 +5251,15 @@ async function loadKFiles(k){
 
 /* ---------- LeMatic-Agent und Auswertung ---------- */
 /* Alles, was privat ist, kommt nie in den Kontext des Agenten oder in die Grafiken. */
-const PRIVATE_RX=/indian\s*spirit|nature\s*one/i;
+/* Privat: alles, was in Notion auf „Privat (Lennart)“ steht, plus feste Stichworte. Martin sieht davon nichts. */
+const PRIVATE_EXTRA=['indian spirit','nature one','fairground'];
+let PRIVATE_RX=new RegExp(PRIVATE_EXTRA.map(w=>w.replace(/\s+/g,'\\s*')).join('|'),'i');
+function setPrivate(rows){
+  PRIV_IDS=new Set(rows.map(r=>String(r.id).replace(/-/g,'')));
+  const names=rows.map(r=>String(r['Name']||'').replace(/\(.*?\)|[–-].*$/g,'').trim().toLowerCase()).filter(n=>n.length>=5);
+  const esc2=x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s*');
+  PRIVATE_RX=new RegExp([...new Set([...PRIVATE_EXTRA,...names])].map(esc2).join('|'),'i');
+}
 const notPrivate=(...xs)=>!xs.some(x=>PRIVATE_RX.test(String(x||'')));
 function agentInvoices(){return INVOICES.filter(i=>notPrivate(i.party,i.note,i.no,i.p))}
 function agentMails(){return MAILS.filter(m=>notPrivate(m.from,m.subj,m.snip,m.client))}
