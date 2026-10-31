@@ -5,8 +5,11 @@
 // damit die Funktion kein allgemeiner, offener Chat-Proxy ist.
 import { checkGoogle } from './_auth.js';
 
-const SYSTEM = `Du bist der interne Assistent von LeMatic, einer Hamburger Videoproduktion von Lennart und Martin
-(Event-Content, Same-Day-Reels, 3D-/KI-Produktfilme für Industrie, Energie und Agenturen).
+const SYSTEM = `Du bist "LeMatic Intelligence" (kurz LI), die Intelligenz im LeMatic Studio, dem internen Dashboard von LeMatic,
+einer Hamburger Videoproduktion von Lennart und Martin (Event-Content, Same-Day-Reels, 3D-/KI-Produktfilme für Industrie,
+Energie und Agenturen). Du sprichst als LeMatic Intelligence, in der Ich-Form, und stellst dich nur mit diesem Namen vor.
+Nenne von dir aus keine KI-Anbieter, Modellnamen oder technischen Hintergründe; fragt jemand danach, sag, dass du die
+KI-Assistenz von LeMatic bist und auf einem großen Sprachmodell basierst. Du bist eine KI, das verschweigst du nie.
 Schreib auf Deutsch, knapp, konkret, ohne Floskeln. Erfinde nichts: Wenn eine Information im Kontext fehlt,
 sag das oder lass sie weg. Keine Preise oder Zusagen erfinden.`;
 
@@ -32,12 +35,13 @@ ${c.kunde}`,
 mit welchem konkreten Aufhänger Martin sich melden kann (z. B. neue Referenz, Messe, Saison, offener Punkt).
 Format pro Zeile: "Name: Vorschlag". Max. 8 Zeilen.
 ${c.list}`,
-  agent: c => `Du bist der LeMatic-Agent im LeMatic Studio. Du beantwortest Fragen zu LeMatic: Kunden, Akquise,
+  agent: c => `Du beantwortest Fragen zu LeMatic: Kunden, Akquise,
 Aufgaben, Termine, Mails, Rechnungen und Angebote, wo etwas abgelegt ist und wie es sinnvoll weitergeht.
 Regeln:
 - Nutze nur das LeMatic-Wissen unten. Steht etwas nicht drin, sag das ehrlich und sag, wo man nachsehen könnte.
 - Private Dinge von Lennart oder Martin (eigene Jobs, private Projekte, private Kunden) gehören nicht zu LeMatic.
   Fragt jemand danach, sag kurz, dass du nur LeMatic kennst.
+- Du bist LeMatic Intelligence. Sprich die fragende Person mit Vornamen an, wenn es passt.
 - Antworte kurz und konkret, gern mit Stichpunkten, Namen und Daten. Bei "wie weiter"-Fragen: maximal 5 Schritte, mit wer und bis wann.
 - Wenn eine Grafik hilft (Verlauf, Vergleich, Verteilung), hänge GENAU EINEN Block an, in diesem Format, mit echten Zahlen aus dem Wissen:
 \`\`\`chart
@@ -66,7 +70,7 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: 'Google-Prüfung fehlgeschlagen: ' + e.message });
   }
   const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) return res.status(501).json({ error: 'ANTHROPIC_API_KEY ist in Vercel noch nicht hinterlegt' });
+  if (!key) return res.status(501).json({ error: 'LeMatic Intelligence ist nicht eingerichtet (ANTHROPIC_API_KEY fehlt)' });
 
   const { task, context } = req.body || {};
   const build = TASKS[task];
@@ -86,7 +90,7 @@ export default async function handler(req, res) {
       })
     });
     const j = await r.json();
-    if (!r.ok) return res.status(r.status).json({ error: (j.error && j.error.message) || 'Claude-Fehler' });
+    if (!r.ok) return res.status(r.status).json({ error: (j.error && j.error.message) || 'LeMatic Intelligence nicht erreichbar' });
     const text = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
     res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({ text });

@@ -320,9 +320,66 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 
 
 
+
+/* Willkommen / Onboarding */
+body.onb-open{overflow:hidden}
+.onb{position:fixed;inset:0;z-index:95;display:flex;align-items:center;justify-content:center;padding:24px 16px;background:#06261e;color:#fff;opacity:0;transition:opacity .45s ease;overflow:auto}
+.onb.show{opacity:1}
+.onb-bg{position:fixed;inset:0;overflow:hidden;pointer-events:none}
+.onb-bg i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;animation:onbFloat 14s ease-in-out infinite alternate}
+.onb-bg i:nth-child(1){width:520px;height:520px;background:#0c5a46;left:-120px;top:-140px}
+.onb-bg i:nth-child(2){width:420px;height:420px;background:rgba(252,215,23,.35);right:-120px;bottom:-120px;animation-delay:-5s}
+.onb-bg i:nth-child(3){width:300px;height:300px;background:#0f6e55;left:45%;top:55%;animation-delay:-9s}
+@keyframes onbFloat{to{transform:translate(60px,-40px) scale(1.12)}}
+.onb-skip{position:fixed;top:18px;right:18px;z-index:2;background:none;border:0;color:rgba(255,255,255,.6);font:inherit;font-size:13px;cursor:pointer;padding:8px}
+.onb-skip:hover{color:#fff}
+.onb-card{position:relative;z-index:1;width:min(640px,100%);text-align:center;animation:onbIn .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes onbIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.onb-kicker{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#FCD717}
+.onb-h{font-size:clamp(34px,6vw,54px);letter-spacing:-.035em;margin:8px 0 10px;font-weight:700}
+.onb-h2{font-size:clamp(24px,4vw,32px);letter-spacing:-.025em;margin:8px 0 22px;font-weight:650}
+.onb-p{font-size:16px;line-height:1.6;color:rgba(255,255,255,.78);max-width:500px;margin:0 auto}
+.onb-act{margin-top:26px;display:flex;justify-content:center;gap:10px}
+.onb-btn{background:#FCD717!important;color:#06261e!important;border:0!important;font-weight:650;padding:12px 26px;border-radius:999px;font-size:15px}
+.onb-btn[disabled]{opacity:.5}
+.onb-ghost{background:rgba(255,255,255,.1)!important;color:#fff!important;border:1px solid rgba(255,255,255,.2)!important;border-radius:999px;padding:11px 24px}
+.onb-dots{display:flex;justify-content:center;gap:7px;margin-top:28px}
+.onb-dots i{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.22);transition:all .3s}
+.onb-dots i.on{width:22px;background:#FCD717}.onb-dots i.done{background:rgba(252,215,23,.55)}
+.li-orb{position:relative;width:120px;height:120px;margin:0 auto 26px;display:grid;place-items:center}
+.li-orb b{position:relative;z-index:2;width:72px;height:72px;border-radius:24px;background:linear-gradient(135deg,#FCD717,#e8b800);color:#06261e;display:grid;place-items:center;font-size:26px;font-weight:800;letter-spacing:-.04em;box-shadow:0 10px 40px rgba(252,215,23,.35)}
+.li-orb span{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(252,215,23,.45);animation:orb 3s ease-out infinite}
+.li-orb span:nth-child(2){animation-delay:1s}.li-orb span:nth-child(3){animation-delay:2s}
+@keyframes orb{from{transform:scale(.55);opacity:1}to{transform:scale(1.35);opacity:0}}
+.onb-src{display:flex;flex-direction:column;gap:10px;text-align:left;max-width:480px;margin:0 auto}
+.onb-src .src{display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);animation:onbIn .5s both;animation-delay:var(--d);transition:background .3s,border-color .3s}
+.onb-src .src.ok{background:rgba(252,215,23,.08);border-color:rgba(252,215,23,.3)}
+.onb-src .ic{font-size:20px}
+.onb-src b{display:block;font-size:14.5px}.onb-src small{display:block;font-size:12.5px;color:rgba(255,255,255,.65)}
+.onb-src .st{margin-left:auto;font-weight:800;color:#FCD717;font-size:16px;width:20px;text-align:center}
+.spin{display:inline-block;width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.2);border-top-color:#FCD717;animation:spin .8s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.onb-brief{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left}
+.onb-brief .bt{font:inherit;color:#fff;text-align:left;cursor:pointer;padding:16px;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;gap:3px;animation:onbIn .5s both;animation-delay:var(--d);transition:transform .2s,background .2s}
+.onb-brief .bt:hover{transform:translateY(-2px);background:rgba(255,255,255,.11)}
+.onb-brief .ic{font-size:20px;margin-bottom:4px}
+.onb-brief small{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.onb-brief b{font-size:17px;letter-spacing:-.01em}
+.onb-brief em{font-style:normal;font-size:12.5px;color:rgba(255,255,255,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.onb-li{display:flex;gap:10px;align-items:flex-start;text-align:left;margin-top:16px;padding:14px 16px;border-radius:16px;background:rgba(252,215,23,.1);border:1px solid rgba(252,215,23,.28);font-size:14.5px;line-height:1.5}
+.li-dot{flex:none;width:10px;height:10px;border-radius:50%;background:#FCD717;margin-top:6px;box-shadow:0 0 0 0 rgba(252,215,23,.6);animation:liPulse 1.8s infinite}
+@keyframes liPulse{70%{box-shadow:0 0 0 9px rgba(252,215,23,0)}100%{box-shadow:0 0 0 0 rgba(252,215,23,0)}}
+.onb-how{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;text-align:left}
+.onb-how div{padding:16px;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;gap:6px;animation:onbIn .5s both;animation-delay:var(--d)}
+.onb-how span{font-size:22px}.onb-how b{font-size:14.5px}.onb-how small{font-size:12.5px;color:rgba(255,255,255,.7);line-height:1.45}
+.onb-ask{display:flex;gap:10px;margin-top:20px}
+.onb-ask .input{flex:1;background:rgba(255,255,255,.95);border-radius:999px;padding-left:18px}
+@media (max-width:640px){.onb-brief,.onb-how{grid-template-columns:1fr}.onb-ask{flex-direction:column}.onb{align-items:flex-start;padding-top:64px}.onb-skip{top:10px;right:10px;background:rgba(0,0,0,.25);border-radius:999px;padding:6px 12px}.onb-brief{grid-template-columns:1fr 1fr}.onb-brief .bt{padding:12px}.onb-brief b{font-size:15px}.onb-brief em{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}}
+@media (prefers-reduced-motion:reduce){.onb-bg i,.li-orb span,.li-dot,.spin{animation:none}.onb-card,.onb-src .src,.onb-brief .bt,.onb-how div{animation:none}}
+
 /* LeMatic-Agent */
-.nav-ag{width:20px;height:20px;border-radius:7px;background:linear-gradient(135deg,#073D30,#0c5a46);color:#FCD717;font-weight:800;font-size:11.5px;display:inline-grid;place-items:center;flex:none}
-.nav-ag.lg{width:34px;height:34px;border-radius:11px;font-size:16px}
+.nav-ag{width:20px;height:20px;border-radius:7px;background:linear-gradient(135deg,#073D30,#0c5a46);color:#FCD717;font-weight:800;font-size:8.5px;letter-spacing:-.02em;display:inline-grid;place-items:center;flex:none}
+.nav-ag.lg{width:34px;height:34px;border-radius:11px;font-size:13px}
 .tabbar .nav-ag{margin:0 auto 2px}
 .home-ask form{display:flex;gap:10px;align-items:center}
 .home-ask .input{flex:1}
@@ -335,8 +392,8 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 .ag-msg.me span{display:inline-block;background:#073D30;color:#fff;padding:9px 13px;border-radius:16px 16px 4px 16px;font-size:13.5px;text-align:left;white-space:pre-wrap}
 .ag-msg.me small{display:block;font-size:11px;color:var(--ink-3);margin-top:3px}
 .ag-msg.bot{display:flex;gap:10px;align-items:flex-start;max-width:96%}
-.ag-av{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#073D30,#0c5a46);color:#FCD717;font-weight:800;font-size:13px;display:grid;place-items:center;flex:none}
-.ag-av.lg{width:52px;height:52px;border-radius:16px;font-size:24px;margin:0 auto 10px}
+.ag-av{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,#073D30,#0c5a46);color:#FCD717;font-weight:800;font-size:11px;display:grid;place-items:center;flex:none}
+.ag-av.lg{width:52px;height:52px;border-radius:16px;font-size:19px;margin:0 auto 10px}
 .ag-body{background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:4px 16px 16px 16px;padding:10px 14px;font-size:13.5px;line-height:1.55;min-width:0;flex:1}
 .ag-body p{margin:0 0 6px}.ag-body p:last-child{margin:0}
 .ag-body ul{margin:4px 0 8px;padding-left:18px;list-style:disc}.ag-body li{margin:2px 0}
@@ -1068,7 +1125,7 @@ body.dcut .bg{filter:grayscale(.4)}
     </div>
     <nav class="nav">
       <a href="#/heute" data-route="heute"><svg class="i"><use href="#i-home"/></svg>Heute</a>
-      <a href="#/agent" data-route="agent"><span class="nav-ag">L</span>LeMatic-Agent</a>
+      <a href="#/agent" data-route="agent"><span class="nav-ag">LI</span>Intelligence</a>
       <a href="#/mails" data-route="mails"><svg class="i"><use href="#i-mail"/></svg>Mails<span class="count num" id="navMail" hidden>0</span></a>
       <a href="#/kalender" data-route="kalender"><svg class="i"><use href="#i-cal"/></svg>Kalender</a>
       <a href="#/aufgaben" data-route="aufgaben"><svg class="i"><use href="#i-tasks"/></svg>Aufgaben<span class="count num" id="navTasks" hidden>0</span></a>
@@ -1117,7 +1174,7 @@ body.dcut .bg{filter:grayscale(.4)}
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap">
             <div style="max-width:640px">
               <h2 style="font-size:16px;font-weight:600">Kurz zur Einordnung, Martin</h2>
-              <p style="font-size:14px;color:var(--ink-2);margin-top:6px">Aufgaben legst du hier an, sie landen direkt im LeMatic-Kalender, mit Datum und wer zuständig ist. Was du über einen Kunden weißt, schreibst du in die Kundenkartei: Kunde öffnen, Notiz rein, fertig. Das landet in Notion, dort lesen auch Claude und ChatGPT mit.</p>
+              <p style="font-size:14px;color:var(--ink-2);margin-top:6px">Aufgaben legst du hier an, sie landen direkt im LeMatic-Kalender, mit Datum und wer zuständig ist. Was du über einen Kunden weißt, schreibst du in die Kundenkartei: Kunde öffnen, Notiz rein, fertig. Das landet in Notion, dort liest auch LeMatic Intelligence mit.</p>
             </div>
             <button class="btn btn-glass sm" id="introDismiss">Verstanden</button>
           </div>
@@ -1129,12 +1186,12 @@ body.dcut .bg{filter:grayscale(.4)}
           </div>
           <div class="week" id="week"></div>
         </section>
-        <section class="glass panel c12 home-ask" aria-label="LeMatic-Agent fragen">
-          <form id="homeAsk"><span class="nav-ag lg">L</span><input class="input" id="homeAskIn" placeholder="Frag den LeMatic-Agenten, z. B. „Was steht bei Körber an?“" aria-label="Frage an den LeMatic-Agenten"><button class="btn btn-primary" type="submit">Fragen</button></form>
+        <section class="glass panel c12 home-ask" aria-label="LeMatic Intelligence fragen">
+          <form id="homeAsk"><span class="nav-ag lg">LI</span><input class="input" id="homeAskIn" placeholder="Frag LeMatic Intelligence, z. B. „Was steht bei Körber an?“" aria-label="Frage an LeMatic Intelligence"><button class="btn btn-primary" type="submit">Fragen</button></form>
           <div class="ag-sugg"><button class="chip-q" data-agq="Wie machen wir diese Woche am besten weiter? Gib mir die 5 wichtigsten Schritte mit wer und bis wann.">Wie weiter diese Woche?</button><button class="chip-q" data-agq="Was ist überfällig oder bleibt gerade liegen?">Was bleibt liegen?</button><a class="chip-q" href="#/agent">Auswertung ansehen →</a></div>
         </section>
         <section class="glass panel c7" aria-labelledby="hr-title">
-          <div class="panel-head"><div><h2 id="hr-title">Nachfassen</h2><p>Laufende Kunden ohne offene Aufgabe und seit über 10 Tagen ohne Kontakt</p></div><button class="btn btn-glass sm" id="radarAI">✨ Ideen von Claude</button></div>
+          <div class="panel-head"><div><h2 id="hr-title">Nachfassen</h2><p>Laufende Kunden ohne offene Aufgabe und seit über 10 Tagen ohne Kontakt</p></div><button class="btn btn-glass sm" id="radarAI">✨ Ideen von LI</button></div>
           <div id="radarAIOut"></div>
           <div class="radar" id="homeRadar"><p class="empty">Wird nach dem Login berechnet.</p></div>
         </section>
@@ -1460,13 +1517,13 @@ body.dcut .bg{filter:grayscale(.4)}
     </section>
 
     <!-- ===== LeMatic-Agent ===== -->
-    <section class="view" data-view="agent" aria-label="LeMatic-Agent">
+    <section class="view" data-view="agent" aria-label="LeMatic Intelligence">
       <header class="topbar">
         <div>
           <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
           <span class="intern">Nur LeMatic · keine privaten Daten</span>
-          <h1>LeMatic-Agent</h1>
-          <p class="summary">Frag alles über LeMatic: wie es weitergeht, wo was liegt, was bei wem offen ist. Er liest Kartei, Kalender, Mails, Rechnungen und Akquise.</p>
+          <h1>LeMatic Intelligence</h1>
+          <p class="summary">Frag alles über LeMatic: wie es weitergeht, wo was liegt, was bei wem offen ist. Sie kennt Kartei, Kalender, Mails, Rechnungen und Akquise.</p>
         </div>
       </header>
       <div class="grid">
@@ -1480,7 +1537,7 @@ body.dcut .bg{filter:grayscale(.4)}
             <button class="chip-q" data-agq="Zeig mir die Rechnungssummen der letzten Monate als Grafik und sag kurz, was auffällt.">Umsatz als Grafik</button>
             <button class="chip-q" data-agq="Was ist überfällig oder bleibt gerade liegen?">Was bleibt liegen?</button>
           </div>
-          <form class="ag-form" id="agForm"><textarea class="input" id="agInput" rows="2" placeholder="z. B. Was ist bei Körber offen und was sollte Martin als Nächstes tun?" aria-label="Frage an den LeMatic-Agenten"></textarea><button class="btn btn-primary" id="agSend" type="submit">Fragen</button></form>
+          <form class="ag-form" id="agForm"><textarea class="input" id="agInput" rows="2" placeholder="z. B. Was ist bei Körber offen und was sollte Martin als Nächstes tun?" aria-label="Frage an LeMatic Intelligence"></textarea><button class="btn btn-primary" id="agSend" type="submit">Fragen</button></form>
         </section>
         <section class="c5 ag-side" aria-labelledby="ins-title">
           <div class="glass panel">
@@ -1524,6 +1581,9 @@ body.dcut .bg{filter:grayscale(.4)}
         </div>
       </header>
       <div class="grid">
+        <section class="glass panel c12" aria-labelledby="onb-title">
+          <div class="setting" style="border:0;padding:0"><span><b id="onb-title" style="font-size:15px">Willkommen mit LeMatic Intelligence</b><small>Den Start-Rundgang noch einmal ansehen, so wie ihn neue Nutzer beim ersten Login sehen.</small></span><button class="btn btn-glass sm" id="onbReplay">Abspielen</button></div>
+        </section>
         <section class="glass panel c12" aria-labelledby="pt-title">
           <div class="setting" style="border:0;padding:0"><span><b id="pt-title" style="font-size:15px">Premium-Test anzeigen</b><small>Zeigt die gesperrten Zentrale-Pro-Funktionen überall im Studio. Für den Alltag ausschalten.</small></span><input type="checkbox" id="premToggle" class="chk" aria-label="Premium-Test anzeigen"></div>
         </section>
@@ -1778,7 +1838,7 @@ body.dcut .bg{filter:grayscale(.4)}
 <!-- Mobile Tab-Leiste -->
 <nav class="tabbar glass" aria-label="Navigation">
   <a href="#/heute" data-route="heute"><svg class="i"><use href="#i-home"/></svg>Heute</a>
-  <a href="#/agent" data-route="agent"><span class="nav-ag">L</span>Agent</a>
+  <a href="#/agent" data-route="agent"><span class="nav-ag">LI</span>Intelligence</a>
   <a href="#/kalender" data-route="kalender"><svg class="i"><use href="#i-cal"/></svg>Kalender</a>
   <a href="#/aufgaben" data-route="aufgaben"><svg class="i"><use href="#i-tasks"/></svg>Aufgaben</a>
   <a href="#/rechnungen" data-route="rechnungen"><svg class="i"><use href="#i-receipt"/></svg>Rechnungen</a>
@@ -1872,6 +1932,12 @@ body.dcut .bg{filter:grayscale(.4)}
   </div>
 </div>
 
+<!-- Willkommen mit LeMatic Intelligence -->
+<div class="onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="Willkommen bei LeMatic Intelligence">
+  <div class="onb-bg" aria-hidden="true"><i></i><i></i><i></i></div>
+  <button class="onb-skip" data-onbskip>Überspringen</button>
+  <div class="onb-card" id="onbCard"></div>
+</div>
 <!-- Paywall (Test) -->
 <div class="modal-wrap" id="payWrap" aria-hidden="true">
   <div class="glass sheet prem-sheet" role="dialog" aria-modal="true" aria-labelledby="payTitle" id="paySheet"></div>
@@ -2558,6 +2624,7 @@ on('whoWrap','click',e=>{
   const b=e.target.closest('[data-me]');if(!b)return;
   const w=$('whoWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true');
   setPerson(b.dataset.me);
+  safe('onb',()=>maybeOnboard(b.dataset.me));
 });
 on('uName','click',askPerson);
 function enterGoogle(me){
@@ -2568,7 +2635,7 @@ function enterGoogle(me){
   login.hidden=true;
   if(!location.hash.startsWith('#/'))location.hash='#/heute';else go(location.hash.slice(2));
   const known=storedPerson();
-  if(known)setPerson(known);else{setPerson('LP',true);askPerson()}
+  if(known){setPerson(known);safe('onb',()=>maybeOnboard(known))}else{setPerson('LP',true);askPerson()}
   safe('driveCheck',checkDrive);safe('driveFiles',loadDriveFiles);safe('media',loadMedia);
   safe('gmail',loadGmail);
   safe('myCal',loadMyCalendar);
@@ -3346,7 +3413,7 @@ on('mRead','click',async e=>{
     try{
       const full=mailBodyCache[m.id]||{body:m.snip};
       const text=await askClaude('reply',{from:USER,mailFrom:m.from+' <'+m.addr+'>',subject:m.subj,body:String(full.body||'').slice(0,6000),kunde:k?kundeContext(k):''});
-      box.innerHTML=`<div class="ai-box"><h3>✨ Antwortentwurf von Claude</h3><textarea class="input" id="aiReply">${esc(text)}</textarea>
+      box.innerHTML=`<div class="ai-box"><h3>✨ Antwortentwurf von LeMatic Intelligence</h3><textarea class="input" id="aiReply">${esc(text)}</textarea>
         <div class="kd-row" style="margin-top:8px"><button class="btn btn-primary sm" id="aiCopy">Kopieren</button><a class="btn btn-glass sm" href="https://mail.google.com/mail/?authuser=info@lematic.de#all/${encodeURIComponent(m.threadId||m.id)}" target="_blank" rel="noopener">In Gmail antworten</a><span style="font-size:12px;color:var(--ink-3)">Bitte prüfen, bevor es rausgeht.</span></div></div>`;
       $('aiCopy').onclick=async()=>{try{await navigator.clipboard.writeText($('aiReply').value);toast('Kopiert — in Gmail einfügen')}catch(_){$('aiReply').select();toast('Markiert — mit Cmd+C kopieren')}};
     }catch(x){box.innerHTML=aiBoxHTML({title:'Antwortentwurf',err:x.message})}
@@ -4439,12 +4506,12 @@ function kundeContext(k){
 }
 async function askClaude(task,context){
   try{return (await napi('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task,context})})).text||''}
-  catch(e){if(/ANTHROPIC_API_KEY|501/.test(e.message))throw new Error('Claude ist noch nicht freigeschaltet: In Vercel die Umgebungsvariable ANTHROPIC_API_KEY eintragen.');throw e}
+  catch(e){if(/ANTHROPIC_API_KEY|501/.test(e.message))throw new Error('LeMatic Intelligence ist gerade nicht erreichbar. Bitte später noch einmal versuchen.');throw e}
 }
 function aiBoxHTML(o){
-  if(o.loading)return `<div class="ai-box"><h3>✨ ${esc(o.title||'Claude')}</h3><div class="txt ai-dots">Claude denkt nach</div></div>`;
-  if(o.err)return `<div class="ai-box"><h3>✨ ${esc(o.title||'Claude')}</h3><div class="txt" style="color:#A8231B">${esc(o.err)}</div></div>`;
-  return `<div class="ai-box"><h3>✨ ${esc(o.title||'Claude')}</h3><div class="txt">${esc(o.text)}</div></div>`;
+  if(o.loading)return `<div class="ai-box"><h3>✨ ${esc(o.title||'LeMatic Intelligence')}</h3><div class="txt ai-dots">LeMatic Intelligence denkt nach</div></div>`;
+  if(o.err)return `<div class="ai-box"><h3>✨ ${esc(o.title||'LeMatic Intelligence')}</h3><div class="txt" style="color:#A8231B">${esc(o.err)}</div></div>`;
+  return `<div class="ai-box"><h3>✨ ${esc(o.title||'LeMatic Intelligence')}</h3><div class="txt">${esc(o.text)}</div></div>`;
 }
 function showKdAI(o){const el=$('kdAI');if(el)el.innerHTML=aiBoxHTML(o)}
 
@@ -4497,7 +4564,7 @@ on('radarAI','click',async()=>{
 /* Mails: Kundenkontext, Claude-Antwort, Termin */
 function mailCtxHTML(m){
   const k=m.client?kundeForName(m.client):null;
-  const btns=`<button class="btn btn-primary sm" data-maction="ai">✨ Antwort mit Claude</button><button class="btn btn-glass sm" data-maction="event">Termin daraus</button><button class="btn btn-glass sm prem" data-premium="offer">📄 Angebot daraus <span class="lock">🔒</span></button>${/rechnung|invoice|beleg/i.test(m.subj)?'<button class="btn btn-glass sm prem" data-premium="erechnung">📄 An Buchhaltung <span class="lock">🔒</span></button>':''}`;
+  const btns=`<button class="btn btn-primary sm" data-maction="ai">✨ Antwort entwerfen</button><button class="btn btn-glass sm" data-maction="event">Termin daraus</button><button class="btn btn-glass sm prem" data-premium="offer">📄 Angebot daraus <span class="lock">🔒</span></button>${/rechnung|invoice|beleg/i.test(m.subj)?'<button class="btn btn-glass sm prem" data-premium="erechnung">📄 An Buchhaltung <span class="lock">🔒</span></button>':''}`;
   if(!k)return `<div class="kd-row" style="margin:6px 0 12px">${btns}</div>`;
   const open=TASKS.filter(t=>t.kid===k.id&&!t.done).sort((a,b)=>a.due.localeCompare(b.due));
   const g=kGespr(k)[0];
@@ -4712,8 +4779,8 @@ function agFormat(text){
 }
 function renderAgent(){
   const log=$('agLog');if(!log)return;
-  log.innerHTML=AG_CHAT.length?AG_CHAT.map(m=>m.role==='user'?`<div class="ag-msg me"><span>${esc(m.text)}</span><small>${esc(NAMES[m.who]||'')}</small></div>`:`<div class="ag-msg bot${m.err?' err':''}"><div class="ag-av">L</div><div class="ag-body">${m.err?esc(m.text):agFormat(m.text)}</div></div>`).join(''):
-    `<div class="ag-empty"><div class="ag-av lg">L</div><h3>Frag den LeMatic-Agenten</h3><p>Er kennt Kundenkartei, Gespräche, Aufgaben, Kalender, Mails, Rechnungen und Akquise. Private Sachen kennt er nicht.</p></div>`;
+  log.innerHTML=AG_CHAT.length?AG_CHAT.map(m=>m.role==='user'?`<div class="ag-msg me"><span>${esc(m.text)}</span><small>${esc(NAMES[m.who]||'')}</small></div>`:`<div class="ag-msg bot${m.err?' err':''}"><div class="ag-av">LI</div><div class="ag-body">${m.err?esc(m.text):agFormat(m.text)}</div></div>`).join(''):
+    `<div class="ag-empty"><div class="ag-av lg">LI</div><h3>Frag LeMatic Intelligence</h3><p>Sie kennt Kundenkartei, Gespräche, Aufgaben, Kalender, Mails, Rechnungen und Akquise. Private Sachen kennt sie nicht.</p></div>`;
   log.scrollTop=log.scrollHeight;
 }
 let agBusy=false;
@@ -4721,7 +4788,7 @@ async function agentAsk(q){
   q=String(q||'').trim();if(!q||agBusy)return;
   if(!GAUTH){toast('Erst mit dem LeMatic-Konto anmelden.');return}
   agBusy=true;AG_CHAT.push({role:'user',text:q,who:ME});renderAgent();
-  const log=$('agLog');log.insertAdjacentHTML('beforeend','<div class="ag-msg bot" id="agWait"><div class="ag-av">L</div><div class="ag-body"><span class="ai-dots">Schaut in Kartei, Kalender und Mails</span></div></div>');log.scrollTop=log.scrollHeight;
+  const log=$('agLog');log.insertAdjacentHTML('beforeend','<div class="ag-msg bot" id="agWait"><div class="ag-av">LI</div><div class="ag-body"><span class="ai-dots">LeMatic Intelligence schaut in Kartei, Kalender und Mails</span></div></div>');log.scrollTop=log.scrollHeight;
   $('agSend').disabled=true;
   try{
     if(!KARTEI_LOADED)await safe('kartei',loadKartei);
@@ -4741,12 +4808,111 @@ document.addEventListener('click',e=>{
   if(e.target.closest('#agClear')){AG_CHAT=[];agSave();renderAgent();return}
   const cg=e.target.closest('[data-chartgo]');if(cg&&!e.target.closest('.ag-log')){location.hash='#/'+cg.dataset.chartgo;return}
   if(e.target.closest('#agInsight')){
-    const b=$('agInsight'),out=$('agInsightOut');b.disabled=true;out.innerHTML=aiBoxHTML({loading:true,title:'Claude wertet die Zahlen aus'});
-    askClaude('insights',{zahlen:insightNumbers()}).then(t=>{out.innerHTML=aiBoxHTML({title:'Auswertung von Claude',text:t})}).catch(x=>{out.innerHTML=aiBoxHTML({title:'Auswertung',err:x.message})}).finally(()=>{b.disabled=false});
+    const b=$('agInsight'),out=$('agInsightOut');b.disabled=true;out.innerHTML=aiBoxHTML({loading:true,title:'LeMatic Intelligence wertet aus'});
+    askClaude('insights',{zahlen:insightNumbers()}).then(t=>{out.innerHTML=aiBoxHTML({title:'Auswertung',text:t})}).catch(x=>{out.innerHTML=aiBoxHTML({title:'Auswertung',err:x.message})}).finally(()=>{b.disabled=false});
   }
 });
 window.addEventListener('hashchange',()=>{if(location.hash==='#/agent'){renderAgent();renderInsights()}});
 if(location.hash==='#/agent')setTimeout(()=>{renderAgent();renderInsights()},60);
+
+
+/* ---------- Willkommen: erster Start mit LeMatic Intelligence ---------- */
+const ONB_KEY=c=>'lm_onb_done_'+c;
+function onbDone(c){try{return localStorage.getItem(ONB_KEY(c))==='1'}catch(_){return true}}
+let ONB={step:0,timer:null,t0:0};
+function maybeOnboard(code){if(!onbDone(code))setTimeout(()=>startOnboarding(),350)}
+function startOnboarding(){
+  const o=$('onb');if(!o)return;
+  ONB={step:0,timer:null,t0:Date.now()};
+  o.hidden=false;document.body.classList.add('onb-open');
+  requestAnimationFrame(()=>o.classList.add('show'));
+  onbRender();
+}
+function endOnboarding(target){
+  try{localStorage.setItem(ONB_KEY(ME),'1')}catch(_){}
+  clearInterval(ONB.timer);
+  const o=$('onb');o.classList.remove('show');document.body.classList.remove('onb-open');
+  setTimeout(()=>{o.hidden=true},REDUCED?0:450);
+  if(target)location.hash='#/'+target;
+}
+function onbSources(){
+  const late=Date.now()-ONB.t0>9000;
+  const st=(ok,fail)=>ok?'ok':(fail||late)?'later':'busy';
+  const evs=EVENTS.filter(e=>e.type!=='aufgabe').length;
+  return [
+    ['✉️','Postfach info@lematic.de',st(GMAIL),GMAIL?MAILS.length+' Mails gelesen, '+MAILS.filter(m=>m.client).length+' davon Kunden zugeordnet':'liest Mails …'],
+    ['📅','LeMatic-Kalender',st(CAL_LOADED),CAL_LOADED?evs+' Termine, '+TASKS.filter(t=>!t.done).length+' offene Aufgaben':'liest Termine …'],
+    ['🗂️','Kundenkartei',st(KARTEI_LOADED),KARTEI_LOADED?KUNDEN.length+' Kunden, '+GESPR.length+' Gespräche':'liest Kunden …'],
+    ['🧾','Rechnungen & Angebote',st(NOTION_LIVE),NOTION_LIVE?agentInvoices().length+' Belege':'liest Belege …'],
+    ['🎯','Akquise',st(NOTION_LIVE),NOTION_LIVE?LEADS.length+' Leads in der Pipeline':'liest Leads …']
+  ];
+}
+function onbBrief(){
+  const mine=TASKS.filter(t=>!t.done&&t.who===ME);
+  const today=mine.filter(t=>t.due&&t.due<=TODAY);
+  const nextEv=EVENTS.filter(e=>e.type!=='aufgabe'&&(e.end||e.d)>=TODAY).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||'')))[0];
+  const radar=KARTEI_LOADED?radarList()[0]:null;
+  const unread=MAILS.filter(m=>m.unread);
+  return [
+    ['✅','Für dich fällig',today.length?today.length+(today.length===1?' Aufgabe':' Aufgaben'):'Nichts fällig',today[0]?today[0].t:(mine[0]?'Als Nächstes: '+mine[0].t+' ('+dm(mine[0].due)+')':'Freie Bahn'),'aufgaben'],
+    ['📅','Nächster Termin',nextEv?(nextEv.d===TODAY?'Heute':dm(nextEv.d))+(nextEv.time?' · '+nextEv.time:''):'Keiner geplant',nextEv?nextEv.t:'Kalender ist leer','kalender'],
+    ['📞','Nachfassen',radar?radar.k.name:'Alles im grünen Bereich',radar?(radar.lt?'seit '+diffDays(TODAY,radar.lt)+' Tagen still':'noch kein Kontakt erfasst'):'Kein laufender Kunde wartet','kunden'],
+    ['✉️','Postfach',unread.length+' ungelesen',unread[0]?unread[0].from+': '+unread[0].subj:'Inbox im Griff','mails']
+  ];
+}
+function onbRender(){
+  const o=$('onbCard');if(!o)return;
+  const s=ONB.step,first=USER;
+  const dots=`<div class="onb-dots">${[0,1,2,3].map(i=>`<i class="${i===s?'on':i<s?'done':''}"></i>`).join('')}</div>`;
+  clearInterval(ONB.timer);
+  if(s===0){
+    o.innerHTML=`<div class="li-orb"><span></span><span></span><span></span><b>LI</b></div>
+      <p class="onb-kicker">LeMatic Intelligence</p>
+      <h1 class="onb-h">Hallo ${esc(first)}.</h1>
+      <p class="onb-p">Ich bin die Intelligenz hinter eurem Studio. Ich kenne eure Kunden, euer Postfach, euren Kalender und eure Zahlen und behalte im Blick, was liegen bleibt.</p>
+      <div class="onb-act"><button class="btn onb-btn" data-onbnext>Los geht's</button></div>${dots}`;
+  }else if(s===1){
+    const draw=()=>{
+      const src=onbSources(),all=src.every(x=>x[2]!=='busy');
+      o.innerHTML=`<p class="onb-kicker">Schritt 1 von 3</p><h2 class="onb-h2">Ich verbinde mich mit LeMatic</h2>
+        <div class="onb-src">${src.map(([ic,n,st,d],i)=>`<div class="src ${st}" style="--d:${i*90}ms"><span class="ic">${ic}</span><span><b>${esc(n)}</b><small>${esc(st==='later'?'kommt gleich nach':d)}</small></span><span class="st">${st==='ok'?'✓':st==='later'?'…':'<i class="spin"></i>'}</span></div>`).join('')}</div>
+        <div class="onb-act"><button class="btn onb-btn" data-onbnext ${all?'':'disabled'}>${all?'Weiter':'Einen Moment …'}</button></div>${dots}`;
+      if(all)clearInterval(ONB.timer);
+    };
+    draw();ONB.timer=setInterval(()=>{if(ONB.step===1)draw()},400);
+  }else if(s===2){
+    o.innerHTML=`<p class="onb-kicker">Schritt 2 von 3</p><h2 class="onb-h2">Dein Start heute, ${esc(first)}</h2>
+      <div class="onb-brief">${onbBrief().map(([ic,l,v,sub,go],i)=>`<button class="bt" data-onbgo="${go}" style="--d:${i*90}ms"><span class="ic">${ic}</span><small>${esc(l)}</small><b>${esc(v)}</b><em>${esc(String(sub).slice(0,70))}</em></button>`).join('')}</div>
+      <div class="onb-li" id="onbLI"><span class="li-dot"></span><span class="ai-dots">LeMatic Intelligence schaut, was heute zählt</span></div>
+      <div class="onb-act"><button class="btn onb-btn" data-onbnext>Weiter</button></div>${dots}`;
+    askClaude('agent',{wissen:agentWissen(),frage:'Begrüße '+first+' in einem kurzen Satz und nenne dann in höchstens zwei Sätzen die eine Sache, die heute für LeMatic am wichtigsten ist, mit Namen. Keine Liste, keine Grafik.',user:USER,heute:TODAY,verlauf:''})
+      .then(t=>{const el=$('onbLI');if(el&&ONB.step===2)el.innerHTML='<span class="li-dot"></span><span>'+esc(String(t).replace(/```[\s\S]*?```/g,'').replace(/\*\*/g,'').trim())+'</span>'})
+      .catch(()=>{const el=$('onbLI');if(el)el.remove()});
+  }else{
+    o.innerHTML=`<p class="onb-kicker">Schritt 3 von 3</p><h2 class="onb-h2">So arbeiten wir zusammen</h2>
+      <div class="onb-how">
+        <div style="--d:0ms"><span>💬</span><b>Frag mich alles</b><small>Wie es weitergeht, wo was liegt, was bei wem offen ist. Mit Grafik, wenn's hilft.</small></div>
+        <div style="--d:90ms"><span>🗂️</span><b>Schreib es in die Kundenkarte</b><small>Jede Notiz macht mich schlauer, für euch beide.</small></div>
+        <div style="--d:180ms"><span>📅</span><b>Aufgaben landen im Kalender</b><small>Mit wer und bis wann. Ich erinnere, wenn etwas liegen bleibt.</small></div>
+      </div>
+      <form class="onb-ask" id="onbAsk"><input class="input" id="onbAskIn" placeholder="Frag mich direkt etwas, z. B. „Was steht diese Woche an?“" aria-label="Frage an LeMatic Intelligence"><button class="btn onb-btn" type="submit">Fragen</button></form>
+      <div class="onb-act"><button class="btn onb-ghost" data-onbend="heute">Zum Studio</button></div>${dots}`;
+  }
+  const f=o.querySelector('[data-onbnext]:not([disabled]),input');if(f&&!REDUCED)setTimeout(()=>f.focus(),60);
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#onb'))return;
+  if(e.target.closest('[data-onbnext]')){ONB.step=Math.min(3,ONB.step+1);onbRender();return}
+  if(e.target.closest('[data-onbskip]')){endOnboarding('heute');return}
+  const g=e.target.closest('[data-onbgo]');if(g){endOnboarding(g.dataset.onbgo);return}
+  const en=e.target.closest('[data-onbend]');if(en){endOnboarding(en.dataset.onbend);if(typeof confetti==='function')try{confetti(60)}catch(_){}}
+});
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='onbAsk')return;e.preventDefault();
+  const q=$('onbAskIn').value.trim();endOnboarding('agent');if(q)setTimeout(()=>agentAsk(q),80);
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('onb').hidden)endOnboarding('heute')});
+on('onbReplay','click',()=>startOnboarding());
 
 /* ---------- Zentrale Pro: gesperrte Premium-Module (Test, keine echten Käufe) ---------- */
 const PREMIUM={
@@ -4757,7 +4923,7 @@ const PREMIUM={
   report:{ic:'📊',name:'Montags-Bericht',price:29,pitch:'Jeden Montag um 8 Uhr: die Woche auf einer Seite, per Mail oder WhatsApp.',
     pts:['Offene Angebote, Umsatz, überfällige Rechnungen','Welche Kunden diese Woche dran sind','Termine und Fristen der Woche','Für Chef und Team getrennt einstellbar']},
   whatsapp:{ic:'💬',name:'WhatsApp-Business-Inbox',price:39,pitch:'WhatsApp-Chats mit Kunden im selben Postfach wie die Mails.',
-    pts:['Chats werden automatisch dem richtigen Kunden zugeordnet','Antworten mit Claude-Entwurf, auch per Sprachnachricht','Mehrere Nutzer auf einer Nummer','Verlauf erscheint in der Kundenkarte']},
+    pts:['Chats werden automatisch dem richtigen Kunden zugeordnet','Antwortentwürfe von LeMatic Intelligence, auch per Sprachnachricht','Mehrere Nutzer auf einer Nummer','Verlauf erscheint in der Kundenkarte']},
   offer:{ic:'✍️',name:'Angebots-Generator',price:35,pitch:'Aus Gesprächsnotizen und eurer Preisliste ein fertiges Angebot als PDF.',
     pts:['Positionen und Preise aus eurer Preisliste','Im eigenen Briefkopf, mit Nummernkreis','Mit einem Klick per Mail an den Kunden','Sieht, wann der Kunde das Angebot öffnet']},
   reminders:{ic:'🔔',name:'Smart-Erinnerungen',price:29,pitch:'Push aufs Handy, wenn etwas passiert, das nicht liegen bleiben darf.',
