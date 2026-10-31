@@ -388,7 +388,7 @@ body.onb-open{overflow:hidden}
 .li-fab{position:fixed;right:22px;bottom:22px;z-index:60;display:flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:8px 18px 8px 8px;background:linear-gradient(135deg,#073D30,#0c5a46);color:#fff;font:inherit;font-weight:600;cursor:pointer;box-shadow:0 10px 30px rgba(7,61,48,.35);transition:transform .2s}
 .li-fab:hover{transform:translateY(-2px)}
 .li-fab span{width:34px;height:34px;border-radius:12px;background:#FCD717;color:#073D30;display:grid;place-items:center;font-weight:800;font-size:13px}
-body:has(.view[data-view="agent"].active) .li-fab,body.li-open .li-fab,body.onb-open .li-fab{display:none}
+body:has(.view[data-view="agent"].active) .li-fab,body:has(.view[data-view="angebot"].active) .li-fab,body.li-open .li-fab,body.onb-open .li-fab{display:none}
 .li-drawer{position:fixed;inset:0;z-index:80;pointer-events:none}
 .li-drawer .li-scrim{position:absolute;inset:0;background:rgba(10,30,24,.18);opacity:0;transition:opacity .25s}
 .li-drawer .li-panel{position:absolute;top:12px;right:12px;bottom:12px;width:min(460px,calc(100vw - 24px));display:flex;flex-direction:column;padding:16px;transform:translateX(110%);transition:transform .3s cubic-bezier(.2,.8,.2,1);background:rgba(250,252,251,.97)}
@@ -405,6 +405,16 @@ body:has(.view[data-view="agent"].active) .li-fab,body.li-open .li-fab,body.onb-
 @media (max-width:900px){.li-fab{bottom:86px;right:14px;padding:6px}.li-fab b{display:none}}
 @media (max-width:640px){.li-hero{padding:14px!important}.li-hero .nav-ag.lg{display:none}.li-drawer .li-panel{top:0;right:0;bottom:0;width:100vw;border-radius:0}}
 @media (prefers-reduced-motion:reduce){.li-drawer .li-panel,.li-drawer .li-scrim{transition:none}}
+
+
+/* Angebotsrechner + automatische Ablage */
+.ang-frame-wrap{padding:0;overflow:hidden;height:calc(100vh - 190px);min-height:640px;background:#073D30!important}
+.ang-frame-wrap iframe{width:100%;height:100%;border:0;display:block;border-radius:inherit}
+.inv-auto{border-radius:14px;padding:12px 14px;margin:0 0 14px;font-size:13.5px;line-height:1.5;background:rgba(7,61,48,.05);border:1px solid rgba(7,61,48,.12);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.inv-auto.ok{background:rgba(52,199,89,.1);border-color:rgba(52,199,89,.35)}
+.inv-auto.warn{background:rgba(252,215,23,.15);border-color:rgba(212,166,0,.35)}
+.inv-auto small{color:var(--ink-2)}
+.inv-auto .ia-act{display:flex;gap:8px}
 
 /* LeMatic-Agent */
 .dd-status{font-size:12.5px;color:var(--ink-2);margin:0 0 10px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.dd-status:empty{display:none}.dd-status .link{background:none;border:0;color:var(--brand);font:inherit;text-decoration:underline;cursor:pointer;padding:0}.spin.dd{width:12px;height:12px;border-color:rgba(7,61,48,.15);border-top-color:#0c5a46}
@@ -1160,6 +1170,7 @@ body.dcut .bg{filter:grayscale(.4)}
       <a href="#/kalender" data-route="kalender"><svg class="i"><use href="#i-cal"/></svg>Kalender</a>
       <a href="#/aufgaben" data-route="aufgaben"><svg class="i"><use href="#i-tasks"/></svg>Aufgaben<span class="count num" id="navTasks" hidden>0</span></a>
       <a href="#/rechnungen" data-route="rechnungen"><svg class="i"><use href="#i-receipt"/></svg>Rechnungen<span class="count num" id="navInv" hidden>0</span></a>
+      <a href="#/angebot" data-route="angebot"><svg class="i"><use href="#i-receipt"/></svg>Angebotsrechner</a>
       <a href="#/medien" data-route="medien"><svg class="i"><use href="#i-image"/></svg>Medien</a>
       <a href="#/archiv" data-route="archiv"><svg class="i"><use href="#i-drive"/></svg>Archiv</a>
       <a href="#/akquise" data-route="akquise"><svg class="i"><use href="#i-target"/></svg>Akquise</a>
@@ -1376,13 +1387,14 @@ body.dcut .bg{filter:grayscale(.4)}
       <button class="glass prem prem-banner" data-premium="erechnung"><span class="pb-ic">📄</span><span><b>E-Rechnungen automatisch aus dem Postfach holen</b><small>Erkennt Rechnungen in Mails, liest XRechnung/ZUGFeRD aus und schickt sie an DATEV oder sevDesk. Ab 2027 Pflicht.</small></span><span class="pb-cta">39 €/Monat 🔒</span></button>
       <div class="grid">
         <section class="glass panel c5" aria-labelledby="up2-title">
-          <div class="panel-head"><div><h2 id="up2-title">Rechnung hochladen</h2><p>PDF oder Foto vom Beleg</p></div></div>
+          <div class="panel-head"><div><h2 id="up2-title">Rechnung hochladen</h2><p>Einfach reinziehen: LeMatic Intelligence erkennt Art, Kunde, Betrag und den richtigen Drive-Ordner</p></div></div>
           <label class="dropzone" id="dz">
             <input type="file" id="invFile" accept=".pdf,.jpg,.jpeg,.png" hidden>
             <svg class="i"><use href="#i-upload"/></svg>
             <b id="dzTitle">Datei hierher ziehen</b>
             <span id="dzSub">oder klicken zum Auswählen</span>
           </label>
+          <div class="inv-auto" id="invAuto" hidden aria-live="polite"></div>
           <div class="form2">
             <div class="fl full">Art
               <div class="seg" role="group" aria-label="Art der Rechnung" id="invKind">
@@ -1545,6 +1557,19 @@ body.dcut .bg{filter:grayscale(.4)}
         <div class="seg" role="group" aria-label="Nach Status filtern" id="kFilter"></div>
       </div>
       <div class="kgrid" id="kGrid"></div>
+    </section>
+
+    <!-- ===== Angebotsrechner (Martin) ===== -->
+    <section class="view" data-view="angebot" aria-label="Angebotsrechner">
+      <header class="topbar">
+        <div>
+          <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
+          <h1>Angebotsrechner</h1>
+          <p class="summary">Kunden aus der Kartei übernehmen, kalkulieren, PDF erzeugen. Das fertige Angebot landet automatisch in Drive unter Angebote_und_Kostenvoranschlaege und in Notion.</p>
+        </div>
+        <div class="actions"><a class="btn btn-glass" href="angebot.html" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg><span class="label">Im eigenen Fenster</span></a></div>
+      </header>
+      <div class="glass ang-frame-wrap"><iframe id="angFrame" title="Angebotsrechner" loading="lazy"></iframe></div>
     </section>
 
     <!-- ===== LeMatic-Agent ===== -->
@@ -3073,6 +3098,7 @@ function setFile(f){
   document.getElementById('dzTitle').textContent=f.name;
   document.getElementById('dzSub').textContent=(f.size/1024).toFixed(0)+' KB, bereit zum Ablegen';
   updatePath();
+  if(GAUTH)safe('autoInv',()=>autoDetectInvoice(f));
 }
 fileIn.addEventListener('change',()=>setFile(fileIn.files[0]));
 ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('over')}));
@@ -3098,7 +3124,9 @@ document.getElementById('invSave').addEventListener('click',async()=>{
     try{
       if(wantsNewFolder){
         btn.lastChild.textContent='Ordner wird angelegt …';
-        const nf=await driveCreateFolder(party,AUSGANG_ROOT_ID);
+        const nums=Object.values(AUSGANG_FOLDERS).map(x=>+(/^(\d+)_/.exec(x.name)||[0,0])[1]);
+        const nfName=String(Math.max(0,...nums)+1).padStart(2,'0')+'_'+party.normalize('NFC').replace(/[^\wÄÖÜäöüß&.-]+/g,'_').replace(/^_|_$/g,'');
+        const nf=await driveCreateFolder(nfName,AUSGANG_ROOT_ID);
         AUSGANG_FOLDERS[party]={name:nf.name,id:nf.id};
         driveTargetId=nf.id;driveLink=driveUrl(nf.id);
         saveState();
@@ -4786,7 +4814,7 @@ function ddParse(text,f){
   /* Kunde: bei Ausgang aus dem Ordnernamen, sonst aus der Anschriftzeile nach dem Absender */
   const folder=(f.path[1]||'').replace(/^\d+_/,'').replace(/_/g,' ').trim();
   let party=f.kind!=='Eingang'?folder:'';
-  if(!party){const m=/Geesthacht\s+(.{3,60}?)\s+(?:[A-ZÄÖÜ][a-zäöüß]+(?:straße|str\.|damm|weg|platz|allee))/i.exec(t);party=m?m[1]:''}
+  if(!party){const m=/Geesthacht\s+(.{3,60}?)\s+[A-ZÄÖÜ][\wäöüß.-]*\s?(?:straße|str\.|damm|weg|platz|allee|ring|chaussee)\b/i.exec(t);party=m?m[1].trim():''}
   if(f.kind==='Eingang'&&!party)party=f.name.replace(/\.pdf$/i,'').replace(/[_-]+/g,' ').slice(0,40);
   const posM=/Gesamtpreis\s+(.*?)\s+(?:Gesamtbetrag|Zahlungsbedingungen)/i.exec(t);
   const pos=(posM?posM[1]:'').replace(/\d+,\d{2}\s*Stk|[\d.]+,\d{2}\s*EUR/g,'').replace(/\s+/g,' ').trim().slice(0,160);
@@ -4848,6 +4876,94 @@ function driveDocsWissen(){
   docs.sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,150).forEach(d=>L.push(`- ${d.kind} ${d.no||d.name} · ${d.date||'?'} · ${d.party||'?'} · ${d.amount?eur(d.amount):'Betrag ?'}${d.due?' · fällig '+d.due:''}${d.status?' · Status: '+d.status:''} · ${d.pos||''} · Ordner: ${d.folder}`));
   return L.join('\n');
 }
+
+
+/* ---------- Angebotsrechner (eingebettet) ---------- */
+window.LM_STUDIO=true;
+window.studioCustomers=function(){
+  return KUNDEN.filter(k=>notPrivate(k.name)).map(k=>{
+    const r=k.raw||{},adr=String(r['Adresse']||'');
+    const m=/^(.*?),?\s*(\d{5})\s+(.+)$/.exec(adr.replace(/\n/g,', '));
+    return{customerCompany:k.name.replace(/\s+[–-]\s+.*$/,''),customerContact:String(r['Ansprechpartner']||'').split(/[,·(]/)[0].trim(),
+      customerEmail:r['E-Mail']||'',customerPhone:r['Telefon']||'',customerStreet:m?m[1].replace(/,\s*$/,''):adr,customerPostalCode:m?m[2]:'',customerCity:m?m[3]:''};
+  });
+};
+window.studioSaveOffer=async function(blob,filename,meta){
+  if(!GAUTH){toast('Angebot heruntergeladen. Für die Ablage in Drive mit dem LeMatic-Konto anmelden.');return}
+  const name=[TODAY,slug(meta.no||'Angebot'),slug(meta.customer||'Kunde')].join('_')+'.pdf';
+  const file=new File([blob],name,{type:'application/pdf'});
+  const up=await driveUpload(file,name,ANGEBOT_ID);
+  const inv={id:Date.now(),kind:'Angebot',no:meta.no||'',party:meta.customer||'—',note:(meta.title||name).slice(0,80),date:TODAY,amount:+meta.total||0,status:'offen',p:'Akquise',drive:up.webViewLink||ANGEBOT_URL,driveFileId:up.id,fresh:true};
+  INVOICES.unshift(inv);safe('inv',renderInvoices);
+  toast('Angebot '+(meta.no||'')+' in Drive abgelegt: Angebote_und_Kostenvoranschlaege');
+  notionCreateRechnung({no:inv.no,art:'Angebot',status:'Offen',betrag:inv.amount,leistung:(meta.customer||'')+(meta.title?': '+meta.title:''),datum:TODAY,datei:inv.drive})
+    .then(r=>{inv.nid=r.id}).catch(()=>{});
+  setTimeout(()=>safe('dd',()=>scanDriveInvoices()),1500);
+};
+let angLoaded=false;
+window.addEventListener('hashchange',()=>{if(location.hash==='#/angebot'&&!angLoaded){angLoaded=true;$('angFrame').src='angebot.html'}});
+if(location.hash==='#/angebot'){angLoaded=true;setTimeout(()=>{$('angFrame').src='angebot.html'},0)}
+
+/* ---------- Rechnung hochladen: automatisch erkennen und einsortieren ---------- */
+const EIN_CATS={
+  Equipment:/kamera|objektiv|sony|canon|blackmagic|dji|rode|sennheiser|stativ|gimbal|akku|speicherkarte|sd-?karte|ssd|festplatte|mikrofon|licht|leuchte|aputure|godox|calumet|foto ?koch|thomann|technik/i,
+  Programme:/adobe|creative cloud|davinci|software|lizenz|abo(nnement)?\b|subscription|higgsfield|openai|chatgpt|anthropic|claude|elevenlabs|magnific|kling|runway|frame\.io|dropbox|google workspace|microsoft|notion|canva|figma|vercel|github/i,
+  Domain:/domain|hosting|webspace|ionos|strato|hetzner|all-?inkl|netcup|namecheap|godaddy|server/i,
+  Buchhaltung:/steuerberat|buchhaltung|sevdesk|lexoffice|datev|finanzamt|steuer|ihk|handelskammer|versicherung|bank|kontoführung/i
+};
+function guessEinCat(t){for(const [k,re] of Object.entries(EIN_CATS))if(re.test(t))return k;return 'Sonstiges'}
+async function readUploadText(f){
+  if(!/pdf$/i.test(f.type)&&!/\.pdf$/i.test(f.name))return '';
+  const pdfjs=await loadPdfJs();const doc=await pdfjs.getDocument({data:await f.arrayBuffer()}).promise;
+  let t='';for(let i=1;i<=Math.min(doc.numPages,3);i++){const c=await (await doc.getPage(i)).getTextContent();t+=c.items.map(x=>x.str).join(' ')+'\n'}
+  return t;
+}
+const fileToB64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(f)});
+let autoT=null;
+async function autoDetectInvoice(f){
+  clearTimeout(autoT);
+  const box=$('invAuto');box.hidden=false;box.className='inv-auto busy';box.innerHTML='<span class="spin dd"></span> LeMatic Intelligence liest den Beleg …';
+  let r=null;
+  try{
+    const text=await readUploadText(f).catch(()=>'');
+    const own=/lematic\s*(→|->|>|-)\s*friedrich|IHR ANSPRECHPARTNER\s+(Lennart Post|Martin Schmick)/i.test(text);
+    if(own){
+      const isOffer=/\bAngebot\b/i.test(text)&&!/Rechnung Nr/i.test(text);
+      const p=ddParse(text,{name:f.name,kind:isOffer?'Angebot':'Ausgang',path:['',''],modifiedTime:''});
+      let party=p.party;
+
+      r={kind:isOffer?'Angebot':'Ausgang',party,no:p.no,date:p.date,amount:p.amount,due:p.due,src:'pdf'};
+    }else{
+      /* Fremdbeleg: LI liest Lieferant, Betrag, Datum, Nummer und die passende Kategorie */
+      const ctx=text.trim().length>80?{text:text.slice(0,8000)}:(f.size<3*1048576?{file:await fileToB64(f),mime:f.type||'application/pdf'}:{text:'(Datei zu groß zum Lesen) Dateiname: '+f.name});
+      const out=await napi('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:'beleg',context:ctx})});
+      const j=JSON.parse(String(out.text||'{}').replace(/^[^{]*/,'').replace(/[^}]*$/,''));
+      const art=/ausgang|rechnung an/i.test(j.art||'')?'Ausgang':/angebot/i.test(j.art||'')?'Angebot':'Eingang';
+      r={kind:art,party:j.partei||'',no:j.nummer||'',date:j.datum||'',amount:+j.betrag||0,due:j.faellig||'',cat:EINGANG_FOLDERS[j.kategorie]?j.kategorie:guessEinCat((j.partei||'')+' '+(j.beschreibung||'')+' '+text),src:'li'};
+    }
+  }catch(e){box.className='inv-auto warn';box.innerHTML='Konnte den Beleg nicht automatisch lesen ('+esc(e.message)+'). Bitte Art, Kunde und Betrag kurz selbst eintragen.';return}
+  /* Formular füllen */
+  setKind(r.kind);
+  if(r.party)$('invParty').value=r.party.replace(/\s+(GmbH & Co\. KG)$/,' $1');
+  if(r.no)$('invNo').value=r.no;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(r.date||''))$('invDate').value=r.date;
+  if(r.amount)$('invAmount').value=String(r.amount).replace('.',',');
+  if(r.kind==='Ausgang'&&/^\d{4}-\d{2}-\d{2}$/.test(r.due||''))$('invDue').value=r.due;
+  if(r.kind==='Eingang'){const sel=$('invCat');sel.value=EINGANG_FOLDERS[r.cat]?r.cat:'Sonstiges'}
+  updatePath();
+  const ok=r.party&&r.amount>0;
+  const what=r.kind==='Ausgang'?'Rechnung an':r.kind==='Angebot'?'Angebot an':'Beleg von';
+  if(!ok){box.className='inv-auto warn';box.innerHTML=`Erkannt: ${what} <b>${esc(r.party||'?')}</b>${r.amount?', '+eur(r.amount):''}. ${!r.party?'Kunde/Lieferant':'Betrag'} fehlt noch, bitte ergänzen und auf „Hochladen und ablegen“ klicken.`;return}
+  let n=5;
+  const tick=()=>{box.className='inv-auto ok';box.innerHTML=`<div><b>✓ Erkannt:</b> ${what} <b>${esc($('invParty').value)}</b> · ${esc($('invNo').value||'ohne Nummer')} · ${eur(r.amount)} · ${esc(dm($('invDate').value||TODAY))}<br><small>Landet in ${esc(invPathParts.slice(2).join(' / '))}${invNewFolder?' (neuer Ordner)':''}. Wird in ${n} s automatisch abgelegt.</small></div><div class="ia-act"><button class="btn btn-primary sm" data-iago>Jetzt ablegen</button><button class="btn btn-glass sm" data-iastop>Stopp, ich prüfe selbst</button></div>`;
+    if(n--<=0){box.hidden=true;$('invSave').click();return}autoT=setTimeout(tick,1000)};
+  tick();
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-iago]')){clearTimeout(autoT);$('invAuto').hidden=true;$('invSave').click()}
+  if(e.target.closest('[data-iastop]')){clearTimeout(autoT);const b=$('invAuto');b.className='inv-auto';b.innerHTML='Automatik angehalten. Felder prüfen und auf „Hochladen und ablegen“ klicken.'}
+});
+['invParty','invNo','invAmount','invDate'].forEach(id=>{const el=$(id);el&&el.addEventListener('input',()=>{if(autoT){clearTimeout(autoT);autoT=null;const b=$('invAuto');if(b&&!b.hidden){b.className='inv-auto';b.innerHTML='Automatik angehalten, weil du etwas geändert hast. Zum Ablegen auf „Hochladen und ablegen“ klicken.'}}})});
 
 /* ---------- LeMatic-Agent und Auswertung ---------- */
 /* Alles, was privat ist, kommt nie in den Kontext des Agenten oder in die Grafiken. */

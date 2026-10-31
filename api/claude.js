@@ -58,6 +58,14 @@ ${c.wissen}
 ${c.verlauf || '(neu)'}
 --- Neue Frage ---
 ${c.frage}`,
+  beleg: c => `Lies den Beleg und gib NUR ein JSON-Objekt zurück, ohne Text davor oder danach:
+{"art":"Eingang|Ausgang|Angebot","partei":"Firmenname des Lieferanten bzw. Kunden","nummer":"Rechnungsnummer oder leer",
+"datum":"JJJJ-MM-TT","betrag":Bruttobetrag als Zahl,"faellig":"JJJJ-MM-TT oder leer",
+"kategorie":"Equipment|Programme|Domain|Buchhaltung|Sonstiges","beschreibung":"max. 8 Wörter, was gekauft/geleistet wurde"}
+LeMatic (Lennart Post / Martin Schmick, Geesthacht) ist der Empfänger, wenn es eine Eingangsrechnung ist.
+Kategorien: Equipment = Kamera, Licht, Ton, Technik; Programme = Software, Abos, KI-Tools; Domain = Domain, Hosting, Server;
+Buchhaltung = Steuer, Buchhaltung, Versicherung, Bank; sonst Sonstiges.
+${c.text ? '--- Text des Belegs ---\n' + c.text : '(Beleg als Datei angehängt)'}`,
   insights: c => `Unten stehen die aktuellen Kennzahlen von LeMatic, aus denen gerade Grafiken gezeichnet werden.
 Werte sie aus: 3 bis 4 Erkenntnisse, je eine Zeile, beginnend mit einem passenden Emoji. Danach eine Zeile
 "Empfehlung: ..." mit dem wichtigsten nächsten Schritt. Nur was aus den Zahlen wirklich folgt, keine Floskeln.
@@ -79,7 +87,17 @@ export default async function handler(req, res) {
   const build = TASKS[task];
   if (!build || !context || typeof context !== 'object') return res.status(400).json({ error: 'Unbekannte Aufgabe' });
   const clip = v => String(v == null ? '' : v).slice(0, task === 'agent' ? 60000 : 12000);
-  const ctx = Object.fromEntries(Object.entries(context).map(([k, v]) => [k, clip(v)]));
+  // Beleg als Datei (Foto oder gescanntes PDF): separat, nicht abschneiden
+  const file = task === 'beleg' && typeof context.file === 'string' && context.file.length < 6_000_000 ? context.file : null;
+  const mime = String(context.mime || '');
+  const ctx = Object.fromEntries(Object.entries(context).filter(([k]) => k !== 'file').map(([k, v]) => [k, clip(v)]));
+  const prompt = build(ctx);
+  const content = file
+    ? [/pdf/.test(mime)
+        ? { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: file } }
+        : { type: 'image', source: { type: 'base64', media_type: /png/.test(mime) ? 'image/png' : /webp/.test(mime) ? 'image/webp' : 'image/jpeg', data: file } },
+       { type: 'text', text: prompt }]
+    : prompt;
 
   const model = process.env.CLAUDE_MODEL || 'claude-haiku-5-5';
   try {
@@ -93,7 +111,7 @@ export default async function handler(req, res) {
         ...(/haiku/.test(model) ? { thinking: { type: 'disabled' } } : {}),
         max_tokens: /haiku/.test(model) ? 2500 : 8000,
         system: SYSTEM,
-        messages: [{ role: 'user', content: build(ctx) }]
+        messages: [{ role: 'user', content }]
       })
     });
     const j = await r.json();
