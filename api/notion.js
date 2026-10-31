@@ -178,7 +178,8 @@ export default async function handler(req, res) {
       const parent = ((pg.parent && pg.parent.database_id) || '').replace(/-/g, '');
       if (parent !== dsId.replace(/-/g, '')) return res.status(400).json({ error: 'Seite gehört nicht zu ' + db });
       const r = await fetch(`https://api.notion.com/v1/pages/${id}`, {
-        method: 'PATCH', headers, body: JSON.stringify({ properties: req.body.properties })
+        method: 'PATCH', headers,
+        body: JSON.stringify(req.body.archive === true ? { archived: true } : { properties: req.body.properties })
       });
       const j = await r.json();
       if (!r.ok) return res.status(r.status).json({ error: j.message || 'Notion-Fehler' });

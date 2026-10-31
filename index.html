@@ -339,6 +339,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 .pill.st-Angefragt{color:#7A4100;background:rgba(255,159,10,.18)}
 .pill.st-Kalt{color:var(--ink-2);background:rgba(29,29,31,.06)}
 .pill.st-Abgesagt{color:#A8231B;background:rgba(255,59,48,.12)}
+.pill.st-Archiv{color:#6B4E2E;background:rgba(139,90,43,.12)}
 
 /* Kundendetail und Dialoge */
 .sheet.wide{width:min(980px,100%);max-height:84vh;overflow:auto;padding:24px}
@@ -2472,7 +2473,7 @@ const projOptions=Object.keys(PROJ).map(p=>`<option>${p}</option>`).join('');
 const TASK_COLOR={LP:'10',MS:'5',done:'8'};
 let tWho='all',CAL_ID='primary';
 function fillKundenSelects(){
-  const opts=KUNDEN.filter(k=>k.status!=='Abgesagt').map(k=>`<option value="${k.id}">${esc(k.name)}</option>`).join('');
+  const opts=KUNDEN.filter(k=>k.status!=='Abgesagt'&&k.status!=='Archiv').map(k=>`<option value="${k.id}">${esc(k.name)}</option>`).join('');
   const at=$('atKunde');if(at){const v=at.value;at.innerHTML='<option value="">Allgemein (kein Kunde)</option>'+opts;at.value=v||''}
   const tp=$('tProj');if(tp){const v=tp.value;tp.innerHTML='<option value="all">Alle Kunden</option><option value="none">Allgemein</option>'+opts;tp.value=v||'all';if(!tp.value)tp.value='all'}
 }
@@ -2750,8 +2751,13 @@ function renderInvoices(){
       const inDrive=!!i.driveFileId;
       askConfirm(
         'Rechnung „'+i.party+'“ über '+eur(i.amount)+' aus der Liste entfernen'+
-        (inDrive?'. Die Datei wandert dabei auch in den Papierkorb von Google Drive und lässt sich dort 30 Tage lang wiederherstellen.':'. Eine Datei in Drive wird dabei nicht angefasst.'),
+        (inDrive?'. Die Datei wandert dabei auch in den Papierkorb von Google Drive und lässt sich dort 30 Tage lang wiederherstellen.':'. Eine Datei in Drive wird dabei nicht angefasst.')+
+        (i.nid?' Der Eintrag in Notion landet im Notion-Papierkorb.':''),
         async()=>{
+          if(i.nid){
+            try{await napi('/api/notion?db=rechnungen&id='+encodeURIComponent(i.nid),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({archive:true})})}
+            catch(err){toast('Nicht gelöscht: '+err.message);return}
+          }
           if(inDrive){
             try{
               await gfetch('https://www.googleapis.com/drive/v3/files/'+i.driveFileId+'?supportsAllDrives=true',
@@ -3147,7 +3153,7 @@ function leadHTML(l){
     <strong>${esc(l.n)}</strong><p>${esc(l.note||'')}</p>
     <div class="tags" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:7px">${l.seg?`<span class="tag">${esc(l.seg)}</span>`:''}${l.saison?`<span class="tag">${esc(l.saison)}</span>`:''}</div>
     <div class="lf"><span class="av us sm">${l.who}</span>${l.val?`<span class="val">${eur(l.val)}</span>`:'<span class="val"></span>'}${next}
-      <button class="next" data-ldel="${l.id}" aria-label="${esc(l.n)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button></div>
+      <button class="next" data-ldel="${l.id}" aria-label="${esc(l.n)} ausblenden" title="Ausblenden"><svg class="i sm"><use href="#i-eyeoff"/></svg></button></div>
   </article>`;
 }
 function renderLeads(){
@@ -3176,11 +3182,14 @@ function renderLeads(){
   const board=$('lBoard');if(!board)return;
   board.addEventListener('click',e=>{
     const nx=e.target.closest('[data-lnext]');
-    if(nx){const l=LEADS.find(x=>x.id==nx.dataset.lnext);if(l&&l.stage<LSTAGES.length-1){l.stage++;renderLeads();toast(l.n+': '+LSTAGES[l.stage])}return}
+    if(nx){const l=LEADS.find(x=>x.id==nx.dataset.lnext);if(l&&l.stage<LSTAGES.length-1){setLeadStage(l,l.stage+1)}return}
     const dl=e.target.closest('[data-ldel]');
     if(dl){
       const l=LEADS.find(x=>x.id==dl.dataset.ldel);if(!l)return;
-      askConfirm('„'+l.n+'“ aus der Akquise entfernen?',()=>{LEADS=LEADS.filter(x=>x.id!==l.id);renderLeads();toast('Entfernt: '+l.n)},'Entfernen');
+      askConfirm('„'+l.n+'“ aus der Akquise ausblenden? In Notion bleibt der Eintrag erhalten (Haken „Ausgeblendet“).',async()=>{
+        if(l.nid){try{await notionUpdate('akquise',l.nid,{'Ausgeblendet':{checkbox:true}})}catch(err){toast('Nicht gespeichert: '+err.message);return}}
+        LEADS=LEADS.filter(x=>x.id!==l.id);renderLeads();toast('Ausgeblendet: '+l.n);
+      },'Ausblenden');
     }
   });
   let ldrag=null;
@@ -3191,7 +3200,7 @@ function renderLeads(){
     const col=e.target.closest('[data-lstage]');if(!col)return;e.preventDefault();
     const l=LEADS.find(x=>x.id==ldrag);if(!l)return;
     const st=+col.dataset.lstage;
-    if(l.stage!==st){l.stage=st;renderLeads();toast(l.n+': '+LSTAGES[st])}
+    if(l.stage!==st)setLeadStage(l,st);
   });
 })();
 on('addLead','submit',e=>{
@@ -3199,10 +3208,22 @@ on('addLead','submit',e=>{
   const n=($('alName').value||'').trim();
   if(!n){$('alName').focus();return}
   const val=parseFloat(($('alVal').value||'').replace(/\./g,'').replace(',','.'))||0;
-  LEADS.push({id:Date.now(),n,note:($('alNote').value||'').trim(),val,stage:0,who:USER==='Martin'?'MS':'LP',seg:'',saison:''});
-  $('alName').value='';$('alNote').value='';$('alVal').value='';
-  renderLeads();toast('Kontakt angelegt: '+n);
+  const note=($('alNote').value||'').trim();
+  const props={'Lead':{title:[{text:{content:n}}]},'Stage':{status:{name:'Nicht begonnen'}}};
+  if(note)props['Nächster Schritt']={rich_text:[{text:{content:note.slice(0,1900)}}]};
+  if(val)props['Potenzial']={number:val};
+  notionCreate('akquise',props).then(j=>{
+    LEADS.push({id:'n'+Date.now(),nid:j.id,n,note,val,stage:0,who:ME,seg:'',saison:''});
+    $('alName').value='';$('alNote').value='';$('alVal').value='';
+    renderLeads();toast('Kontakt angelegt: '+n);
+  }).catch(err=>toast('Nicht angelegt: '+err.message));
 });
+async function setLeadStage(l,st){
+  const before=l.stage;l.stage=st;renderLeads();
+  if(!l.nid){toast(l.n+': '+LSTAGES[st]);return}
+  try{await notionUpdate('akquise',l.nid,{'Stage':{status:{name:LSTAGES[st]}}});toast(l.n+': '+LSTAGES[st])}
+  catch(err){l.stage=before;renderLeads();toast('Nicht gespeichert: '+err.message)}
+}
 
 /* ---------- Globale Suche ---------- */
 let palList=[],palSel=0,palLast=null;
@@ -3384,9 +3405,9 @@ async function loadNotion(){
   lastNotionLoad=Date.now();
   try{
     const [rech,akq]=await Promise.all([notionGet('rechnungen'),notionGet('akquise')]);
-    if(akq.length){
+    {
       const st=n=>n==='Erledigt'?2:n==='In Bearbeitung'?1:0;
-      LEADS=akq.map((r,i)=>({
+      LEADS=akq.filter(r=>r['Ausgeblendet']!==true).map((r,i)=>({
         id:'n'+i,nid:r.id,n:r['Lead']||'(ohne Titel)',note:r['Nächster Schritt']||'',
         val:+r['Potenzial']||0,stage:st(r['Stage']),who:'MS',
         seg:r['Segment']||'',saison:r['Saison']||''
@@ -3451,7 +3472,7 @@ on('resetState','click',()=>{
 /* ---------- Kundenkartei (Notion „Kunden & Kontakte“) ----------
    Liest alle Felder, die es in Notion gibt — kommen dort neue Spalten dazu (Telefon, Website,
    Nächster Schritt …), tauchen sie hier automatisch als bearbeitbare Felder auf. */
-const K_ORDER=['Bestandskunde','Warm','Angefragt','Kalt','Abgesagt'];
+const K_ORDER=['Bestandskunde','Warm','Angefragt','Kalt','Abgesagt','Archiv'];
 const K_EDITABLE=new Set(['title','rich_text','email','phone_number','url','select','status','date','number','multi_select']);
 let kf='laufend',kOpen=null;
 const EMAIL_RX=/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
@@ -3523,6 +3544,7 @@ function renderKartei(){
       <div class="top">${kPill(k.status)}<span class="typ">${esc(k.typ||'')}</span></div>
       <h3>${esc(k.name)}</h3>
       ${k.ap?`<div class="who">${esc(k.ap)}</div>`:''}
+      ${k.raw['Nächster Schritt']?`<div class="who" style="color:var(--brand)"><b>Nächster Schritt:</b> ${esc(k.raw['Nächster Schritt'])}</div>`:''}
       <div class="note">${esc(lastNote(k)||'Noch keine Notizen.')}</div>
       <div class="meta"><span><b>${open.length}</b> ${open.length===1?'Aufgabe':'Aufgaben'}${open[0]?' · nächste '+dm(open[0].due):''}</span>${GMAIL?`<span><b>${mails}</b> ${mails===1?'Mail':'Mails'}</span>`:''}${k.edited?`<span>geändert ${dm(k.edited.slice(0,10))}</span>`:''}</div>
     </button>`;
@@ -3531,8 +3553,8 @@ function renderKartei(){
   setHTML('kSummary',`<b>${KUNDEN.length} Einträge</b>: ${st('Bestandskunde')} Bestandskunden, ${st('Warm')} warm, ${st('Angefragt')} angefragt. Karte öffnen, um Notizen und Aufgaben einzutragen.`);
 }
 function kMatch(k,f){
-  if(f==='all')return true;
-  if(f==='laufend')return k.status!=='Kalt'&&k.status!=='Abgesagt';
+  if(f==='all')return k.status!=='Archiv';
+  if(f==='laufend')return k.status!=='Kalt'&&k.status!=='Abgesagt'&&k.status!=='Archiv';
   return k.status===f;
 }
 function renderSideClients(){
@@ -3597,7 +3619,7 @@ function renderKundeSheet(id){
     <div class="kd-head">
       <div><h2 id="kdName">${esc(k.name)}</h2>
         <div class="sub">${kPill(k.status)}${k.typ?`<span class="tag">${esc(k.typ)}</span>`:''}${rel?`<span style="font-size:12px;color:var(--ink-3)">${rel} in Notion verknüpft</span>`:''}</div></div>
-      <div class="kd-row"><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Notion</a><button class="btn btn-glass sm" id="kdClose">Schließen</button></div>
+      <div class="kd-row"><button class="btn btn-glass sm" id="kdArchive">${k.status==='Archiv'?'Aus dem Archiv holen':'Ins Archiv'}</button><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Notion</a><button class="btn btn-glass sm" id="kdClose">Schließen</button></div>
     </div>
     <div class="kd-grid">
       <div style="display:flex;flex-direction:column;gap:18px">
@@ -3646,6 +3668,15 @@ function renderKundeSheet(id){
 on('kdSheet','click',async e=>{
   if(e.target.closest('#kdClose')){closeKunde();return}
   const k=KUNDEN.find(x=>x.id===kOpen);if(!k)return;
+  if(e.target.closest('#kdArchive')){
+    const to=k.status==='Archiv'?'Warm':'Archiv';
+    try{
+      await notionUpdate('kunden',k.id,{'Status':{select:{name:to}}});
+      k.status=to;k.raw['Status']=to;fillKundenSelects();renderKundeSheet(k.id);renderKartei();renderSideClients();
+      toast(to==='Archiv'?k.name+' ist im Archiv (in Notion bleibt alles erhalten)':k.name+' ist wieder aktiv (Status Warm)');
+    }catch(x){toast('Nicht gespeichert: '+x.message)}
+    return;
+  }
   if(e.target.closest('#kdNoteSave')){
     const ta=$('kdNoteText'),text=(ta.value||'').trim(),err=$('kdNoteErr'),btn=e.target.closest('#kdNoteSave');
     if(!text){err.textContent='Bitte zuerst etwas eintragen.';ta.focus();return}
