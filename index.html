@@ -317,6 +317,66 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 .add-task.v2{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1.3fr) 110px 150px 110px auto;gap:8px}
 @media (max-width:980px){.add-task.v2{grid-template-columns:1fr 1fr}.add-task.v2 #atTitle{grid-column:1/-1}}
 
+
+/* Kundenprofil */
+.khero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;align-items:center;padding:4px 4px 18px;margin-bottom:16px;border-bottom:1px solid var(--line)}
+@media (max-width:860px){.khero{grid-template-columns:1fr}.khero-r{order:-1}}
+.khero h2{font-size:26px;letter-spacing:-.02em;line-height:1.15}
+.khero .sub{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.kcontact{margin-top:12px!important}
+.kcontact .tag{text-decoration:none}
+.khead{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);margin:18px 0 8px}
+.kclose{position:absolute;top:0;right:0}
+.kfacts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kfact{background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:12px;padding:9px 11px;min-width:0}
+.kfact.wide{grid-column:1/-1;background:linear-gradient(135deg,rgba(252,215,23,.18),rgba(255,255,255,.7));border-color:rgba(212,166,0,.35)}
+.kfact span{display:block;font-size:11px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.kfact b{display:block;font-size:13.5px;font-weight:500;margin-top:3px;line-height:1.4;color:var(--ink)}
+.kfacts-empty{font-size:13px;color:var(--ink-3);padding:10px 0}
+.kmap-wrap{position:relative;width:100%;aspect-ratio:520/300}
+@media (max-width:600px){.kmap-wrap{aspect-ratio:520/380}.kmap-node{max-width:48%;padding:5px 8px 5px 5px}.kmap-node .i{width:22px;height:22px}}
+.kmap{position:absolute;inset:0;width:100%;height:100%}
+.kmap-line{fill:none;stroke:rgba(7,61,48,.22);stroke-width:1.5;stroke-dasharray:4 4;animation:kline .6s ease both}
+@keyframes kline{from{opacity:0}}
+.kmap-ini{font:700 22px var(--font,system-ui);fill:var(--brand)}
+.kmap-ring{transition:stroke-dasharray .8s ease}
+.kmap-node{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:7px;padding:6px 10px 6px 7px;border-radius:999px;background:#fff;border:1px solid var(--line);box-shadow:0 6px 16px -10px rgba(7,61,48,.5);font:inherit;color:inherit;cursor:pointer;text-align:left;max-width:46%;animation:kpop .45s cubic-bezier(.2,.9,.3,1.3) both;transition:transform .15s}
+.kmap-node:hover{transform:translate(-50%,-50%) scale(1.06)}
+@keyframes kpop{from{opacity:0;transform:translate(-50%,-50%) scale(.6)}}
+.kmap-node .i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:rgba(7,61,48,.07);font-size:13px;flex:none}
+.kmap-node b{display:block;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kmap-node small{display:block;font-size:10.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kmap-node span:last-child{min-width:0}
+.kmap-node.t-p .i{background:rgba(10,132,255,.12)}
+.kmap-node.t-y{border-color:rgba(212,166,0,.5)}.kmap-node.t-y .i{background:rgba(252,215,23,.4)}
+.kmap-node.t-m{opacity:.6}
+.kmap-temp{position:absolute;left:50%;bottom:0;transform:translateX(-50%);font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);white-space:nowrap}
+.kmap-temp.hot{color:#1d7a35}.kmap-temp.warm{color:#7a5a00}.kmap-temp.cold{color:var(--ink-3)}
+.kd-details summary{cursor:pointer;list-style:none}
+.kd-details summary::-webkit-details-marker{display:none}
+.kd-details summary h3::before{content:"▸ ";color:var(--ink-3)}
+.kd-details[open] summary h3::before{content:"▾ "}
+section.flash,details.flash{animation:secflash 1.2s ease}
+@keyframes secflash{0%{box-shadow:0 0 0 3px var(--yellow)}100%{box-shadow:0 0 0 0 transparent}}
+/* Kundenkärtchen */
+.kc-top{display:flex;gap:10px;align-items:center}
+.kc-pill{margin-top:8px}
+.kc-name{min-width:0;flex:1}
+.kc-name h3{font-size:16px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.kc-name .typ{display:block;font-size:12px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kcard .kav{width:44px;height:44px;border-radius:13px}
+.ktemp{height:5px;border-radius:999px;background:rgba(29,29,31,.07);overflow:hidden;margin-top:12px}
+.ktemp i{display:block;height:100%;border-radius:999px;transition:width .6s ease}
+.ktemp.hot i{background:linear-gradient(90deg,#34C759,#7ee08f)}.ktemp.warm i{background:linear-gradient(90deg,#FCD717,#ffe766)}.ktemp.cold i{background:#C7C7CC}
+.kc-templ{font-size:11.5px;color:var(--ink-3);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kc-next{font-size:13px;color:var(--ink);background:rgba(252,215,23,.16);border-radius:10px;padding:8px 10px;margin-top:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;flex:1}
+.kcard .note{margin-top:8px}
+.kc-stats{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.kc-stats>span{font-size:12px;padding:3px 8px;border-radius:999px;background:rgba(29,29,31,.05);color:var(--ink-2)}
+.kc-stats>span.on{background:rgba(252,215,23,.3);color:#5c4a00;font-weight:600}
+.kc-stats .kchips{margin-left:auto}
+@media (prefers-reduced-motion:reduce){.kmap-node,.kmap-line{animation:none}}
+
 /* Kundenkartei */
 .kartei-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
 .kartei-tools .input{max-width:320px}
@@ -3682,14 +3742,14 @@ function renderKartei(){
   grid.innerHTML=list.length?list.map(k=>{
     const open=TASKS.filter(t=>!t.done&&t.kid===k.id).sort((a,b)=>a.due.localeCompare(b.due));
     const mails=MAILS.filter(m=>m.client===k.name).length;
+    const st=kStats(k),tp=kTemp(k);
     return `<button class="glass kcard" data-kopen="${k.id}">
-      <div class="top">${kPill(k.status)}<span class="typ">${esc(k.typ||'')}</span></div>
-      <div class="kname">${kAvatar(k)}<h3>${esc(k.name)}</h3></div>
-      ${k.ap?`<div class="who">${esc(k.ap)}</div>`:''}
-      ${kChannels(k)}
-      ${k.raw['Nächster Schritt']?`<div class="who" style="color:var(--brand)"><b>Nächster Schritt:</b> ${esc(k.raw['Nächster Schritt'])}</div>`:''}
-      <div class="note">${esc(lastNote(k)||'Noch keine Notizen.')}</div>
-      <div class="meta"><span><b>${open.length}</b> ${open.length===1?'Aufgabe':'Aufgaben'}${open[0]?' · nächste '+dm(open[0].due):''}</span>${GMAIL?`<span><b>${mails}</b> ${mails===1?'Mail':'Mails'}</span>`:''}${k.edited?`<span>geändert ${dm(k.edited.slice(0,10))}</span>`:''}</div>
+      <div class="kc-top">${kAvatar(k)}<div class="kc-name"><h3>${esc(k.name)}</h3><span class="typ">${esc(k.typ||'')}${k.raw['Branche']?' · '+esc(String(k.raw['Branche']).split(/[(,–]/)[0]):''}</span></div></div>
+      <div class="kc-pill">${kPill(k.status)}</div>
+      <div class="ktemp ${tp.c}" title="Letzter Kontakt"><i style="width:${tp.pct}%"></i></div>
+      <div class="kc-templ">${esc(tp.label)}${kPeople(k)[0]?' · 👤 '+esc(kPeople(k)[0].split(/\s*\(/)[0]):''}</div>
+      ${k.raw['Nächster Schritt']?`<div class="kc-next">🧭 ${esc(k.raw['Nächster Schritt'])}</div>`:`<div class="note">${esc(lastNote(k)||'Noch keine Notizen.')}</div>`}
+      <div class="kc-stats"><span title="Gespräche">💬 ${st.gespr}</span><span title="Mails">✉️ ${GMAIL||st.mails?st.mails:'–'}</span><span title="Offene Aufgaben" class="${st.open?'on':''}">✅ ${st.open}</span>${st.termine?`<span title="Termine" class="on">📅 ${st.termine}</span>`:''}${st.projekte?`<span title="Projekte">🎬 ${st.projekte}</span>`:''}${kChannels(k)}</div>
     </button>`;
   }).join(''):'<p class="empty">Keine Kunden mit diesem Filter.</p>';
   const st=s=>KUNDEN.filter(k=>k.status===s).length;
@@ -3761,14 +3821,19 @@ function renderKundeSheet(id){
   const notes=noteEntries(k.notes);
   const rel=['Projekte','Rechnungen & Angebote','Leads'].filter(n=>Array.isArray(k.raw[n])&&k.raw[n].length).map(n=>`${k.raw[n].length} ${esc(n)}`).join(' · ');
   $('kdSheet').innerHTML=`
-    <div class="kd-head">
-      <div class="kname">${kAvatar(k,true)}<div><h2 id="kdName">${esc(k.name)}</h2>
-        <div class="sub">${kPill(k.status)}${k.typ?`<span class="tag">${esc(k.typ)}</span>`:''}${rel?`<span style="font-size:12px;color:var(--ink-3)">${rel} in Notion verknüpft</span>`:''}</div>
-        <div class="sub">${kChannels(k)}${k.raw['Telefon']?`<a class="tag" href="tel:${esc(String(k.raw['Telefon']).replace(/\s/g,''))}">📞 ${esc(k.raw['Telefon'])}</a>`:''}${k.email?`<a class="tag" href="mailto:${esc(k.email)}">✉️ ${esc(k.email)}</a>`:''}${k.raw['Website']?`<a class="tag" href="${esc(k.raw['Website'])}" target="_blank" rel="noopener">🌐 Website</a>`:''}</div></div></div>
-      <div class="kd-row"><button class="btn btn-primary sm" id="kdBrief">✨ Briefing</button><button class="btn btn-glass sm" id="kdTermin">Termin</button><button class="btn btn-glass sm" id="kdArchive">${k.status==='Archiv'?'Aus dem Archiv holen':'Ins Archiv'}</button><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Notion</a><button class="btn btn-glass sm" id="kdClose">Schließen</button></div>
+    <div class="khero">
+      <div class="khero-l">
+        <div class="kname">${kAvatar(k,true)}<div><h2 id="kdName">${esc(k.name)}</h2>
+          <div class="sub">${kPill(k.status)}${k.typ?`<span class="tag">${esc(k.typ)}</span>`:''}</div></div></div>
+        <div class="sub kcontact">${k.raw['Telefon']?`<a class="tag" href="tel:${esc(String(k.raw['Telefon']).replace(/\s/g,''))}">📞 ${esc(k.raw['Telefon'])}</a>`:''}${k.email?`<a class="tag" href="mailto:${esc(k.email)}">✉️ ${esc(k.email)}</a>`:''}${k.raw['Website']?`<a class="tag" href="${esc(k.raw['Website'])}" target="_blank" rel="noopener">🌐 Website</a>`:''}${k.raw['Adresse']?`<span class="tag">📍 ${esc(String(k.raw['Adresse']).split('(')[0].trim())}</span>`:''}</div>
+        <h3 class="khead" id="kdSecFacts">Auf einen Blick</h3>
+        ${kFacts(k)}
+        <div class="kd-row" style="margin-top:14px"><button class="btn btn-primary sm" id="kdBrief">✨ Briefing</button>${k.raw['Nächster Schritt']&&!TASKS.some(t=>t.kid===k.id&&!t.done)?'<button class="btn btn-glass sm" data-nexttask>Nächster Schritt → Kalender</button>':''}<button class="btn btn-glass sm" id="kdTermin">Termin</button><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>Notion</a><button class="btn btn-glass sm" id="kdArchive">${k.status==='Archiv'?'Aus dem Archiv':'Archiv'}</button></div>
+      </div>
+      <div class="khero-r">${kMapSVG(k)}</div>
+      <button class="icon-btn kclose" id="kdClose" aria-label="Schließen">✕</button>
     </div>
     <div id="kdAI"></div>
-    ${kNext(k)}
     <div class="kd-grid">
       <div style="display:flex;flex-direction:column;gap:18px">
         <section class="kd-box">
@@ -3780,11 +3845,11 @@ function renderKundeSheet(id){
           </div>
           <div class="kd-notes">${notes.length?notes.map(n=>`<p><b>${esc(n.head)}</b>${esc(n.body)}</p>`).join(''):'<p style="background:none;color:var(--ink-3)">Noch keine Notizen.</p>'}</div>
         </section>
-        <section class="kd-box">
-          <h3>Stammdaten</h3>
-          <div class="kd-fields">${fields.map(n=>fieldInput(n,sch[n],k.raw[n])).join('')}</div>
+        <details class="kd-box kd-details" id="kdSecData">
+          <summary><h3 style="display:inline">Stammdaten bearbeiten</h3>${rel?`<span style="font-size:12px;color:var(--ink-3);margin-left:8px">${rel} in Notion verknüpft</span>`:''}</summary>
+          <div class="kd-fields" style="margin-top:12px">${fields.map(n=>fieldInput(n,sch[n],k.raw[n])).join('')}</div>
           <div class="kd-row" style="margin-top:12px"><button class="btn btn-glass sm" id="kdSave">Änderungen speichern</button><p class="form-err" id="kdSaveErr" role="alert" style="margin:0"></p></div>
-        </section>
+        </details>
       </div>
       <div style="display:flex;flex-direction:column;gap:18px">
         <section class="kd-box">
@@ -4283,6 +4348,84 @@ async function autoLetzterKontakt(){
   }
   if(n)safe('brainR',renderBrain);
 }
+
+
+/* ---------- Kundenprofil: Beziehungskarte, Temperatur, Auf einen Blick ---------- */
+function kPeople(k){
+  return String(k.ap||'').split(/\s*[·;\n]\s*|,\s(?=[A-ZÄÖÜ][a-zäöüß]+\s[A-ZÄÖÜ])/)
+    .map(s=>s.trim()).filter(s=>s&&!/^(unbekannt|über |kein |noch kein)/i.test(s)).slice(0,4);
+}
+function kTemp(k){
+  const lt=lastTouch(k);
+  if(!lt)return{c:'cold',label:'Kein Kontakt erfasst',pct:8,d:null};
+  const d=diffDays(TODAY,lt);
+  if(d<=7)return{c:'hot',label:d===0?'Heute Kontakt':'vor '+d+(d===1?' Tag':' Tagen'),pct:100,d};
+  if(d<=21)return{c:'warm',label:'vor '+d+' Tagen',pct:60,d};
+  return{c:'cold',label:'vor '+d+' Tagen',pct:25,d};
+}
+function kStats(k){
+  const tasks=TASKS.filter(t=>t.kid===k.id);
+  return{
+    people:kPeople(k),
+    gespr:kGespr(k).length,
+    mails:kMails(k).length,
+    open:tasks.filter(t=>!t.done).length,
+    done:tasks.filter(t=>t.done).length,
+    termine:EVENTS.filter(e=>e.type==='privat'&&e.kid===k.id&&(e.end||e.d)>=TODAY).length,
+    projekte:(Array.isArray(k.raw['Projekte'])?k.raw['Projekte'].length:0),
+    rechnungen:(Array.isArray(k.raw['Rechnungen & Angebote'])?k.raw['Rechnungen & Angebote'].length:0),
+    leads:(Array.isArray(k.raw['Leads'])?k.raw['Leads'].length:0)
+  };
+}
+function kMapSVG(k){
+  const st=kStats(k),W=520,H=300,cx=W/2,cy=H/2;
+  const nodes=[];
+  st.people.forEach(p=>nodes.push({ic:'👤',t:p.replace(/\s*\(.*?\)\s*/g,' ').trim().slice(0,26),sub:'Ansprechpartner',go:'kdSecFacts',tone:'p'}));
+  nodes.push({ic:'💬',t:st.gespr+(st.gespr===1?' Gespräch':' Gespräche'),sub:kGespr(k)[0]?'zuletzt '+dm(kGespr(k)[0].date):'noch keine',go:'kdVerlauf',tone:st.gespr?'a':'m'});
+  nodes.push({ic:'✉️',t:st.mails+(st.mails===1?' Mail':' Mails'),sub:st.mails?'im Verlauf':'keine gefunden',go:'kdVerlauf',tone:st.mails?'a':'m'});
+  nodes.push({ic:'✅',t:st.open+' offen',sub:st.done+' erledigt',go:'kdTaskForm',tone:st.open?'y':'m'});
+  if(st.termine)nodes.push({ic:'📅',t:st.termine+' Termine',sub:'geplant',go:'kdTaskForm',tone:'a'});
+  if(st.projekte||st.rechnungen)nodes.push({ic:'🎬',t:st.projekte+' Projekte',sub:st.rechnungen+' Rechnungen/Angebote',go:'kdSecData',tone:'a'});
+  if(st.leads)nodes.push({ic:'🎯',t:st.leads+' Lead'+(st.leads>1?'s':''),sub:'in der Akquise',go:'kdSecData',tone:'a'});
+  const n=nodes.length,rx=190,ry=108;
+  const pos=nodes.map((_,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;return{x:cx+rx*Math.cos(a),y:cy+ry*Math.sin(a)}});
+  const temp=kTemp(k);
+  const ring={hot:'#34C759',warm:'#FCD717',cold:'#C7C7CC'}[temp.c];
+  const ini=initials(k.name.replace(/[–(].*$/,''));
+  const ic=k.raw._icon,foto=Array.isArray(k.raw['Foto'])&&k.raw['Foto'][0]&&k.raw['Foto'][0].url;
+  const img=foto||(ic&&ic.url)||'';
+  let svg=`<svg class="kmap" viewBox="0 0 ${W} ${H}" role="img" aria-label="Beziehungskarte ${esc(k.name)}">
+  <defs><clipPath id="kmc"><circle cx="${cx}" cy="${cy}" r="30"/></clipPath></defs>`;
+  pos.forEach((p,i)=>{svg+=`<path class="kmap-line" style="animation-delay:${i*60}ms" d="M${cx},${cy} Q${(cx+p.x)/2},${(cy+p.y)/2-18} ${p.x},${p.y}"/>`});
+  svg+=`<circle cx="${cx}" cy="${cy}" r="42" fill="none" stroke="${ring}" stroke-width="4" stroke-dasharray="${Math.round(2*Math.PI*42*temp.pct/100)} 999" transform="rotate(-90 ${cx} ${cy})" class="kmap-ring"/>
+  <circle cx="${cx}" cy="${cy}" r="34" fill="#fff" stroke="rgba(7,61,48,.12)"/>`;
+  svg+=`<text x="${cx}" y="${cy+7}" text-anchor="middle" class="kmap-ini">${esc(ini)}</text>`;
+  if(img)svg+=`<circle cx="${cx}" cy="${cy}" r="30" fill="#fff" class="kmap-imgbg"/><image href="${esc(img)}" x="${cx-(foto?30:22)}" y="${cy-(foto?30:22)}" width="${foto?60:44}" height="${foto?60:44}" clip-path="url(#kmc)" preserveAspectRatio="xMidYMid ${foto?'slice':'meet'}" onerror="this.previousElementSibling.remove();this.remove()"/>`;
+  svg+=`</svg>`;
+  const labels=nodes.map((nd,i)=>{const p=pos[i];return `<button class="kmap-node t-${nd.tone}" style="left:${(p.x/W*100).toFixed(2)}%;top:${(p.y/H*100).toFixed(2)}%;animation-delay:${120+i*70}ms" data-kgo="${nd.go}"><span class="i">${nd.ic}</span><span><b>${esc(nd.t)}</b><small>${esc(nd.sub)}</small></span></button>`}).join('');
+  return `<div class="kmap-wrap">${svg}${labels}<div class="kmap-temp ${temp.c}">● ${esc(temp.label)}</div></div>`;
+}
+function kFacts(k){
+  const g=kGespr(k)[0]||{};
+  const ch=Array.isArray(k.raw['Bevorzugter Kanal'])?k.raw['Bevorzugter Kanal'].join(' · '):'';
+  const tiles=[
+    ['🧭','Nächster Schritt',k.raw['Nächster Schritt']||'',true],
+    ['🎯','Was sie brauchen',g.bedarf||''],
+    ['💶','Budget',g.budget||''],
+    ['📈','Chance',g.chance||''],
+    ['🗣️','Erreichbar über',ch],
+    ['🏭','Branche',k.raw['Branche']||'']
+  ].filter(t=>t[2]);
+  if(!tiles.length)return '<p class="kfacts-empty">Noch wenig bekannt. Nach dem nächsten Gespräch eine Notiz eintragen, dann füllt sich das hier.</p>';
+  return `<div class="kfacts">${tiles.map(([ic,l,v,wide])=>`<div class="kfact${wide?' wide':''}"><span>${ic} ${esc(l)}</span><b>${esc(v)}</b></div>`).join('')}</div>`;
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-kgo]');if(!b)return;
+  const el=$(b.dataset.kgo);if(!el)return;
+  if(el.tagName==='DETAILS')el.open=true;
+  (el.closest('section')||el).scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'start'});
+  const sec=el.closest('section')||el;sec.classList.remove('flash');void sec.offsetWidth;sec.classList.add('flash');
+});
 
 /* ---------- Spaßebene: Feiern, Wochen-Duell, Sprüche, Easter Eggs ----------
    Alles rein optisch. Bei „Bewegung reduzieren“ im System gibt es keine Animationen. */
