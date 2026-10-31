@@ -50,7 +50,6 @@ body.w-center .app{max-width:1580px}
   .app{grid-template-columns:272px minmax(0,1fr);gap:26px;padding:24px 32px}
   #kdSheet.sheet.wide{width:min(1760px,96vw)}
   .kfiles{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .ang-frame-wrap{height:calc(100vh - 170px)}
   .li-drawer .li-panel{width:min(560px,40vw)}
 }
 @media (min-width:2400px){.app{padding:28px 48px}#kdSheet .kd-grid{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}}
@@ -417,8 +416,8 @@ body:has(.view[data-view="agent"].active) .li-fab,body:has(.view[data-view="ange
 
 
 /* Angebotsrechner + automatische Ablage */
-.ang-frame-wrap{padding:0;overflow:hidden;height:calc(100vh - 190px);min-height:640px;background:var(--brand)!important}
-.ang-frame-wrap iframe{width:100%;height:100%;border:0;display:block;border-radius:inherit}
+.ang-frame-wrap{padding:0;overflow:visible;min-height:640px;background:transparent!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.ang-frame-wrap iframe{width:100%;height:900px;border:0;display:block;background:transparent;color-scheme:normal}
 .inv-auto{border-radius:14px;padding:12px 14px;margin:0 0 14px;font-size:13.5px;line-height:1.5;background:rgba(7,61,48,.05);border:1px solid rgba(7,61,48,.12);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .inv-auto.ok{background:rgba(52,199,89,.1);border-color:rgba(52,199,89,.35)}
 .inv-auto.warn{background:rgba(252,215,23,.15);border-color:rgba(212,166,0,.35)}
@@ -571,6 +570,17 @@ body.own-calls [data-premium="calls"] .lock,body.own-bundle [data-premium="calls
 .news-sheet{width:min(520px,100%)}.news-sheet h2{margin:4px 0 12px}
 .news-block{margin-top:10px}.news-block small{font-size:11.5px;color:var(--ink-3);font-weight:600}.news-block ul{margin:6px 0 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px}.news-block li{font-size:14px;line-height:1.45}
 @media (max-width:900px){.upd-bar{top:10px;width:calc(100vw - 32px);border-radius:18px}}
+
+
+/* Angebotsrechner im Studio */
+.ang-done-in{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:14px 16px;margin-bottom:14px;border-radius:18px;background:linear-gradient(135deg,rgba(52,199,89,.12),rgba(255,255,255,.8));border:1px solid rgba(52,199,89,.35)}
+.ad-ic{width:34px;height:34px;border-radius:50%;background:#34C759;color:#fff;display:grid;place-items:center;font-weight:800}
+.ang-done-in b{display:block;font-size:15px}.ang-done-in small{display:block;font-size:12.5px;color:var(--ink-2)}
+.ad-act{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ang-past{margin-bottom:14px;padding:12px 16px;border-radius:18px}.ang-past summary{cursor:pointer;list-style:none;font-size:14px}.ang-past summary::-webkit-details-marker{display:none}.ang-past summary::before{content:"▸ ";color:var(--ink-3)}.ang-past[open] summary::before{content:"▾ "}
+.ang-past-list{display:flex;gap:10px;overflow-x:auto;padding:10px 2px 4px}
+.ap-card{flex:none;width:220px;padding:12px;border-radius:14px;background:rgba(255,255,255,.75);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.ap-card b{font-size:13.5px}.ap-card small{font-size:12px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ap-card span{font-size:12px;color:var(--ink-3)}.ap-act{display:flex;gap:6px;margin-top:8px}
 
 /* LeMatic-Agent */
 .pill.bad{background:rgba(255,59,48,.12);color:#B42318}.pill.bad i{background:#FF3B30}
@@ -1734,7 +1744,9 @@ body.dcut .bg{filter:grayscale(.4)}
         </div>
         <div class="actions"><a class="btn btn-glass" href="angebot.html" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg><span class="label">Im eigenen Fenster</span></a></div>
       </header>
-      <div class="glass ang-frame-wrap"><iframe id="angFrame" title="Angebotsrechner" loading="lazy"></iframe></div>
+      <div class="ang-done" id="angDone" hidden></div>
+      <details class="glass ang-past" id="angPast"><summary><b>Frühere Angebote</b><span id="angPastN"></span></summary><div class="ang-past-list" id="angPastList"></div></details>
+      <div class="ang-frame-wrap"><iframe id="angFrame" title="Angebotsrechner" allowtransparency="true"></iframe></div>
     </section>
 
     <!-- ===== LeMatic-Agent ===== -->
@@ -5138,13 +5150,102 @@ window.studioSaveOffer=async function(blob,filename,meta){
   const inv={id:Date.now(),kind:'Angebot',no:meta.no||'',party:meta.customer||'—',note:(meta.title||name).slice(0,80),date:TODAY,amount:+meta.total||0,status:'offen',p:'Akquise',drive:up.webViewLink||ANGEBOT_URL,driveFileId:up.id,fresh:true};
   INVOICES.unshift(inv);safe('inv',renderInvoices);
   toast('✓ Angebot '+(meta.no||'')+' abgelegt in Drive: Angebote / '+folderName);
+  safe('angDone',()=>showAngDone({no:meta.no,customer:meta.customer,contact:meta.contact||'',folder:folderName,link:up.webViewLink||driveUrl(folderId),id:up.id}));
   notionCreateRechnung({no:inv.no,art:'Angebot',status:'Offen',betrag:inv.amount,leistung:(meta.customer||'')+(meta.title?': '+meta.title:''),datum:TODAY,datei:inv.drive})
     .then(r=>{inv.nid=r.id}).catch(()=>{});
   setTimeout(()=>safe('dd',()=>scanDriveInvoices()),1500);
 };
 let angLoaded=false;
-window.addEventListener('hashchange',()=>{if(location.hash==='#/angebot'&&!angLoaded){angLoaded=true;$('angFrame').src='angebot.html'}});
-if(location.hash==='#/angebot'){angLoaded=true;setTimeout(()=>{$('angFrame').src='angebot.html'},0)}
+function angAutoHeight(){
+  const f=$('angFrame');if(!f)return;
+  try{
+    const d=f.contentDocument;if(!d||!d.body)return;
+    const fit=()=>{const h=Math.max(d.documentElement.scrollHeight,d.body.scrollHeight,700);if(Math.abs(f.offsetHeight-h)>4)f.style.height=h+'px'};
+    fit();new (f.contentWindow.ResizeObserver||ResizeObserver)(fit).observe(d.body);
+    ['--brand','--brand-2'].forEach(v=>d.documentElement.style.setProperty(v,getComputedStyle(document.documentElement).getPropertyValue(v).trim()));
+  }catch(_){}
+}
+document.addEventListener('DOMContentLoaded',()=>{const f=$('angFrame');f&&f.addEventListener('load',angAutoHeight)});
+(function(){const f=$('angFrame');f&&f.addEventListener('load',angAutoHeight)})();
+async function openAngebot(){
+  safe('angPast',renderAngPast);
+  if(angLoaded)return;angLoaded=true;
+  try{await draftsDown()}catch(_){}
+  $('angFrame').src='angebot.html';
+}
+window.addEventListener('hashchange',()=>{if(location.hash==='#/angebot')openAngebot()});
+if(location.hash==='#/angebot')setTimeout(openAngebot,0);
+
+/* ---------- Entwürfe des Angebotsrechners in Drive speichern (für beide, auf jedem Gerät) ---------- */
+const DRAFT_FILE='LeMatic_Angebotsentwuerfe.json',DK={offers:'lematic_offers',customers:'lematic_customers',counter:'lematic_offer_counter'};
+let DRAFT_ID=null,draftIds=new Set(),draftDeleted=[],draftT=null;
+const lsGet=k=>{try{return JSON.parse(localStorage.getItem(k)||'[]')||[]}catch(_){return[]}};
+async function draftFind(){
+  if(DRAFT_ID)return DRAFT_ID;
+  const f=(await ddList(`'${ANGEBOT_ID}' in parents and name='${DRAFT_FILE}' and trashed=false`))[0];
+  DRAFT_ID=f?f.id:null;return DRAFT_ID;
+}
+async function draftsDown(){
+  if(!GAUTH)return;
+  const id=await draftFind();
+  let remote={offers:[],customers:[],counter:0,deleted:[]};
+  if(id){try{remote=Object.assign(remote,await (await gfetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media&supportsAllDrives=true')).json())}catch(_){}}
+  draftDeleted=remote.deleted||[];
+  const del=new Set(draftDeleted);
+  const byId=new Map();[...remote.offers,...lsGet(DK.offers)].forEach(o=>{if(o&&o.id&&!del.has(o.id))byId.set(o.id,o)});
+  const offers=[...byId.values()].sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  const ck=c=>((c.customerCompany||'')+'|'+(c.customerEmail||'')).toLowerCase();
+  const cm=new Map();[...remote.customers,...lsGet(DK.customers)].forEach(c=>{if(c&&ck(c)!=='|')cm.set(ck(c),c)});
+  const counter=Math.max(+remote.counter||0,+(localStorage.getItem(DK.counter)||0));
+  try{localStorage.setItem(DK.offers,JSON.stringify(offers));localStorage.setItem(DK.customers,JSON.stringify([...cm.values()]));if(counter)localStorage.setItem(DK.counter,String(counter))}catch(_){}
+  draftIds=new Set(offers.map(o=>o.id));
+}
+async function draftsUp(){
+  if(!GAUTH)return;
+  const offers=lsGet(DK.offers);const now=new Set(offers.map(o=>o.id));
+  draftIds.forEach(id=>{if(!now.has(id))draftDeleted.push(id)});draftIds=now;
+  const body=JSON.stringify({offers,customers:lsGet(DK.customers),counter:+(localStorage.getItem(DK.counter)||0),deleted:draftDeleted.slice(-500),savedBy:USER,savedAt:new Date().toISOString()});
+  const id=await draftFind();
+  if(id){await gfetch('https://www.googleapis.com/upload/drive/v3/files/'+id+'?uploadType=media&supportsAllDrives=true',{method:'PATCH',headers:{'Content-Type':'application/json'},body})}
+  else{const f=new File([body],DRAFT_FILE,{type:'application/json'});const up=await driveUpload(f,DRAFT_FILE,ANGEBOT_ID);DRAFT_ID=up.id}
+}
+/* Der Rechner läuft im eingebetteten Fenster derselben Adresse: Änderungen kommen hier als storage-Ereignis an */
+window.addEventListener('storage',e=>{if(e.key&&Object.values(DK).includes(e.key)){clearTimeout(draftT);draftT=setTimeout(()=>draftsUp().catch(x=>toast('Entwurf nur lokal gespeichert: '+x.message)),1200)}});
+
+/* ---------- Frühere Angebote und „fertig abgelegt“ ---------- */
+function renderAngPast(){
+  const el=$('angPastList');if(!el)return;
+  const seen=new Set(),items=[];
+  driveDocsLI().filter(d=>d.kind==='Angebot').forEach(d=>{seen.add((d.no||'').toUpperCase());items.push({no:d.no||d.name,party:d.party,amount:d.amount,date:d.date,status:d.status,link:d.link,id:d.id})});
+  agentInvoices().filter(i=>i.kind==='Angebot'&&!seen.has((i.no||'').toUpperCase())).forEach(i=>items.push({no:i.no,party:i.party&&i.party!=='—'?i.party:(i.note||'').split(':')[0],amount:i.amount,date:i.date,status:i.status,link:i.drive,id:i.driveFileId||driveIdFrom(i.drive)}));
+  items.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+  $('angPastN').textContent=items.length?' · '+items.length:'';
+  el.innerHTML=items.length?items.slice(0,40).map(it=>`<div class="ap-card"><b>${esc(it.no||'Angebot')}</b><small>${esc(it.party||'')}</small><span>${it.amount?eur(it.amount):''}${it.date?' · '+dm(String(it.date).slice(0,10)):''}${it.status&&it.status!=='nicht in Notion'?' · '+esc(it.status):''}</span><div class="ap-act">${it.link?`<a class="btn btn-glass sm" href="${esc(it.link)}" target="_blank" rel="noopener">PDF</a>`:''}${it.id?`<button class="btn btn-glass sm" data-share="${esc(it.id)}" data-sname="${esc(it.no||'')}">Link</button>`:''}</div></div>`).join(''):'<p class="empty">Noch keine Angebote gefunden. Sie erscheinen hier, sobald sie in Drive oder Notion liegen.</p>';
+}
+async function shareLink(id){
+  await gfetch('https://www.googleapis.com/drive/v3/files/'+id+'/permissions?supportsAllDrives=true',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:'reader',type:'anyone'})});
+  const url='https://drive.google.com/file/d/'+id+'/view';
+  try{await navigator.clipboard.writeText(url)}catch(_){}
+  return url;
+}
+function showAngDone(o){
+  const el=$('angDone');if(!el)return;
+  const k=KUNDEN.find(q=>kMatches(q,o.customer||''));const to=k&&k.email?k.email:'';
+  const subj='Angebot '+(o.no||'')+' – LeMatic';
+  el.innerHTML=`<div class="glass ang-done-in"><span class="ad-ic">✓</span><div><b>Angebot ${esc(o.no||'')} ist abgelegt</b><small>Drive: Angebote / ${esc(o.folder)} · auch in Notion eingetragen</small></div>
+    <div class="ad-act"><a class="btn btn-glass sm" href="${esc(o.link)}" target="_blank" rel="noopener">In Drive öffnen</a><button class="btn btn-glass sm" data-share="${esc(o.id)}" data-sname="${esc(o.no||'')}">Link zum Verschicken kopieren</button><button class="btn btn-primary sm" data-sharemail="${esc(o.id)}" data-to="${esc(to)}" data-subj="${esc(subj)}" data-cust="${esc(o.contact||'')}">Per Mail schicken</button><button class="icon-btn" data-adclose aria-label="Schließen">✕</button></div></div>`;
+  el.hidden=false;el.scrollIntoView({block:'start',behavior:REDUCED?'auto':'smooth'});
+}
+document.addEventListener('click',async e=>{
+  if(e.target.closest('[data-adclose]')){$('angDone').hidden=true;return}
+  const sh=e.target.closest('[data-share]');
+  if(sh){sh.disabled=true;try{await shareLink(sh.dataset.share);toast('Link kopiert. Jeder mit dem Link kann das PDF ansehen.')}catch(x){toast('Link nicht erstellt: '+x.message)}sh.disabled=false;return}
+  const sm=e.target.closest('[data-sharemail]');
+  if(sm){sm.disabled=true;try{const url=await shareLink(sm.dataset.sharemail);
+    const body='Hallo'+(sm.dataset.cust?' '+sm.dataset.cust:'')+',\n\nanbei wie besprochen unser Angebot:\n'+url+'\n\nBei Fragen melde dich gern.\n\nViele Grüße\n'+USER+'\nLeMatic';
+    window.open('https://mail.google.com/mail/?authuser=info@lematic.de&view=cm&fs=1&to='+encodeURIComponent(sm.dataset.to||'')+'&su='+encodeURIComponent(sm.dataset.subj)+'&body='+encodeURIComponent(body),'_blank','noopener');
+  }catch(x){toast('Mail nicht vorbereitet: '+x.message)}sm.disabled=false}
+});
 
 /* ---------- Rechnung hochladen: automatisch erkennen und einsortieren ---------- */
 const EIN_CATS={
@@ -6171,8 +6272,14 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.10';
+const APP_VERSION='2026-10-31.11';
 const CHANGELOG=[
+  {v:'2026-10-31.11',d:'31.10.2026',items:[
+    '🧮 Angebotsrechner sieht jetzt aus wie das Studio und ist direkt eingebaut, kein eigenes Fenster mehr',
+    '💾 Entwürfe werden in Drive gespeichert: Lennart und Martin sehen dieselben Entwürfe, auf jedem Gerät',
+    '📂 „Frühere Angebote“ über dem Rechner: alle bisherigen Angebote mit PDF und Link',
+    '📨 Nach dem Erstellen: Link zum Verschicken kopieren oder direkt per Mail an den Kunden'
+  ]},
   {v:'2026-10-31.10',d:'31.10.2026',items:[
     '🖥️ Ultra-Wide: Das Studio nutzt jetzt die volle Fensterbreite. Wer es lieber kompakt mag: Einstellungen → Dein Studio → Breite „Zentriert“',
     '📁 Angebotsrechner: Das PDF landet automatisch im richtigen Kundenordner unter Angebote (z. B. 07_Fronius_Get_Nord_2026), fehlt einer, wird er angelegt'
