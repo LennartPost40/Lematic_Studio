@@ -713,6 +713,38 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 
 /* Streak & Laune */
 .mood-badge{display:inline-flex;align-items:center;margin-left:8px;font-size:26px;cursor:default;vertical-align:-4px}
+.mood-badge{cursor:pointer;transition:transform .2s}
+.mood-badge:hover{animation:wiggle .5s ease}
+@keyframes wiggle{25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.fun-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.fun-strip .chip{display:inline-flex;align-items:center;gap:8px;font-size:13px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid var(--line);color:var(--ink-2)}
+.fun-strip .chip b{color:var(--ink)}
+.duel{display:inline-flex;align-items:center;gap:6px}
+.duel .bar{display:inline-flex;width:90px;height:6px;border-radius:999px;overflow:hidden;background:rgba(29,29,31,.08)}
+.duel .bar i{display:block;height:100%;background:var(--brand)}
+.duel .bar i+i{background:var(--yellow)}
+.quote{font-style:italic}
+#fxCanvas{position:fixed;inset:0;pointer-events:none;z-index:95}
+.wrap-overlay{position:fixed;inset:0;z-index:96;display:grid;place-items:center;pointer-events:none;opacity:0;transition:opacity .3s}
+.wrap-overlay.show{opacity:1}
+.wrap-overlay div{background:#0d0d0d;color:#fff;padding:26px 34px;border-radius:20px;text-align:center;font-weight:700;font-size:28px;letter-spacing:.02em;box-shadow:0 30px 80px rgba(0,0,0,.35);transform:scale(.9);transition:transform .35s cubic-bezier(.2,.9,.3,1.4)}
+.wrap-overlay.show div{transform:scale(1)}
+.wrap-overlay small{display:block;font-size:13px;font-weight:500;opacity:.7;margin-top:6px}
+.clapper{font-size:64px;display:inline-block;transform-origin:20% 80%;animation:clap .6s ease 2}
+@keyframes clap{50%{transform:rotate(-14deg)}}
+body.dcut::before,body.dcut::after{content:"";position:fixed;left:0;right:0;height:7vh;background:#000;z-index:94;pointer-events:none;animation:barin .5s ease}
+body.dcut::before{top:0}body.dcut::after{bottom:0}
+@keyframes barin{from{height:0}}
+body.dcut main{filter:contrast(1.05) saturate(.85)}
+body.dcut .bg{filter:grayscale(.4)}
+.rec{position:fixed;top:14px;right:18px;z-index:97;display:none;align-items:center;gap:8px;font:600 12px/1 ui-monospace,Menlo,monospace;color:#fff;background:rgba(0,0,0,.75);padding:7px 11px;border-radius:8px}
+.rec.on{display:inline-flex}
+.rec i{width:9px;height:9px;border-radius:50%;background:#ff3b30;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.kcard:hover{transform:translateY(-3px) rotate(-.25deg);box-shadow:0 14px 34px -18px rgba(7,61,48,.45)}
+.task .chk{transition:transform .15s}
+.task .chk:active{transform:scale(.85)}
+@media (prefers-reduced-motion:reduce){.mood-badge:hover,.clapper,.rec i{animation:none}body.dcut::before,body.dcut::after{animation:none}}
 .streak-badge{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--warn);background:rgba(255,159,10,.14);padding:4px 11px;border-radius:999px;margin-top:6px}
 
 /* Mobile Tab-Leiste */
@@ -873,6 +905,7 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
           <p class="date" id="hDate"></p>
           <h1 id="hGreet">Hallo</h1>
           <div class="streak-badge" id="streakBadge" hidden></div>
+          <div class="fun-strip" id="funStrip"></div>
           <p class="summary" id="hSummary"></p>
         </div>
         <div class="actions">
@@ -1563,6 +1596,9 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
   </div>
 </div>
 
+<canvas id="fxCanvas" aria-hidden="true"></canvas>
+<div class="wrap-overlay" id="wrapOverlay" aria-live="polite"></div>
+<div class="rec" id="recBadge" aria-hidden="true"><i></i><span id="recTc">00:00:00:00</span></div>
 <div class="toast glass" id="toast" role="status"><svg class="i"><use href="#i-check"/></svg><span></span></div>
 
 <script>
@@ -2369,6 +2405,7 @@ function renderHome(){
   document.getElementById('hGreet').innerHTML=`${(h<5?'Na, mitten in der Nacht':h<11?'Guten Morgen':h<18?'Hallo':'Guten Abend')}, ${esc(USER)}<span class="mood-badge" title="${esc(mood.t)}">${mood.e}</span>`;
   const streakEl=$('streakBadge');
   if(streakEl){streakEl.hidden=streak<=1;streakEl.innerHTML=streak>1?`🔥 ${streak} Tage in Folge eingeloggt`:'';}
+  if(NOW.getDay()===5&&h>=15)setTimeout(()=>{const s=$('hSummary');if(s&&!/Wochenende/.test(s.textContent))s.insertAdjacentHTML('beforeend',' <b>Freitag, gleich Wochenende.</b> 🍻')},0);
   document.getElementById('hDate').textContent=NOW.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   const eow=endOfWeek(),sow=startOfWeek();
   const openWeek=TASKS.filter(t=>!t.done&&t.due<=eow);
@@ -2413,6 +2450,7 @@ function renderHome(){
     <div class="goal-grid"><div><strong>${eur(openSum)}</strong><span>Offene Rechnungen</span></div><div><strong>${eur(signed)}</strong><span>Angebote unterschrieben, zählt nicht mit</span></div></div>
     <div class="fulltime"><div><span>Bis zur Vollzeit-Selbstständigkeit</span></div><div><strong>${toFull}</strong> <span>Tage</span></div></div>`;
   updateBadges();
+  safe('funStrip',renderFunStrip);
 }
 document.getElementById('week').addEventListener('click',e=>{
   const b=e.target.closest('[data-day]');if(!b)return;
@@ -2514,12 +2552,12 @@ function taskFromEvent(it){
     id:it.id,t:x.lmTitle||(it.summary||'').replace(/^[☐✓]\s*/,'').replace(/\s*\((Lennart|Martin)\)$/,''),
     who:x.lmWho==='MS'?'MS':'LP',by:x.lmBy||'',done:x.lmDone==='1',
     due:(it.start.dateTime||it.start.date).slice(0,10),time:allDay?null:it.start.dateTime.slice(11,16),
-    kid:x.lmKid||'',kname:x.lmKname||'',raw:x
+    kid:x.lmKid||'',kname:x.lmKname||'',doneAt:x.lmDoneAt||'',doneBy:x.lmDoneBy||'',raw:x
   };
 }
 function taskEventBody(t){
   const summary=(t.done?'✓ ':'☐ ')+t.t+' ('+NAMES[t.who]+')';
-  const priv={lmTask:'1',lmWho:t.who,lmDone:t.done?'1':'0',lmTitle:t.t.slice(0,900),lmKid:t.kid||'',lmKname:(t.kname||'').slice(0,200),lmBy:t.by||ME};
+  const priv={lmTask:'1',lmWho:t.who,lmDone:t.done?'1':'0',lmDoneAt:t.doneAt||'',lmDoneBy:t.doneBy||'',lmTitle:t.t.slice(0,900),lmKid:t.kid||'',lmKname:(t.kname||'').slice(0,200),lmBy:t.by||ME};
   const description=['Aufgabe für '+NAMES[t.who],t.kname?'Kunde: '+t.kname:'','Angelegt von '+(NAMES[t.by]||USER)+' im LeMatic Studio'].filter(Boolean).join('\n');
   const body={summary,description,colorId:t.done?TASK_COLOR.done:TASK_COLOR[t.who],extendedProperties:{private:priv},transparency:'transparent'};
   if(t.time){
@@ -2543,16 +2581,17 @@ async function createTask({title,who,due,time,kid,kname}){
   return t;
 }
 async function toggleTask(t,done){
-  const before=t.done;t.done=done;
+  const before=t.done,beforeAt=t.doneAt,beforeBy=t.doneBy;t.done=done;
+  t.doneAt=done?new Date().toISOString():'';t.doneBy=done?ME:'';
   safe('tasksR',renderTasks);safe('homeR',renderHome);
   try{
     await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id),{
       method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))
     });
-    if(done)toast('Erledigt: '+t.t);
+    if(done)safe('fun',()=>celebrateTask(t));
     syncTaskEvents();safe('kartR',renderKartei);if(kOpen)safe('ks',()=>renderKundeSheet(kOpen));
   }catch(e){
-    t.done=before;safe('tasksR',renderTasks);safe('homeR',renderHome);
+    t.done=before;t.doneAt=beforeAt;t.doneBy=beforeBy;safe('tasksR',renderTasks);safe('homeR',renderHome);
     toast('Kalender nicht aktualisiert: '+e.message);
   }
 }
@@ -2933,6 +2972,7 @@ function renderMails(){
   const unread=MAILS.filter(m=>m.unread&&!m.sent).length;
   setHTML('mSummary',`<b>${unread} ungelesen</b> von ${MAILS.length} geladenen Mails aus info@lematic.de, ${MAILS.filter(m=>m.client).length} davon Kunden aus der Kartei zugeordnet`);
   renderMailRead();
+  safe('inboxZero',funAfterMails);
   const nm=$('navMail');if(nm){nm.textContent=unread;nm.hidden=!unread}
 }
 async function renderMailRead(){
@@ -3989,6 +4029,135 @@ on('fbSend','click',async()=>{
   }
   btn.disabled=false;btn.textContent='Absenden';
 });
+
+
+/* ---------- Spaßebene: Feiern, Wochen-Duell, Sprüche, Easter Eggs ----------
+   Alles rein optisch. Bei „Bewegung reduzieren“ im System gibt es keine Animationen. */
+const REDUCED=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SPRUECHE=[
+  'Wir fixen das nicht in der Post. Wir fixen das jetzt.',
+  'Ein guter Take ist besser als zehn „Machen wir später im Grading“.',
+  'Kunden merken sich nicht das Angebot, sondern wie schnell ihr geantwortet habt.',
+  'Akku voll, Karte leer, Kopf frei.',
+  'Golden Hour ist auch im Büro: erst die schweren Mails.',
+  'Same-Day-Reel heißt: heute, nicht „heute irgendwann“.',
+  'Kein Shot ohne Vordergrund. Kein Tag ohne Nachfassen.',
+  'Wer anruft, gewinnt. Wer nur schreibt, wartet.',
+  'Rohmaterial ist Vertrauen. Abgabe ist Liebe.',
+  'Erst Kaffee, dann Kunde, dann Kunst.',
+  'Die beste Akquise ist ein Kunde, der weitererzählt.',
+  'Schnitt ist, wenn man sich trennt, obwohl es weh tut.'
+];
+function dayIndex(){return Math.floor(parse(TODAY)/864e5)}
+function weekDone(){
+  const sow=startOfWeek();
+  const c={LP:0,MS:0};
+  TASKS.forEach(t=>{if(t.done&&t.doneAt&&iso(new Date(t.doneAt))>=sow){const by=t.doneBy||t.who;if(c[by]!=null)c[by]++}});
+  return c;
+}
+function renderFunStrip(){
+  const el=$('funStrip');if(!el)return;
+  const c=weekDone(),tot=c.LP+c.MS;
+  const lead=c.LP===c.MS?null:(c.LP>c.MS?'LP':'MS');
+  const pct=tot?Math.round(c.LP/tot*100):50;
+  const line=!tot?'noch keiner hat diese Woche was abgehakt':lead?`${NAMES[lead]} führt${lead===ME?' — weiter so':' — da geht noch was'}`:'Gleichstand. Spannend.';
+  el.innerHTML=`<span class="chip duel" title="Erledigte Aufgaben seit Montag">🏆 <b>${c.LP}</b> Lennart <span class="bar"><i style="width:${pct}%"></i><i style="width:${100-pct}%"></i></span> Martin <b>${c.MS}</b> · ${line}</span>
+    <span class="chip quote">🎬 ${esc(SPRUECHE[dayIndex()%SPRUECHE.length])}</span>`;
+}
+/* Konfetti */
+let fxParts=[],fxRun=false;
+function confetti(n,x,y){
+  if(REDUCED)return;
+  const cv=$('fxCanvas');if(!cv)return;
+  cv.width=innerWidth;cv.height=innerHeight;
+  const cols=['#073D30','#FCD717','#D4A600','#34C759','#ffffff'];
+  for(let i=0;i<n;i++)fxParts.push({x:x??innerWidth/2,y:y??innerHeight/3,vx:(Math.random()-.5)*12,vy:Math.random()*-11-3,r:Math.random()*6+3,c:cols[i%cols.length],a:Math.random()*6,va:(Math.random()-.5)*.4,life:0});
+  if(!fxRun){fxRun=true;requestAnimationFrame(fxTick)}
+}
+function fxTick(){
+  const cv=$('fxCanvas'),g=cv.getContext('2d');
+  g.clearRect(0,0,cv.width,cv.height);
+  fxParts.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.a+=p.va;p.life++;
+    g.save();g.translate(p.x,p.y);g.rotate(p.a);g.fillStyle=p.c;g.globalAlpha=Math.max(0,1-p.life/110);g.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);g.restore()});
+  fxParts=fxParts.filter(p=>p.life<110&&p.y<cv.height+40);
+  if(fxParts.length)requestAnimationFrame(fxTick);else{fxRun=false;g.clearRect(0,0,cv.width,cv.height)}
+}
+let lastPointer=null;
+document.addEventListener('pointerdown',e=>{lastPointer={x:e.clientX,y:e.clientY}},true);
+function showWrap(html,ms){
+  const o=$('wrapOverlay');if(!o)return;
+  o.innerHTML='<div>'+html+'</div>';o.classList.add('show');
+  clearTimeout(showWrap._t);showWrap._t=setTimeout(()=>o.classList.remove('show'),ms||2200);
+}
+const DONE_LINES=['Abgehakt. Nächste Szene.','Take im Kasten.','Sauber. Das war ein One-Take.','Erledigt — Martin wär stolz.','Weg damit. Cut!','Check. Kann so raus.'];
+function celebrateTask(t){
+  const p=lastPointer||{};
+  confetti(36,p.x,p.y);
+  const mine=TASKS.filter(x=>x.who===t.who&&!x.done&&x.due<=endOfWeek());
+  if(!mine.length){
+    confetti(160);
+    showWrap(`🎬 That's a wrap!<small>${NAMES[t.who]} hat alles für diese Woche erledigt.</small>`,2600);
+  }else toast(DONE_LINES[Math.floor(Math.random()*DONE_LINES.length)]+' ('+t.t+')');
+  safe('funStrip',renderFunStrip);
+}
+/* Easter Egg 1: Konami-Code → Director's Cut */
+const KONAMI=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let kpos=0,typed='';
+document.addEventListener('keydown',e=>{
+  const k=e.key.length===1?e.key.toLowerCase():e.key;
+  kpos=(k===KONAMI[kpos])?kpos+1:(k===KONAMI[0]?1:0);
+  if(kpos===KONAMI.length){kpos=0;toggleDirectorsCut()}
+  const tag=(e.target&&e.target.tagName)||'';
+  if(/INPUT|TEXTAREA|SELECT/.test(tag)||e.metaKey||e.ctrlKey)return;
+  if(e.key.length===1){typed=(typed+k).slice(-12);
+    if(typed.endsWith('rec'))toggleRec();
+    if(typed.endsWith('wrap'))showWrap("🎬 That's a wrap!<small>Für heute. Ab nach Hause.</small>");
+    if(typed.endsWith('kaffee')){toast('☕ Kaffeepause genehmigt. 7 Minuten. Nicht 20.');confetti(60)}
+  }
+});
+function toggleDirectorsCut(){
+  const on=document.body.classList.toggle('dcut');
+  toast(on?"🎞️ Director's Cut aktiviert. Nochmal den Code, um zurückzuschalten.":'Zurück in der Kinofassung.');
+}
+/* Easter Egg 2: „rec“ tippen → laufender Timecode */
+let recT=null,recStart=0;
+function toggleRec(){
+  const b=$('recBadge');if(!b)return;
+  if(recT){clearInterval(recT);recT=null;b.classList.remove('on');toast('Aufnahme gestoppt. Hoffentlich war der Ton an.');return}
+  recStart=Date.now();b.classList.add('on');
+  recT=setInterval(()=>{const ms=Date.now()-recStart,f=Math.floor(ms/40)%25,s=Math.floor(ms/1000);setText('recTc',[Math.floor(s/3600),Math.floor(s/60)%60,s%60,f].map(n=>String(n).padStart(2,'0')).join(':'))},40);
+}
+/* Easter Egg 3: Logo fünfmal klicken → Klappe */
+let logoClicks=[];
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.brand .mark,.mobile-brand .mark'))return;
+  const now=Date.now();logoClicks=logoClicks.filter(t=>now-t<1800);logoClicks.push(now);
+  if(logoClicks.length>=5){logoClicks=[];
+    const take=(+(localStorage.getItem('lm_take')||0)+1);try{localStorage.setItem('lm_take',take)}catch(_){}
+    showWrap(`<span class="clapper">🎬</span><br>Szene 1, Take ${take}<small>Und … bitte!</small>`,2000);}
+});
+/* Easter Egg 4: Emoji neben der Begrüßung anklicken → neue Laune */
+document.addEventListener('click',e=>{
+  const m=e.target.closest('.mood-badge');if(!m)return;
+  const pool=['🎬','🎥','📸','🚁','🎞️','🔥','🦉','☕','🌈','🧃','🦖','🍕'];
+  m.textContent=pool[Math.floor(Math.random()*pool.length)];
+  if(Math.random()<.15){confetti(50);toast('Glückstreffer. Heute klappt alles.')}
+});
+/* Easter Egg 5: Suche versteht ein paar geheime Wörter */
+document.addEventListener('input',e=>{
+  if(e.target.id!=='palQ')return;
+  const q=e.target.value.trim().toLowerCase();
+  if(q==='action'){showWrap('<span class="clapper">🎬</span><br>Und … Action!',1600)}
+  if(q==='martin'&&ME==='LP'){toast(MARTIN_DISS[Math.floor(Math.random()*MARTIN_DISS.length)])}
+  if(q==='lennart'&&ME==='MS'){toast(['Lennart rendert gerade. Wie immer.','Frag ihn nicht nach dem Look. Er hat einen Skill dafür.','Wahrscheinlich gerade in Blender verschwunden.','Er sagt „nur kurz“. Plan zwei Stunden ein.'][Math.floor(Math.random()*4)])}
+  if(q==='geld'||q==='umsatz'){location.hash='#/rechnungen'}
+});
+/* Inbox Zero und Feierabend */
+let inboxZeroShown=false;
+function funAfterMails(){
+  const unread=MAILS.filter(m=>m.unread&&!m.sent).length;
+  if(GMAIL&&!unread&&!inboxZeroShown&&MAILS.length){inboxZeroShown=true;toast('📭 Inbox Zero. Legendär.')}
+}
 
 /* Start: erst gespeicherte Daten laden, dann alles rendern. Jeder Teil einzeln abgesichert,
    damit ein Fehler an einer Stelle nie die ganze Seite unbenutzbar macht. */
