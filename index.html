@@ -328,6 +328,13 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 .kcard:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
 .kcard .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .kcard .typ{font-size:12px;color:var(--ink-3)}
+.kav{width:40px;height:40px;border-radius:12px;flex:none;display:grid;place-items:center;background:rgba(7,61,48,.08);color:var(--brand);font-weight:600;font-size:14px;overflow:hidden}
+.kav img{width:100%;height:100%;object-fit:contain;background:#fff}
+.kav.photo img{object-fit:cover}
+.kav.lg{width:56px;height:56px;border-radius:16px;font-size:18px}
+.kname{display:flex;gap:10px;align-items:center}
+.kchips{display:flex;gap:5px;flex-wrap:wrap}
+.kchips span{font-size:11px;padding:2px 8px;border-radius:999px;background:rgba(10,132,255,.1);color:#0050A8}
 .kcard h3{font-size:17px;font-weight:600;letter-spacing:-.01em;line-height:1.25}
 .kcard .who{font-size:13px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .kcard .note{font-size:13px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;-webkit-box-pack:start;overflow:hidden;flex:0 1 auto;margin-bottom:auto}
@@ -3523,6 +3530,16 @@ function kSorted(list){
     return (b.edited||'').localeCompare(a.edited||'');
   });
 }
+function kAvatar(k,lg){
+  const foto=Array.isArray(k.raw['Foto'])&&k.raw['Foto'][0]&&k.raw['Foto'][0].url;
+  const ic=k.raw._icon;
+  const ini=initials(k.name.replace(/[–(].*$/,''));
+  if(foto)return `<span class="kav photo${lg?' lg':''}"><img src="${esc(foto)}" alt="" loading="lazy"></span>`;
+  if(ic&&ic.url)return `<span class="kav${lg?' lg':''}"><img src="${esc(ic.url)}" alt="" loading="lazy" onerror="this.parentNode.textContent='${esc(ini)}'"></span>`;
+  if(ic&&ic.emoji)return `<span class="kav${lg?' lg':''}">${esc(ic.emoji)}</span>`;
+  return `<span class="kav${lg?' lg':''}">${esc(ini)}</span>`;
+}
+function kChannels(k){const c=k.raw['Bevorzugter Kanal'];return Array.isArray(c)&&c.length?`<div class="kchips">${c.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:''}
 function kPill(st){return st?`<span class="pill st-${esc(st)}"><i></i>${esc(st)}</span>`:'<span class="pill done"><i></i>Ohne Status</span>'}
 function lastNote(k){
   const n=String(k.notes||'').trim();if(!n)return'';
@@ -3542,8 +3559,9 @@ function renderKartei(){
     const mails=MAILS.filter(m=>m.client===k.name).length;
     return `<button class="glass kcard" data-kopen="${k.id}">
       <div class="top">${kPill(k.status)}<span class="typ">${esc(k.typ||'')}</span></div>
-      <h3>${esc(k.name)}</h3>
+      <div class="kname">${kAvatar(k)}<h3>${esc(k.name)}</h3></div>
       ${k.ap?`<div class="who">${esc(k.ap)}</div>`:''}
+      ${kChannels(k)}
       ${k.raw['Nächster Schritt']?`<div class="who" style="color:var(--brand)"><b>Nächster Schritt:</b> ${esc(k.raw['Nächster Schritt'])}</div>`:''}
       <div class="note">${esc(lastNote(k)||'Noch keine Notizen.')}</div>
       <div class="meta"><span><b>${open.length}</b> ${open.length===1?'Aufgabe':'Aufgaben'}${open[0]?' · nächste '+dm(open[0].due):''}</span>${GMAIL?`<span><b>${mails}</b> ${mails===1?'Mail':'Mails'}</span>`:''}${k.edited?`<span>geändert ${dm(k.edited.slice(0,10))}</span>`:''}</div>
@@ -3617,8 +3635,9 @@ function renderKundeSheet(id){
   const rel=['Projekte','Rechnungen & Angebote','Leads'].filter(n=>Array.isArray(k.raw[n])&&k.raw[n].length).map(n=>`${k.raw[n].length} ${esc(n)}`).join(' · ');
   $('kdSheet').innerHTML=`
     <div class="kd-head">
-      <div><h2 id="kdName">${esc(k.name)}</h2>
-        <div class="sub">${kPill(k.status)}${k.typ?`<span class="tag">${esc(k.typ)}</span>`:''}${rel?`<span style="font-size:12px;color:var(--ink-3)">${rel} in Notion verknüpft</span>`:''}</div></div>
+      <div class="kname">${kAvatar(k,true)}<div><h2 id="kdName">${esc(k.name)}</h2>
+        <div class="sub">${kPill(k.status)}${k.typ?`<span class="tag">${esc(k.typ)}</span>`:''}${rel?`<span style="font-size:12px;color:var(--ink-3)">${rel} in Notion verknüpft</span>`:''}</div>
+        <div class="sub">${kChannels(k)}${k.raw['Telefon']?`<a class="tag" href="tel:${esc(String(k.raw['Telefon']).replace(/\s/g,''))}">📞 ${esc(k.raw['Telefon'])}</a>`:''}${k.email?`<a class="tag" href="mailto:${esc(k.email)}">✉️ ${esc(k.email)}</a>`:''}${k.raw['Website']?`<a class="tag" href="${esc(k.raw['Website'])}" target="_blank" rel="noopener">🌐 Website</a>`:''}</div></div></div>
       <div class="kd-row"><button class="btn btn-glass sm" id="kdArchive">${k.status==='Archiv'?'Aus dem Archiv holen':'Ins Archiv'}</button><a class="btn btn-glass sm" href="${esc(k.url)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Notion</a><button class="btn btn-glass sm" id="kdClose">Schließen</button></div>
     </div>
     <div class="kd-grid">

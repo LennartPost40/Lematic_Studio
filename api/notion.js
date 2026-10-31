@@ -66,6 +66,7 @@ const plain = p => {
     case 'checkbox':         return p.checkbox;
     case 'relation':         return (p.relation || []).map(r => r.id);
     case 'people':           return (p.people || []).map(u => u.name || u.id);
+    case 'files':            return (p.files || []).map(f => ({ name: f.name, url: (f.file && f.file.url) || (f.external && f.external.url) || '' }));
     case 'created_time':     return p.created_time || '';
     case 'last_edited_time': return p.last_edited_time || '';
     case 'formula': {
@@ -150,7 +151,9 @@ export default async function handler(req, res) {
         const j = await r.json();
         if (!r.ok) return res.status(r.status).json({ error: j.message || 'Notion-Fehler' });
         for (const pg of j.results || []) {
-          const out = { id: pg.id, url: pg.url, _edited: pg.last_edited_time, _created: pg.created_time };
+          const ic = pg.icon || {};
+          const out = { id: pg.id, url: pg.url, _edited: pg.last_edited_time, _created: pg.created_time,
+            _icon: ic.type === 'emoji' ? { emoji: ic.emoji } : ic.type === 'external' ? { url: ic.external.url } : ic.type === 'file' ? { url: ic.file.url } : null };
           for (const [k, v] of Object.entries(pg.properties || {})) out[k] = plain(v);
           rows.push(out);
         }
