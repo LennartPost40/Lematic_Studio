@@ -82,7 +82,22 @@ ${c.text ? '--- Text des Belegs ---\n' + c.text : '(Beleg als Datei angehängt)'
   insights: c => `Unten stehen die aktuellen Kennzahlen von LeMatic, aus denen gerade Grafiken gezeichnet werden.
 Werte sie aus: 3 bis 4 Erkenntnisse, je eine Zeile, beginnend mit einem passenden Emoji. Danach eine Zeile
 "Empfehlung: ..." mit dem wichtigsten nächsten Schritt. Nur was aus den Zahlen wirklich folgt, keine Floskeln.
-${c.zahlen}`
+${c.zahlen}`,
+  tipps: c => `Du gibst ${c.user || 'dem Team'} heute persönliche Empfehlungen im LeMatic Studio. Drei Arten:
+- "heute": eine konkrete Sache, die heute oder diese Woche wirklich etwas bringt (Geld, Kunde, Frist). Mit Namen, Beträgen, Daten aus den Daten.
+- "firma": eine Verbesserung am Unternehmen LeMatic (Akquise, Preise, Abläufe, Positionierung, wiederkehrende Probleme), begründet mit dem, was in den Daten auffällt.
+- "studio": wie ${c.user || 'der Nutzer'} das Studio besser nutzen kann oder was am Studio fehlt bzw. nervt, abgeleitet aus dem Nutzungsverhalten (welche Bereiche oft/nie genutzt werden, wonach gesucht wird, wo Fehler auftreten).
+Gib 4 Empfehlungen: 2x "heute", 1x "firma", 1x "studio". Keine Allgemeinplätze, nichts erfinden, nichts was die Person schon erledigt hat.
+Lerne aus dem Feedback: Ähnliches wie "hilfreich" gern wieder, Themen mit "passt nicht" meiden, schon Vorgeschlagenes nicht wiederholen.
+Gib NUR ein JSON-Array zurück, ohne Text davor oder danach:
+[{"art":"heute|firma|studio","titel":"max 8 Wörter","text":"1-2 Sätze, konkret","warum":"kurze Begründung aus den Daten, max 15 Wörter","aktion":{"typ":"frage","text":"Frage an LeMatic Intelligence, die das direkt angeht"} oder {"typ":"seite","ziel":"rechnungen|kunden|aufgaben|angebot|kalender|akquise|mails|agent"}}]
+Heute: ${c.heute}
+--- Nutzung des Studios (letzte Wochen) ---
+${c.nutzung}
+--- Feedback zu früheren Empfehlungen ---
+${c.feedback || '(noch keins)'}
+--- Daten von LeMatic ---
+${c.wissen}`
 };
 
 export default async function handler(req, res) {
@@ -99,7 +114,7 @@ export default async function handler(req, res) {
   const { task, context } = req.body || {};
   const build = TASKS[task];
   if (!build || !context || typeof context !== 'object') return res.status(400).json({ error: 'Unbekannte Aufgabe' });
-  const clip = v => String(v == null ? '' : v).slice(0, task === 'agent' ? 60000 : 12000);
+  const clip = v => String(v == null ? '' : v).slice(0, task === 'agent' ? 60000 : task === 'tipps' ? 30000 : 12000);
   // Beleg als Datei (Foto oder gescanntes PDF): separat, nicht abschneiden
   const file = task === 'beleg' && typeof context.file === 'string' && context.file.length < 6_000_000 ? context.file : null;
   const mime = String(context.mime || '');
