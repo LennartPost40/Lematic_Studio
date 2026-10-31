@@ -1475,34 +1475,818 @@ td {
 .lm-embed .content > .topbar > div > .eyebrow{display:none}
 </style>
 <style>
-/* LeMatic-Studio-Look: hell, glasig, wie das Dashboard. Farben kommen per Script aus dem Studio. */
-:root{--bg:transparent;--surface:rgba(255,255,255,.78);--surface-2:rgba(255,255,255,.55);--text:#1D1D1F;--muted:#6E6E73;--primary:var(--brand,#073D30);--primary-2:var(--brand-2,#0C5543);--ring:rgba(7,61,48,.16);--radius:18px;--shadow:0 1px 2px rgba(20,52,44,.04),0 8px 28px rgba(20,52,44,.07)}
-html,body{background:transparent!important}
-body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",system-ui,sans-serif!important;color:#1D1D1F;-webkit-font-smoothing:antialiased}
-html:not(.lm-embed) body{background:#EEF1EF!important}
-.app-shell{grid-template-columns:280px minmax(0,1fr)!important;gap:18px!important;min-height:auto!important}
-.sidebar{background:rgba(255,255,255,.62)!important;border:1px solid rgba(255,255,255,.9)!important;border-radius:22px!important;box-shadow:var(--shadow)!important;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);height:auto!important;position:sticky;top:12px;align-self:start}
-.card,.preview,.total-box,.confirm-dialog{background:rgba(255,255,255,.8)!important;border:1px solid rgba(255,255,255,.95)!important;border-radius:18px!important;box-shadow:var(--shadow)!important;-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
-.content{padding:0!important}
-.topbar{background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.9);border-radius:18px;padding:12px 14px;box-shadow:var(--shadow)}
-.step-nav button{background:rgba(255,255,255,.7)!important;border:1px solid rgba(29,29,31,.06)!important;border-radius:12px!important;color:#1D1D1F!important}
-.step-nav button.active{background:var(--primary)!important;border-color:var(--primary)!important;color:#fff!important}
-.template-tabs button{border-radius:12px!important}
-.template-tabs button.active{background:var(--primary)!important;color:#fff!important;border-color:var(--primary)!important}
-input,select,textarea{border-radius:12px!important;border:1px solid rgba(29,29,31,.12)!important;background:#fff!important;color:#1D1D1F!important}
-input:focus,select:focus,textarea:focus{outline:none!important;box-shadow:0 0 0 4px var(--ring)!important;border-color:var(--primary-2)!important}
-button.secondary,button.ghost{border-radius:999px!important}
-#downloadPdfBtn,#nextBtn{background:#FCD717!important;color:#073D30!important;border-color:#FCD717!important;font-weight:650}
-.customer-box,.draft-box{border-radius:16px!important;display:grid!important;grid-template-columns:1fr;gap:1px;text-align:left!important;padding:10px 16px!important;line-height:1.2}
-.draft-box{width:100%}
-.customer-box>span,.draft-box>span{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;opacity:.7}
-.customer-box>strong,.draft-box>strong{font-size:15px}
-.customer-box>small,.draft-box>small{font-size:12px;font-weight:500;opacity:.8}
-.step-nav button{font-size:14.5px!important;padding:10px 14px!important}
-.card h2,.topbar h2{letter-spacing:-.01em}
-.topbar h2{font-size:22px!important}
-.template-tabs button{font-size:13px!important}
-.hero{background:linear-gradient(135deg,rgba(252,215,23,.18),rgba(255,255,255,.7))!important}
+/* LeMatic-Studio-Look: hell, glasig, wie das Dashboard. Layout aus dem Original, Farben aus dem Studio. */
+/* LeMatic Kalender Look */
+:root {
+  --bg: transparent;
+  --surface: rgba(255,255,255,.8);
+  --surface-2: rgba(255,255,255,.6);
+  --text: #1D1D1F;
+  --muted: #6E6E73;
+  --primary: var(--brand, #073D30);
+  --primary-2: var(--brand-2, #0C5543);
+  --accent: #FCD717;
+  --warn: #C27C0E;
+  --danger: #D70015;
+  --ring: rgba(7, 61, 48, 0.14);
+  --radius: 18px;
+  --shadow: 0 1px 2px rgba(20,52,44,.04), 0 8px 28px rgba(20,52,44,.07);
+  --line: rgba(29,29,31,.09);
+}
+
+body {
+  min-width: 320px;
+  background: #EEF1EF;
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+html.lm-embed, html.lm-embed body { background: transparent; min-height: 0; }
+
+.app-shell {
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 18px;
+  width: min(1580px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 18px 0;
+}
+
+.sidebar,
+.topbar,
+.card,
+.preview,
+.total-box,
+.confirm-dialog {
+  border: 1px solid rgba(255,255,255,.95);
+  background: rgba(255,255,255,.8);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(18px);
+}
+
+.sidebar {
+  position: sticky;
+  top: 18px;
+  height: auto;
+  align-self: start;
+  border-radius: 22px;
+  padding: 18px 14px;
+}
+
+.brand-badge {
+  color: #FCD717;
+  background: var(--primary);
+  box-shadow: none;
+}
+
+.brand-overline,
+.eyebrow,
+.empty,
+.target-card small,
+#rawDataCard .rawdata-delivery-note p,
+.line-qty-hint,
+.muted,
+.preview-label {
+  color: var(--muted);
+}
+
+.content {
+  padding: 0;
+}
+
+.topbar {
+  position: relative;
+  border-radius: 18px;
+  padding: 12px 14px;
+  align-items: center;
+}
+
+.card,
+.preview,
+.total-box,
+.confirm-dialog {
+  border-radius: 18px;
+}
+
+.hero {
+  background: linear-gradient(135deg, rgba(252, 215, 23, 0.16), rgba(255, 255, 255, 0.8));
+}
+
+.hero ul,
+.issue p,
+.confirm-dialog p {
+  color: #3A3A3C;
+}
+
+.step-nav button,
+.template-tab,
+.draft-btn,
+button.secondary,
+button.ghost {
+  border: 1px solid rgba(255,255,255,.95);
+  background: rgba(255,255,255,.75);
+  color: #1D1D1F;
+}
+
+.step-nav button:hover,
+.template-tab:hover,
+.draft-btn:hover,
+button.secondary:hover,
+button.ghost:hover {
+  border-color: rgba(7,61,48,.25);
+  background: rgba(7,61,48,.06);
+}
+
+.step-nav button.active,
+.template-tab.active,
+button,
+.bottom-actions button {
+  background: var(--primary);
+  color: #fff;
+}
+
+button.danger,
+.draft-delete-btn {
+  border-color: rgba(215,0,21,.2);
+  background: rgba(215,0,21,.07);
+  color: #D70015;
+}
+
+button,
+.step-nav button,
+.template-tab,
+.draft-btn,
+.draft-delete-btn,
+.customer-box,
+.customer-row {
+  transition: transform 0.16s, background 0.16s, border-color 0.16s;
+}
+
+button:hover,
+.step-nav button:hover,
+.template-tab:hover,
+.draft-btn:hover,
+.draft-delete-btn:hover,
+.customer-box:hover,
+.customer-row:hover {
+  transform: translateY(-1px);
+}
+
+input,
+select,
+textarea,
+.legal-structure-editor,
+.legal-structure-card,
+.payment-summary-box,
+.toggle,
+thead,
+.target-card,
+.issue,
+.cost-simple-header {
+  border-color: rgba(29,29,31,.12);
+  background: rgba(255,255,255,.75);
+  color: #1D1D1F;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(29,29,31,.38);
+}
+
+option {
+  color: #17352d;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.legal-structure-editor:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--ring);
+}
+
+table {
+  border: 1px solid var(--line);
+}
+
+thead {
+  color: var(--primary);
+}
+
+th,
+td,
+.wizard-controls,
+.cost-row {
+  border-color: var(--line);
+}
+
+.line-share {
+  color: var(--primary);
+}
+
+.total-box {
+  background: linear-gradient(135deg, rgba(252, 215, 23, 0.18), rgba(255, 255, 255, 0.85));
+}
+
+.total-box p.grand {
+  border-color: rgba(7, 61, 48, 0.25);
+}
+
+.issue.kritisch,
+.issue.wichtig,
+.issue.optional {
+  background: rgba(255,255,255,.8);
+}
+.issue.kritisch { border-left: 4px solid #D70015; }
+.issue.wichtig { border-left: 4px solid #FCD717; }
+
+.pill.kritisch { background: rgba(215,0,21,.1); color: #B5000F; }
+.pill.wichtig { background: rgba(252,215,23,.3); color: #6B5200; }
+.pill.optional { background: rgba(7,61,48,.08); color: var(--primary); }
+
+.preview {
+  overflow: auto;
+}
+
+.pdf-page,
+.export-mode .pdf-page {
+  color: #22211f;
+  background: #ffffff;
+}
+
+.pdf-page .muted,
+.pdf-page small,
+.pdf-page .preview-label {
+  color: #666056;
+}
+
+.pdf-page input,
+.pdf-page select,
+.pdf-page textarea {
+  color: #22211f;
+  background: #fffefb;
+}
+
+.pdf-page {
+  position: relative;
+  border-color: rgba(7, 61, 48, 0.16);
+  background: #ffffff;
+  color: #17352d;
+}
+
+.pdf-page::after {
+  display: none;
+}
+
+.pdf-header {
+  align-items: flex-start;
+  border-bottom: 0;
+  padding-bottom: 7mm;
+}
+
+.pdf-logo {
+  width: 34mm;
+  max-width: 34mm;
+  flex: 0 0 34mm;
+  line-height: 0;
+  /* Compensate for the original image's transparent top margin. */
+  position: relative;
+  top: -8mm;
+}
+
+.pdf-logo-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.pdf-meta {
+  color: #073d30;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.pdf-meta strong,
+.pdf-address strong,
+.pdf-title,
+.section-title,
+.content-section strong,
+.cost-group-block h4 {
+  color: #073d30;
+}
+
+.pdf-address {
+  border-left: 3px solid #fcd717;
+  padding-left: 4mm;
+}
+
+.pdf-title {
+  margin-top: 1.4rem;
+  border-radius: 12px;
+  background: rgba(7, 61, 48, 0.06);
+  padding: 0.8rem 0.9rem;
+  letter-spacing: 0.02em;
+}
+
+.pdf-total-box,
+.offer-validity-box,
+.sum-block,
+.payment-box,
+.legal-box,
+.harring-box {
+  border-color: rgba(7, 61, 48, 0.16);
+  background: linear-gradient(135deg, rgba(252, 215, 23, 0.20), rgba(7, 61, 48, 0.045));
+}
+
+.pdf-total-box,
+.sum-block {
+  border-left: 4px solid #fcd717;
+}
+
+.cost-simple-header {
+  background: #073d30;
+  color: #fff9dc;
+}
+
+.cost-row {
+  border-color: rgba(7, 61, 48, 0.12);
+}
+
+.cost-row strong,
+.sum-block strong,
+.pdf-total-box strong,
+.offer-validity-box strong {
+  color: #073d30;
+}
+
+.section-title {
+  border-bottom: 2px solid #fcd717;
+  padding-bottom: 0.35rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.signature-row p::before,
+.pdf-footer {
+  border-color: rgba(7, 61, 48, 0.24);
+}
+
+.pdf-footer {
+  color: #4b625c;
+}
+
+.preview-editable:hover {
+  background: rgba(252, 215, 23, 0.14);
+  outline: 1px dashed #073d30;
+}
+
+.preview-editable:focus {
+  background: rgba(252, 215, 23, 0.18);
+  outline: 2px solid #fcd717;
+}
+
+.export-mode .pdf-page {
+  background: #ffffff;
+}
+
+.export-mode .pdf-total-box,
+.export-mode .offer-validity-box,
+.export-mode .sum-block,
+.export-mode .payment-box,
+.export-mode .legal-box,
+.export-mode .harring-box {
+  border-color: rgba(7, 61, 48, 0.16);
+  background: linear-gradient(135deg, rgba(252, 215, 23, 0.20), rgba(7, 61, 48, 0.045));
+}
+
+.export-mode .cost-simple-header {
+  background: #073d30;
+  color: #fff9dc;
+}
+
+.customer-top {
+  position: relative;
+  min-width: 260px;
+}
+
+.customer-box {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  min-height: 72px;
+  border: 1px solid rgba(7, 61, 48, 0.12);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(252, 215, 23, 0.22), rgba(255,255,255,.85));
+  color: #1D1D1F;
+  text-align: left;
+  padding: 10px 14px;
+  min-height: 0;
+}
+
+.customer-box span {
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.customer-box strong {
+  font-size: 1.05rem;
+}
+
+.customer-box small {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.customer-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 40;
+  width: min(620px, calc(100vw - 40px));
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: rgba(255,255,255,.97);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(22px);
+  padding: 16px;
+}
+
+.customer-panel[hidden] {
+  display: none !important;
+}
+
+.customer-panel-head,
+.customer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.customer-list {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.customer-row {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255,255,255,.75);
+  color: #1D1D1F;
+  text-align: left;
+  padding: 12px;
+}
+
+.customer-row span,
+.customer-row small {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.customer-row small {
+  color: var(--primary-2);
+  font-weight: 800;
+}
+
+.customer-row.active {
+  border-color: var(--primary);
+  background: rgba(252, 215, 23, 0.16);
+}
+
+.customer-step-actions {
+  margin-bottom: 12px;
+}
+
+.customer-step-actions button {
+  width: 100%;
+}
+
+.customer-create-card {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255,255,255,.6);
+  padding: 14px;
+}
+
+.customer-create-card h4 {
+  margin-bottom: 12px;
+}
+
+.customer-step-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  gap: 16px;
+  align-items: start;
+}
+
+.customer-manual-fields,
+.customer-step-picker {
+  min-width: 0;
+}
+
+.customer-step-picker {
+  position: sticky;
+  top: 18px;
+  border: 1px solid rgba(255,255,255,.95);
+  border-radius: 24px;
+  background: rgba(255,255,255,.6);
+  box-shadow: var(--shadow);
+  padding: 14px;
+}
+
+.customer-step-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.customer-step-hint {
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+.customer-step-list {
+  max-height: min(58vh, 620px);
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.draft-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.draft-box {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(252, 215, 23, 0.22), rgba(255,255,255,.85));
+  color: #1D1D1F;
+  text-align: left;
+  padding: 16px;
+}
+
+.draft-box span {
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.draft-box strong {
+  font-size: 1.08rem;
+}
+
+.draft-box small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.draft-box b {
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.draft-center-panel {
+  width: min(860px, 100%);
+  justify-self: center;
+  align-self: start;
+}
+
+.draft-center-panel[hidden] {
+  display: none !important;
+}
+
+.draft-center-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.draft-list-center {
+  max-height: min(62vh, 680px);
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.draft-list-center .draft-row {
+  grid-template-columns: minmax(0, 1fr) 48px;
+}
+
+.draft-list-center .draft-btn {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.draft-list-center .draft-btn strong {
+  display: block;
+  color: #1D1D1F;
+}
+
+.draft-list-center .draft-btn span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+@media (max-width: 1000px) {
+  .app-shell {
+    width: min(100% - 16px, 1580px);
+    grid-template-columns: 1fr;
+    padding-top: 8px;
+  }
+
+  .sidebar {
+    position: static;
+    height: auto;
+    border-radius: 24px;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .customer-top {
+    flex: 1 1 260px;
+  }
+
+  .customer-panel {
+    right: auto;
+    left: 0;
+  }
+
+  .customer-step-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .customer-step-picker {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar,
+  .actions,
+  .customer-actions,
+  .customer-panel-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .customer-top,
+  .actions,
+  .actions button,
+  .customer-actions button {
+    width: 100%;
+  }
+
+  .customer-panel {
+    width: calc(100vw - 16px);
+    left: 0;
+    right: auto;
+  }
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .app-shell {
+    display: block;
+  }
+
+  .sidebar,
+  .topbar,
+  .wizard-controls,
+  .bottom-actions,
+  #legalText {
+    display: none;
+  }
+
+  .content {
+    padding: 0;
+  }
+
+  .step {
+    display: none;
+  }
+
+  #step-7 {
+    display: block;
+  }
+
+  .preview {
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .pdf-page {
+    border: 0;
+    border-radius: 0;
+    width: 186mm;
+    min-height: 273mm;
+    padding: 0;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cover-page {
+    padding-top: 0;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  .offer-doc {
+    gap: 0;
+  }
+
+  .pdf-footer {
+    margin-top: auto;
+  }
+}
+
+
+/* Studio-Feinschliff */
+.sidebar{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.card,.preview,.total-box,.confirm-dialog,.topbar{-webkit-backdrop-filter:blur(18px)}
+.step-nav button{font-size:14.5px;padding:10px 14px;border-radius:12px;border-color:var(--line);background:rgba(255,255,255,.7);color:#1D1D1F}
+.step-nav button.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.template-tab,.template-tabs button{border-radius:12px;font-size:13px}
+.template-tab.active,.template-tabs button.active{background:var(--primary);border-color:var(--primary);color:#fff}
+input,select,textarea{border-radius:12px;background:#fff;border:1px solid rgba(29,29,31,.12);color:#1D1D1F}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-2)}
+button.secondary,button.ghost{border-radius:999px;background:rgba(255,255,255,.8);border:1px solid var(--line);color:#1D1D1F}
+#downloadPdfBtn,#nextBtn{background:#FCD717;color:#073D30;border-color:#FCD717;font-weight:650}
+.customer-box span,.draft-box span{color:var(--primary-2);letter-spacing:.08em;font-size:11px;font-weight:700}
+.customer-box strong,.draft-box strong{font-size:15px;color:#1D1D1F}
+.customer-box small,.draft-box small{font-size:12px;font-weight:500}
+.topbar h2{font-size:22px;letter-spacing:-.01em}
+.customer-row{background:#fff;color:#1D1D1F}
+.customer-row strong{font-size:14px}
+.customer-step-picker{background:rgba(255,255,255,.7)}
+.customer-search{width:100%;margin:0 0 10px;padding:9px 12px 9px 34px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%236E6E73' stroke-width='2'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='m11 11 3.5 3.5'/%3E%3C/svg%3E") no-repeat 11px center}
+.draft-list-center .draft-btn{background:#fff;color:#1D1D1F;border:1px solid var(--line)}
+.draft-list-center .draft-btn strong{color:#1D1D1F;font-size:14px}
+.draft-list-center .draft-btn span{font-weight:500}
+.cust-suggest{position:absolute;left:0;right:0;top:100%;z-index:50;margin-top:4px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 32px rgba(20,52,44,.14);padding:4px;display:grid;gap:2px}
+.cust-suggest[hidden]{display:none}
+.cs-row{display:grid;gap:1px;text-align:left;background:transparent;color:#1D1D1F;border:0;border-radius:10px;padding:8px 10px;font-weight:500}
+.cs-row strong{font-size:14px}.cs-row span{font-size:12px;color:var(--muted)}
+.cs-row:hover,.cs-row.sel{background:rgba(7,61,48,.07);transform:none}
+.step-nav button{transition:transform .16s}
+@media (max-width:1000px){
+  .sidebar{padding:12px}
+  .template-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .step-nav{display:flex;overflow-x:auto;gap:6px;margin:10px 0;padding-bottom:4px;scrollbar-width:thin}
+  .step-nav button{width:auto;flex:none;white-space:nowrap;padding:8px 12px}
+  .draft-box{min-height:0;padding:10px 14px}
+}
+.draft-ver{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;background:rgba(7,61,48,.08);color:var(--primary);font-size:11px;font-weight:700}
+.content{min-width:0;grid-template-columns:minmax(0,1fr)}
+.step.active{grid-template-columns:minmax(0,1fr)}
+.card,.step>*{min-width:0}
+.card:has(> table){overflow-x:auto}
+input:not([type=checkbox]):not([type=radio]),select,textarea{width:100%;min-width:0;box-sizing:border-box}
+.template-tabs button:not(.active),.template-tab:not(.active){background:rgba(255,255,255,.8);border:1px solid var(--line);color:#1D1D1F}
+table{min-width:640px}
+th:nth-child(2),td:nth-child(2){width:38%}
+.topbar{flex-wrap:wrap;gap:10px}
+.topbar .actions{display:flex;gap:8px;flex-wrap:wrap}
+.lm-embed .app-shell{width:100%;padding:0 0 12px;min-height:0}
+.lm-embed .sidebar{position:sticky;top:12px}
+.lm-embed .sidebar .brand,.lm-embed .content > .topbar > div > .eyebrow{display:none}
 </style>
 <script>
 /* Akzentfarben aus dem Studio übernehmen */
@@ -1556,6 +2340,7 @@ try{if(window.parent!==window){const cs=parent.getComputedStyle(parent.document.
                 </div>
                 <button id="customerCloseBtn" class="ghost" type="button">Schließen</button>
               </div>
+              <input id="customerSearch" class="customer-search" type="search" placeholder="Kunde suchen, auch Teilnamen wie „MS“" autocomplete="off" />
               <div id="customerList" class="customer-list"></div>
               <div class="customer-create-card">
                 <h4>Neuen Kunden anlegen</h4>
@@ -1579,6 +2364,7 @@ try{if(window.parent!==window){const cs=parent.getComputedStyle(parent.document.
           </div>
           <div class="actions">
             <button id="saveOfferBtn" class="secondary">Entwurf speichern</button>
+            <button id="newVersionBtn" class="secondary" type="button" hidden title="Kopie mit neuer Nummer (z. B. -v2), die bisherige Fassung bleibt unverändert">Neue Fassung</button>
             <button id="newOfferBtn" class="secondary">Neues Angebot</button>
           </div>
         </header>
@@ -1644,6 +2430,7 @@ try{if(window.parent!==window){const cs=parent.getComputedStyle(parent.document.
               <div class="actions customer-step-actions">
                 <button id="customerStepSaveBtn" type="button">Kundendaten speichern</button>
               </div>
+              <input id="customerStepSearch" class="customer-search" type="search" placeholder="Kunde suchen …" autocomplete="off" />
               <div id="customerStepList" class="customer-list customer-step-list"></div>
             </aside>
           </div>
@@ -2717,7 +3504,8 @@ function bindButtons() {
   refs.applyTargetSplitBtn.addEventListener("click", applyTargetSplit);
   refs.refreshIssuesBtn.addEventListener("click", updateIssuesAndPreview);
   refs.downloadPdfBtn.addEventListener("click", downloadPdf);
-  refs.saveOfferBtn.addEventListener("click", saveCurrentOffer);
+  refs.saveOfferBtn.addEventListener("click", () => saveCurrentOffer());
+  document.querySelector("#newVersionBtn")?.addEventListener("click", saveAsNewVersion);
   refs.newOfferBtn.addEventListener("click", resetOffer);
   bindDraftButtons();
   bindCustomerButtons();
@@ -2778,6 +3566,8 @@ function bindCustomerButtons() {
   });
 
   refs.customerCloseBtn?.addEventListener("click", closeCustomerPanel);
+  ["#customerSearch", "#customerStepSearch"].forEach((sel) => document.querySelector(sel)?.addEventListener("input", renderCustomerList));
+  bindCustomerSuggest();
   refs.customerRefreshBtn?.addEventListener("click", renderCustomerList);
   refs.customerStepSaveBtn?.addEventListener("click", saveCurrentCustomer);
   refs.customerCreateBtn?.addEventListener("click", createCustomerFromPanel);
@@ -2815,20 +3605,79 @@ function setCustomerPanelOpen(isOpen) {
   document.querySelector("#step-0 .hero")?.toggleAttribute("hidden", isOpen);
 }
 
+function customerHaystack(c) {
+  return normSearch([c.customerCompany, c.customerContact, c.customerEmail, c.customerCity].join(" "));
+}
+function normSearch(s) {
+  return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ß/g, "ss").replace(/[^a-z0-9@.]+/g, " ").trim();
+}
+function searchCustomers(query, customers) {
+  const toks = normSearch(query).split(" ").filter(Boolean);
+  if (!toks.length) return customers;
+  return customers
+    .map((c) => {
+      const hay = " " + customerHaystack(c) + " ";
+      const comp = " " + normSearch(c.customerCompany) + " ";
+      if (!toks.every((t) => hay.includes(t))) return null;
+      let score = 0;
+      toks.forEach((t) => { if (comp.includes(" " + t)) score += 3; else if (comp.includes(t)) score += 2; else score += 1; });
+      return [score, c];
+    })
+    .filter(Boolean)
+    .sort((x, y) => y[0] - x[0])
+    .map((x) => x[1]);
+}
 function renderCustomerList() {
   const customers = getAllCustomers();
-  renderCustomerListInto(refs.customerList, customers);
-  renderCustomerListInto(refs.customerStepList, customers);
+  const q1 = document.querySelector("#customerSearch")?.value || "";
+  const q2 = document.querySelector("#customerStepSearch")?.value || "";
+  renderCustomerListInto(refs.customerList, searchCustomers(q1, customers), q1);
+  renderCustomerListInto(refs.customerStepList, searchCustomers(q2, customers), q2);
+}
+/* Vorschläge direkt im Feld „Kundenfirma“ */
+function bindCustomerSuggest() {
+  const input = document.querySelector('[name="customerCompany"]');
+  if (!input) return;
+  const box = document.createElement("div");
+  box.className = "cust-suggest";
+  box.hidden = true;
+  input.parentElement.style.position = "relative";
+  input.parentElement.append(box);
+  let list = [], sel = -1;
+  const render = () => {
+    const q = input.value.trim();
+    list = q.length ? searchCustomers(q, getAllCustomers()).slice(0, 6) : [];
+    if (list.length === 1 && normSearch(list[0].customerCompany) === normSearch(q)) list = [];
+    box.innerHTML = list.map((c, i) => `<button type="button" class="cs-row${i === sel ? " sel" : ""}" data-i="${i}"><strong>${escapeHtml(c.customerCompany || "Ohne Firma")}</strong><span>${escapeHtml(buildCustomerMeta(c))}</span></button>`).join("");
+    box.hidden = !list.length;
+  };
+  input.addEventListener("input", () => { sel = -1; render(); });
+  input.addEventListener("focus", render);
+  input.addEventListener("keydown", (e) => {
+    if (box.hidden) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); sel = Math.min(list.length - 1, sel + 1); render(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); sel = Math.max(-1, sel - 1); render(); }
+    else if (e.key === "Enter" && sel >= 0) { e.preventDefault(); box.hidden = true; applyCustomer(list[sel]); }
+    else if (e.key === "Escape") box.hidden = true;
+  });
+  box.addEventListener("mousedown", (e) => {
+    const b = e.target.closest("[data-i]");
+    if (!b) return;
+    e.preventDefault();
+    box.hidden = true;
+    applyCustomer(list[+b.dataset.i]);
+  });
+  input.addEventListener("blur", () => setTimeout(() => { box.hidden = true; }, 120));
 }
 
-function renderCustomerListInto(container, customers) {
+function renderCustomerListInto(container, customers, query) {
   if (!container) {
     return;
   }
 
   container.innerHTML = "";
   if (customers.length === 0) {
-    container.innerHTML = '<p class="empty">Noch keine Kunden gespeichert.</p>';
+    container.innerHTML = query ? `<p class="empty">Kein Kunde passt zu „${escapeHtml(query)}“. Links eintragen und „Kundendaten speichern“.</p>` : '<p class="empty">Noch keine Kunden gespeichert.</p>';
     return;
   }
 
@@ -2842,7 +3691,7 @@ function renderCustomerListInto(container, customers) {
     row.innerHTML = `
       <strong>${escapeHtml(customer.customerCompany || "Ohne Firma")}</strong>
       <span>${escapeHtml(buildCustomerMeta(customer))}</span>
-      <small>${customer.source === "offer" ? "aus Entwurf" : "gespeichert"}</small>
+      <small>${customer.source === "offer" ? "aus Entwurf" : customer.source === "kartei" ? "Kundenkartei" : "gespeichert"}</small>
     `;
     row.addEventListener("click", () => applyCustomer(customer));
     container.append(row);
@@ -5383,36 +6232,87 @@ function setActiveTemplate(templateId) {
   }
 }
 
-function saveCurrentOffer() {
+function saveCurrentOffer(opts = {}) {
+  const silent = opts === true || (opts && opts.silent);
   const values = getFormData();
   const offers = getStored(STORAGE_KEYS.offers);
-  const id = `offer-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
-  const offerNumber = getEffectiveOfferNumber(values, { incrementCounter: true });
-  const storedValues = {
-    ...values,
-    projectOfferNumber: offerNumber,
-  };
-  const issues = generateIssues(values);
-
-  offers.unshift({
-    id,
+  const idx = state.activeOfferId ? offers.findIndex((o) => o.id === state.activeOfferId) : -1;
+  const existing = idx >= 0 ? offers[idx] : null;
+  const manual = String(values.projectOfferNumber || "").trim();
+  const offerNumber = existing ? (manual || existing.offerNumber) : getEffectiveOfferNumber(values, { incrementCounter: true });
+  const now = new Date().toISOString();
+  const entry = {
+    id: existing ? existing.id : `offer-${Date.now()}-${Math.floor(Math.random() * 100000)}`,
     offerNumber,
-    createdAt: new Date().toISOString(),
+    createdAt: existing ? existing.createdAt : now,
+    updatedAt: now,
     templateId: state.activeTemplateId,
     textBlocks: { ...state.activeTextBlocks },
-    values: storedValues,
-    issues,
-  });
-
+    values: { ...values, projectOfferNumber: offerNumber },
+    issues: generateIssues(values),
+    by: (window.LM_EMBED && typeof window.parent.studioUser === "function" && window.parent.studioUser()) || "",
+  };
+  if (existing) offers[idx] = entry; else offers.unshift(entry);
   localStorage.setItem(STORAGE_KEYS.offers, JSON.stringify(offers));
+  state.activeOfferId = entry.id;
+  const numInput = document.querySelector('[name="projectOfferNumber"]');
+  if (numInput) numInput.value = offerNumber;
+  updateVersionUi();
   loadDraftList();
   renderCustomerList();
-  if (window.LM_EMBED && window.parent.toast) window.parent.toast(`✓ Entwurf ${offerNumber} gespeichert, auch in Drive für Lennart und Martin.`); else alert(`Entwurf ${offerNumber} gespeichert.`);
+  if (!silent) {
+    const msg = existing ? `✓ Entwurf ${offerNumber} aktualisiert.` : `✓ Entwurf ${offerNumber} gespeichert.`;
+    if (window.LM_EMBED && window.parent.toast) window.parent.toast(msg + " Lennart und Martin sehen ihn auf jedem Gerät."); else alert(msg);
+  }
+  return entry;
 }
+
+function baseOfferNumber(no) {
+  return String(no || "").trim().replace(/-v\d+$/i, "");
+}
+function offerVersion(no) {
+  const m = /-v(\d+)$/i.exec(String(no || ""));
+  return m ? Number(m[1]) : 1;
+}
+/* Neue Fassung: Kopie mit -v2, -v3 …; die bisherige Fassung bleibt unverändert gespeichert */
+function saveAsNewVersion() {
+  const values = getFormData();
+  const offers = getStored(STORAGE_KEYS.offers);
+  const current = String(values.projectOfferNumber || "").trim() || (offers.find((o) => o.id === state.activeOfferId) || {}).offerNumber;
+  if (!current) { saveCurrentOffer(); return; }
+  const base = baseOfferNumber(current);
+  const maxV = offers.reduce((m, o) => (baseOfferNumber(o.offerNumber) === base ? Math.max(m, offerVersion(o.offerNumber)) : m), offerVersion(current));
+  const no = `${base}-v${maxV + 1}`;
+  const numInput = document.querySelector('[name="projectOfferNumber"]');
+  if (numInput) numInput.value = no;
+  state.activeOfferId = null;
+  const entry = saveCurrentOffer({ silent: true });
+  const msg = `✓ Neue Fassung ${no} angelegt. ${base}${maxV > 1 ? "-v" + maxV : ""} bleibt unverändert erhalten.`;
+  if (window.LM_EMBED && window.parent.toast) window.parent.toast(msg); else alert(msg);
+  return entry;
+}
+function updateVersionUi() {
+  const btn = document.querySelector("#newVersionBtn");
+  if (btn) btn.hidden = !state.activeOfferId;
+}
+/* Für das Studio: Entwurf über die Angebotsnummer öffnen */
+window.lmOpenOffer = function (no) {
+  const offers = getStored(STORAGE_KEYS.offers);
+  const base = baseOfferNumber(no);
+  const hit = offers.find((o) => o.offerNumber === no) ||
+    offers.filter((o) => baseOfferNumber(o.offerNumber) === base).sort((x, y) => offerVersion(y.offerNumber) - offerVersion(x.offerNumber))[0];
+  if (!hit) return false;
+  hydrateOffer(hit);
+  return true;
+};
+window.lmHasOffer = function (no) {
+  const base = baseOfferNumber(no);
+  return getStored(STORAGE_KEYS.offers).some((o) => baseOfferNumber(o.offerNumber) === base);
+};
 
 function loadDraftList() {
   const offers = getStored(STORAGE_KEYS.offers).sort((a, b) => {
-    return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+    return new Date(b.updatedAt || b.createdAt || 0).getTime() - new Date(a.updatedAt || a.createdAt || 0).getTime();
   });
 
   if (refs.draftCount) {
@@ -5437,8 +6337,8 @@ function loadDraftList() {
     const critical = (offer.issues || []).filter((item) => item.severity === "kritisch").length;
     const customer = offer.values.customerCompany ? ` · ${offer.values.customerCompany}` : "";
     btn.innerHTML = `
-      <strong>${escapeHtml(offer.offerNumber || "Ohne Nummer")} - ${escapeHtml(offer.values.projectTitle || "Ohne Titel")}</strong>
-      <span>${escapeHtml(formatDraftDate(offer.createdAt))}${escapeHtml(customer)} · ${critical} kritisch</span>
+      <strong>${escapeHtml(offer.offerNumber || "Ohne Nummer")} · ${escapeHtml(offer.values.projectTitle || "Ohne Titel")}${offerVersion(offer.offerNumber) > 1 ? `<span class="draft-ver">Fassung ${offerVersion(offer.offerNumber)}</span>` : ""}</strong>
+      <span>${escapeHtml(formatDraftDate(offer.updatedAt || offer.createdAt))}${escapeHtml(customer)}${offer.by ? " · " + escapeHtml(offer.by) : ""} · ${critical ? critical + " kritisch" : "vollständig"}</span>
     `;
     btn.addEventListener("click", () => {
       hydrateOffer(offer);
@@ -5485,6 +6385,7 @@ function formatDraftDate(value) {
 function deleteOfferDraft(offerId) {
   const offers = getStored(STORAGE_KEYS.offers);
   const nextOffers = offers.filter((offer) => offer.id !== offerId);
+  if (state.activeOfferId === offerId) { state.activeOfferId = null; updateVersionUi(); }
   localStorage.setItem(STORAGE_KEYS.offers, JSON.stringify(nextOffers));
   loadDraftList();
   renderCustomerList();
@@ -5537,6 +6438,8 @@ function confirmDraftDelete(offer) {
 }
 
 function hydrateOffer(offer) {
+  state.activeOfferId = offer.id;
+  setTimeout(updateVersionUi, 0);
   const templateId = offer.templateId && getTemplateById(offer.templateId) ? offer.templateId : TEMPLATE_IMAGE_VIDEO;
   setActiveTemplate(templateId);
   if (refs.templateSelect) {
@@ -5583,6 +6486,8 @@ function hydrateOffer(offer) {
 
 function resetOffer() {
   state.draftTextBlocks = null;
+  state.activeOfferId = null;
+  updateVersionUi();
   applyTemplateById(state.activeTemplateId || TEMPLATE_IMAGE_VIDEO, false);
   showStep(0);
 }
@@ -5726,6 +6631,11 @@ async function downloadPdf() {
     return;
   }
 
+  /* Jedes fertige Angebot bleibt als Entwurf erhalten, damit später eine neue Fassung möglich ist */
+  let savedEntry = null;
+  try { savedEntry = saveCurrentOffer({ silent: true }); } catch (e) { console.warn("Entwurf", e); }
+  Object.assign(values, getFormData());
+
   updatePreview();
   const docNode = refs.preview.querySelector(".offer-doc");
   if (!docNode) {
@@ -5733,7 +6643,7 @@ async function downloadPdf() {
     return;
   }
 
-  const offerNumber = getEffectiveOfferNumber(values);
+  const offerNumber = savedEntry ? savedEntry.offerNumber : getEffectiveOfferNumber(values);
   const customer = (values.customerCompany || "Kunde").replace(/[^a-zA-Z0-9-_]+/g, "_");
   const filename = `Angebot_${customer}_${offerNumber}.pdf`;
 
@@ -5751,6 +6661,9 @@ async function downloadPdf() {
           no: offerNumber,
           customer: values.customerCompany || "",
           contact: values.customerContact || "",
+          salutation: values.customerSalutation || "",
+          email: values.customerEmail || "",
+          phone: values.customerPhone || "",
           title: values.projectTitle || "",
           total: getPayableTotal(values),
         });

@@ -573,6 +573,14 @@ body.own-calls [data-premium="calls"] .lock,body.own-bundle [data-premium="calls
 
 
 /* Angebotsrechner im Studio */
+.ad-txt{display:grid;gap:2px;min-width:240px}
+.ad-ok{font-size:12.5px;color:#1E7B3A;font-weight:600}.ad-warn{font-size:12.5px;color:#9A5B00;font-weight:600}.ad-wait{font-size:12.5px;color:var(--ink-3);display:inline-flex;gap:6px;align-items:center}
+.ap-sent{font-style:normal;font-size:11.5px;color:var(--ink-3);min-height:15px}.ap-sent.ok{color:#1E7B3A;font-weight:600}.ap-sent.no{color:#9A5B00}
+.ap-card{width:250px}.ap-act{flex-wrap:wrap}
+body.ang-full .app{grid-template-columns:minmax(0,1fr)}
+body.ang-full .app>.sidebar{display:none}
+body.ang-full .view[data-view="angebot"] .topbar .summary{display:none}
+body.ang-full .view[data-view="angebot"] .topbar h1{font-size:24px}
 .ang-done-in{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:14px 16px;margin-bottom:14px;border-radius:18px;background:linear-gradient(135deg,rgba(52,199,89,.12),rgba(255,255,255,.8));border:1px solid rgba(52,199,89,.35)}
 .ad-ic{width:34px;height:34px;border-radius:50%;background:#34C759;color:#fff;display:grid;place-items:center;font-weight:800}
 .ang-done-in b{display:block;font-size:15px}.ang-done-in small{display:block;font-size:12.5px;color:var(--ink-2)}
@@ -1742,7 +1750,7 @@ body.dcut .bg{filter:grayscale(.4)}
           <h1>Angebotsrechner</h1>
           <p class="summary">Kunden aus der Kartei übernehmen, kalkulieren, PDF erzeugen. Das fertige Angebot landet automatisch in Drive unter Angebote_und_Kostenvoranschlaege und in Notion.</p>
         </div>
-        <div class="actions"><a class="btn btn-glass" href="angebot.html" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg><span class="label">Im eigenen Fenster</span></a></div>
+        <div class="actions"><button class="btn btn-glass" id="angFull" type="button" aria-pressed="false"><svg class="i sm"><use href="#i-open"/></svg><span class="label">Vollbild</span></button></div>
       </header>
       <div class="ang-done" id="angDone" hidden></div>
       <details class="glass ang-past" id="angPast"><summary><b>Frühere Angebote</b><span id="angPastN"></span></summary><div class="ang-past-list" id="angPastList"></div></details>
@@ -2767,7 +2775,9 @@ const ALLOWED_EMAILS=[];
 const DRIVE_SCOPE='https://www.googleapis.com/auth/drive';
 const CAL_SCOPE='https://www.googleapis.com/auth/calendar.events';
 const GMAIL_SCOPE='https://www.googleapis.com/auth/gmail.readonly';
-const GOOGLE_SCOPES='openid email profile '+DRIVE_SCOPE+' '+CAL_SCOPE+' '+GMAIL_SCOPE;
+const COMPOSE_SCOPE='https://www.googleapis.com/auth/gmail.compose';
+const GOOGLE_SCOPES='openid email profile '+DRIVE_SCOPE+' '+CAL_SCOPE+' '+GMAIL_SCOPE+' '+COMPOSE_SCOPE;
+let COMPOSE_OK=false;
 const DRIVE_ROOT_ID='15uyD_DLz6-oqzXeP1UoOBtXvzjpk4Z7E';
 
 const login=document.getElementById('login');
@@ -2810,6 +2820,7 @@ async function onToken(resp){
     flushWaiters(new Error('drive scope missing'));return;
   }
   accessToken=resp.access_token;tokenExpiry=Date.now()+((+resp.expires_in||3600)-60)*1000;
+  try{COMPOSE_OK=google.accounts.oauth2.hasGrantedAllScopes(resp,COMPOSE_SCOPE)}catch(_){}
   flushWaiters();
   if(GAUTH)return;
   try{
@@ -5150,7 +5161,12 @@ window.studioSaveOffer=async function(blob,filename,meta){
   const inv={id:Date.now(),kind:'Angebot',no:meta.no||'',party:meta.customer||'—',note:(meta.title||name).slice(0,80),date:TODAY,amount:+meta.total||0,status:'offen',p:'Akquise',drive:up.webViewLink||ANGEBOT_URL,driveFileId:up.id,fresh:true};
   INVOICES.unshift(inv);safe('inv',renderInvoices);
   toast('✓ Angebot '+(meta.no||'')+' abgelegt in Drive: Angebote / '+folderName);
-  safe('angDone',()=>showAngDone({no:meta.no,customer:meta.customer,contact:meta.contact||'',folder:folderName,link:up.webViewLink||driveUrl(folderId),id:up.id}));
+  PDF_CACHE[up.id]={blob,name};
+  safe('angPast',renderAngPast);
+  const done={no:meta.no,title:meta.title||'',customer:meta.customer,contact:meta.contact||'',salutation:meta.salutation||'',email:meta.email||'',phone:meta.phone||'',folder:folderName,link:up.webViewLink||driveUrl(folderId),id:up.id,name,draft:null,draftErr:''};
+  safe('angDone',()=>showAngDone(done));
+  /* Gleich als Mail-Entwurf mit PDF in Gmail legen */
+  makeOfferDraft(done).then(d=>{done.draft=d;safe('angDone',()=>showAngDone(done,true))}).catch(x=>{done.draftErr=x.message;safe('angDone',()=>showAngDone(done,true))});
   notionCreateRechnung({no:inv.no,art:'Angebot',status:'Offen',betrag:inv.amount,leistung:(meta.customer||'')+(meta.title?': '+meta.title:''),datum:TODAY,datei:inv.drive})
     .then(r=>{inv.nid=r.id}).catch(()=>{});
   setTimeout(()=>safe('dd',()=>scanDriveInvoices()),1500);
@@ -5160,13 +5176,12 @@ function angAutoHeight(){
   const f=$('angFrame');if(!f)return;
   try{
     const d=f.contentDocument;if(!d||!d.body)return;
-    const fit=()=>{const h=Math.max(d.documentElement.scrollHeight,d.body.scrollHeight,700);if(Math.abs(f.offsetHeight-h)>4)f.style.height=h+'px'};
-    fit();new (f.contentWindow.ResizeObserver||ResizeObserver)(fit).observe(d.body);
+    const fit=()=>{const sh=d.querySelector('.app-shell')||d.body;let h=sh.offsetTop+sh.offsetHeight+16;d.querySelectorAll('.customer-panel:not([hidden]),.confirm-dialog').forEach(x=>{const r=x.getBoundingClientRect();if(r.height)h=Math.max(h,r.bottom+d.defaultView.scrollY+16)});h=Math.max(h,600);if(Math.abs(f.offsetHeight-h)>4)f.style.height=h+'px'};
+    fit();const ro=new (f.contentWindow.ResizeObserver||ResizeObserver)(fit);ro.observe(d.body);const sh0=d.querySelector('.app-shell');if(sh0)ro.observe(sh0);new MutationObserver(()=>requestAnimationFrame(fit)).observe(d.body,{subtree:true,attributes:true,attributeFilter:['hidden','class']});
     ['--brand','--brand-2'].forEach(v=>d.documentElement.style.setProperty(v,getComputedStyle(document.documentElement).getPropertyValue(v).trim()));
   }catch(_){}
 }
-document.addEventListener('DOMContentLoaded',()=>{const f=$('angFrame');f&&f.addEventListener('load',angAutoHeight)});
-(function(){const f=$('angFrame');f&&f.addEventListener('load',angAutoHeight)})();
+(function(){const f=$('angFrame');f&&f.addEventListener('load',()=>{angAutoHeight();setTimeout(()=>safe('angPast',renderAngPast),300)})})();
 async function openAngebot(){
   safe('angPast',renderAngPast);
   if(angLoaded)return;angLoaded=true;
@@ -5192,8 +5207,9 @@ async function draftsDown(){
   if(id){try{remote=Object.assign(remote,await (await gfetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media&supportsAllDrives=true')).json())}catch(_){}}
   draftDeleted=remote.deleted||[];
   const del=new Set(draftDeleted);
-  const byId=new Map();[...remote.offers,...lsGet(DK.offers)].forEach(o=>{if(o&&o.id&&!del.has(o.id))byId.set(o.id,o)});
-  const offers=[...byId.values()].sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  const byId=new Map(),ts=o=>String(o.updatedAt||o.createdAt||'');
+  [...remote.offers,...lsGet(DK.offers)].forEach(o=>{if(!o||!o.id||del.has(o.id))return;const had=byId.get(o.id);if(!had||ts(o)>=ts(had))byId.set(o.id,o)});
+  const offers=[...byId.values()].sort((a,b)=>ts(b).localeCompare(ts(a)));
   const ck=c=>((c.customerCompany||'')+'|'+(c.customerEmail||'')).toLowerCase();
   const cm=new Map();[...remote.customers,...lsGet(DK.customers)].forEach(c=>{if(c&&ck(c)!=='|')cm.set(ck(c),c)});
   const counter=Math.max(+remote.counter||0,+(localStorage.getItem(DK.counter)||0));
@@ -5210,7 +5226,7 @@ async function draftsUp(){
   else{const f=new File([body],DRAFT_FILE,{type:'application/json'});const up=await driveUpload(f,DRAFT_FILE,ANGEBOT_ID);DRAFT_ID=up.id}
 }
 /* Der Rechner läuft im eingebetteten Fenster derselben Adresse: Änderungen kommen hier als storage-Ereignis an */
-window.addEventListener('storage',e=>{if(e.key&&Object.values(DK).includes(e.key)){clearTimeout(draftT);draftT=setTimeout(()=>draftsUp().catch(x=>toast('Entwurf nur lokal gespeichert: '+x.message)),1200)}});
+window.addEventListener('storage',e=>{if(e.key&&Object.values(DK).includes(e.key)){clearTimeout(draftT);if(e.key===DK.offers)setTimeout(()=>safe('angPast',renderAngPast),50);draftT=setTimeout(()=>draftsUp().catch(x=>toast('Entwurf nur lokal gespeichert: '+x.message)),1200)}});
 
 /* ---------- Frühere Angebote und „fertig abgelegt“ ---------- */
 function renderAngPast(){
@@ -5228,23 +5244,157 @@ async function shareLink(id){
   try{await navigator.clipboard.writeText(url)}catch(_){}
   return url;
 }
-function showAngDone(o){
-  const el=$('angDone');if(!el)return;
-  const k=KUNDEN.find(q=>kMatches(q,o.customer||''));const to=k&&k.email?k.email:'';
-  const subj='Angebot '+(o.no||'')+' – LeMatic';
-  el.innerHTML=`<div class="glass ang-done-in"><span class="ad-ic">✓</span><div><b>Angebot ${esc(o.no||'')} ist abgelegt</b><small>Drive: Angebote / ${esc(o.folder)} · auch in Notion eingetragen</small></div>
-    <div class="ad-act"><a class="btn btn-glass sm" href="${esc(o.link)}" target="_blank" rel="noopener">In Drive öffnen</a><button class="btn btn-glass sm" data-share="${esc(o.id)}" data-sname="${esc(o.no||'')}">Link zum Verschicken kopieren</button><button class="btn btn-primary sm" data-sharemail="${esc(o.id)}" data-to="${esc(to)}" data-subj="${esc(subj)}" data-cust="${esc(o.contact||'')}">Per Mail schicken</button><button class="icon-btn" data-adclose aria-label="Schließen">✕</button></div></div>`;
-  el.hidden=false;el.scrollIntoView({block:'start',behavior:REDUCED?'auto':'smooth'});
+const PDF_CACHE={};
+const FULLNAME={LP:'Lennart Post',MS:'Martin Schmick'};
+window.studioUser=()=>FULLNAME[ME]||USER;
+function composeToken(){
+  return new Promise((res,rej)=>{
+    try{const c=google.accounts.oauth2.initTokenClient({client_id:GOOGLE_CLIENT_ID,scope:COMPOSE_SCOPE,include_granted_scopes:true,
+      callback:r=>{if(r.error)return rej(new Error(r.error));COMPOSE_OK=true;accessToken=r.access_token;tokenExpiry=Date.now()+((+r.expires_in||3600)-60)*1000;res(r.access_token)},
+      error_callback:e=>rej(new Error(e&&e.type||'abgebrochen'))});c.requestAccessToken({prompt:''})}catch(e){rej(e)}
+  });
 }
+const b64utf8=t=>btoa(unescape(encodeURIComponent(t)));
+const wrap76=b=>b.replace(/.{1,76}/g,'$&\r\n').trim();
+const blobB64=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(b)});
+async function drivePdf(id){
+  if(PDF_CACHE[id])return PDF_CACHE[id];
+  const meta=await (await gfetch('https://www.googleapis.com/drive/v3/files/'+id+'?fields=name&supportsAllDrives=true')).json();
+  const blob=await (await gfetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media&supportsAllDrives=true')).blob();
+  return PDF_CACHE[id]={blob,name:meta.name||'Angebot.pdf'};
+}
+function offerGreeting(o){
+  const c=String(o.contact||'').trim();
+  if(/^(herr|frau)\s/i.test(c))return 'Hallo '+c;
+  const last=c.split(/\s+/).pop();
+  if(o.salutation==='herr'&&last)return 'Hallo Herr '+last;
+  if(o.salutation==='frau'&&last)return 'Hallo Frau '+last;
+  return c?'Hallo '+c:'Hallo';
+}
+function offerMailText(o,link){
+  return offerGreeting(o)+',\n\nvielen Dank für das gute Gespräch. Anbei finden Sie unser Angebot '+(o.no||'')+(o.title?' für „'+o.title+'“':'')+' als PDF.'+(link?'\nOnline ansehen: '+link:'')+
+    '\n\nWenn Sie Fragen haben oder etwas angepasst werden soll, melden Sie sich gern jederzeit.\n\nViele Grüße\n'+(FULLNAME[ME]||USER)+'\nLeMatic Videoproduction\ninfo@lematic.de · lematic.de';
+}
+/* Legt einen echten Gmail-Entwurf mit PDF-Anhang an (sichtbar in Gmail und jedem Mailprogramm, das info@lematic.de abruft) */
+async function makeOfferDraft(o,interactive){
+  if(!GAUTH)throw new Error('nicht angemeldet');
+  if(!COMPOSE_OK){if(!interactive)throw new Error('Erlaubnis für Mail-Entwürfe fehlt');await composeToken()}
+  const pdf=await drivePdf(o.id);
+  const fname=String(pdf.name||'Angebot.pdf').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\w.\-]+/g,'_');
+  const subj='Angebot '+(o.no||'')+(o.title?' – '+o.title:'')+' | LeMatic';
+  const bd='lm_'+Date.now().toString(36);
+  const enc=t=>'=?UTF-8?B?'+b64utf8(t)+'?=';
+  const mime=['MIME-Version: 1.0',...(o.email?['To: '+o.email]:[]),'Subject: '+enc(subj),'Content-Type: multipart/mixed; boundary="'+bd+'"','',
+    '--'+bd,'Content-Type: text/plain; charset="UTF-8"','Content-Transfer-Encoding: base64','',wrap76(b64utf8(offerMailText(o))),
+    '--'+bd,'Content-Type: application/pdf; name="'+fname+'"','Content-Disposition: attachment; filename="'+fname+'"','Content-Transfer-Encoding: base64','',wrap76(await blobB64(pdf.blob)),
+    '--'+bd+'--',''].join('\r\n');
+  const raw=btoa(mime).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  let r;
+  try{r=await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/drafts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:{raw}})})}
+  catch(x){if(/insufficient|scope|permission/i.test(x.message)){COMPOSE_OK=false;throw new Error('Erlaubnis für Mail-Entwürfe fehlt')}throw x}
+  const j=await r.json();
+  return {id:j.id,mid:j.message&&j.message.id,to:o.email||''};
+}
+const draftUrl=d=>'https://mail.google.com/mail/?authuser=info@lematic.de#drafts'+(d&&d.mid?'?compose='+d.mid:'');
+function waNumber(p){let d=String(p||'').replace(/[^\d+]/g,'');if(d.startsWith('+'))d=d.slice(1);else if(d.startsWith('00'))d=d.slice(2);else if(d.startsWith('0'))d='49'+d.slice(1);return d.length>=8?d:''}
+function customerFor(name){return KUNDEN.find(q=>notPrivate(q.name)&&kMatches(q,name||''))}
+function showAngDone(o,quiet){
+  const el=$('angDone');if(!el)return;
+  if(!o.email||!o.phone){const k=customerFor(o.customer);if(k){o.email=o.email||k.email||'';o.phone=o.phone||(k.raw||{})['Telefon']||'';o.contact=o.contact||String((k.raw||{})['Ansprechpartner']||'').split(/[,·(]/)[0].trim()}}
+  const ds=o.draft?`<span class="ad-ok">✉ Mail-Entwurf mit PDF liegt in Gmail${o.draft.to?' · an '+esc(o.draft.to):' · Empfänger noch eintragen'}</span>`
+    :o.draftErr?`<span class="ad-warn">Mail-Entwurf noch nicht angelegt${/Erlaubnis/.test(o.draftErr)?' (einmal erlauben)':': '+esc(o.draftErr)}</span>`
+    :`<span class="ad-wait"><span class="spin dd"></span> Mail-Entwurf wird angelegt …</span>`;
+  const wa=waNumber(o.phone);
+  el.innerHTML=`<div class="glass ang-done-in"><span class="ad-ic">✓</span><div class="ad-txt"><b>Angebot ${esc(o.no||'')} ist fertig</b><small>Drive: Angebote / ${esc(o.folder)} · in Notion eingetragen</small>${ds}</div>
+    <div class="ad-act">${o.draft?`<a class="btn btn-primary sm" href="${esc(draftUrl(o.draft))}" target="_blank" rel="noopener">Entwurf öffnen</a>`:o.draftErr?`<button class="btn btn-primary sm" data-mkdraft="${esc(o.id)}">Als Mail-Entwurf</button>`:''}
+    <a class="btn btn-glass sm" href="${esc(o.link)}" target="_blank" rel="noopener">In Drive</a>
+    <button class="btn btn-glass sm" data-share="${esc(o.id)}">Link kopieren</button>
+    <button class="btn btn-glass sm" data-wa="${esc(o.id)}" data-phone="${esc(wa)}" title="${wa?'Öffnet WhatsApp mit '+esc(o.phone):'Öffnet WhatsApp, Kontakt dort auswählen'}">WhatsApp</button>
+    <button class="icon-btn" data-adclose aria-label="Schließen">✕</button></div></div>`;
+  el._o=o;el.hidden=false;if(!quiet)el.scrollIntoView({block:'start',behavior:REDUCED?'auto':'smooth'});
+}
+/* Versandkontrolle: Angebotsnummer im Postausgang suchen */
+const SENT={};
+async function sentInfo(no){
+  const base=String(no||'').replace(/-v\d+$/i,'');if(!base||!GAUTH)return null;
+  if(base in SENT)return SENT[base];
+  SENT[base]=null;
+  try{
+    const j=await (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?'+new URLSearchParams({q:'in:sent "'+base+'"',maxResults:'5'}))).json();
+    const ms=j.messages||[];
+    if(ms.length){
+      const m=await (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/'+ms[0].id+'?format=metadata&metadataHeaders=To&metadataHeaders=Subject')).json();
+      const h=Object.fromEntries((m.payload&&m.payload.headers||[]).map(x=>[x.name,x.value]));
+      SENT[base]={date:iso(new Date(+m.internalDate)),to:String(h.To||'').replace(/<.*?>/g,'').replace(/"/g,'').trim(),n:ms.length,thread:m.threadId};
+    }else SENT[base]=false;
+  }catch(_){delete SENT[base]}
+  return SENT[base];
+}
+function frameWin(){try{const w=$('angFrame').contentWindow;return w&&w.lmOpenOffer?w:null}catch(_){return null}}
+function renderAngPast(){
+  const el=$('angPastList');if(!el)return;
+  const seen=new Set(),items=[];
+  driveDocsLI().filter(d=>d.kind==='Angebot').forEach(d=>{seen.add((d.no||'').toUpperCase());items.push({no:d.no||d.name,party:d.party,amount:d.amount,date:d.date,status:d.status,link:d.link,id:d.id})});
+  agentInvoices().filter(i=>i.kind==='Angebot'&&!seen.has((i.no||'').toUpperCase())).forEach(i=>items.push({no:i.no,party:i.party&&i.party!=='—'?i.party:(i.note||'').split(':')[0],amount:i.amount,date:i.date,status:i.status,link:i.drive,id:i.driveFileId||driveIdFrom(i.drive)}));
+  items.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+  $('angPastN').textContent=items.length?' · '+items.length:'';
+  const fw=frameWin();
+  el.innerHTML=items.length?items.slice(0,40).map(it=>{const base=String(it.no||'').replace(/-v\d+$/i,'');const editable=fw&&it.no&&fw.lmHasOffer(it.no);
+    return `<div class="ap-card"><b>${esc(it.no||'Angebot')}</b><small>${esc(it.party||'')}</small><span>${it.amount?eur(it.amount):''}${it.date?' · '+dm(String(it.date).slice(0,10)):''}${it.status&&it.status!=='nicht in Notion'?' · '+esc(it.status):''}</span>
+    <em class="ap-sent" data-sent="${esc(base)}">${it.no?'Versand wird geprüft …':''}</em>
+    <div class="ap-act">${editable?`<button class="btn btn-glass sm" data-apopen="${esc(it.no)}" title="Im Rechner öffnen, dort „Neue Fassung“">Bearbeiten</button>`:''}${it.link?`<a class="btn btn-glass sm" href="${esc(it.link)}" target="_blank" rel="noopener">PDF</a>`:''}${it.id?`<button class="btn btn-glass sm" data-mkdraft="${esc(it.id)}" data-no="${esc(it.no||'')}" data-party="${esc(it.party||'')}">Mail-Entwurf</button>`:''}</div></div>`}).join(''):'<p class="empty">Noch keine Angebote gefunden. Sie erscheinen hier, sobald sie in Drive oder Notion liegen.</p>';
+  if($('angPast').open)fillSent();
+}
+async function fillSent(){
+  const els=[...document.querySelectorAll('#angPastList [data-sent]')];
+  for(const e of els){if(!e.dataset.sent){e.textContent='';continue}
+    const r=await sentInfo(e.dataset.sent);
+    e.className='ap-sent '+(r?'ok':'no');
+    e.textContent=r?'✉ verschickt '+dm(r.date)+(r.to?' an '+r.to.split(',')[0]:'')+(r.n>1?' · '+r.n+' Mails':''):r===false?'Noch nicht per Mail verschickt':'';
+  }
+}
+document.addEventListener('toggle',e=>{if(e.target.id==='angPast'&&e.target.open)fillSent()},true);
+async function shareLink(id){
+  await gfetch('https://www.googleapis.com/drive/v3/files/'+id+'/permissions?supportsAllDrives=true',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({role:'reader',type:'anyone'})});
+  const url='https://drive.google.com/file/d/'+id+'/view';
+  try{await navigator.clipboard.writeText(url)}catch(_){}
+  return url;
+}
+function setAngFull(on){
+  document.body.classList.toggle('ang-full',on);
+  const b=$('angFull');if(b){b.setAttribute('aria-pressed',String(on));b.querySelector('.label').textContent=on?'Vollbild beenden':'Vollbild'}
+  try{localStorage.setItem('lm_ang_full',on?'1':'')}catch(_){}
+}
+window.addEventListener('hashchange',()=>{if(location.hash!=='#/angebot')document.body.classList.remove('ang-full');else if(localStorage.getItem('lm_ang_full'))setAngFull(true)});
+if(location.hash==='#/angebot'&&localStorage.getItem('lm_ang_full'))setAngFull(true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('ang-full')&&!document.querySelector('.modal:not([hidden]),#liDrawer.open'))setAngFull(false)});
 document.addEventListener('click',async e=>{
+  if(e.target.closest('#angFull')){setAngFull(!document.body.classList.contains('ang-full'));return}
   if(e.target.closest('[data-adclose]')){$('angDone').hidden=true;return}
+  const op=e.target.closest('[data-apopen]');
+  if(op){const w=frameWin();if(w&&w.lmOpenOffer(op.dataset.apopen)){$('angPast').open=false;$('angFrame').scrollIntoView({block:'start',behavior:REDUCED?'auto':'smooth'});toast('Geöffnet. Für Änderungen mit eigener Nummer „Neue Fassung“ drücken.')}else toast('Zu diesem Angebot gibt es keinen gespeicherten Entwurf.');return}
   const sh=e.target.closest('[data-share]');
   if(sh){sh.disabled=true;try{await shareLink(sh.dataset.share);toast('Link kopiert. Jeder mit dem Link kann das PDF ansehen.')}catch(x){toast('Link nicht erstellt: '+x.message)}sh.disabled=false;return}
-  const sm=e.target.closest('[data-sharemail]');
-  if(sm){sm.disabled=true;try{const url=await shareLink(sm.dataset.sharemail);
-    const body='Hallo'+(sm.dataset.cust?' '+sm.dataset.cust:'')+',\n\nanbei wie besprochen unser Angebot:\n'+url+'\n\nBei Fragen melde dich gern.\n\nViele Grüße\n'+USER+'\nLeMatic';
-    window.open('https://mail.google.com/mail/?authuser=info@lematic.de&view=cm&fs=1&to='+encodeURIComponent(sm.dataset.to||'')+'&su='+encodeURIComponent(sm.dataset.subj)+'&body='+encodeURIComponent(body),'_blank','noopener');
-  }catch(x){toast('Mail nicht vorbereitet: '+x.message)}sm.disabled=false}
+  const wa=e.target.closest('[data-wa]');
+  if(wa){
+    const win=window.open('about:blank','_blank');
+    try{const o=$('angDone')._o||{};const url=await shareLink(wa.dataset.wa);
+      const txt=offerGreeting(o)+',\nhier ist unser Angebot '+(o.no||'')+(o.title?' für „'+o.title+'“':'')+' als PDF:\n'+url+'\n\nViele Grüße\n'+(FULLNAME[ME]||USER)+' · LeMatic';
+      const u=(wa.dataset.phone?'https://wa.me/'+wa.dataset.phone:'https://wa.me/')+'?text='+encodeURIComponent(txt);
+      if(win)win.location=u;else window.open(u,'_blank');
+    }catch(x){if(win)win.close();toast('WhatsApp nicht vorbereitet: '+x.message)}
+    return}
+  const md=e.target.closest('[data-mkdraft]');
+  if(md){
+    md.disabled=true;const old=md.textContent;md.textContent='Wird angelegt …';
+    const cur=$('angDone')._o;
+    let o=cur&&cur.id===md.dataset.mkdraft?cur:null;
+    if(!o){const k=customerFor(md.dataset.party);o={id:md.dataset.mkdraft,no:md.dataset.no,customer:md.dataset.party,contact:k?String((k.raw||{})['Ansprechpartner']||'').split(/[,·(]/)[0].trim():'',email:k&&k.email||'',title:''}}
+    try{const d=await makeOfferDraft(o,true);if(o===cur){o.draft=d;o.draftErr='';showAngDone(o,true)}else{md.textContent='✓ In Entwürfen';window.open(draftUrl(d),'_blank','noopener');return}
+      toast('✓ Mail-Entwurf mit PDF liegt in Gmail.')}
+    catch(x){toast('Mail-Entwurf nicht angelegt: '+x.message);md.textContent=old}
+    md.disabled=false;
+  }
 });
 
 /* ---------- Rechnung hochladen: automatisch erkennen und einsortieren ---------- */
@@ -6272,8 +6422,16 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.11';
+const APP_VERSION='2026-10-31.12';
 const CHANGELOG=[
+  {v:'2026-10-31.12',d:'31.10.2026',items:[
+    '✉️ Angebotsrechner: Nach „PDF herunterladen“ liegt das Angebot im richtigen Drive-Ordner und gleich als Gmail-Entwurf mit PDF-Anhang bereit',
+    '🔁 „Neue Fassung“: Angebot ändern als -v2, -v3 …, die alte Fassung bleibt erhalten. „Entwurf speichern“ legt keine Kopien mehr an',
+    '🔎 Kundensuche im Rechner findet auch Teilnamen wie „MS“, direkt beim Tippen in „Kundenfirma“',
+    '📬 Frühere Angebote zeigen, ob und wann sie per Mail verschickt wurden',
+    '⤢ Vollbild-Knopf für den Rechner, Layout aufgeräumt (nichts liegt mehr übereinander)',
+    '💬 WhatsApp-Knopf: schickt den PDF-Link direkt an die Nummer des Kunden'
+  ]},
   {v:'2026-10-31.11',d:'31.10.2026',items:[
     '🧮 Angebotsrechner sieht jetzt aus wie das Studio und ist direkt eingebaut, kein eigenes Fenster mehr',
     '💾 Entwürfe werden in Drive gespeichert: Lennart und Martin sehen dieselben Entwürfe, auf jedem Gerät',
