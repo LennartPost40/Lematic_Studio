@@ -1522,6 +1522,22 @@ body.nav-editing .side-label[data-navopt] .nav-eye{margin-left:auto}
 @keyframes tourIn{from{opacity:0;transform:scale(.94) translateY(14px)}to{opacity:1;transform:none}}
 @media (max-width:820px){.tour-sheet{grid-template-columns:1fr;grid-template-rows:minmax(0,45%) minmax(0,1fr);height:94vh}.tour-stage{padding:18px}.tour-side{padding:22px 20px 18px}.tour-side h2{font-size:22px}.tour-foot{position:sticky;bottom:-18px;background:#fff;padding:12px 0 18px;margin-bottom:-18px}}
 @media (prefers-reduced-motion:reduce){.in-r,.in-l,.tour-wrap.show .tour-sheet{animation:none}}
+body.auth-checking #login{opacity:0;pointer-events:none}
+
+/* Rückgängig und Papierkorb */
+.undo-dock{position:fixed;left:300px;bottom:84px;z-index:85;display:flex;flex-direction:column;gap:8px;align-items:flex-start;pointer-events:none}
+@media (max-width:900px){.undo-dock{left:50%;transform:translateX(-50%);bottom:92px;align-items:center}}
+body.ang-full .undo-dock{left:22px}
+.undo-chip{pointer-events:auto;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border-radius:999px;background:rgba(20,32,28,.94);color:#fff;box-shadow:0 14px 34px -14px rgba(0,0,0,.5);font-size:13px;animation:onbIn .35s both;max-width:min(560px,92vw)}
+.uc-k{font-weight:700;color:#FCD717;font-size:12px}.uc-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.uc-b{display:inline-flex;align-items:center;gap:5px;border:0;border-radius:999px;background:#FCD717;color:#073D30;font:inherit;font-size:12.5px;font-weight:700;padding:6px 12px;cursor:pointer;white-space:nowrap}
+.undo-chip small{font-size:11px;color:rgba(255,255,255,.55);font-variant-numeric:tabular-nums}
+.uc-x{border:0;background:none;color:rgba(255,255,255,.6);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;cursor:pointer}.uc-x:hover{background:rgba(255,255,255,.12);color:#fff}
+#openTrash .tr-n{font-size:11px;font-weight:700;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:rgba(7,61,48,.1);display:grid;place-items:center}#openTrash .tr-n:empty{display:none}
+.trash-sheet{width:min(620px,100%);max-height:80vh;overflow:auto}.trash-sheet h2{margin:0}.tr-sub{font-size:13px;color:var(--ink-2);margin:6px 0 14px}
+.tr-row{display:flex;align-items:center;gap:12px;padding:10px 4px;border-top:1px solid var(--line)}.tr-t{flex:1;min-width:0}.tr-t b{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tr-t small{font-size:12px;color:var(--ink-3)}
+.wa-set{margin-top:14px;align-items:flex-start;gap:10px}.wa-set b{display:block;font-size:14px}.wa-set small{display:block;font-size:12.5px;color:var(--ink-2);line-height:1.45;margin-top:2px}
+#eventWrap input[type=date],#eventWrap input[type=time]{height:40px;border-radius:12px;border:1px solid rgba(29,29,31,.12);background:rgba(255,255,255,.92);padding:0 12px;font:inherit;font-size:14px;color:var(--ink);width:100%;min-width:0;margin-top:4px}
 /* Startbühne */
 .home-stage{min-height:calc(100vh - 40px);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;padding:40px 16px 72px!important;margin-bottom:8px;background:none!important;border:0!important;box-shadow:none!important}
 .hst-in{width:min(760px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
@@ -2053,6 +2069,7 @@ body.dcut .bg{filter:grayscale(.4)}
           <p class="summary">Der LeMatic-Kalender von info@lematic.de, Termine und Aufgaben in einer Ansicht</p>
         </div>
         <div class="actions">
+          <button class="btn btn-glass" id="openTrash" title="Zuletzt gelöscht: Einträge der letzten 30 Tage wiederherstellen"><svg class="i sm"><use href="#i-trash"/></svg><span class="label">Zuletzt gelöscht</span><small class="tr-n"></small></button>
           <button class="btn btn-glass" id="openBusy"><svg class="i sm"><use href="#i-busy"/></svg><span class="label">Ich bin belegt</span></button>
           <button class="btn btn-primary" id="openEvent"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Eintrag</span></button>
         </div>
@@ -2401,6 +2418,7 @@ body.dcut .bg{filter:grayscale(.4)}
             <button class="btn btn-primary sm" id="csGo">Freigeben</button>
           </div>
           <p class="form-err" id="csMsg" role="status"></p>
+          <label class="chkline wa-set"><input type="checkbox" id="waNotifySet" checked><span><b>Hinweis in die WhatsApp-Gruppe „01_LeMatic_Allgemein“</b><small>Wer für den anderen einen Termin oder eine Aufgabe einträgt, schickt automatisch „Neu für …“ in die Gruppe. Diese Adressen oben bekommen außerdem die Kalender-Einladung. Gesendet wird über euren WhatsApp-Bot auf Lennarts Mac; die Nachrichten warten in Drive unter _Studio_Daten/WhatsApp_Ausgang.</small></span></label>
         </section>
         <section class="glass panel c12" aria-labelledby="look-title">
           <div class="panel-head"><div><h2 id="look-title">Dein Studio</h2><p>Ansicht und Look gelten nur für dich (pro Person und Gerät gemerkt)</p></div></div>
@@ -2779,6 +2797,7 @@ body.dcut .bg{filter:grayscale(.4)}
 <div class="remind-stack" id="remindStack" aria-live="polite"></div>
 <div class="tour" id="tour" hidden><div class="tour-spot" id="tourSpot"></div><div class="tour-card glass" id="tourCard" role="dialog" aria-label="Rundgang"></div></div>
 <div class="upd-bar glass" id="updBar" hidden><span>✨ Neue Version des Studios ist da.</span><button class="btn btn-primary sm" data-appreload>Jetzt neu laden</button><button class="icon-btn" id="updLater" aria-label="Später">✕</button></div>
+<div class="modal-wrap" id="trashWrap" aria-hidden="true"><div class="glass sheet trash-sheet" role="dialog" aria-modal="true" aria-labelledby="trashTitle"><div class="kd-h"><h2 id="trashTitle">Zuletzt gelöscht</h2><button class="icon-btn" data-trclose aria-label="Schließen"><svg class="i sm"><use href="#i-x"/></svg></button></div><p class="tr-sub">Gelöschte Termine und Aufgaben der letzten 30 Tage, von Lennart und Martin. Wiederherstellen legt sie wieder in den LeMatic-Kalender.</p><div id="trashList"></div></div></div>
 <div class="modal-wrap tour-wrap" id="tourWrap" aria-hidden="true"><div class="tour-sheet" role="dialog" aria-modal="true" aria-labelledby="tourTitle" id="tourSheet"></div></div>
 <div class="modal-wrap" id="newsWrap" aria-hidden="true"><div class="glass sheet news-sheet" role="dialog" aria-modal="true" aria-labelledby="newsTitle" id="newsSheet"></div></div>
 <!-- Willkommen mit LeMatic Intelligence -->
@@ -3399,6 +3418,40 @@ const DRIVE_ROOT_ID='15uyD_DLz6-oqzXeP1UoOBtXvzjpk4Z7E';
 
 const login=document.getElementById('login');
 let USER='Lennart',ME='LP',GAUTH=false,tokenClient=null,accessToken=null,tokenExpiry=0,tokenWaiters=[];
+/* 7-Tage-Anmeldung: Serverfunktion /api/auth hält ein verschlüsseltes Langzeit-Cookie; ohne sie merkt sich der Browser das Token bis zum Ablauf */
+let SERVER_AUTH=false,SERVER_AUTH_OK=null,SESSION_UNTIL=0;
+const TOK_KEY='lm_gtok';
+function tokSave(){try{localStorage.setItem(TOK_KEY,JSON.stringify({t:accessToken,exp:tokenExpiry}))}catch(_){}}
+function tokClear(){try{localStorage.removeItem(TOK_KEY)}catch(_){}}
+async function serverToken(){
+  const r=await fetch('/api/auth?step=token',{credentials:'same-origin',cache:'no-store'});
+  if(!r.ok)throw new Error('keine Sitzung');
+  const j=await r.json();if(!j.access_token)throw new Error('keine Sitzung');
+  accessToken=j.access_token;tokenExpiry=Date.now()+((+j.expires_in||3600)-60)*1000;SERVER_AUTH=true;SESSION_UNTIL=+j.until||0;
+  COMPOSE_OK=/gmail\.compose/.test(j.scope||'')||COMPOSE_OK;tokSave();
+  return j;
+}
+async function silentLogin(){
+  document.body.classList.add('auth-checking');
+  try{
+    const q=new URLSearchParams(location.search),lg=q.get('login');
+    if(lg){history.replaceState(null,'',location.pathname+location.hash);
+      if(lg!=='ok')loginError(lg==='konto'?'Das ist kein LeMatic-Konto. Bitte mit info@lematic.de anmelden.':lg==='access_denied'?'Anmeldung abgebrochen.':lg==='refresh'?'Google hat keine Dauer-Anmeldung erteilt. Bitte nochmal anmelden.':'Anmeldung nicht möglich ('+lg+').')}
+    try{await serverToken()}
+    catch(_){
+      let c=null;try{c=JSON.parse(localStorage.getItem(TOK_KEY)||'null')}catch(_){}
+      if(!(c&&c.t&&c.exp>Date.now()+60000)){tokClear();return}
+      accessToken=c.t;tokenExpiry=c.exp;
+    }
+    const r=await fetch('https://www.googleapis.com/oauth2/v3/userinfo',{headers:{Authorization:'Bearer '+accessToken}});
+    if(!r.ok){accessToken=null;tokenExpiry=0;tokClear();return}
+    const me=await r.json();const em=(me.email||'').toLowerCase();
+    if(!ALLOWED_DOMAINS.includes(em.split('@')[1]||'')&&!ALLOWED_EMAILS.map(x=>x.toLowerCase()).includes(em)){accessToken=null;tokClear();return}
+    if(!GAUTH)enterGoogle(me);
+  }catch(_){}
+  finally{document.body.classList.remove('auth-checking')}
+}
+fetch('/api/auth?step=status',{cache:'no-store'}).then(r=>r.ok?r.json():{configured:false}).then(j=>{SERVER_AUTH_OK=!!j.configured}).catch(()=>{SERVER_AUTH_OK=false});
 
 function waitForGis(ms=8000){
   return new Promise(res=>{
@@ -3436,7 +3489,7 @@ async function onToken(resp){
     loginError('Ohne Drive-Zugriff funktioniert das Tool nicht. Bitte bei der Anmeldung den Haken für Google Drive setzen.');
     flushWaiters(new Error('drive scope missing'));return;
   }
-  accessToken=resp.access_token;tokenExpiry=Date.now()+((+resp.expires_in||3600)-60)*1000;
+  accessToken=resp.access_token;tokenExpiry=Date.now()+((+resp.expires_in||3600)-60)*1000;tokSave();
   try{COMPOSE_OK=google.accounts.oauth2.hasGrantedAllScopes(resp,COMPOSE_SCOPE)}catch(_){}
   flushWaiters();
   if(GAUTH)return;
@@ -3450,15 +3503,26 @@ async function onToken(resp){
     enterGoogle(me);
   }catch(e){loginError('Profil konnte nicht geladen werden: '+e.message)}
 }
+let SRV_TOK=null;
 function getToken(){
   if(accessToken&&Date.now()<tokenExpiry)return Promise.resolve(accessToken);
+  if(SERVER_AUTH){if(!SRV_TOK)SRV_TOK=serverToken().then(()=>accessToken).finally(()=>{SRV_TOK=null});return SRV_TOK.catch(e=>{SERVER_AUTH=false;throw new Error('Anmeldung abgelaufen, bitte neu anmelden')})}
   if(!tokenClient)return Promise.reject(new Error('Nicht mit Google angemeldet'));
   return new Promise((resolve,reject)=>{tokenWaiters.push({resolve,reject});tokenClient.requestAccessToken({prompt:''})});
 }
+const CAL_EV_RX=/\/calendar\/v3\/calendars\/[^/]+\/events\/([^/?]+)/;
 async function gfetch(url,opts={},retry=true){
+  const m=String(opts.method||'GET').toUpperCase(),hit=(m==='PATCH'||m==='PUT'||m==='DELETE')&&!opts.noUndo&&CAL_EV_RX.exec(url);
+  if(!hit)return gfetch0(url,opts,retry);
+  let snap=null;try{snap=await (await gfetch0(url.split('?')[0],{},true)).json()}catch(_){}
+  const r=await gfetch0(url,opts,retry);
+  if(snap&&snap.id)safe('undoReg',()=>undoRegister(m,snap,opts.body));
+  return r;
+}
+async function gfetch0(url,opts={},retry=true){
   const t=await getToken();
   const r=await fetch(url,{...opts,headers:{...(opts.headers||{}),Authorization:'Bearer '+t}});
-  if(r.status===401&&retry){accessToken=null;return gfetch(url,opts,false)}
+  if(r.status===401&&retry){accessToken=null;return gfetch0(url,opts,false)}
   if(!r.ok){let m='HTTP '+r.status;try{const j=await r.json();m=(j.error&&j.error.message)||m}catch(_){}
     if(/Calendar API has not been used|calendar-json\.googleapis\.com/.test(m))m='Der Google-Kalender ist im Google-Cloud-Projekt noch nicht freigeschaltet (Calendar API aktivieren).';
     throw new Error(m)}
@@ -3544,7 +3608,7 @@ on('uName','click',askPerson);
 function enterGoogle(me){
   GAUTH=true;
   document.getElementById('uMail').textContent=me.email||'';
-  document.getElementById('setLoginInfo').textContent='Angemeldet als '+me.email;
+  document.getElementById('setLoginInfo').textContent='Angemeldet als '+me.email+(SESSION_UNTIL?', bleibt angemeldet bis '+new Date(SESSION_UNTIL).toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'2-digit'}):'');
   const lp=document.getElementById('setLoginPill');lp.className='pill ok';lp.innerHTML='<i></i>Aktiv';
   login.hidden=true;
   if(!location.hash.startsWith('#/'))location.hash='#/heute';else go(location.hash.slice(2));
@@ -3587,12 +3651,14 @@ on('introDismiss','click',()=>{
 });
 document.getElementById('gLogin').addEventListener('click',()=>{
   loginError('');
+  if(SERVER_AUTH_OK){location.href='/api/auth?step=start&hint=info%40lematic.de';return}
   if(!tokenClient){loginError('Google-Login lädt noch, bitte kurz warten.');return}
   tokenClient.requestAccessToken({prompt:'select_account'});
 });
 document.getElementById('logout').addEventListener('click',()=>{
-  if(accessToken&&window.google)google.accounts.oauth2.revoke(accessToken,()=>{});
-  accessToken=null;tokenExpiry=0;GAUTH=false;
+  if(accessToken&&window.google&&!SERVER_AUTH)google.accounts.oauth2.revoke(accessToken,()=>{});
+  fetch('/api/auth?step=logout',{method:'POST',credentials:'same-origin'}).catch(()=>{});
+  accessToken=null;tokenExpiry=0;GAUTH=false;SERVER_AUTH=false;tokClear();
   const lp=document.getElementById('setLoginPill');lp.className='pill done';lp.innerHTML='<i></i>Aus';
   document.getElementById('setLoginInfo').textContent='Nicht angemeldet';
   const dp=document.getElementById('setDrivePill');dp.className='pill done';dp.innerHTML='<i></i>Nicht verbunden';
@@ -3958,12 +4024,14 @@ async function createTask({title,who,due,time,kid,kname,art,note,rem,invite,nid}
     if(t.kid)props['Kunde']={relation:[{id:t.kid}]};
     const pg=await notionCreate('aufgaben',props);t.nid=pg.id||''}catch(_){}}
   const body=taskEventBody(t);
-  const em=invite?personMail(t.who):'';if(em)body.attendees=[{email:em}];
+  const forOther=t.who!==ME&&invite!==false;
+  const em=forOther?personMail(t.who):'';if(em)body.attendees=[{email:em}];
   const r=await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events'+(em?'?sendUpdates=all':''),{
     method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)
   });
   const j=await r.json();
   t.id=j.id;TASKS.push(t);syncTaskEvents();
+  if(forOther)safe('wa',()=>waNotify(t.who,t.t,fmtWhen(t.due,t.time,true)));
   safe('tasksR',renderTasks);safe('homeR',renderHome);safe('kartR',renderKartei);safe('calR',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
   return t;
 }
@@ -4784,6 +4852,7 @@ async function loadMyCalendar(){
     setHTML('calSync','<svg class="i sm"><use href="#i-check"/></svg>LeMatic-Kalender abgeglichen um '+at+' Uhr');
     if(pill)pill.innerHTML='<span class="pill ok"><i></i>Verbunden</span>';
     safe('cal2',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
+    if(TRASH===null)trashLoad().then(()=>safe('trashR',renderTrashBtn)).catch(()=>{});
     safe('home2',renderHome);safe('tasks2',renderTasks);safe('kart2',renderKartei);safe('brainC',renderBrain);
   }catch(e){
     console.warn('Google Kalender nicht geladen:',e.message);
@@ -4821,7 +4890,7 @@ function evCheck(){
   /* Einladung nur, wenn es für den anderen ist */
   const other=who&&who!==ME,em=other?personMail(who):'';
   $('evInvL').hidden=!(other&&em&&a!=='belegt');
-  $('evInvTxt').textContent=NAMES[who]+' per Kalender-Einladung erinnern ('+em+')';
+  $('evInvTxt').textContent=NAMES[who]+' benachrichtigen: Kalender-Einladung an '+em+(waNotifyOn()?' und Hinweis in der WhatsApp-Gruppe':'');
   const w=$('evWarn');const hits=a==='belegt'?[]:busyFor(who||'',date,a==='aufgabe'?date:end).filter(b=>!EVD.edit||b.gcalId!==EVD.edit.gcalId);
   w.hidden=!hits.length;w.innerHTML=hits.length?`<svg class="i sm"><use href="#i-warn"/></svg><span>${hits.map(b=>esc(busyText(b))).join('<br>')}${hits.length?'<br><small>Trotzdem anlegen geht, '+(who?NAMES[who]:'die Person')+' sieht es dann als Hinweis.</small>':''}</span>`:'';
 }
@@ -4897,6 +4966,7 @@ on('evGo','click',async()=>{
       }else{
         const j=await (await gfetch(cal+(em?'?sendUpdates=all':''),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
         EVENTS.push(evFromBody(o,j.id,j.htmlLink));track('act','Termin angelegt');
+        if(invite&&o.who&&o.who!==ME&&o.art!=='belegt')safe('wa',()=>waNotify(o.who,o.title,fmtWhen(o.date,o.time)));
       }
       toast(o.art==='belegt'?(EVD.edit?'Belegung aktualisiert':'Eingetragen: '+NAMES[o.who]+' ist belegt bis '+dm(o.end||o.date)):(EVD.edit?'Gespeichert: ':'Im Kalender: ')+o.title);
     }
@@ -7332,7 +7402,7 @@ document.addEventListener('click',e=>{
     {ic:'⏭',label:'Nächsten Montag',fn:()=>mv(nextMonday())},
     {ic:'🗓',label:'In einer Woche',fn:()=>mv(addDays(t.due>TODAY?t.due:TODAY,7))},
     {date:true,label:'Datum wählen',fn:d=>mv(d)},
-    {ic:'🤝',label:'An '+NAMES[other]+' übergeben',fn:async()=>{const old=t.who;t.who=other;try{await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))});safe('tasksR',renderTasks);safe('homeR',renderHome);toast('Liegt jetzt bei '+NAMES[other],{undo:async()=>{t.who=old;await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))});safe('tasksR',renderTasks)}})}catch(x){t.who=old;toast('Nicht übergeben: '+x.message)}}}
+    {ic:'🤝',label:'An '+NAMES[other]+' übergeben',fn:async()=>{const old=t.who;t.who=other;try{const bd=taskEventBody(t);const em=other!==ME?personMail(other):'';if(em)bd.attendees=[{email:em}];await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id)+(em?'?sendUpdates=all':''),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(bd)});if(other!==ME)safe('wa',()=>waNotify(other,t.t,fmtWhen(t.due,t.time,true)));safe('tasksR',renderTasks);safe('homeR',renderHome);toast('Liegt jetzt bei '+NAMES[other],{undo:async()=>{t.who=old;await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))});safe('tasksR',renderTasks)}})}catch(x){t.who=old;toast('Nicht übergeben: '+x.message)}}}
   ]);
 },true);
 /* IDs aus der Antwort; wenn die nicht passt, über den Titel suchen */
@@ -7355,8 +7425,10 @@ async function liRunAction(a){
     if(a.type==='task_done'){await toggleTask(t,true);return 'abgehakt'}
     if(a.type==='task_delete'){await deleteTask(t);return 'gelöscht'}
     const old={due:t.due,time:t.time,who:t.who};t.due=a.due||t.due;if(a.time!==undefined&&a.due)t.time=a.time||null;if(a.who==='LP'||a.who==='MS')t.who=a.who;
-    try{await gfetch(cal+'/'+encodeURIComponent(t.id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))})}
+    const handed=t.who!==old.who&&t.who!==ME;const bd=taskEventBody(t);const em=handed?personMail(t.who):'';if(em)bd.attendees=[{email:em}];
+    try{await gfetch(cal+'/'+encodeURIComponent(t.id)+(em?'?sendUpdates=all':''),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(bd)})}
     catch(e){Object.assign(t,old);throw e}
+    if(handed)safe('wa',()=>waNotify(t.who,t.t,fmtWhen(t.due,t.time,true)));
     syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome);return 'verschoben';
   }
   if(a.type==='event_create'){
@@ -7368,6 +7440,7 @@ async function liRunAction(a){
     body.description=(body.description||'').replace('im LeMatic Studio','über LeMatic Intelligence');
     const j=await (await gfetch(cal+(em?'?sendUpdates=all':''),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
     EVENTS.push(evFromBody(o,j.id,j.htmlLink));track('act','Termin angelegt');
+    if(o.who&&o.who!==ME&&o.art!=='belegt')safe('wa',()=>waNotify(o.who,o.title,fmtWhen(o.date,o.time)));
     safe('calR',renderCal);safe('homeR',renderHome);safe('avail',renderAvail);
     return em?'angelegt, Einladung ist raus':'angelegt';
   }
@@ -7881,8 +7954,20 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-10-31.19';
+const APP_VERSION='2026-10-31.20';
 const CHANGELOG=[
+  {v:'2026-10-31.20',d:'31.10.2026',tour:[
+    {img:'whatsnew/v20-benachrichtigen.webp',t:'Für den anderen eintragen',txt:'Wer einen Termin oder eine Aufgabe für den anderen anlegt, sagt automatisch Bescheid.',
+     steps:['Bei „Für“ den anderen auswählen, Häkchen „benachrichtigen“ bleibt an','Er bekommt eine Kalender-Einladung von Google, mit Erinnerung','Dazu kommt in der WhatsApp-Gruppe „01_LeMatic_Allgemein“: „Neu für …: Titel, Datum (von …)“','Gilt auch, wenn LeMatic Intelligence einträgt oder du eine Aufgabe übergibst']},
+    {img:'whatsnew/v20-rueckgaengig.webp',t:'Rückgängig, ein paar Minuten lang',txt:'Nach jedem Löschen oder Ändern im Kalender steht unten links „Rückgängig“, fünf Minuten lang.',
+     steps:['Aus Versehen gelöscht, verschoben oder abgehakt? Einfach „Rückgängig“ drücken','Der Eintrag kommt genau so zurück, wie er vorher war','Die Uhr daneben zeigt, wie lange der Knopf noch da ist']},
+    {img:'whatsnew/v20-geloescht.webp',t:'Zuletzt gelöscht',txt:'Alles, was in den letzten 30 Tagen gelöscht wurde, lässt sich zurückholen, egal wer es gelöscht hat.',
+     steps:['Im Kalender oben auf „Zuletzt gelöscht“','Eintrag suchen, „Wiederherstellen“ drücken','Er steht sofort wieder im LeMatic-Kalender']}
+  ],items:[
+    'Anmeldung bleibt 7 Tage gültig: Neuladen oder Browser-Neustart meldet nicht mehr ab',
+    'Termin oder Aufgabe für den anderen: Google-Einladung an ihn plus Hinweis in der WhatsApp-Gruppe „01_LeMatic_Allgemein“',
+    'Kalender: Nach Löschen oder Ändern fünf Minuten lang „Rückgängig“, dazu „Zuletzt gelöscht“ mit allen Einträgen der letzten 30 Tage'
+  ]},
   {v:'2026-10-31.19',d:'31.10.2026',tour:[
     {img:'whatsnew/v19-angebot.webp',t:'Angebote direkt ablegen und verschicken',txt:'Im letzten Schritt des Angebotsrechners gibt es jetzt vier Knöpfe, nicht mehr nur „Herunterladen“.',
      steps:['Angebot wie gewohnt ausfüllen und bis zur Vorschau gehen','„Alles ablegen“ drücken: Das PDF landet im Drive-Ordner des Kunden, in Notion und als fertige Mail mit Anhang in den Gmail-Entwürfen','Oder einzeln: nur Drive, nur Mail-Entwurf oder per WhatsApp mit Link zum PDF','Nochmal drücken aktualisiert dieselbe Datei, es entstehen keine Doppelten']}
@@ -8155,6 +8240,121 @@ document.addEventListener('change',e=>{if(e.target.id==='premToggle'){try{localS
 window.addEventListener('hashchange',()=>{if(location.hash==='#/premium')renderPremium()});
 applyPremToggle();if(location.hash==='#/premium')setTimeout(renderPremium,50);
 
+
+/* ---------- Rückgängig (ein paar Minuten) und „Zuletzt gelöscht“ (30 Tage) für den Kalender ---------- */
+const UNDO_MIN=5;let UNDOS=[],UNDO_T=null;
+const calUrl=id=>'https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(id);
+function snapTitle(sn){const x=(sn.extendedProperties&&sn.extendedProperties.private)||{};return String(x.lmTitle||sn.summary||'Eintrag').replace(/^(☐|✓)\s*/,'').replace(/^Belegt:\s*/,'').replace(/\s*\((Lennart|Martin)\)$/,'')}
+function snapWhen(sn){const st=sn.start||{};const d=(st.dateTime||st.date||'').slice(0,10);return d?wd(d)+' '+dm(d)+(st.dateTime?' '+st.dateTime.slice(11,16):''):''}
+function undoKind(m,sn,body){
+  if(m==='DELETE')return 'Gelöscht';
+  let b={};try{b=JSON.parse(body||'{}')}catch(_){}
+  const ox=(sn.extendedProperties&&sn.extendedProperties.private)||{},nx=(b.extendedProperties&&b.extendedProperties.private)||{};
+  if(nx.lmDone!=null&&nx.lmDone!==ox.lmDone)return nx.lmDone==='1'?'Erledigt':'Wieder offen';
+  if(nx.lmWho&&ox.lmWho&&nx.lmWho!==ox.lmWho)return 'Übergeben';
+  const s0=sn.start||{},s1=b.start||{};if(b.start&&(s0.dateTime||s0.date)!==(s1.dateTime||s1.date))return 'Verschoben';
+  return 'Geändert';
+}
+function undoRegister(m,sn,body){
+  const kind=undoKind(m,sn,body);
+  const u={id:Math.random().toString(36).slice(2),m,sn,kind,title:snapTitle(sn),until:Date.now()+UNDO_MIN*60000};
+  UNDOS=UNDOS.filter(x=>x.sn.id!==sn.id||x.m==='DELETE');UNDOS.unshift(u);UNDOS=UNDOS.slice(0,4);
+  if(m==='DELETE')safe('trashAdd',()=>trashAdd(sn));
+  renderUndo();
+}
+async function restoreSnap(sn){
+  const clean={...sn};['etag','htmlLink','created','updated','creator','organizer','iCalUID','sequence','hangoutLink','conferenceData','kind'].forEach(k=>delete clean[k]);
+  clean.status='confirmed';
+  try{await gfetch(calUrl(sn.id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(clean),noUndo:true});return sn.id}
+  catch(e){delete clean.id;const j=await (await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(clean),noUndo:true})).json();return j.id}
+}
+async function undoRun(u){
+  UNDOS=UNDOS.filter(x=>x!==u);renderUndo();
+  try{
+    if(u.m==='DELETE'){await restoreSnap(u.sn);trashRemove(u.sn.id)}
+    else{const clean={...u.sn};['etag','htmlLink','created','updated','creator','organizer','kind'].forEach(k=>delete clean[k]);
+      await gfetch(calUrl(u.sn.id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(clean),noUndo:true})}
+    const x=(u.sn.extendedProperties&&u.sn.extendedProperties.private)||{};
+    if(x.lmNid&&u.kind!=='Geändert')notionUpdate('aufgaben',x.lmNid,{'Status':{status:{name:x.lmDone==='1'?'Erledigt':'Nicht begonnen'}}}).catch(()=>{});
+    toast('Rückgängig gemacht: '+u.title);
+    await loadMyCalendar();safe('avail',renderAvail);
+  }catch(e){toast('Nicht rückgängig gemacht: '+e.message)}
+}
+function renderUndo(){
+  let el=$('undoDock');if(!el){el=document.createElement('div');el.id='undoDock';el.className='undo-dock';el.setAttribute('aria-live','polite');document.body.append(el)}
+  UNDOS=UNDOS.filter(u=>u.until>Date.now());
+  const sig=UNDOS.map(u=>u.id).join(',');
+  if(el.dataset.sig===sig&&sig){el.querySelectorAll('.undo-chip').forEach((c,i)=>{const u=UNDOS[i];if(!u)return;const left=Math.max(0,u.until-Date.now());c.querySelector('small').textContent=Math.floor(left/60000)+':'+pad(Math.floor(left%60000/1000))});clearTimeout(UNDO_T);UNDO_T=setTimeout(renderUndo,1000);return}
+  el.dataset.sig=sig;
+  el.innerHTML=UNDOS.map(u=>{const left=Math.max(0,u.until-Date.now()),mm=Math.floor(left/60000),ss=Math.floor(left%60000/1000);
+    return `<div class="undo-chip"><span class="uc-k">${esc(u.kind)}</span><span class="uc-t">${esc(u.title.slice(0,48))}</span><button type="button" class="uc-b" data-undo="${u.id}"><svg class="i xs"><use href="#i-undo"/></svg>Rückgängig</button><small>${mm}:${pad(ss)}</small><button type="button" class="uc-x" data-undox="${u.id}" aria-label="Ausblenden"><svg class="i xs"><use href="#i-x"/></svg></button></div>`}).join('');
+  clearTimeout(UNDO_T);if(UNDOS.length)UNDO_T=setTimeout(renderUndo,1000);
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-undo]');if(b){const u=UNDOS.find(x=>x.id===b.dataset.undo);if(u)undoRun(u);return}
+  const x=e.target.closest('[data-undox]');if(x){UNDOS=UNDOS.filter(u=>u.id!==x.dataset.undox);renderUndo()}
+});
+/* Papierkorb: in Drive (_Studio_Daten/Kalender_Papierkorb.json), für beide sichtbar, 30 Tage */
+const TRASH_FILE='Kalender_Papierkorb.json';let TRASH=null,TRASH_ID=null,TRASH_T=null,TRASH_DEL=[];
+function trashLocal(){try{return JSON.parse(localStorage.getItem('lm_cal_trash')||'[]')||[]}catch(_){return[]}}
+function trashPrune(l){const lim=Date.now()-30*864e5;return l.filter(t=>t&&t.sn&&new Date(t.at).getTime()>lim).sort((a,b)=>String(b.at).localeCompare(String(a.at))).slice(0,200)}
+async function trashLoad(){
+  let list=trashLocal();
+  if(GAUTH)try{const dir=await agDir();const f=(await ddList(`'${dir}' in parents and name='${TRASH_FILE}' and trashed=false`))[0];
+    if(f){TRASH_ID=f.id;const r=await (await gfetch('https://www.googleapis.com/drive/v3/files/'+f.id+'?alt=media&supportsAllDrives=true')).json();
+      const gone=new Set([...(r.restored||[]),...TRASH_DEL]);const by=new Map();[...(r.items||[]),...list].forEach(t=>{if(t&&t.sn&&!gone.has(t.sn.id))by.set(t.sn.id+'|'+t.at,t)});list=[...by.values()];TRASH_DEL=[...gone].slice(-300)}}catch(_){}
+  TRASH=trashPrune(list);try{localStorage.setItem('lm_cal_trash',JSON.stringify(TRASH))}catch(_){}
+  return TRASH;
+}
+function trashSave(){
+  try{localStorage.setItem('lm_cal_trash',JSON.stringify(TRASH||[]))}catch(_){}
+  clearTimeout(TRASH_T);TRASH_T=setTimeout(async()=>{try{
+    const body=JSON.stringify({items:TRASH||[],restored:TRASH_DEL.slice(-300),savedBy:USER,savedAt:new Date().toISOString()});
+    if(!TRASH_ID){const dir=await agDir();const f=(await ddList(`'${dir}' in parents and name='${TRASH_FILE}' and trashed=false`))[0];TRASH_ID=f?f.id:null;
+      if(!TRASH_ID){const up=await driveUpload(new File([body],TRASH_FILE,{type:'application/json'}),TRASH_FILE,dir);TRASH_ID=up.id;return}}
+    await gfetch('https://www.googleapis.com/upload/drive/v3/files/'+TRASH_ID+'?uploadType=media&supportsAllDrives=true',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
+  }catch(e){console.warn('Papierkorb',e)}},800);
+}
+function trashAdd(sn){TRASH=trashPrune([{sn,at:new Date().toISOString(),by:ME},...(TRASH||trashLocal())]);trashSave();safe('trashR',renderTrashBtn)}
+function trashRemove(id){TRASH_DEL.push(id);TRASH=(TRASH||trashLocal()).filter(t=>t.sn.id!==id);trashSave();safe('trashR',renderTrashBtn)}
+function renderTrashBtn(){const b=$('openTrash');if(!b)return;const n=(TRASH||trashLocal()).length;b.querySelector('small').textContent=n?String(n):'';}
+async function openTrash(){
+  const w=$('trashWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');
+  $('trashList').innerHTML='<p class="empty">Wird geladen …</p>';
+  await trashLoad();renderTrash();
+}
+function renderTrash(){
+  const l=TRASH||[];
+  $('trashList').innerHTML=l.length?l.map(t=>{const x=(t.sn.extendedProperties&&t.sn.extendedProperties.private)||{};const art=x.lmTask==='1'?'aufgabe':(x.lmArt||'termin');
+    return `<div class="tr-row">${artIc(art,'sm')}<span class="tr-t"><b>${esc(snapTitle(t.sn))}</b><small>${esc(snapWhen(t.sn))} · gelöscht ${esc(new Date(t.at).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'}))}${t.by?' von '+esc(NAMES[t.by]||''):''}</small></span><button class="btn btn-glass sm" data-trrest="${esc(t.sn.id)}" data-trat="${esc(t.at)}">Wiederherstellen</button></div>`}).join(''):'<p class="empty">Nichts gelöscht in den letzten 30 Tagen.</p>';
+}
+on('openTrash','click',()=>{if(!GAUTH){toast('Dafür bitte zuerst mit Google anmelden');return}openTrash()});
+document.addEventListener('click',async e=>{
+  if(e.target.closest('[data-trclose]')||e.target.id==='trashWrap'){const w=$('trashWrap');w.classList.remove('show');w.setAttribute('aria-hidden','true');return}
+  const b=e.target.closest('[data-trrest]');if(!b)return;
+  const t=(TRASH||[]).find(x=>x.sn.id===b.dataset.trrest&&x.at===b.dataset.trat);if(!t)return;
+  b.disabled=true;b.textContent='Wird wiederhergestellt …';
+  try{await restoreSnap(t.sn);trashRemove(t.sn.id);renderTrash();toast('Wiederhergestellt: '+snapTitle(t.sn));await loadMyCalendar();safe('avail',renderAvail)}
+  catch(x){b.disabled=false;b.textContent='Wiederherstellen';toast('Nicht wiederhergestellt: '+x.message)}
+});
+
+/* ---------- Für den anderen eingetragen: Kalender-Gast + kurze Nachricht in die WhatsApp-Gruppe ---------- */
+const WA_GROUP='01_LeMatic_Allgemein';
+(function(){const c=document.getElementById('waNotifySet');if(!c)return;try{c.checked=localStorage.getItem('lm_wa_notify')!=='0'}catch(_){}c.addEventListener('change',()=>{try{localStorage.setItem('lm_wa_notify',c.checked?'1':'0')}catch(_){}toast(c.checked?'WhatsApp-Hinweise an':'WhatsApp-Hinweise aus')})})();
+function waNotifyOn(){try{return localStorage.getItem('lm_wa_notify')!=='0'}catch(_){return true}}
+function fmtWhen(date,time,frist){if(!date)return '';const t=wd(date)+' '+dm(date)+(time?', '+time+' Uhr':'');return frist?'Frist '+t:t}
+async function waNotify(who,title,when){
+  if(!GAUTH||!who||who===ME||!waNotifyOn())return;
+  const text='Neu für '+NAMES[who]+': '+String(title||'').trim()+(when?', '+when:'')+' (von '+NAMES[ME]+')';
+  try{
+    const dir=await agDir();
+    let out=(await ddList(`'${dir}' in parents and name='WhatsApp_Ausgang' and mimeType='application/vnd.google-apps.folder' and trashed=false`))[0];
+    if(!out)out=await driveCreateFolder('WhatsApp_Ausgang',dir);
+    const stamp=new Date().toISOString().replace(/[:.]/g,'-');
+    const body=JSON.stringify({gruppe:WA_GROUP,text,status:'offen',erstellt:new Date().toISOString(),von:NAMES[ME],fuer:NAMES[who]},null,1);
+    await driveUpload(new File([body],stamp+'_'+slug(title||'neu').slice(0,40)+'.json',{type:'application/json'}),stamp+'_'+slug(title||'neu').slice(0,40)+'.json',out.id);
+  }catch(e){console.warn('WhatsApp-Hinweis',e)}
+}
 
 /* ---------- Seitenleiste selbst anpassen: Reihenfolge und Sichtbarkeit pro Person ---------- */
 const NAV_KEY=()=>'lm_nav_'+ME;
@@ -8557,6 +8757,7 @@ function funAfterMails(){
   safe('branding',applyBranding);
   safe('route',()=>{if(location.hash.startsWith('#/'))go(location.hash.slice(2))});
   safe('google',initGoogle);
+  safe('silent',silentLogin);
   if(restored)setTimeout(()=>toast('Gespeicherter Stand aus diesem Browser geladen'),600);
 })();
 window.addEventListener('error',e=>{console.error('Unerwarteter Fehler:',e.message)});
