@@ -2518,7 +2518,7 @@ const projOptions=Object.keys(PROJ).map(p=>`<option>${p}</option>`).join('');
 const TASK_COLOR={LP:'10',MS:'5',done:'8'};
 let tWho='all',CAL_ID='primary';
 function fillKundenSelects(){
-  const opts=KUNDEN.filter(k=>k.status!=='Abgesagt'&&k.status!=='Archiv').map(k=>`<option value="${k.id}">${esc(k.name)}</option>`).join('');
+  const opts=kSorted(KUNDEN.filter(k=>k.status!=='Abgesagt'&&k.status!=='Archiv')).map(k=>`<option value="${k.id}">${esc(k.name)}</option>`).join('');
   const at=$('atKunde');if(at){const v=at.value;at.innerHTML='<option value="">Allgemein (kein Kunde)</option>'+opts;at.value=v||''}
   const tp=$('tProj');if(tp){const v=tp.value;tp.innerHTML='<option value="all">Alle Kunden</option><option value="none">Allgemein</option>'+opts;tp.value=v||'all';if(!tp.value)tp.value='all'}
 }
@@ -3551,7 +3551,7 @@ async function loadKartei(){
       notionGet('kunden')
     ]);
     KSCHEMA=sch.props||{};
-    KUNDEN=rows.map(rowToKunde);
+    KUNDEN=rows.map(rowToKunde).filter(k=>!/^Privat/.test(k.status)); /* Private Einträge von Lennart erscheinen im gemeinsamen Studio gar nicht */
     KARTEI_LOADED=true;
     rebuildMailMap();
     fillKundenSelects();
@@ -3563,8 +3563,15 @@ async function loadKartei(){
     $('kGrid').innerHTML='<p class="empty">Die Kartei konnte nicht geladen werden ('+esc(e.message)+').</p>';
   }
 }
+/* Fokus: Konzerne, Industrie und Agenturen vor Festivals und Kleinkunden */
+const K_FOCUS={'Marke/Sponsor':0,'Agentur':1,'Sonstige':2,'Veranstalter':3,'Videograf/Crew':4};
+function kFocus(k){return k.typ in K_FOCUS?K_FOCUS[k.typ]:2}
+function kIsB2B(k){return k.typ==='Marke/Sponsor'||k.typ==='Agentur'}
 function kSorted(list){
+  const active=s=>s==='Kalt'||s==='Abgesagt'||s==='Archiv'?1:0;
   return list.slice().sort((a,b)=>{
+    if(active(a.status)!==active(b.status))return active(a.status)-active(b.status);
+    if(kFocus(a)!==kFocus(b))return kFocus(a)-kFocus(b);
     const sa=K_ORDER.indexOf(a.status),sb=K_ORDER.indexOf(b.status);
     if(sa!==sb)return (sa<0?99:sa)-(sb<0?99:sb);
     return (b.edited||'').localeCompare(a.edited||'');
@@ -3589,7 +3596,7 @@ function renderKartei(){
   const grid=$('kGrid');if(!grid)return;
   if(!KARTEI_LOADED){grid.innerHTML=GAUTH?'<p class="empty">Kundenkartei wird geladen …</p>':'<p class="empty">Nach dem Login mit info@lematic.de erscheint hier eure Kundenkartei aus Notion.</p>';return}
   const opts=(KSCHEMA&&KSCHEMA['Status']&&KSCHEMA['Status'].options||[]).map(o=>o.name);
-  const filters=[['laufend','Laufend'],['all','Alle'],...opts.map(o=>[o,o])];
+  const filters=[['laufend','Laufend'],['b2b','Unternehmen & Agenturen'],['events','Events & Festivals'],['all','Alle'],...opts.filter(o=>!/^Privat/.test(o)).map(o=>[o,o])];
   const cnt=f=>KUNDEN.filter(k=>kMatch(k,f)).length;
   $('kFilter').innerHTML=filters.map(([v,l])=>`<button aria-pressed="${kf===v}" data-kf="${esc(v)}">${esc(l)} <small>${cnt(v)}</small></button>`).join('');
   const q=($('kSearch').value||'').trim().toLowerCase();
@@ -3612,12 +3619,14 @@ function renderKartei(){
 }
 function kMatch(k,f){
   if(f==='all')return k.status!=='Archiv';
+  if(f==='b2b')return kIsB2B(k)&&k.status!=='Archiv'&&k.status!=='Abgesagt';
+  if(f==='events')return (k.typ==='Veranstalter'||k.typ==='Videograf/Crew')&&k.status!=='Archiv'&&k.status!=='Abgesagt';
   if(f==='laufend')return k.status!=='Kalt'&&k.status!=='Abgesagt'&&k.status!=='Archiv';
   return k.status===f;
 }
 function renderSideClients(){
   const el=$('sideClients');if(!el)return;
-  const focus=KUNDEN.filter(k=>(k.status==='Bestandskunde'||k.status==='Warm')&&!/mammut/i.test(k.name)).sort((a,b)=>(b.edited||'').localeCompare(a.edited||'')).slice(0,6);
+  const focus=kSorted(KUNDEN.filter(k=>['Bestandskunde','Warm','Angefragt'].includes(k.status)&&!/mammut/i.test(k.name))).slice(0,6);
   el.innerHTML='<a href="#/kunde" data-route="kunde"><i></i>Mammutmarsch Portal</a>'+focus.map(k=>`<a href="#/kunden" data-kopen="${k.id}"><i></i>${esc(k.name.split(/\s[–-]\s/)[0])}</a>`).join('');
 }
 on('kSearch','input',renderKartei);
