@@ -78,13 +78,17 @@ export default async function handler(req, res) {
   const clip = v => String(v == null ? '' : v).slice(0, task === 'agent' ? 60000 : 12000);
   const ctx = Object.fromEntries(Object.entries(context).map(([k, v]) => [k, clip(v)]));
 
+  const model = process.env.CLAUDE_MODEL || 'claude-haiku-5-5';
   try {
     const r = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
       body: JSON.stringify({
-        model: process.env.CLAUDE_MODEL || 'claude-haiku-5-5',
-        max_tokens: task === 'agent' ? 1400 : 900,
+        model,
+        // Denkzeit zählt zu max_tokens. Haiku denkt sonst von selbst und verbraucht das Budget,
+        // dann kommt eine abgeschnittene oder leere Antwort. Für Entwürfe und Kartei-Fragen reicht es ohne.
+        ...(/haiku/.test(model) ? { thinking: { type: 'disabled' } } : {}),
+        max_tokens: /haiku/.test(model) ? 2500 : 8000,
         system: SYSTEM,
         messages: [{ role: 'user', content: build(ctx) }]
       })
@@ -92,6 +96,7 @@ export default async function handler(req, res) {
     const j = await r.json();
     if (!r.ok) return res.status(r.status).json({ error: (j.error && j.error.message) || 'LeMatic Intelligence nicht erreichbar' });
     const text = (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+    if (!text) return res.status(502).json({ error: 'Leere Antwort (' + (j.stop_reason || 'unbekannt') + '). Bitte noch einmal fragen.' });
     res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({ text });
   } catch (e) {

@@ -3931,6 +3931,7 @@ async function loadKartei(){
     KSCHEMA=sch.props||{};
     KUNDEN=rows.map(rowToKunde).filter(k=>!/^Privat/.test(k.status)); /* Private Einträge von Lennart erscheinen im gemeinsamen Studio gar nicht */
     KARTEI_LOADED=true;
+    safe('invParty',linkInvoicesToKunden);
     rebuildMailMap();
     fillKundenSelects();
     renderKartei();renderSideClients();
@@ -4671,6 +4672,16 @@ document.addEventListener('click',e=>{
 
 
 
+
+/* Rechnungen aus Notion kennen ihren Kunden nur über die Relation in der Kundenkartei: hier den Namen eintragen. */
+function linkInvoicesToKunden(){
+  const norm=x=>String(x||'').replace(/-/g,'');
+  const map={};
+  KUNDEN.forEach(k=>(Array.isArray(k.raw['Rechnungen & Angebote'])?k.raw['Rechnungen & Angebote']:[]).forEach(id=>{map[norm(id)]=k.name}));
+  let n=0;
+  INVOICES.forEach(i=>{if(i.nid&&map[norm(i.nid)]&&(!i.party||i.party==='—')){i.party=map[norm(i.nid)];n++}});
+  if(n){safe('inv',renderInvoices)}
+}
 /* ---------- LeMatic-Agent und Auswertung ---------- */
 /* Alles, was privat ist, kommt nie in den Kontext des Agenten oder in die Grafiken. */
 const PRIVATE_RX=/indian\s*spirit|nature\s*one/i;
@@ -4701,7 +4712,12 @@ function agentWissen(){
   const ms=agentMails().slice(0,45);
   if(ms.length){L.push('\n## Letzte Mails (info@lematic.de)');ms.forEach(m=>L.push(`- ${m.internal?iso(new Date(m.internal)):''} ${m.sent?'gesendet ':''}${cut(m.from,40)}${m.client?' [Kunde: '+m.client+']':''}: ${cut(m.subj,90)} — ${cut(m.snip,110)}`))}
   const inv=agentInvoices();
-  if(inv.length){L.push('\n## Rechnungen & Angebote');inv.slice(0,60).forEach(i=>L.push(`- ${i.date} ${i.kind} ${i.no||''} ${i.party&&i.party!=='—'?i.party+' ':''}${eur(i.amount)} · ${i.status} · ${cut(i.note,80)}`))}
+  if(inv.length){
+    const by={};inv.filter(i=>i.kind==='Ausgang').forEach(i=>{const p=i.party&&i.party!=='—'?i.party:'(ohne Kunde)';by[p]=by[p]||{b:0,o:0,n:0};by[p].n++;if(i.status==='bezahlt')by[p].b+=i.amount;else by[p].o+=i.amount});
+    L.push('\n## Rechnungssummen pro Kunde (Ausgangsrechnungen, alle Jahre)');
+    Object.entries(by).sort((a,b)=>(b[1].b+b[1].o)-(a[1].b+a[1].o)).forEach(([p,v])=>L.push(`- ${p}: ${v.n} Rechnungen, bezahlt ${eur(v.b)}, offen ${eur(v.o)}, gesamt ${eur(v.b+v.o)}`));
+  }
+  if(inv.length){L.push('\n## Rechnungen & Angebote');inv.slice(0,120).forEach(i=>L.push(`- ${i.date} ${i.kind} ${i.no||''} ${i.party&&i.party!=='—'?i.party+' ':''}${eur(i.amount)} · ${i.status} · ${cut(i.note,80)}`))}
   if(LEADS.length){L.push('\n## Akquise-Leads');LEADS.filter(l=>notPrivate(l.n,l.note)).slice(0,40).forEach(l=>L.push(`- ${l.n} · Potenzial ${eur(l.val||0)} · ${['offen','in Arbeit','erledigt'][l.stage]||''} · ${l.seg||''} ${l.saison||''} · ${cut(l.note,120)}`))}
   return L.join('\n');
 }
