@@ -488,6 +488,15 @@ body.touring .li-fab{display:none}
 .view-hint p{flex:1;font-size:13.5px;line-height:1.5;margin:0}
 @media (prefers-reduced-motion:reduce){.tour-spot,.tour-card{transition:none}.tc-auto i{animation:none}}
 
+
+/* Kontoabgleich */
+.bank-box{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:16px;background:linear-gradient(135deg,rgba(7,61,48,.07),rgba(252,215,23,.12));border:1px dashed rgba(7,61,48,.25);margin-bottom:10px}
+.bank-box b{display:block;font-size:14.5px}.bank-box small{display:block;font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.bk-sum{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin:6px 0 4px}
+.bk-row{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 11px;border-radius:12px;background:rgba(52,199,89,.08);margin-top:6px;cursor:pointer;font-size:13px}
+.bk-row.unsure{background:rgba(252,215,23,.15)}.bk-row small{display:block;color:var(--ink-2);font-size:12px}.bk-a{font-variant-numeric:tabular-nums}
+.bk-none{margin-top:10px;font-size:12.5px;color:var(--ink-2)}.bk-none summary{cursor:pointer}.bk-none p{padding:3px 0}
+
 /* LeMatic-Agent */
 .dd-status{font-size:12.5px;color:var(--ink-2);margin:0 0 10px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}.dd-status:empty{display:none}.dd-status .link{background:none;border:0;color:var(--brand);font:inherit;text-decoration:underline;cursor:pointer;padding:0}.spin.dd{width:12px;height:12px;border-color:rgba(7,61,48,.15);border-top-color:#0c5a46}
 .nav-ag{width:20px;height:20px;border-radius:7px;background:linear-gradient(135deg,#073D30,#0c5a46);color:#FCD717;font-weight:800;font-size:8.5px;letter-spacing:-.02em;display:inline-grid;place-items:center;flex:none}
@@ -1492,7 +1501,11 @@ body.dcut .bg{filter:grayscale(.4)}
           <button class="btn btn-primary wide" id="invSave"><svg class="i sm"><use href="#i-upload"/></svg>Hochladen und ablegen</button>
         </section>
         <section class="glass panel c7" aria-labelledby="inv-title">
-          <p class="hint-box"><svg class="i sm"><use href="#i-warn"/></svg><span>Kein automatischer Abgleich mit sevDesk — Buchhaltung Pro kostet für den API-Zugang extra, das war es uns nicht wert. Rechnungen aus sevDesk exportieren und hier hochladen, dann landen sie im richtigen Drive-Ordner.</span></p>
+          <div class="bank-box">
+            <div><b>💶 Geldeingänge abgleichen</b><small>Kontist-Export (CSV) hier reinziehen: Bezahlte Rechnungen werden über die Rechnungsnummer im Verwendungszweck erkannt und in Notion auf „Bezahlt“ gesetzt.</small></div>
+            <label class="btn btn-glass sm" id="bankDz">CSV wählen<input type="file" id="bankFile" accept=".csv,text/csv" hidden></label>
+          </div>
+          <div id="bankOut"></div>
           <div class="kstats" id="invStats"></div>
           <div class="panel-head" style="margin-top:20px">
             <div><h2 id="inv-title">Alle Rechnungen</h2><p>Status per Klick auf bezahlt setzen</p></div>
@@ -5762,6 +5775,67 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-hintok]');
 window.addEventListener('hashchange',()=>{if(GAUTH)setTimeout(()=>safe('hint',()=>viewHint(location.hash.slice(2).split('/')[0])),200)});
 
 liMicSetup();
+
+/* ---------- Geldeingänge: Kontist-Export abgleichen ---------- */
+function parseCsvSemi(text){
+  const rows=[];let row=[],cur='',q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cur+='"';i++}else q=false}else cur+=c}
+    else if(c==='"')q=true;else if(c===';'){row.push(cur);cur=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cur);cur='';if(row.some(x=>x!==''))rows.push(row);row=[]}else cur+=c}
+  if(cur||row.length){row.push(cur);rows.push(row)}
+  const head=rows.shift()||[];return rows.map(r=>Object.fromEntries(head.map((h,i)=>[h.trim(),r[i]||''])));
+}
+let BANK=null;
+function bankMatch(tx){
+  const open=INVOICES.filter(i=>i.kind==='Ausgang'&&i.nid);
+  const res=[];
+  tx.filter(t=>t.amount>0).forEach(t=>{
+    const txt=(t.purpose+' '+t.note).toUpperCase();
+    const nos=[...new Set((txt.match(/RE[\s-]?\d{4}/g)||[]).map(n=>'RE-'+n.replace(/\D/g,'')))];
+    let hits=nos.map(n=>open.find(i=>(i.no||'').toUpperCase()===n)).filter(Boolean);
+    let sure=hits.length>0;
+    if(!hits.length&&nos.length){res.push({t,inv:null});return}
+    if(!hits.length){
+      const cand=open.filter(i=>i.status!=='bezahlt'&&Math.abs(i.amount-t.amount)<0.01);
+      if(cand.length===1){hits=cand;sure=false}
+    }
+    if(!hits.length){res.push({t,inv:null});return}
+    const sum=hits.reduce((a,i)=>a+i.amount,0);
+    hits.forEach(i=>res.push({t,inv:i,sure:sure&&Math.abs(sum-t.amount)<0.01,partial:sure&&Math.abs(sum-t.amount)>=0.01,already:i.status==='bezahlt'}));
+  });
+  return res;
+}
+function renderBank(){
+  const el=$('bankOut');if(!el||!BANK)return;
+  const todo=BANK.filter(r=>r.inv&&!r.already),done=BANK.filter(r=>r.inv&&r.already),none=BANK.filter(r=>!r.inv);
+  const out=BANK.tx.filter(t=>t.amount<0);
+  const row=(r,i)=>`<label class="bk-row ${r.sure?'sure':'unsure'}"><input type="checkbox" class="chk" data-bk="${i}" ${r.sure?'checked':''}><span><b>${esc(r.inv.no)}</b> · ${esc(r.inv.party&&r.inv.party!=='—'?r.inv.party:(r.inv.note||'').slice(0,40))}<small>${esc(dm(r.t.date))} von ${esc(r.t.name)} · „${esc((r.t.purpose||r.t.note).slice(0,50))}“${r.partial?' · Betrag weicht ab':''}${!r.sure&&!r.partial?' · nur über den Betrag erkannt, bitte prüfen':''}</small></span><b class="bk-a">${eur(r.t.amount)}</b></label>`;
+  el.innerHTML=`<div class="bk-sum"><span>📥 ${BANK.tx.filter(t=>t.amount>0).length} Eingänge · ${eur(BANK.tx.filter(t=>t.amount>0).reduce((a,t)=>a+t.amount,0))}</span><span>📤 ${out.length} Ausgaben · ${eur(-out.reduce((a,t)=>a+t.amount,0))}</span><span>✓ ${done.length} schon als bezahlt markiert</span></div>
+    ${todo.length?`<h4 class="ksub">Neu bezahlt erkannt</h4>${todo.map(r=>row(r,BANK.indexOf(r))).join('')}<div class="kd-row" style="margin-top:10px"><button class="btn btn-primary sm" id="bankApply">Markierte als bezahlt eintragen</button></div>`:'<p class="empty" style="padding:8px 0">Alles aktuell: Jede bezahlte Rechnung ist schon als bezahlt markiert.</p>'}
+    ${none.length?`<details class="bk-none"><summary>${none.length} Eingang/Eingänge ohne passende Rechnung</summary>${none.map(r=>`<p>${esc(dm(r.t.date))} · ${esc(r.t.name)} · ${eur(r.t.amount)} · ${esc(r.t.purpose||r.t.note||'')}</p>`).join('')}</details>`:''}`;
+}
+async function bankLoad(file){
+  const text=await file.text();
+  const rows=parseCsvSemi(text);
+  const num=s=>parseFloat(String(s||'0').replace(/\./g,'').replace(',','.'))||0;
+  const tx=rows.map(r=>({date:r['Buchungsdatum']||r['Datum']||'',name:r['Empfänger']||r['Auftraggeber']||r['Name']||'',amount:num(r['Betrag']),purpose:r['Verwendungszweck']||'',note:r['Persönliche Notiz']||'',status:r['Buchungsstatus']||''})).filter(t=>t.date&&t.amount&&!/vorgemerkt|pending/i.test(t.status));
+  if(!tx.length){toast('In der Datei wurden keine Buchungen gefunden. Ist es der CSV-Export aus Kontist?');return}
+  BANK=bankMatch(tx);BANK.tx=tx;renderBank();
+  try{localStorage.setItem('lm_bank_last',JSON.stringify({at:new Date().toISOString(),from:tx[0].date,to:tx[tx.length-1].date}))}catch(_){}
+}
+document.addEventListener('change',e=>{if(e.target.id==='bankFile'&&e.target.files[0])bankLoad(e.target.files[0]).catch(x=>toast('Konnte die Datei nicht lesen: '+x.message))});
+document.addEventListener('dragover',e=>{if(e.target.closest&&e.target.closest('#bankDz')){e.preventDefault()}});
+document.addEventListener('drop',e=>{const d=e.target.closest&&e.target.closest('#bankDz');if(!d)return;e.preventDefault();const f=e.dataTransfer.files[0];if(f)bankLoad(f)});
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('#bankApply');if(!b||!BANK)return;
+  const picks=[...document.querySelectorAll('[data-bk]:checked')].map(x=>BANK[+x.dataset.bk]).filter(r=>r&&r.inv);
+  if(!picks.length){toast('Nichts ausgewählt.');return}
+  b.disabled=true;b.textContent='Wird eingetragen …';let ok=0;
+  for(const r of picks){try{await notionUpdate('rechnungen',r.inv.nid,{Status:{select:{name:'Bezahlt'}}});r.inv.status='bezahlt';r.already=true;ok++}catch(x){toast(r.inv.no+': '+x.message)}}
+  safe('inv',renderInvoices);safe('home',renderHome);safe('dd',()=>{ddMergeStatus()});renderBank();
+  toast(ok+(ok===1?' Rechnung':' Rechnungen')+' als bezahlt eingetragen');if(ok&&typeof confetti==='function')try{confetti(50)}catch(_){}
+});
+
 /* ---------- Zentrale Pro: gesperrte Premium-Module (Test, keine echten Käufe) ---------- */
 const PREMIUM={
   calls:{ic:'🎙️',name:'Anruf-Assistent',price:39,pitch:'Telefonat aufnehmen oder hochladen, fertig ist das Gesprächsprotokoll.',
