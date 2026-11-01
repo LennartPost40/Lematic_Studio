@@ -78,7 +78,7 @@ Regeln:
  {"type":"rechnung_bezahlt","id":"Rechnung-ID","nr":"RE-…"},{"type":"rechnung_offen","id":"Rechnung-ID","nr":"RE-…"},
  {"type":"mail_entwurf","kunde_id":"Kunde-ID oder leer","an":"E-Mail (sonst die des Kunden)","betreff":"...","text":"fertiger Mailtext mit Anrede und Gruß"},
  {"type":"angebot","kunde_id":"Kunde-ID"},
- {"type":"oeffnen","ziel":"heute|kalender|aufgaben|rechnungen|angebot|kunden|mails|medien|archiv|einstellungen","kunde_id":"oder Kunde-ID für die Kundenkarte"}]
+ {"type":"oeffnen","ziel":"heute|kalender|aufgaben|rechnungen|analyse|angebot|kunden|mails|medien|archiv|einstellungen","kunde_id":"oder Kunde-ID für die Kundenkarte"}]
 \`\`\`
   Nur die Einträge, die wirklich gebraucht werden. IDs exakt aus dem Wissen übernehmen (stehen in eckigen Klammern), nie erfinden.
   Bei Aufgaben und Terminen zusätzlich "titel" mit dem bisherigen Titel mitgeben (bei Terminen auch "datum"), als Rückfall.

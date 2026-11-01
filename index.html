@@ -993,9 +993,16 @@ textarea.input{font-family:inherit}
 .kstats strong{display:block;font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
 .kstats span{font-size:12px;color:var(--ink-2)}
 /* Rechnungen: Analysen */
-:root{--fin-in:var(--brand-2);--fin-out:#C2570C;--fin-goal:#B8A200}
-html.theme-dark{--fin-out:#F0A04B;--fin-goal:#FCD717}
-.inv-tabs{margin:-4px 0 14px}
+:root{--fin-in:var(--brand-2);--fin-out:#C2570C;--fin-goal:#B8A200;--fin-open:#F2CB16}
+html.theme-dark{--fin-out:#F0A04B;--fin-goal:#FCD717;--fin-open:#FCD717}
+.chart-svg .s-open rect{fill:var(--fin-open)}
+.ana-quote{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.ana-quote .q{font-size:40px;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1}
+.ana-quote .qbar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:rgba(118,118,128,.14);margin:8px 0 6px}
+.ana-quote .qbar i{display:block;height:100%}.ana-quote .qbar .w{background:var(--fin-in)}.ana-quote .qbar .o{background:var(--fin-open)}.ana-quote .qbar .l{background:rgba(118,118,128,.35)}
+.ana-quote small{font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.ana-quote small i{display:inline-block;width:9px;height:9px;border-radius:3px;margin:0 4px 0 10px;vertical-align:-1px}.ana-quote small i:first-child{margin-left:0}
+@media (max-width:860px){.ana-quote{grid-template-columns:1fr;gap:8px}}
 #invFilter .seg-aus{font-weight:600;color:var(--fin-out)}
 #invFilter .seg-aus[aria-pressed="true"]{color:var(--ink)}
 .aus[hidden]{display:none}
@@ -1023,7 +1030,8 @@ html.theme-dark{--fin-out:#F0A04B;--fin-goal:#FCD717}
 .ana-nav b{min-width:128px;text-align:center;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
 .ana-bar .sp{flex:1}
 .ana-bar small{font-size:12px;color:var(--ink-3)}
-.ana-k{grid-template-columns:repeat(5,minmax(0,1fr))}
+.ana-k{grid-template-columns:repeat(4,minmax(0,1fr))}
+.ana-grid.ana-top{grid-template-columns:3fr 2fr}
 .ana-k .neg strong{color:#B42318}
 html.theme-dark .ana-k .neg strong{color:#FF8A80}
 .ana-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -1078,7 +1086,7 @@ html.theme-dark .ana-sc div{background:rgba(34,43,40,.55);border-color:rgba(255,
 .chart-svg .ln.s-in{stroke:var(--fin-in)}.chart-svg .ln.s-goal{stroke:var(--fin-goal);stroke-dasharray:5 4}.chart-svg .ln.s-out{stroke:var(--fin-out)}
 .flg{display:inline-flex;gap:12px;margin-left:auto;font-size:11.5px;font-weight:400;color:var(--ink-2)}
 .flg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:-1px}
-@media (max-width:860px){.ana-k{grid-template-columns:repeat(2,minmax(0,1fr))}.ana-grid,.ana-recs,.ana-sc{grid-template-columns:1fr}.fbar{grid-template-columns:minmax(0,120px) 1fr auto}.ftx-r{grid-template-columns:52px minmax(0,1fr) auto}.ftx-r .fcat{grid-column:2;justify-self:start}.ftab .gl{display:none}.flg{margin-left:0;width:100%}.chart-card figcaption{flex-wrap:wrap}.ana-bar .sp{display:none}}
+@media (max-width:860px){.ana-k{grid-template-columns:repeat(2,minmax(0,1fr))}.ana-grid,.ana-recs,.ana-sc{grid-template-columns:1fr}.fbar{grid-template-columns:minmax(0,120px) 1fr auto}.ftx-r{grid-template-columns:52px minmax(0,1fr) auto}.ftx-r .fcat{grid-column:2;justify-self:start}.ftab .gl{display:none}.flg{margin-left:0;width:100%}.chart-card figcaption{flex-wrap:wrap}.ana-bar .sp{display:none}.ana-grid.ana-top{grid-template-columns:1fr}}
 .inv td{white-space:nowrap}
 .inv td.party{white-space:normal}
 .inv td.party small{display:block;font-size:12px;color:var(--ink-2)}
@@ -2525,6 +2533,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
       <a href="#/kalender" data-route="kalender"><svg class="i"><use href="#i-cal"/></svg>Kalender</a>
       <a href="#/aufgaben" data-route="aufgaben"><svg class="i"><use href="#i-tasks"/></svg>Aufgaben<span class="count num" id="navTasks" hidden>0</span></a>
       <a href="#/rechnungen" data-route="rechnungen"><svg class="i"><use href="#i-receipt"/></svg>Rechnungen<span class="count num" id="navInv" hidden>0</span></a>
+      <a href="#/analyse" data-route="analyse"><svg class="i"><use href="#i-chart"/></svg>Analyse</a>
       <a href="#/angebot" data-route="angebot"><svg class="i"><use href="#i-receipt"/></svg>Angebotsrechner</a>
       <a href="#/medien" data-route="medien"><svg class="i"><use href="#i-folder"/></svg>Dateien</a>
       <a href="#/kunden" data-route="kunden"><svg class="i"><use href="#i-users"/></svg>Kundenkartei</a>
@@ -2737,9 +2746,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
           <button class="btn btn-glass btn-more" id="invMore" aria-label="Weitere Aktionen" aria-haspopup="menu"><svg class="i sm"><use href="#i-dots"/></svg></button>
         </div>
       </header>
-      <div class="seg inv-tabs" id="invTabs" role="group" aria-label="Ansicht"><button aria-pressed="true" data-invtab="liste">Liste</button><button aria-pressed="false" data-invtab="analysen">Analysen</button></div>
       <p class="dd-status" style="margin:-6px 0 12px"></p>
-      <div id="invAna" class="ana" hidden></div>
       <div class="grid inv-grid" id="invGrid">
         <section class="glass panel c5" id="invUpPanel" aria-labelledby="up2-title">
           <div class="panel-head"><div><h2 id="up2-title">Rechnung hochladen</h2><p>Einfach reinziehen: LeMatic Intelligence erkennt Art, Kunde, Betrag und den richtigen Drive-Ordner</p></div><button class="icon-btn" id="invUpClose" aria-label="Hochladen schließen"><svg class="i sm"><use href="#i-x"/></svg></button></div>
@@ -2922,6 +2929,18 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
     </section>
 
     <!-- ===== Angebotsrechner (Martin) ===== -->
+    <section class="view" data-view="analyse" aria-label="Analyse">
+      <header class="topbar">
+        <div>
+          <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
+          <span class="intern"><svg class="i xs"><use href="#i-lock"/></svg>Nur Lennart und Martin</span>
+          <h1>Analyse</h1>
+          <p class="summary">Umsatz, Zahlungen, Ausgaben und Angebote für einen Monat oder ein Jahr.</p>
+        </div>
+      </header>
+      <div id="invAna" class="ana"></div>
+    </section>
+
     <section class="view" data-view="angebot" aria-label="Angebotsrechner">
       <header class="topbar">
         <div>
@@ -4023,7 +4042,8 @@ function go(route){
   views.forEach(x=>x.classList.toggle('active',x.dataset.view===v));
   const navV=v==='archiv'?'medien':v==='premium'?'einstellungen':v;document.querySelectorAll('[data-route]').forEach(a=>a.classList.toggle('active',a.dataset.route===navV));
   if(v==='kalender')safe('cal',renderCal);
-  if(v==='rechnungen')safe('invTab',()=>invTab(parts[1]==='analysen'?'analysen':'liste'));
+  if(route==='rechnungen'&&parts[1]==='analysen'){location.replace('#/analyse');return}
+  if(v==='analyse')safe('ana',()=>{renderAna();finLoad().then(()=>safe('ana',renderAna))});
   if(v==='heute')safe('home',renderHome);
   if(v==='akquise')safe('leads',renderLeads);
   if(v==='kunden')safe('kartei',renderKartei);
@@ -7843,7 +7863,7 @@ function chartData(){
   const inv=agentInvoices();
   const dd=driveDocsLI().filter(d=>d.kind==='Ausgang');
   const src=dd.length?dd:inv.filter(invCounts);
-  const umsatz={type:'bar',title:'Rechnungen pro Monat'+(dd.length?' (aus Drive)':''),unit:'€',labels:months.map(m=>m.l),values:months.map(m=>src.filter(i=>(i.date||'').startsWith(m.k)).reduce((a,i)=>a+(i.amount||0),0)),go:'rechnungen/analysen'};
+  const umsatz={type:'bar',title:'Rechnungen pro Monat'+(dd.length?' (aus Drive)':''),unit:'€',labels:months.map(m=>m.l),values:months.map(m=>src.filter(i=>(i.date||'').startsWith(m.k)).reduce((a,i)=>a+(i.amount||0),0)),go:'analyse'};
   const order=['Bestandskunde','Warm','Angefragt','Kalt','Abgesagt'];
   const pipe={type:'bar',title:'Kunden nach Status',labels:order,values:order.map(s=>KUNDEN.filter(k=>k.status===s).length),go:'kunden'};
   const weeks=[];for(let i=7;i>=0;i--){const end=addDays(TODAY,-i*7),start=addDays(end,-6);weeks.push({start,end,l:dm(start)})}
@@ -8490,7 +8510,7 @@ function nProp(type,v){
 }
 let GESPR_SCHEMA=null;
 async function gesprSchema(){if(!GESPR_SCHEMA){const j=await napi('/api/notion?db=gespraeche&schema=1');GESPR_SCHEMA=j.props||{}}return GESPR_SCHEMA}
-const LI_PAGES={heute:'Heute',kalender:'Kalender',aufgaben:'Aufgaben',rechnungen:'Rechnungen',angebot:'Angebotsrechner',kunden:'Kundenkartei',mails:'Mails',medien:'Dateien',archiv:'Festplatten',einstellungen:'Einstellungen',kunde:'Mammutmarsch Portal'};
+const LI_PAGES={heute:'Heute',kalender:'Kalender',aufgaben:'Aufgaben',rechnungen:'Rechnungen',analyse:'Analyse',angebot:'Angebotsrechner',kunden:'Kundenkartei',mails:'Mails',medien:'Dateien',archiv:'Festplatten',einstellungen:'Einstellungen',kunde:'Mammutmarsch Portal'};
 function liFindInvoice(a){
   const id=a.id||a.rechnung_id;let i=id&&INVOICES.find(x=>String(x.id)===String(id)||x.nid===id);
   if(!i&&(a.nr||a.nummer)){const n=String(a.nr||a.nummer).toUpperCase();const c=INVOICES.filter(x=>String(x.no||'').toUpperCase()===n);if(c.length===1)i=c[0]}
@@ -9032,10 +9052,17 @@ function anaNumbers(){
   const rein=fsum(tx.filter(t=>t.amount>0)),saldo=fsum(tx);
   const cats={};outAll.forEach(t=>{const c=finCat(t);cats[c]=(cats[c]||0)-t.amount});
   const kund={};rech.forEach(i=>{const n=invWho(i);kund[n]=(kund[n]||0)+(+i.amount||0)});
-  const months=anaMonths().map(m=>({...m,ber:fsum(cnt.filter(i=>String(i.date).startsWith(m.k))),aus:-fsum(FIN.tx.filter(t=>t.amount<0&&String(t.date).startsWith(m.k)&&finCat(t)!=='Privat'))}));
+  const months=anaMonths().map(m=>{const mi=cnt.filter(i=>String(i.date).startsWith(m.k)),ber=fsum(mi),bez=fsum(mi.filter(i=>i.status==='bezahlt'));
+    return{...m,ber,bez,off:ber-bez,aus:-fsum(FIN.tx.filter(t=>t.amount<0&&String(t.date).startsWith(m.k)&&finCat(t)!=='Privat'))}});
   const dates=FIN.tx.map(t=>t.date).sort();
-  return{r,rech,berechnet,eingenommen,offen:berechnet-eingenommen,open:rech.filter(i=>i.status!=='bezahlt'),tx,out,ausgaben,privat,rein,saldo,cats,kund,months,
-    finFrom:dates[0]||'',finTo:dates[dates.length-1]||'',hasFin:FIN.tx.length>0};
+  /* Ausgaben wie im Reiter „Ausgaben“: Kontist-Abbuchungen plus Belege aus Drive ohne Abbuchung, ohne Privat */
+  let ausAll=ausgaben,ausN=out.length,ausChk=0;
+  try{const A=ausRows().rows.filter(x=>x.cat!=='Privat');ausAll=A.reduce((a,x)=>a+(+x.amount||0),0);ausN=A.length;ausChk=A.filter(x=>x.check).length}catch(_){}
+  /* Angebote im Zeitraum: ersetzte Fassungen zählen nicht */
+  const ang=INVOICES.filter(i=>i.kind==='Angebot'&&inR(i.date,r)&&i.status!=='ersetzt');
+  const angWon=ang.filter(i=>i.status==='unterschrieben'||i.status==='angenommen'),angLost=ang.filter(i=>i.status==='abgelehnt'),angOpen=ang.filter(i=>!angWon.includes(i)&&!angLost.includes(i));
+  return{r,rech,berechnet,eingenommen,offen:berechnet-eingenommen,open:rech.filter(i=>i.status!=='bezahlt'),tx,out,ausgaben,ausAll,ausN,ausChk,privat,rein,saldo,cats,kund,months,
+    ang,angWon,angLost,angOpen,finFrom:dates[0]||'',finTo:dates[dates.length-1]||'',hasFin:FIN.tx.length>0};
 }
 function parseBudget(s){
   const vals=[];String(s||'').replace(/(\d{1,3}(?:\.\d{3})+|\d+(?:,\d+)?)\s*(k|tsd|tausend)?/gi,(m,n,k)=>{let v=parseFloat(n.replace(/\./g,'').replace(',','.'));if(k)v*=1000;if(v>=100)vals.push(v);return m});
@@ -9076,7 +9103,7 @@ function anaForecast(){
 }
 function finChartSVG(c){
   const W=440,H=200,P={l:36,r:10,t:14,b:30},labels=c.labels||[],n=labels.length;if(!n)return '';
-  const all=[].concat(...c.series.map(s=>s.values.map(v=>+v||0)));const max=Math.max(1,...all),iw=W-P.l-P.r,ih=H-P.t-P.b,step=iw/n;
+  const all=c.stack?labels.map((_,i)=>c.series.reduce((a,se)=>a+(+se.values[i]||0),0)):[].concat(...c.series.map(s=>s.values.map(v=>+v||0)));const max=Math.max(1,...all),iw=W-P.l-P.r,ih=H-P.t-P.b,step=iw/n;
   const nice=v=>v>=1000?Math.round(v/100)/10+'k':String(Math.round(v));
   const y=v=>P.t+ih-(v/max)*ih;
   let s=`<svg viewBox="0 0 ${W} ${H}" class="chart-svg" role="img" aria-label="${esc(c.title||'Grafik')}">`;
@@ -9086,6 +9113,11 @@ function finChartSVG(c){
     c.series.forEach(se=>{const pts=se.values.map((v,i)=>v==null?null:[P.l+step*i+step/2,y(+v||0),i]).filter(Boolean);if(!pts.length)return;
       s+=`<path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" class="ln ${se.cls}"/>`;
       if(!se.noPts)pts.forEach(p=>{s+=`<g class="pt" tabindex="0"><circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5"/><title>${esc(labels[p[2]])} · ${esc(se.name)}: ${eur0(se.values[p[2]])}</title></g>`})});
+  }else if(c.stack){
+    const bw=Math.min(26,step*.62);
+    labels.forEach((l,i)=>{let base=0;const x=P.l+step*i+(step-bw)/2;
+      c.series.forEach((se,j)=>{const v=+se.values[i]||0;if(!v)return;const y0=y(base),y1=y(base+v);base+=v;
+        s+=`<g class="bar-g ${se.cls}${c.hi!=null&&c.hi!==i?' dim':''}" tabindex="0" style="--d:${i*30}ms"><rect x="${x.toFixed(1)}" y="${y1.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0,y0-y1).toFixed(1)}" rx="${j===c.series.length-1||!c.series.slice(j+1).some(z=>+z.values[i])?3:0}"/><title>${esc(labels[i])} · ${esc(se.name)}: ${eur0(v)}</title></g>`})});
   }else{
     const k=c.series.length,bw=Math.min(18,step*.7/k);
     c.series.forEach((se,j)=>se.values.forEach((v,i)=>{v=+v||0;const x=P.l+step*i+(step-bw*k)/2+bw*j,yy=y(v);
@@ -9094,7 +9126,7 @@ function finChartSVG(c){
   return s+'</svg>';
 }
 function finChartCard(c){
-  const lg=`<span class="flg">${c.series.map(se=>`<span><i style="background:var(${se.cls==='s-out'?'--fin-out':se.cls==='s-goal'?'--fin-goal':'--fin-in'})"></i>${esc(se.name)}</span>`).join('')}</span>`;
+  const lg=`<span class="flg">${c.series.map(se=>`<span><i style="background:var(${se.cls==='s-out'?'--fin-out':se.cls==='s-goal'?'--fin-goal':se.cls==='s-open'?'--fin-open':'--fin-in'})"></i>${esc(se.name)}</span>`).join('')}</span>`;
   return `<figure class="glass chart-card"><figcaption>${esc(c.title)}${c.note?` <small>${esc(c.note)}</small>`:''}${lg}</figcaption>${finChartSVG(c)}</figure>`;
 }
 function finBars(items,cls){
@@ -9102,15 +9134,7 @@ function finBars(items,cls){
   const max=Math.max(...items.map(x=>x.v),1);
   return `<div class="fbars">${items.map(x=>`<div class="fbar ${cls||''}"><span class="l" title="${esc(x.l)}">${esc(x.l)}</span><span class="t"><i style="width:${(x.v/max*100).toFixed(1)}%"></i></span><b>${eur0(x.v)}</b></div>`).join('')}</div>`;
 }
-const anaOn=()=>{const a=$('invAna');return !!a&&!a.hidden&&location.hash.indexOf('rechnungen')>-1};
-function invTab(t){
-  const ana=t==='analysen';
-  document.querySelectorAll('[data-invtab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.invtab===t)));
-  const g=$('invGrid'),a=$('invAna'),st=document.querySelector('[data-view="rechnungen"] .dd-status');
-  if(g)g.hidden=ana;if(a)a.hidden=!ana;if(st)st.hidden=ana;
-  if(ana){renderAna();finLoad().then(()=>safe('ana',renderAna))}
-}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-invtab]');if(!b)return;location.hash='#/rechnungen'+(b.dataset.invtab==='analysen'?'/analysen':'')});
+const anaOn=()=>location.hash.startsWith('#/analyse');
 function renderAna(){
   const el=$('invAna');if(!el||el.hidden)return;
   const N=anaNumbers(),F=anaForecast(),r=N.r,isYear=ANA.mode==='jahr';
@@ -9118,14 +9142,15 @@ function renderAna(){
   const finGap=N.hasFin&&r.to>N.finTo&&r.from<=TODAY&&diffDays(TODAY,N.finTo)>10;
   const tile=(v,l,cls)=>`<div class="${cls||''}"><strong>${v}</strong><span>${l}</span></div>`;
   const noFin='<span>Kontist-CSV laden</span>';
-  const charts=[];
-  charts.push({title:isYear?'Berechnet und Ausgaben pro Monat':'Letzte 12 Monate',note:isYear?'':'markiert: '+MONTHS[ANA.m-1],labels:N.months.map(m=>m.l),hi:isYear?null:11,
-    series:[{name:'Berechnet',cls:'s-in',values:N.months.map(m=>m.ber)}].concat(N.hasFin?[{name:'Ausgaben',cls:'s-out',values:N.months.map(m=>m.aus)}]:[])});
-  if(isYear){let c=0;const cur=TODAY.slice(0,7);const cum=N.months.map(m=>{c+=m.ber;return m.k>cur?null:c});
-    charts.push({type:'line',title:'Umsatz '+ANA.y+' aufsummiert',note:'Ziel '+eur0(GOAL),labels:N.months.map(m=>m.l),
-      series:[{name:'Berechnet',cls:'s-in',values:cum},{name:'Ziel',cls:'s-goal',noPts:true,values:N.months.map((m,i)=>GOAL/12*(i+1))}]});}
-  else{const ein=N.months.map(m=>fsum(INVOICES.filter(i=>invCounts(i)&&i.status==='bezahlt'&&String(i.date).startsWith(m.k))));
-    charts.push({title:'Berechnet und davon bezahlt',labels:N.months.map(m=>m.l),hi:11,series:[{name:'Berechnet',cls:'s-in',values:N.months.map(m=>m.ber)},{name:'Bezahlt',cls:'s-goal',values:ein}]});}
+  const chart={stack:true,title:'Umsatz pro Monat',note:isYear?String(ANA.y):'letzte 12 Monate, markiert: '+MONTHS[ANA.m-1],labels:N.months.map(m=>m.l),hi:isYear?null:11,
+    series:[{name:'Bezahlt',cls:'s-in',values:N.months.map(m=>m.bez)},{name:'Offen',cls:'s-open',values:N.months.map(m=>m.off)}]};
+  const nA=N.ang.length,nW=N.angWon.length,nL=N.angLost.length,nO=N.angOpen.length,pct=x=>nA?(x/nA*100).toFixed(1)+'%':'0%';
+  const quote=`<section class="glass panel"><h2>Angebote-Quote</h2><p class="sub">${esc(r.label)}, nach Angebotsdatum, ohne ersetzte Fassungen</p>
+    ${nA?`<div class="ana-quote"><div class="q">${Math.round(nW/nA*100)} %</div><div>
+      <div class="qbar" role="img" aria-label="${nW} angenommen, ${nO} offen, ${nL} abgelehnt"><i class="w" style="width:${pct(nW)}"></i><i class="o" style="width:${pct(nO)}"></i><i class="l" style="width:${pct(nL)}"></i></div>
+      <small><i style="background:var(--fin-in)"></i>${nW} angenommen (${eur0(fsum(N.angWon))})<i style="background:var(--fin-open)"></i>${nO} offen (${eur0(fsum(N.angOpen))})<i style="background:rgba(118,118,128,.35)"></i>${nL} abgelehnt</small>
+      </div></div><p class="ana-empty">${nW} von ${nA} ${nA===1?'Angebot':'Angeboten'} angenommen oder unterschrieben.${nO&&nW+nL?' Ohne die noch offenen: '+Math.round(nW/(nW+nL)*100)+' %.':''}</p>`
+    :`<p class="ana-empty">Keine Angebote in ${esc(r.label)}.</p>`}</section>`;
   const catItems=Object.entries(N.cats).sort((a,b)=>b[1]-a[1]).map(([l,v])=>({l,v}));
   const kItems=Object.entries(N.kund).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([l,v])=>({l,v}));
   const outs=[...N.tx.filter(t=>t.amount<0)].sort((a,b)=>isYear?a.amount-b.amount:String(b.date).localeCompare(String(a.date)));
@@ -9139,15 +9164,14 @@ function renderAna(){
     <button class="btn btn-glass sm" data-anacsv>Kontist-CSV laden</button>
   </div>
   <div class="kstats ana-k">
-    ${tile(eur0(N.berechnet),'Berechnet, '+N.rech.length+(N.rech.length===1?' Rechnung':' Rechnungen'))}
-    ${tile(eur0(N.eingenommen),'Eingenommen, Status Bezahlt')}
-    ${tile(eur0(N.offen),'Offen'+(N.open.length?', '+N.open.map(i=>invWho(i)).filter((v,i,a)=>a.indexOf(v)===i).slice(0,2).join(', '):''))}
-    ${N.hasFin?tile(eur0(N.ausgaben),'Ausgaben laut Konto'+(N.privat?', plus '+eur0(N.privat)+' privat':'')):tile('–',noFin)}
-    ${N.hasFin?tile(eur0(N.saldo),'Geld rein minus raus laut Konto',N.saldo<0?'neg':''):tile('–',noFin)}
+    ${tile(eur0(N.berechnet),'Umsatz, '+N.rech.length+(N.rech.length===1?' Rechnung':' Rechnungen'))}
+    ${tile(eur0(N.eingenommen),'bezahlt')}
+    ${tile(eur0(N.offen),'offen'+(N.open.length?', '+N.open.map(i=>invWho(i)).filter((v,i,a)=>a.indexOf(v)===i).slice(0,2).join(', '):''))}
+    ${N.ausN||N.hasFin?tile(eur0(N.ausAll),'Ausgaben'+(N.ausChk?`, <b class="warn-t">${N.ausChk} Betrag prüfen</b>`:'')+(N.privat?', plus '+eur0(N.privat)+' privat':'')):tile('–',noFin)}
   </div>
   ${finGap?`<p class="ana-empty">Hinweis: Die Kontist-Daten reichen nur bis ${dm(N.finTo)}, Ausgaben danach fehlen noch, bitte einen neuen Export laden.</p>`:''}
+  <div class="ana-grid ana-top">${finChartCard(chart)}${quote}</div>
   <section class="glass panel ana-ai" id="anaAI"></section>
-  <div class="ana-grid">${charts.map(finChartCard).join('')}</div>
   <div class="ana-grid">
     <section class="glass panel"><h2>Wofür das Geld rausging</h2><p class="sub">${esc(r.label)}${N.hasFin?', laut Kontist':''}</p>
       ${N.hasFin?finBars(catItems):'<p class="ana-empty">Lade einmal den CSV-Export aus Kontist (Umsätze, als CSV). Danach siehst du hier die Ausgaben nach Kategorie, für euch beide.</p>'}
@@ -9165,9 +9189,11 @@ function renderAna(){
     ${F.signed.length?`<p class="ana-empty">${F.signed.map(x=>`${esc(x.name)}: Angebot ${esc(x.a.no||'')} über ${eur0(x.a.amount)}, seitdem ${eur0(x.billed)} berechnet`).join(' · ')}. Prüfen, ob die Rechnung noch fehlt.</p>`:''}
   </section>
   <section class="glass panel ana-how"><details><summary>So rechnet das Studio</summary><ul>
-    <li><b>Berechnet:</b> alle Rechnungen mit Rechnungsdatum im Zeitraum. Angebote zählen nie, ersetzte und abgelehnte Rechnungen auch nicht.</li>
-    <li><b>Eingenommen:</b> davon die mit Status Bezahlt in Notion. <b>Offen</b> ist die Differenz.</li>
-    <li><b>Ausgaben und Kontobewegung:</b> aus dem Kontist-Export, nach Buchungsdatum. Überweisungen mit „privat“ im Text zählen nicht als Ausgabe. Die Kategorie setzt das Studio nach dem Empfänger, sie lässt sich pro Buchung ändern.</li>
+    <li><b>Umsatz:</b> alle Rechnungen mit Rechnungsdatum im Zeitraum. Angebote zählen nie, ersetzte und abgelehnte Rechnungen auch nicht.</li>
+    <li><b>bezahlt:</b> davon die mit Status Bezahlt in Notion. <b>offen</b> ist die Differenz. In der Grafik grün und gelb, pro Monat nach Rechnungsdatum.</li>
+    <li><b>Ausgaben:</b> wie im Reiter „Ausgaben“ bei Rechnungen: Abbuchungen aus dem Kontist-Export plus Belege aus Drive, zu denen es keine Abbuchung gibt. Privates zählt nicht.</li>
+    <li><b>Angebote-Quote:</b> angenommene und unterschriebene Angebote geteilt durch alle Angebote im Zeitraum (nach Angebotsdatum), ersetzte Fassungen zählen nicht.</li>
+    <li><b>Kontobewegung:</b> aus dem Kontist-Export, nach Buchungsdatum. Überweisungen mit „privat“ im Text zählen nicht als Ausgabe. Die Kategorie setzt das Studio nach dem Empfänger, sie lässt sich pro Buchung ändern.</li>
     <li><b>Unterschrieben, noch nicht abgerechnet:</b> Angebot minus allem, was dem Kunden seit dem Angebotsdatum berechnet wurde.</li>
   </ul></details></section>`;
   safe('anaAI',()=>anaAI(false,N,F));
@@ -9602,8 +9628,11 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.39';
+const APP_VERSION='2026-11-01.40';
 const CHANGELOG=[
+  {v:'2026-11-01.40',d:'01.11.2026',items:['Neuer Punkt „Analyse“ in der Seitenleiste, direkt unter Rechnungen','Oben Monat oder Jahr wählen, das gilt für die ganze Seite','Umsatz, bezahlt, offen und Ausgaben auf einen Blick','Balken pro Monat: bezahlt grün, offen gelb','Angebote-Quote: wie viele Angebote angenommen wurden','Rechnungen zeigt nur noch die Liste und das Hochladen'],tour:[
+    {img:'whatsnew/v40-analyse.webp',t:'Analyse hat jetzt eine eigene Seite',txt:'Alle Zahlen zu Umsatz, Ausgaben und Angeboten an einem Ort, in der Seitenleiste unter Rechnungen.',
+     steps:['In der Seitenleiste auf „Analyse“ tippen, am Handy unter „Mehr“','Oben Monat oder Jahr wählen und mit den Pfeilen blättern','Grün ist bezahlt, gelb noch offen','Die Angebote-Quote zeigt, wie viele Angebote angenommen wurden']}]},
   {v:'2026-11-01.39',d:'01.11.2026',items:['Englische Belege bekommen das richtige Rechnungsdatum (z. B. „September 19, 2026“) statt des Datums, an dem die Datei in Drive kam','Dadurch stimmen der EZB-Kurs und der Monat in „Ausgaben“, z. B. Higgsfield vom 19.09.','Steht ein Euro-Gesamtbetrag auf einem Dollar-Beleg, gilt der direkt','Klappt die Kursabfrage nicht, versucht das Studio es beim nächsten Einlesen erneut','Alle Ausgaben-Belege werden dafür einmal neu eingelesen']},
   {v:'2026-11-01.38',d:'01.11.2026',items:['Ausgaben landen in Eingangsrechnungen / Jahr laut Rechnungsdatum / Kategorie','Vier feste Kategorien: 01_Equipment, 02_Domain, 03_Buchhaltung, 04_Programme. Ein neues Jahr bekommt alle vier Ordner automatisch','Kontist, Bankgebühren und sevDesk gehen in Buchhaltung, Abos wie Higgsfield, Artlist und Adobe in Programme','Fremdwährung: Betrag im Original plus in Euro, laut Kontist-Abbuchung oder EZB-Kurs vom Rechnungsdatum','Es zählt immer der Gesamtbetrag (Total), nie „Amount due 0,00“. Ohne erkennbaren Betrag steht „Betrag prüfen“ statt 0 €']},
   {v:'2026-11-01.37',d:'01.11.2026',items:['Ausgaben landen wieder direkt im passenden Kategorie-Ordner unter Eingangsrechnungen, z. B. 02_Programme','Keine Jahres-Ordner mehr, fehlende Kategorie-Ordner legt das Studio bei Bedarf an','Umstellen Ausgabe/Umsatz verschiebt die Datei in den neuen Ordner','Der Reiter „Ausgaben“ liest weiter alle Belege, auch aus schon angelegten Jahres-Ordnern']},
