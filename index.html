@@ -6841,7 +6841,7 @@ window.studioCustomers=function(){
   return KUNDEN.filter(k=>notPrivate(k.name)).map(k=>{
     const r=k.raw||{},adr=String(r['Adresse']||'');
     const m=/^(.*?),?\s*(\d{5})\s+(.+)$/.exec(adr.replace(/\n/g,', '));
-    return{customerCompany:k.name.replace(/\s+[–-]\s+.*$/,''),customerContact:String(r['Ansprechpartner']||'').split(/[,·(]/)[0].trim(),
+    return{customerCompany:k.name.replace(/\s+[–-]\s+.*$/,'').replace(/\s*\([^)]*\)\s*$/,'').trim(),customerContact:String(r['Ansprechpartner']||'').split(/[,·(]/)[0].trim(),
       customerEmail:r['E-Mail']||'',customerPhone:r['Telefon']||'',customerStreet:m?m[1].replace(/,\s*$/,''):adr,customerPostalCode:m?m[2]:'',customerCity:m?m[3]:''};
   });
 };
@@ -8873,8 +8873,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.29';
+const APP_VERSION='2026-11-01.30';
 const CHANGELOG=[
+  {v:'2026-11-01.30',d:'01.11.2026',items:['Angebotsrechner: Zusätze in Klammern im Kundennamen (z. B. „(Eventagentur Hamburg)“) landen nicht mehr auf dem Angebot']},
   {v:'2026-11-01.29',d:'01.11.2026',items:['Kundendaten über LeMatic Intelligence: Adresse, Rechnungs-Mail, Branche und Notizen landen im richtigen Feld statt mit Fehler abzubrechen','Eigene Rechnungs-Mail pro Kunde: Rechnungs-Entwürfe gehen automatisch dorthin, Angebote weiter an die normale Mail','Kundenkarte zeigt „Rechnungen an“, wenn eine eigene Rechnungs-Mail hinterlegt ist']},
   {v:'2026-11-01.28',d:'01.11.2026',tour:[
     {img:'whatsnew/v28-intelligence.webp',t:'LeMatic Intelligence macht jetzt alles',txt:'Einfach reinsprechen oder tippen, was passieren soll. Die Intelligence schlägt die passenden Schritte vor, du drückst „Ausführen“, fertig.',
