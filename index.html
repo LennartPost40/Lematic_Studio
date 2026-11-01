@@ -4739,7 +4739,7 @@ document.getElementById('invSave').addEventListener('click',async()=>{
   if(realUpload)loadDriveFiles();
   if(realUpload&&(invKind==='Ausgang'||invKind==='Angebot')){
     if(driveFileId)PDF_CACHE[driveFileId]={blob:invFile,name:fname};
-    const done={no:inv.no,customer:party,title:leist,email:kunde?kunde.email:'',contact:kunde?String((kunde.raw||{})['Ansprechpartner']||'').split(/[,·(]/)[0].trim():'',id:driveFileId,link:driveLink,kind:invKind,amount,due:inv.faellig,notion:null};
+    const done={no:inv.no,customer:party,title:leist,email:kunde?((invKind==='Ausgang'&&kunde.billMail)||kunde.email):'',contact:kunde?String((kunde.raw||{})['Ansprechpartner']||'').split(/[,·(]/)[0].trim():'',id:driveFileId,link:driveLink,kind:invKind,amount,due:inv.faellig,notion:null};
     notionCreateRechnung({
       no:inv.no,art:invKind==='Angebot'?'Angebot':'Rechnung',status:invKind==='Angebot'?angStatusVal:'Offen',
       betrag:amount,leistung:leist||(party+(inv.note?': '+fname:'')),datum:date,datei:driveLink,kid:kunde?kunde.id:'',
@@ -5783,10 +5783,25 @@ const K_EDITABLE=new Set(['title','rich_text','email','phone_number','url','sele
 let kf='laufend',kOpen=null;
 const EMAIL_RX=/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
 function kTitleKey(){return KSCHEMA?Object.keys(KSCHEMA).find(k=>KSCHEMA[k].type==='title')||'Name':'Name'}
+/* Ordnet frei formulierte Feldnamen (von LeMatic Intelligence oder per Diktat) den echten Notion-Feldern zu */
+const K_ALIAS={notiz:'Notizen',notizen:'Notizen',bemerkung:'Notizen',kommentar:'Notizen',
+  adresse:'Adresse',anschrift:'Adresse',rechnungsadresse:'Adresse',firmenadresse:'Adresse',postadresse:'Adresse',
+  email:'E-Mail',mail:'E-Mail',kontaktmail:'E-Mail',
+  rechnungsemail:'Rechnungs-E-Mail',rechnungsmail:'Rechnungs-E-Mail',buchhaltungsmail:'Rechnungs-E-Mail',rechnungsempfaenger:'Rechnungs-E-Mail',
+  telefon:'Telefon',tel:'Telefon',telefonnummer:'Telefon',handy:'Telefon',
+  website:'Website',webseite:'Website',homepage:'Website',url:'Website',
+  ansprechpartner:'Ansprechpartner',kontakt:'Ansprechpartner',naechsterschritt:'Nächster Schritt',branche:'Branche',typ:'Typ'};
+function kFieldKey(f){
+  const s=String(f||'').trim();if(s==='Name'||s.toLowerCase()==='firmenname')return kTitleKey();
+  if(KSCHEMA&&KSCHEMA[s])return s;
+  const n=s.toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss').replace(/[^a-z]/g,'');
+  const hit=KSCHEMA&&Object.keys(KSCHEMA).find(k=>k.toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/[^a-z]/g,'')===n);
+  return hit||K_ALIAS[n]||s;
+}
 function rowToKunde(r){
   const tk=kTitleKey();
   return{id:r.id,url:r.url,raw:r,edited:r._edited||'',name:r[tk]||r['Name']||'(ohne Namen)',
-    status:r['Status']||'',typ:r['Typ']||'',ap:r['Ansprechpartner']||'',email:r['E-Mail']||'',notes:r['Notizen']||''};
+    status:r['Status']||'',typ:r['Typ']||'',ap:r['Ansprechpartner']||'',email:r['E-Mail']||'',billMail:r['Rechnungs-E-Mail']||'',notes:r['Notizen']||''};
 }
 function kEmails(k){
   const set=new Set();
@@ -7407,10 +7422,11 @@ function kContactHTML(k){
   const row=(ic,l,v)=>v?`<div class="kcrow"><span class="ic">${ic}</span><span><small>${l}</small><b>${v}</b></span></div>`:'';
   const tel=r['Telefon']?`<a href="tel:${esc(String(r['Telefon']).replace(/\s/g,''))}">${esc(r['Telefon'])}</a>`:'';
   const mail=k.email?`<a href="mailto:${esc(k.email)}">${esc(k.email)}</a>`:'';
+  const bill=k.billMail&&k.billMail!==k.email?`<a href="mailto:${esc(k.billMail)}">${esc(k.billMail)}</a>`:'';
   const web=r['Website']?`<a href="${esc(r['Website'])}" target="_blank" rel="noopener">${esc(String(r['Website']).replace(/^https?:\/\/(www\.)?/,'').replace(/\/$/,''))}</a>`:'';
   const adr=r['Adresse']?`<a href="https://maps.google.com/?q=${encodeURIComponent(r['Adresse'])}" target="_blank" rel="noopener">${esc(r['Adresse'])}</a>`:'';
   return `<div class="kpeople">${ppl.length?ppl.map(p=>`<div class="kperson"><span class="av us">${esc(initials(p.replace(/\(.*?\)/g,'')))}</span><span><b>${esc(p.replace(/\s*\(.*?\)\s*/g,' ').trim())}</b>${/\((.*?)\)/.test(p)?`<small>${esc(/\((.*?)\)/.exec(p)[1])}</small>`:''}</span></div>`).join(''):'<p class="empty" style="padding:6px 0">Noch kein Ansprechpartner eingetragen.</p>'}</div>
-    <div class="kcontact2">${row('📞','Telefon',tel)}${row('✉️','E-Mail',mail)}${row('🌐','Website',web)}${row('📍','Adresse',adr)}${row('🗣️','Am liebsten über',esc(ch.join(' · ')))}${row('🏭','Branche',esc(r['Branche']||''))}${row('🧭','Nächster Schritt',esc(r['Nächster Schritt']||''))}</div>`;
+    <div class="kcontact2">${row('📞','Telefon',tel)}${row('✉️','E-Mail',mail)}${row('✉️','Rechnungen an',bill)}${row('🌐','Website',web)}${row('📍','Adresse',adr)}${row('🗣️','Am liebsten über',esc(ch.join(' · ')))}${row('🏭','Branche',esc(r['Branche']||''))}${row('🧭','Nächster Schritt',esc(r['Nächster Schritt']||''))}</div>`;
 }
 function renderKProjekte(k){
   const el=$('kdProj');if(!el||!k)return;
@@ -7464,7 +7480,7 @@ function agentWissen(){
   L.push('\n## Kunden ('+KUNDEN.length+', wichtigste zuerst)');
   (typeof kSorted==='function'?kSorted(KUNDEN):KUNDEN).filter(k=>notPrivate(k.name)).slice(0,90).forEach(k=>{
     const r=k.raw||{},lt=lastTouch(k);
-    L.push(`- ${k.name} [Kunde-ID ${k.id}] | ${k.status||''} | ${k.typ||''}${r['Branche']?' | '+r['Branche']:''} | AP: ${cut(r['Ansprechpartner'],80)||'?'} | Kanal: ${Array.isArray(r['Bevorzugter Kanal'])?r['Bevorzugter Kanal'].join('/'):''} | Nächster Schritt: ${cut(r['Nächster Schritt'],140)||'-'} | Letzter Kontakt: ${lt||'?'} | Notiz: ${cut(lastNote(k),160)}`);
+    L.push(`- ${k.name} [Kunde-ID ${k.id}] | ${k.status||''} | ${k.typ||''}${r['Branche']?' | '+r['Branche']:''} | AP: ${cut(r['Ansprechpartner'],80)||'?'}${k.email?' | Mail: '+k.email:''}${k.billMail?' | Rechnungs-Mail: '+k.billMail:''}${r['Adresse']?' | Adresse: '+cut(r['Adresse'],100):''} | Kanal: ${Array.isArray(r['Bevorzugter Kanal'])?r['Bevorzugter Kanal'].join('/'):''} | Nächster Schritt: ${cut(r['Nächster Schritt'],140)||'-'} | Letzter Kontakt: ${lt||'?'} | Notiz: ${cut(lastNote(k),160)}`);
   });
   const g=GESPR.filter(x=>notPrivate(x.title,x.bedarf)).slice(0,30);
   if(g.length){L.push('\n## Kundengespräche (neueste zuerst)');g.forEach(x=>{const k=KUNDEN.find(q=>x.kids.includes(q.id));L.push(`- ${x.date} ${x.art||''} ${k?k.name:''}: ${cut(x.title,90)} | Bedarf: ${cut(x.bedarf,120)||'-'} | Budget: ${cut(x.budget,40)||'-'} | Chance: ${x.chance||'-'} | Nächster Schritt: ${cut(x.next,100)||'-'}`)})}
@@ -8276,11 +8292,22 @@ async function liRunAction(a){
   }
   if(a.type==='kunde_update'){
     if(!k)throw new Error('Kunde nicht gefunden');if(!KSCHEMA)throw new Error('Kundenkartei lädt noch');
-    const props={};const skip=[];
-    Object.entries(a.felder||{}).forEach(([f,v])=>{const key=f==='Name'?kTitleKey():f;const sc=KSCHEMA[key];if(!sc||key==='Notizen'||sc.type==='relation'){skip.push(f);return}const pv=nProp(sc.type,v);if(pv)props[key]=pv;else skip.push(f)});
-    if(!Object.keys(props).length)throw new Error('Kein änderbares Feld'+(skip.length?' ('+skip.join(', ')+')':''));
+    const props={};const skip=[];const notes=[];
+    Object.entries(a.felder||{}).forEach(([f,v])=>{
+      if(v==null||String(v).trim()==='')return;
+      const key=kFieldKey(f);
+      if(key==='Notizen'){notes.push(String(v).trim());return}
+      const sc=KSCHEMA[key];
+      if(!sc||sc.type==='relation'||sc.type==='files'||sc.type==='formula'||sc.type==='rollup'){notes.push(f+': '+String(v).trim());skip.push(f);return}
+      const pv=nProp(sc.type,v);if(pv)props[key]=pv;else{notes.push(f+': '+String(v).trim());skip.push(f)}
+    });
+    if(notes.length){
+      const stamp=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
+      props['Notizen']={rich_text:richChunks('['+stamp+' · '+USER+'] '+notes.join(' · ')+(k.notes?'\n\n'+k.notes:''))};
+    }
+    if(!Object.keys(props).length)throw new Error('Nichts zu ändern');
     await notionUpdate('kunden',k.id,props);await loadKartei();if(kOpen===k.id)safe('ks',()=>renderKundeSheet(k.id));
-    return 'gespeichert'+(skip.length?', nicht geändert: '+skip.join(', '):'');
+    return 'gespeichert'+(skip.length?' ('+skip.join(', ')+' als Notiz)':'');
   }
   if(a.type==='gespraech_add'){
     const sc=await gesprSchema();const props={};
@@ -8846,8 +8873,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.28';
+const APP_VERSION='2026-11-01.29';
 const CHANGELOG=[
+  {v:'2026-11-01.29',d:'01.11.2026',items:['Kundendaten über LeMatic Intelligence: Adresse, Rechnungs-Mail, Branche und Notizen landen im richtigen Feld statt mit Fehler abzubrechen','Eigene Rechnungs-Mail pro Kunde: Rechnungs-Entwürfe gehen automatisch dorthin, Angebote weiter an die normale Mail','Kundenkarte zeigt „Rechnungen an“, wenn eine eigene Rechnungs-Mail hinterlegt ist']},
   {v:'2026-11-01.28',d:'01.11.2026',tour:[
     {img:'whatsnew/v28-intelligence.webp',t:'LeMatic Intelligence macht jetzt alles',txt:'Einfach reinsprechen oder tippen, was passieren soll. Die Intelligence schlägt die passenden Schritte vor, du drückst „Ausführen“, fertig.',
      steps:['Auf „Sprechen“ drücken und lossprechen, Pausen sind kein Problem. Der Text landet im Feld','Mit „Fertig“ aufhören. Nichts geht automatisch raus: Du kannst den Text noch korrigieren oder weitertippen, dann „Fragen“','Neu: Kunden anlegen und ändern, Termine ändern (Zeit, Ort, Notiz, für wen), Gespräche festhalten, Rechnungen auf bezahlt setzen, Mail-Entwürfe in Gmail','Mehrere Sachen in einem Satz gehen auch: „Trag für Martin morgen ein Telefonat mit Fronius ein und setz RE-1016 auf bezahlt“','Auf dem Handy bleibt die Eingabe immer unten über der Tab-Leiste']}
