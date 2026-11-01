@@ -113,7 +113,11 @@ ${c.frage}`,
 "kategorie":"Equipment|Programme|Domain|Buchhaltung|Sonstiges","beschreibung":"max. 8 Wörter, was gekauft/geleistet wurde (bei Rechnungen von LeMatic: die Leistung, z. B. Aftermovie Dynabeat 2026)",
 "adresse":"Postadresse des Rechnungsempfängers bei Ausgangsrechnungen bzw. des Lieferanten bei Eingangsrechnungen, einzeilig: Straße Nr, PLZ Ort; sonst leer"}
 Steht "zahlbar bis zum …" oder "fällig am …", ist das "faellig". Bei Rechnungen von LeMatic an Kunden ist "partei" der Kunde (Empfänger), nicht LeMatic.
-LeMatic (Lennart Post / Martin Schmick, Geesthacht) ist der Empfänger, wenn es eine Eingangsrechnung ist.
+"art" entscheidest du nach Absender und Empfänger:
+- "Ausgang": LeMatic (Lennart Post / Martin Schmick, Geesthacht) stellt die Rechnung aus, steht also oben im Briefkopf bzw. in der Fußzeile mit Bankverbindung; Empfänger ist ein Kunde. Das ist Umsatz.
+- "Eingang": Ein Lieferant, Dienst oder Freelancer stellt die Rechnung aus, LeMatic, Lennart Post, Martin Schmick oder eine ihrer Mailadressen (z. B. info@lennart-post.de, info@lematic.de) steht als Empfänger ("Bill to", "Rechnung an", Adressfeld). Das ist eine Ausgabe, z. B. Abos wie Higgsfield, Adobe, Software, Technik, Reisen.
+- "Angebot": ein Angebot von LeMatic.
+Betrag in Euro, wenn der Beleg einen Euro-Betrag nennt; sonst den Betrag in der Währung des Belegs.
 Kategorien: Equipment = Kamera, Licht, Ton, Technik; Programme = Software, Abos, KI-Tools; Domain = Domain, Hosting, Server;
 Buchhaltung = Steuer, Buchhaltung, Versicherung, Bank; sonst Sonstiges.
 ${c.text ? '--- Text des Belegs ---\n' + c.text : '(Beleg als Datei angehängt)'}`,

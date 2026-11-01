@@ -994,6 +994,26 @@ textarea.input{font-family:inherit}
 :root{--fin-in:var(--brand-2);--fin-out:#C2570C;--fin-goal:#B8A200}
 html.theme-dark{--fin-out:#F0A04B;--fin-goal:#FCD717}
 .inv-tabs{margin:-4px 0 14px}
+#invFilter .seg-aus{font-weight:600;color:var(--fin-out)}
+#invFilter .seg-aus[aria-pressed="true"]{color:var(--ink)}
+.aus[hidden]{display:none}
+.aus{container-type:inline-size}
+.aus-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:4px 0 12px}
+.aus-sum{display:flex;align-items:baseline;gap:10px;margin:0 0 6px}
+.aus-sum strong{font-size:30px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--fin-out)}
+.aus-sum span{font-size:13px;color:var(--ink-2)}
+.aus-hint{font-size:12.5px;color:var(--ink-3);margin:0 0 10px}
+.aus-r{display:grid;grid-template-columns:62px minmax(0,1fr) 100px 178px 92px 36px;gap:10px;align-items:center;padding:9px 0;border-top:1px solid rgba(118,118,128,.14);font-size:13px}
+.aus-r.h{font-size:11.5px;font-weight:600;color:var(--ink-3);border-top:0;padding-top:2px}
+.aus-r .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aus-r .n small{display:block;color:var(--ink-3);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aus-r b{font-variant-numeric:tabular-nums;text-align:right}
+.aus-r .st{font-size:12px;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.aus-r .st i{width:7px;height:7px;border-radius:50%;background:#34C759}
+.aus-r .st.off i{background:#E8A400}
+.aus-r .fcat{justify-self:start}.aus-r .fcat.ro{cursor:default}
+@media (max-width:860px){.aus-r{grid-template-columns:52px minmax(0,1fr) auto 36px}.aus-r .fcat{grid-column:2;justify-self:start}.aus-r .st{grid-column:3;justify-self:end}.aus-r .bl{grid-row:1;grid-column:4}.aus-r.h{display:none}}
+@container (max-width:720px){.aus-r{grid-template-columns:52px minmax(0,1fr) auto 36px}.aus-r .fcat{grid-column:2;justify-self:start}.aus-r .st{grid-column:3;justify-self:end}.aus-r .bl{grid-row:1;grid-column:4}.aus-r.h{display:none}}
 .ana{display:flex;flex-direction:column;gap:16px}
 .ana[hidden]{display:none}
 .ana-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
@@ -2763,15 +2783,16 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
           <div id="bankOut"></div>
           <div class="kstats" id="invStats"></div>
           <div class="panel-head" style="margin-top:20px">
-            <div><h2 id="inv-title">Alle Rechnungen</h2><p>Status per Klick auf bezahlt setzen</p></div>
+            <div><h2 id="inv-title">Alle Rechnungen</h2><p id="inv-sub">Status per Klick auf bezahlt setzen</p></div>
             <div class="seg" role="group" aria-label="Rechnungen filtern" id="invFilter">
               <button aria-pressed="true" data-f="all">Alle</button>
               <button aria-pressed="false" data-f="Ausgang">Rechnungen</button>
               <button aria-pressed="false" data-f="Angebot">Angebote</button>
-              <button aria-pressed="false" data-f="Eingang">Eingang</button>
+              <button aria-pressed="false" data-f="ausgaben" class="seg-aus">Ausgaben</button>
             </div>
           </div>
-          <div class="tscroll">
+          <div id="invAus" class="aus" hidden></div>
+          <div class="tscroll" id="invTable">
           <table class="mods inv">
             <thead><tr><th scope="col">Datum</th><th scope="col">Kunde oder Lieferant</th><th scope="col" class="hide-sm">Nr.</th><th scope="col" class="r">Betrag</th><th scope="col">Status</th><th scope="col" aria-label="Aktionen"></th></tr></thead>
             <tbody id="invRows"></tbody>
@@ -4735,9 +4756,9 @@ function updatePath(){
     const nf=$('newFolderBox');if(nf)nf.hidden=true;invNewFolder=false;
     const cat=document.getElementById('invCat').value;
     const f=EINGANG_FOLDERS[cat];
-    parts=['LeMatic','02_Rechnungen_und_Finanzen','Eingangsrechnungen',f?f.name:null].filter(Boolean);
-    invTargetUrl=f?driveUrl(f.id):EINGANG_ROOT_URL;invTargetId=f?f.id:'1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O';
-    if(!f)note='Für „Sonstiges“ gibt es noch keinen eigenen Unterordner — landet oben in Eingangsrechnungen.';
+    parts=['LeMatic','02_Rechnungen_und_Finanzen','Eingangsrechnungen',date.slice(0,4),f?f.name:'04_Sonstiges'];
+    invTargetUrl=EINGANG_ROOT_URL;invTargetId='1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O';
+    note='Ausgabe: zählt nie zum Umsatz. Jahres- und Kategorie-Ordner legt das Studio bei Bedarf an.';
   }
   invPathParts=parts;
   document.getElementById('invPath').innerHTML=parts.map(esc).join('<svg class="i"><use href="#i-chev"/></svg>');
@@ -4824,6 +4845,7 @@ document.getElementById('invSave').addEventListener('click',async()=>{
         saveState();
         btn.lastChild.textContent='Wird hochgeladen …';
       }
+      if(invKind==='Eingang'){btn.lastChild.textContent='Ordner wird gesucht …';driveTargetId=await einFolderFor(date.slice(0,4),$('invCat').value);driveLink=driveUrl(driveTargetId);btn.lastChild.textContent='Wird hochgeladen …'}
       const up=await driveUpload(invFile,fname,driveTargetId);
       driveLink=up.webViewLink||driveLink;driveFileId=up.id||null;realUpload=true;
     }catch(e){
@@ -4835,6 +4857,9 @@ document.getElementById('invSave').addEventListener('click',async()=>{
   const localStatus=invKind==='Eingang'?'bezahlt':(invKind==='Angebot'?angStatusVal.toLowerCase():'offen');
   const inv={id:Date.now(),kind:invKind,no:document.getElementById('invNo').value.trim(),party,note:fname,date,amount,status:localStatus,rawStatus:invKind==='Ausgang'?'Offen':'',kids:kunde?[nId(kunde.id)]:[],faellig:invKind==='Ausgang'?(dueVal||addDays(date,14)):'',p:$('invProj').value,drive:driveLink,driveFileId,fresh:true};
   INVOICES.unshift(inv);
+  if(invKind==='Eingang')inv.cat=$('invCat').value;
+  INV_LAST=realUpload&&invKind!=='Angebot'?{inv,fileId:driveFileId,parent:driveTargetId,path:invPathParts.slice(2).join(' / ')}:null;
+  if(realUpload&&invKind==='Eingang')setTimeout(()=>safe('dd',()=>scanDriveInvoices()),1500);
   toast(realUpload?(wantsNewFolder?'Neuer Ordner „'+party+'“ angelegt, Datei abgelegt':'In Drive abgelegt: '+invPathParts.join(' / ')):'Demo: nicht wirklich hochgeladen, dafür mit Google anmelden');
   if(realUpload)loadDriveFiles();
   if(realUpload&&(invKind==='Ausgang'||invKind==='Angebot')){
@@ -4854,10 +4879,12 @@ document.getElementById('invSave').addEventListener('click',async()=>{
   document.getElementById('dzSub').textContent='reinziehen oder klicken, um eine Datei zu wählen';
   document.getElementById('invParty').value='';document.getElementById('invAmount').value='';$('invAdr').value='';$('invLeist').value='';
   setKind(invKind);renderInvoices();renderHome();
+  if(INV_LAST)safe('filed',invFiledBox);
 });
 document.getElementById('invFilter').addEventListener('click',e=>{
   const b=e.target.closest('[data-f]');if(!b)return;
   document.querySelectorAll('#invFilter button').forEach(x=>x.setAttribute('aria-pressed',x===b));invF=b.dataset.f;renderInvoices();
+  if(invF==='ausgaben')finLoad().then(()=>safe('aus',renderAusgaben));
 });
 function renderInvoices(){
   const y=TODAY.slice(0,4);
@@ -4869,6 +4896,8 @@ function renderInvoices(){
     <div class="${over.length?'st-over':''}"><strong>${eur(R.offen)}</strong><span>Offen ${y}${open.length?`, ${open.length} ${open.length===1?'Rechnung':'Rechnungen'}`:''}${over.length?`, davon <b>${eur(over.reduce((a,i)=>a+i.amount,0))} überfällig</b> (längste seit ${Math.max(...over.map(invOverdue))} Tagen)`:''}${R.olderN?`. Dazu ${eur(R.olderSum)} aus Vorjahren`:''}</span></div>
     <div><strong>${Math.round(rev/GOAL*100)} %</strong><span>vom Ziel ${eur(GOAL)}, berechnet</span></div>`;
   const rank=i=>invCanBeOverdue(i)?1:0;
+  const ausOn=invF==='ausgaben';$('invTable').hidden=ausOn;$('invAus').hidden=!ausOn;
+  safe('ausLabel',ausLabel);if(ausOn)safe('aus',renderAusgaben);
   const list=INVOICES.filter(i=>invF==='all'||i.kind===invF).sort((a,b)=>rank(b)-rank(a)||(rank(a)?invOverdue(b)-invOverdue(a):0)||String(b.date).localeCompare(String(a.date)));
   document.getElementById('invRows').innerHTML=list.map(i=>{
     const [st,pc,label]=invState(i);
@@ -6902,7 +6931,7 @@ function linkInvoicesToKunden(){
 const DD_ROOT='1e2POXqZfgyM1y2486tV3RudWlHW2cbp8';
 const DD_TOPS={'Ausgangsrechnungen':'Ausgang','Eingangsrechnungen':'Eingang','Angebote_und_Kostenvoranschlaege':'Angebot'};
 const DD_SKIP=/^00_Vorlagen$|Vorlage/i;
-const DD_CACHE='lm_drive_docs_v1';
+const DD_CACHE='lm_drive_docs_v2';
 let DRIVE_DOCS=[],DD_STATE='idle',DD_ERR='',DD_PROGRESS='';
 let ddCache={};try{ddCache=JSON.parse(localStorage.getItem(DD_CACHE)||'{}')||{}}catch(_){ddCache={}}
 function ddSaveCache(){try{localStorage.setItem(DD_CACHE,JSON.stringify(ddCache))}catch(_){}}
@@ -6961,7 +6990,7 @@ function ddParse(text,f){
   if(f.kind==='Eingang'&&!party)party=f.name.replace(/\.pdf$/i,'').replace(/[_-]+/g,' ').slice(0,40);
   const posM=/Gesamtpreis\s+(.*?)\s+(?:Gesamtbetrag|Zahlungsbedingungen)/i.exec(t);
   const pos=(posM?posM[1]:'').replace(/\d+,\d{2}\s*Stk|[\d.]+,\d{2}\s*EUR/g,'').replace(/\s+/g,' ').trim().slice(0,160);
-  return {no,date,amount:brutto||netto,netto,due,party,pos,priv:PRIVATE_RX.test(t)||PRIVATE_RX.test(f.name)};
+  return {no,date,amount:brutto||netto,netto,due,party,pos,vtxt:f.kind==='Eingang'?t.slice(0,400).toLowerCase():'',priv:PRIVATE_RX.test(t)||PRIVATE_RX.test(f.name)};
 }
 async function ddReadPdf(f){
   const pdfjs=await loadPdfJs();
@@ -7485,6 +7514,7 @@ async function autoDetectInvoice(f){
   try{
     const text=await readUploadText(f).catch(()=>'');
     const own=/lematic\s*(→|->|>|-)\s*friedrich|IHR ANSPRECHPARTNER\s+(Lennart Post|Martin Schmick)/i.test(text);
+    const toUs=!own&&belegAnUns(text);
     let j={};
     try{const ctx=text.trim().length>80?{text:text.slice(0,8000)}:(f.size<3*1048576?{file:await fileToB64(f),mime:f.type||'application/pdf'}:{text:'Dateiname: '+f.name});
       const out=await napi('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:'beleg',context:ctx})});
@@ -7494,14 +7524,14 @@ async function autoDetectInvoice(f){
       const p=ddParse(text,{name:f.name,kind:isOffer?'Angebot':'Ausgang',path:['',''],modifiedTime:''});
       r={kind:isOffer?'Angebot':'Ausgang',party:p.party||j.partei||'',no:p.no||j.nummer||'',date:p.date||j.datum||'',amount:p.amount||+j.betrag||0,due:p.due||j.faellig||'',adr:j.adresse||'',leist:j.beschreibung||'',src:'pdf'};
     }else if(j.art){
-      const art=/ausgang|rechnung an/i.test(j.art||'')?'Ausgang':/angebot/i.test(j.art||'')?'Angebot':'Eingang';
+      const art=toUs?'Eingang':/ausgang|rechnung an/i.test(j.art||'')?'Ausgang':/angebot/i.test(j.art||'')?'Angebot':'Eingang';
       r={kind:art,party:j.partei||'',no:j.nummer||'',date:j.datum||'',amount:+j.betrag||0,due:j.faellig||'',adr:j.adresse||'',leist:j.beschreibung||'',cat:EINGANG_FOLDERS[j.kategorie]?j.kategorie:guessEinCat((j.partei||'')+' '+(j.beschreibung||'')+' '+text),src:'li'};
     }else{
       /* Fremdbeleg: LI liest Lieferant, Betrag, Datum, Nummer und die passende Kategorie */
       const ctx=text.trim().length>80?{text:text.slice(0,8000)}:(f.size<3*1048576?{file:await fileToB64(f),mime:f.type||'application/pdf'}:{text:'(Datei zu groß zum Lesen) Dateiname: '+f.name});
       const out=await napi('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:'beleg',context:ctx})});
       const j=JSON.parse(String(out.text||'{}').replace(/^[^{]*/,'').replace(/[^}]*$/,''));
-      const art=/ausgang|rechnung an/i.test(j.art||'')?'Ausgang':/angebot/i.test(j.art||'')?'Angebot':'Eingang';
+      const art=toUs?'Eingang':/ausgang|rechnung an/i.test(j.art||'')?'Ausgang':/angebot/i.test(j.art||'')?'Angebot':'Eingang';
       r={kind:art,party:j.partei||'',no:j.nummer||'',date:j.datum||'',amount:+j.betrag||0,due:j.faellig||'',cat:EINGANG_FOLDERS[j.kategorie]?j.kategorie:guessEinCat((j.partei||'')+' '+(j.beschreibung||'')+' '+text),src:'li'};
     }
   }catch(e){box.className='inv-auto warn';box.innerHTML='Konnte den Beleg nicht automatisch lesen ('+esc(e.message)+'). Bitte Art, Kunde und Betrag kurz selbst eintragen.';return}
@@ -7520,9 +7550,29 @@ async function autoDetectInvoice(f){
   const ok=r.party&&r.amount>0;
   const what=r.kind==='Ausgang'?'Rechnung an':r.kind==='Angebot'?'Angebot an':'Beleg von';
   if(!ok){box.className='inv-auto warn';box.innerHTML=`Erkannt: ${what} <b>${esc(r.party||'?')}</b>${r.amount?', '+eur(r.amount):''}. ${!r.party?'Kunde/Lieferant':'Betrag'} fehlt noch, bitte ergänzen und auf „Hochladen und ablegen“ klicken.`;return}
+  INV_LAST=null;IA_R=r;if(r.kind!=='Angebot'){iaBox();return}
   const known=r.kind!=='Ausgang'||customerFor($('invParty').value);
   box.className='inv-auto ok';box.innerHTML=`<div><b>Erkannt:</b> ${what} <b>${esc($('invParty').value)}</b> · ${esc($('invNo').value||'ohne Nummer')} · ${eur(r.amount)} · ${esc(dm($('invDate').value||TODAY))}${r.kind==='Ausgang'&&$('invDue').value?' · fällig '+esc(dm($('invDue').value)):''}<br><small>Bitte unten prüfen und bei Bedarf korrigieren, dann „Ablegen“. Landet in ${esc(invPathParts.slice(2).join(' / '))}${invNewFolder?' (neuer Ordner)':''}.${known?'':' Den Kunden gibt es noch nicht in der Kartei, beim Ablegen wird gefragt.'}${dup?' Achtung: Die Nummer gibt es schon.':''}</small></div>`;
 }
+/* Ausgabe oder Umsatz? Absender und Empfänger auf dem Beleg */
+function belegAnUns(text){
+  const t=String(text||'').replace(/\s+/g,' ');
+  const us='(lematic|lennart[\s.-]*post|martin[\s.-]*schmick)';
+  return new RegExp('(\\bbill(ed)?\\b.{0,60}?\\bto\\b|invoice to|sold to|rechnungsempf[aä]nger|rechnung an)\\s.{0,160}?'+us,'i').test(t);
+}
+let IA_R=null;
+function iaBox(){
+  const box=$('invAuto');if(!box||!IA_R)return;const r=IA_R,isEin=invKind==='Eingang';
+  const party=$('invParty').value,known=isEin||customerFor(party),dup=!isEin&&invDupCheck();
+  box.hidden=false;box.className='inv-auto ok';
+  box.innerHTML=`<div><b>Erkannt als ${isEin?'Ausgabe':'Rechnung von LeMatic (Umsatz)'}</b> · ${isEin?'von':'an'} <b>${esc(party||'?')}</b> · ${$('invAmount').value?esc($('invAmount').value)+' €':'Betrag fehlt'} · ${esc(dm($('invDate').value||TODAY))}<br><small>Wird abgelegt in ${esc(invPathParts.slice(2).join(' / '))}${invNewFolder?' (neuer Ordner)':''}. ${isEin?'Zählt nicht zum Umsatz.':'Zählt zum Umsatz.'}${known?'':' Den Kunden gibt es noch nicht in der Kartei, beim Ablegen wird gefragt.'}${dup?' Achtung: Die Nummer gibt es schon.':''} Bitte prüfen, dann „Ablegen“.</small></div><button class="btn btn-glass sm" data-iaswap>${isEin?'Ist eine Rechnung von LeMatic':'Ist eine Ausgabe'}</button>`;
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('[data-iaswap]'))return;
+  const toEin=invKind!=='Eingang';const party=$('invParty').value;setKind(toEin?'Eingang':'Ausgang');$('invParty').value=party;
+  if(toEin){$('invCat').value=EINGANG_FOLDERS[guessEinCat(party)]?guessEinCat(party):'Sonstiges'}
+  updatePath();iaBox();
+});
 document.addEventListener('click',e=>{
   if(e.target.closest('[data-iago]')){clearTimeout(autoT);$('invAuto').hidden=true;$('invSave').click()}
   if(e.target.closest('[data-iastop]')){clearTimeout(autoT);const b=$('invAuto');b.className='inv-auto';b.innerHTML='Automatik angehalten. Felder prüfen und auf „Hochladen und ablegen“ klicken.'}
@@ -8820,9 +8870,13 @@ function finAutoCat(t){
   return 'Sonstiges';
 }
 const finCat=t=>(FIN.cats[t.id]&&FIN.cats[t.id].c)||finAutoCat(t);
+/* Doppelte Buchungen (gleiches Datum, Betrag und Empfänger) zählen nur einmal */
+const finKey=t=>[String(t.date).slice(0,10),(+t.amount).toFixed(2),String(t.name||'').toLowerCase().replace(/[^a-z0-9äöüß]+/g,'')].join('|');
+/* Privates von Lennart sieht Martin nicht (Regel des Studios) */
+const finVis=t=>ME!=='MS'||finCat(t)!=='Privat';
 function finStore(){try{localStorage.setItem('lm_fin',JSON.stringify(FIN))}catch(_){}}
 function finMerge(src){
-  const by=new Map(FIN.tx.map(t=>[t.id,t]));(src.tx||[]).forEach(t=>{if(t&&t.id&&!by.has(t.id))by.set(t.id,t)});
+  const by=new Map(FIN.tx.map(t=>[finKey(t),t]));(src.tx||[]).forEach(t=>{if(t&&t.date&&!by.has(finKey(t)))by.set(finKey(t),t)});
   FIN.tx=[...by.values()].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   Object.entries(src.cats||{}).forEach(([id,v])=>{if(v&&(!FIN.cats[id]||String(v.at)>String(FIN.cats[id].at)))FIN.cats[id]=v});
   if(String(src.at||'')>String(FIN.at||'')){FIN.at=src.at;FIN.by=src.by||''}
@@ -8846,13 +8900,12 @@ function finSave(){
 }
 async function finImport(tx){
   await finLoad();
-  const seen={},before=FIN.tx.length;
-  const rows=tx.map(t=>{const base=[t.date,(+t.amount).toFixed(2),t.name,t.purpose].join('|');seen[base]=(seen[base]||0)+1;
-    return{id:base+'#'+seen[base],date:String(t.date).slice(0,10),name:t.name||'',amount:+t.amount||0,purpose:t.purpose||'',note:t.note||''}});
+  const before=FIN.tx.length;
+  const rows=tx.map(t=>{const r={date:String(t.date).slice(0,10),name:t.name||'',amount:+t.amount||0,purpose:t.purpose||'',note:t.note||''};r.id=finKey(r);return r});
   finMerge({tx:rows,at:new Date().toISOString(),by:USER});finSave();
   const n=FIN.tx.length-before;
   toast(n?`${n} neue Kontobewegungen für die Analysen übernommen`:'Kontist-Daten waren schon aktuell');
-  safe('ana',()=>{if(anaOn())renderAna()});
+  anaRefreshAll();
 }
 const nrmId=x=>String(x||'').replace(/-/g,'');
 const kOf=i=>{const ids=(i.kids||[]).map(nrmId);return KUNDEN.find(k=>ids.includes(nrmId(k.id)))};
@@ -8874,7 +8927,7 @@ function anaNumbers(){
   const r=anaRange();
   const cnt=INVOICES.filter(invCounts),rech=cnt.filter(i=>inR(i.date,r));
   const berechnet=fsum(rech),eingenommen=fsum(rech.filter(i=>i.status==='bezahlt'));
-  const tx=FIN.tx.filter(t=>inR(t.date,r));
+  const tx=FIN.tx.filter(t=>inR(t.date,r)&&finVis(t));
   const outAll=tx.filter(t=>t.amount<0),out=outAll.filter(t=>finCat(t)!=='Privat');
   const ausgaben=-fsum(out),privat=-fsum(outAll.filter(t=>finCat(t)==='Privat'));
   const rein=fsum(tx.filter(t=>t.amount>0)),saldo=fsum(tx);
@@ -9070,16 +9123,108 @@ async function anaAI(force,N,F){
   finally{ANA_AI_BUSY=false}
 }
 document.addEventListener('click',e=>{
-  const ana=e.target.closest('#invAna');if(!ana)return;
-  const md=e.target.closest('[data-anamode]');if(md){ANA.mode=md.dataset.anamode;renderAna();return}
-  const st=e.target.closest('[data-anastep]');if(st){const d=+st.dataset.anastep;if(ANA.mode==='jahr')ANA.y+=d;else{const t=new Date(ANA.y,ANA.m-1+d,1);ANA.y=t.getFullYear();ANA.m=t.getMonth()+1}renderAna();return}
+  const ana=e.target.closest('#invAna,#invAus');if(!ana)return;
+  const md=e.target.closest('[data-anamode]');if(md){ANA.mode=md.dataset.anamode;anaRefreshAll();return}
+  const st=e.target.closest('[data-anastep]');if(st){const d=+st.dataset.anastep;if(ANA.mode==='jahr')ANA.y+=d;else{const t=new Date(ANA.y,ANA.m-1+d,1);ANA.y=t.getFullYear();ANA.m=t.getMonth()+1}anaRefreshAll();return}
   if(e.target.closest('[data-anacsv]')){$('bankFile').click();return}
   if(e.target.closest('[data-anaai]')){anaAI(true);return}
   const fc=e.target.closest('[data-fincat]');
   if(fc){const id=fc.dataset.fincat,t=FIN.tx.find(x=>x.id===id);if(!t)return;const cur=finCat(t);
-    popMenu(fc,'Kategorie',FIN_CATS.map(c=>({label:c,on:c===cur,fn:()=>{FIN.cats[id]={c,at:new Date().toISOString(),by:ME};finSave();renderAna();toast(t.name+': '+c)}})).concat(FIN.cats[id]?[{label:'Automatisch zuordnen',fn:()=>{FIN.cats[id]={c:finAutoCat(t),at:new Date().toISOString(),by:ME};finSave();renderAna()}}]:[]));}
+    popMenu(fc,'Kategorie',FIN_CATS.map(c=>({label:c,on:c===cur,fn:()=>{FIN.cats[id]={c,at:new Date().toISOString(),by:ME};finSave();anaRefreshAll();toast(t.name+': '+c)}})).concat(FIN.cats[id]?[{label:'Automatisch zuordnen',fn:()=>{FIN.cats[id]={c:finAutoCat(t),at:new Date().toISOString(),by:ME};finSave();anaRefreshAll()}}]:[]));}
 });
 
+
+/* ---------- Rechnungen: Ausgaben (Kontist-Export plus Belege in Drive) ----------
+   Ausgaben zählen nie zum Umsatz: Belege an LeMatic landen nie in „Rechnungen & Angebote“ in Notion. */
+function anaRefreshAll(){safe('ana',()=>{if(anaOn())renderAna()});safe('ausL',ausLabel);safe('aus',()=>{if(invF==='ausgaben')renderAusgaben()})}
+const eur2=n=>(+n||0).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+const anaPeriodTxt=()=>ANA.mode==='jahr'?String(ANA.y):MONTHS[ANA.m-1]+' '+ANA.y;
+function ausLabel(){const b=document.querySelector('#invFilter [data-f="ausgaben"]');if(b)b.textContent='Ausgaben '+(ANA.mode==='jahr'?ANA.y:MON[ANA.m-1]+' '+ANA.y);
+  const on=invF==='ausgaben';setText('inv-title',on?'Ausgaben':'Alle Rechnungen');setText('inv-sub',on?'Belege an LeMatic und Abbuchungen vom Konto. Zählen nie zum Umsatz.':'Status per Klick auf bezahlt setzen')}
+const EIN2FIN={Equipment:'Equipment & Technik',Programme:'Software & Abos',Domain:'Software & Abos',Buchhaltung:'Bank & Gebühren',Sonstiges:'Sonstiges'};
+const einCatOfFolder=f=>{f=String(f||'');return Object.keys(EINGANG_FOLDERS).find(k=>f.includes(EINGANG_FOLDERS[k].name)||new RegExp('\\b'+k+'\\b','i').test(f))||'Sonstiges'};
+const AUS_STOP=new Set('gmbh inc ltd llc corp invoice rechnung beleg kartenzahlung lastschrift überweisung www com germany deutschland payment zahlung mit kontist gesendet amazon'.split(' '));
+const ausTok=s=>String(s||'').toLowerCase().replace(/[*.,]/g,' ').split(/[^a-z0-9äöüß]+/).filter(w=>w.length>=4&&!AUS_STOP.has(w)&&!/^\d+$/.test(w));
+function ausData(){
+  const docs=driveDocsLI().filter(d=>d.kind==='Eingang'&&d.date).map(d=>({id:'d'+d.id,fid:d.id,date:String(d.date).slice(0,10),party:d.party||d.name,amount:+d.amount||0,cat:EIN2FIN[einCatOfFolder(d.folder)],link:d.link,txt:(d.vtxt||'')+' '+String(d.name||'').toLowerCase()+' '+String(d.party||'').toLowerCase()}));
+  INVOICES.filter(i=>i.kind==='Eingang'&&i.date&&!docs.some(d=>d.fid&&d.fid===i.driveFileId)).forEach(i=>docs.push({id:'i'+i.id,fid:i.driveFileId,date:String(i.date).slice(0,10),party:i.party,amount:+i.amount||0,cat:EIN2FIN[i.cat]||'Sonstiges',link:i.drive,txt:String(i.party||'').toLowerCase()+' '+String(i.note||'').toLowerCase()}));
+  const out=FIN.tx.filter(t=>t.amount<0&&finVis(t));
+  const used=new Set(),beleg={};
+  /* Beleg zu Abbuchung: gleicher Betrag kurz danach, oder Lieferantenname im Beleg (z. B. Dollar-Rechnung, Euro-Abbuchung) */
+  docs.forEach(d=>{let best=null,bs=0;
+    out.forEach(t=>{if(used.has(t.id))return;const dd=diffDays(t.date,d.date);let sc=0;
+      const amt=d.amount&&Math.abs(-t.amount-d.amount)<0.02,name=ausTok(t.name).some(w=>d.txt.includes(w));
+      if(amt&&dd>=-5&&dd<=60)sc=3+(name?2:0);else if(name&&dd>=-3&&dd<=15)sc=2;
+      if(sc>bs||(sc===bs&&sc&&best&&Math.abs(dd)<Math.abs(diffDays(best.date,d.date)))){best=t;bs=sc}});
+    if(best){used.add(best.id);beleg[best.id]=d;d.paid=best}});
+  return{docs,out,beleg};
+}
+function ausRows(){
+  const r=anaRange(),D=ausData();
+  const dates=FIN.tx.map(t=>t.date).sort(),from=dates[0]||'',to=dates[dates.length-1]||'';
+  const rows=D.out.filter(t=>inR(t.date,r)).map(t=>{const d=D.beleg[t.id];return{key:t.id,date:t.date,party:t.name||'—',sub:t.note||t.purpose||'',amount:-t.amount,cat:finCat(t),catEdit:true,status:'bezahlt',link:d?d.link:'',src:'konto'}});
+  D.docs.filter(d=>!d.paid&&inR(d.date,r)).forEach(d=>{const check=from&&d.date>=from&&d.date<=to;
+    rows.push({key:d.id,date:d.date,party:d.party||'Beleg',sub:'Beleg in Drive',amount:d.amount,cat:d.cat,catEdit:false,status:check?'offen':'ohne Abgleich',link:d.link,src:'beleg'})});
+  rows.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  return{r,rows,from,to};
+}
+function renderAusgaben(){
+  const el=$('invAus');if(!el||el.hidden)return;
+  const A=ausRows(),isYear=ANA.mode==='jahr';
+  const counted=A.rows.filter(x=>x.cat!=='Privat');
+  const sum=counted.reduce((a,x)=>a+x.amount,0),offen=counted.filter(x=>x.status==='offen').reduce((a,x)=>a+x.amount,0);
+  const priv=A.rows.filter(x=>x.cat==='Privat').reduce((a,x)=>a+x.amount,0);
+  const row=x=>`<div class="aus-r"><span class="num">${dm(x.date)}</span><span class="n">${esc(x.party)}<small>${esc(x.sub)}</small></span><b>${eur2(x.amount)}</b>${x.catEdit?`<button class="fcat" data-fincat="${esc(x.key)}">${esc(x.cat)}</button>`:`<span class="fcat ro">${esc(x.cat)}</span>`}<span class="st${x.status==='bezahlt'?'':' off'}" title="${x.status==='bezahlt'?'Abbuchung im Kontist-Export':x.status==='offen'?'Keine passende Abbuchung im Kontist-Export gefunden':'Liegt außerhalb der geladenen Kontist-Daten'}"><i></i>${esc(x.status)}</span>${x.link?`<a class="icon-btn bl" href="${esc(x.link)}" target="_blank" rel="noopener" aria-label="Beleg öffnen" title="Beleg öffnen"><svg class="i sm"><use href="#i-open"/></svg></a>`:'<span class="bl"></span>'}</div>`;
+  el.innerHTML=`<div class="aus-top">
+      <div class="seg" role="group" aria-label="Zeitraum"><button data-anamode="monat" aria-pressed="${!isYear}">Monat</button><button data-anamode="jahr" aria-pressed="${isYear}">Jahr</button></div>
+      <div class="ana-nav"><button class="icon-btn" data-anastep="-1" aria-label="Zurück">‹</button><b>${esc(anaPeriodTxt())}</b><button class="icon-btn" data-anastep="1" aria-label="Weiter">›</button></div>
+      <span class="sp" style="flex:1"></span><button class="btn btn-glass sm" data-anacsv>Kontist-CSV laden</button></div>
+    <div class="aus-sum"><strong>${eur2(sum)}</strong><span>Ausgaben ${esc(anaPeriodTxt())}, ${counted.length} ${counted.length===1?'Posten':'Posten'}${offen?', davon '+eur2(offen)+' offen':''}${priv?' · '+eur2(priv)+' privat, nicht mitgezählt':''}</span></div>
+    <p class="aus-hint">${A.from?`Kontist-Export ${dm(A.from)} bis ${dm(A.to)} plus Belege aus Drive (Eingangsrechnungen).`:'Noch kein Kontist-Export geladen, darum nur Belege aus Drive.'} Doppelte Buchungen zählen einmal. Ausgaben zählen nie zum Umsatz.</p>
+    ${A.rows.length?`<div class="aus-r h"><span>Datum</span><span>Lieferant</span><span style="text-align:right">Betrag</span><span>Kategorie</span><span>Status</span><span>Beleg</span></div>${A.rows.map(row).join('')}`:`<p class="ana-empty">Keine Ausgaben in ${esc(anaPeriodTxt())}.${A.from?'':' Lade einmal den CSV-Export aus Kontist.'}</p>`}`;
+}
+/* Ablage der Belege: Eingangsrechnungen / Jahr / Kategorie */
+const EINGANG_ROOT_ID='1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O';
+const einCatFolderName=cat=>(EINGANG_FOLDERS[cat]&&EINGANG_FOLDERS[cat].name)||'04_Sonstiges';
+async function einFolderFor(y,cat){
+  let map={};try{map=JSON.parse(localStorage.getItem('lm_ein_dirs')||'{}')||{}}catch(_){}
+  const key=y+'|'+cat;if(map[key])return map[key];
+  const find=async(name,parent)=>(await ddList(`'${parent}' in parents and name='${qesc(name)}' and mimeType='application/vnd.google-apps.folder' and trashed=false`))[0];
+  const yf=(await find(String(y),EINGANG_ROOT_ID))||await driveCreateFolder(String(y),EINGANG_ROOT_ID);
+  const cn=einCatFolderName(cat);
+  const cf=(await find(cn,yf.id))||await driveCreateFolder(cn,yf.id);
+  map[key]=cf.id;try{localStorage.setItem('lm_ein_dirs',JSON.stringify(map))}catch(_){}
+  return cf.id;
+}
+async function driveMove(fileId,to,from){
+  await gfetch('https://www.googleapis.com/drive/v3/files/'+fileId+'?addParents='+encodeURIComponent(to)+(from?'&removeParents='+encodeURIComponent(from):'')+'&supportsAllDrives=true',{method:'PATCH',headers:{'Content-Type':'application/json'},body:'{}'});
+}
+/* Nach dem Ablegen: „Erkannt als …“ mit Umstellen per Klick */
+let INV_LAST=null;
+function invFiledBox(){
+  const b=$('invAuto');if(!b||!INV_LAST)return;const L=INV_LAST,isEin=L.inv.kind==='Eingang';
+  b.hidden=false;b.className='inv-auto ok';
+  b.innerHTML=`<div><b>Erkannt als ${isEin?'Ausgabe':'Rechnung von LeMatic (Umsatz)'}</b> · abgelegt in ${esc(L.path)}<br><small>${isEin?'Zählt nicht zum Umsatz.':'Zählt zum Umsatz, sobald sie in Notion steht.'}</small></div><button class="btn btn-glass sm" data-invswap>${isEin?'Ist eine Rechnung von LeMatic':'Ist eine Ausgabe'}</button>`;
+}
+document.addEventListener('click',async e=>{
+  const sw=e.target.closest('[data-invswap]');if(!sw||!INV_LAST)return;
+  const L=INV_LAST,inv=L.inv;sw.disabled=true;sw.textContent='Wird umgestellt …';
+  try{
+    if(inv.kind==='Eingang'){
+      if(L.fileId)await driveMove(L.fileId,AUSGANG_ROOT_ID,L.parent);
+      const pg=await notionCreateRechnung({no:inv.no||'',art:'Rechnung',status:'Offen',betrag:inv.amount,leistung:inv.party,datum:inv.date,datei:inv.drive,faellig:addDays(inv.date,14),kid:''});
+      inv.kind='Ausgang';inv.status='offen';inv.rawStatus='Offen';inv.nid=pg.id;inv.faellig=addDays(inv.date,14);
+      L.parent=AUSGANG_ROOT_ID;L.path='Ausgangsrechnungen';toast('Umgestellt: Rechnung von LeMatic. Bitte noch den Kunden in Notion verknüpfen.');
+    }else{
+      const cat=guessEinCat(inv.party+' '+(inv.note||''));const to=await einFolderFor(String(inv.date).slice(0,4),cat);
+      if(L.fileId)await driveMove(L.fileId,to,L.parent);
+      if(inv.nid)await napi('/api/notion?db=rechnungen&id='+encodeURIComponent(inv.nid),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({archive:true})});
+      inv.kind='Eingang';inv.status='bezahlt';inv.rawStatus='';inv.nid=null;inv.cat=cat;
+      L.parent=to;L.path='Eingangsrechnungen / '+String(inv.date).slice(0,4)+' / '+einCatFolderName(cat);toast('Umgestellt: Ausgabe, zählt nicht zum Umsatz');
+    }
+    safe('inv',renderInvoices);safe('home',renderHome);safe('dd',()=>scanDriveInvoices());invFiledBox();
+  }catch(x){toast('Nicht umgestellt: '+x.message);sw.disabled=false;invFiledBox()}
+});
 
 /* ---------- Persönliche Einstellungen: Ansicht und Look ---------- */
 const ACCENTS={green:{n:'LeMatic Grün',c:['#073D30','#0C5543']},night:{n:'Nachtblau',c:['#14284A','#23417A']},plum:{n:'Aubergine',c:['#3A1E39','#5B2E57']},graphite:{n:'Graphit',c:['#1E2226','#3A4148']}};
@@ -9344,8 +9489,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.35';
+const APP_VERSION='2026-11-01.36';
 const CHANGELOG=[
+  {v:'2026-11-01.36',d:'01.11.2026',items:['Rechnungen: neuer Reiter „Ausgaben“ mit Datum, Lieferant, Betrag, Kategorie, Status und Beleg, oben die Summe im Zeitraum','Ausgaben kommen aus dem Kontist-Export und den Belegen in Drive, doppelte Buchungen zählen einmal','Beim Hochladen erkennt das Studio, ob es eine Rechnung von LeMatic oder eine Ausgabe ist, und zeigt es an, umstellbar per Klick','Ausgaben landen in Eingangsrechnungen / Jahr / Kategorie und zählen nie zum Umsatz','Private Buchungen sieht nur Lennart']},
   {v:'2026-11-01.35',d:'01.11.2026',items:['Rechnungen haben jetzt „Analysen“: Monat oder Jahr wählen, Berechnet, Eingenommen, Offen, Ausgaben und Kontostand-Bewegung','Ausgaben aus dem Kontist-Export nach Kategorie, für euch beide gleich, Kategorie per Klick änderbar','Bis Jahresende: was noch offen ist und welche unterschriebenen Angebote noch abgerechnet werden müssen','LeMatic Intelligence schreibt Einschätzung und drei Empfehlungen dazu'],tour:[
     {img:'whatsnew/v35-analysen.webp',t:'Analysen im Rechnungen-Tab',txt:'Einnahmen und Ausgaben auf einer Seite, für einen Monat oder das ganze Jahr.',
      steps:['Rechnungen öffnen und oben auf „Analysen“ tippen','Monat oder Jahr wählen, mit den Pfeilen blättern','Einmal im Monat den CSV-Export aus Kontist laden: Dann stimmen Ausgaben und Kontobewegung','Unten steht, was bis Jahresende noch reinkommt, „So rechnet das Studio“ erklärt die Regeln']}]},
