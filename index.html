@@ -6992,15 +6992,29 @@ function anyNum(s){
 function belegTotal(t){
   const cur=/\bUSD\b|US\$|\$\s?\d|\d\s?\$/.test(t)?'USD':/\bGBP\b|£/.test(t)?'GBP':/\bCHF\b/.test(t)?'CHF':'EUR';
   const re=/(?<![a-zäöü])(total(?: amount| inkl\.? mwst\.?| incl\.? (?:vat|tax))?|gesamtbetrag(?: brutto)?|rechnungsbetrag|gesamtsumme|endbetrag|summe brutto|bruttobetrag|amount paid|bezahlter betrag)\b(?!\s*(?:excl|exkl|netto|net\b|ohne|before))[^\d\n-]{0,24}?(-?\d[\d.,]*\d|\d)/gi;
-  let best=0,m;
-  while((m=re.exec(t))){const v=anyNum(m[2]);if(v>best&&v<1e6)best=v}
-  return{amount:best,cur};
+  let best=0,eur=0,m;
+  /* Steht zwischen „Total“ und Zahl ausdrücklich € oder EUR, ist das ein Euro-Gesamtbetrag (gilt dann direkt).
+     Ein einzelner Euro-Betrag neben der Steuer (z. B. „VAT … €15.55 Total $111.86“) zählt nicht. */
+  while((m=re.exec(t))){const v=anyNum(m[2]);if(!(v>0&&v<1e6))continue;if(cur!=='EUR'&&/€|\bEUR\b/i.test(m[0].slice(m[1].length))){if(v>eur)eur=v;continue}if(v>best)best=v}
+  return{amount:best,cur,eur};
 }
+/* Datum auch englisch oder ausgeschrieben: „September 19, 2026“, „19. September 2026“, „2026-09-19“ */
+const MON_IX={jan:1,feb:2,mar:3,mär:3,apr:4,may:5,mai:5,jun:6,jul:7,aug:8,sep:9,oct:10,okt:10,nov:11,dec:12,dez:12};
+const DATE_WORD_RX=/([A-Za-zäÄ]{3,9})\.?\s+(\d{1,2}),?\s+(\d{4})|(\d{1,2})\.?\s+([A-Za-zäÄ]{3,9})\.?,?\s+(\d{4})|(\d{4})-(\d{2})-(\d{2})/;
+function wordDate(s){const m=DATE_WORD_RX.exec(s||'');if(!m)return '';
+  if(m[7])return m[7]+'-'+m[8]+'-'+m[9];
+  const mon=MON_IX[String(m[1]||m[5]).toLowerCase().slice(0,3)];const d=+(m[2]||m[4]);
+  return mon&&d>=1&&d<=31?(m[3]||m[6])+'-'+pad(mon)+'-'+pad(d):''}
 function ddParse(text,f){
   const t=text.replace(/\s+/g,' ');
   const pick=re=>{const m=re.exec(t);return m?m[1]:''};
   const no=pick(/(?:RECHNUNGS-?NR\.?|Rechnung Nr\.?|Angebots?-?Nr\.?|ANGEBOTS-?NR\.?)\s*:?\s*([A-Z]{1,4}-?[\d-]{3,})/i)||pick(/\b((?:RE|LM|AN|AG)-[\d-]{3,})\b/)||(f.name.match(/[A-Z]{2}-[\d-]{3,}/)||[''])[0];
-  const date=deDate(pick(/(?:RECHNUNGSDATUM|ANGEBOTSDATUM|Rechnungsdatum|Angebotsdatum|Datum)\s*:?\s*(\d{1,2}\.\d{1,2}\.\d{2,4})/))||deDate(t)||(f.modifiedTime||'').slice(0,10);
+  const ein=f.kind==='Eingang',fnDate=(/^(\d{4}-\d{2}-\d{2})_/.exec(f.name)||[])[1]||'';
+  /* Ausgaben: englische Belege („Date of issue September 19, 2026“) und Dateiname aus dem Studio vor dem Anlagedatum der Datei */
+  const date=deDate(pick(/(?:RECHNUNGSDATUM|ANGEBOTSDATUM|Rechnungsdatum|Angebotsdatum|Datum)\s*:?\s*(\d{1,2}\.\d{1,2}\.\d{2,4})/))
+    ||(ein?wordDate(pick(/(?:Date of issue|Invoice date|Issue date|Date issued|Date paid|Billing date|Rechnungsdatum|Datum)\s*:?\s*([A-Za-zäÄ]{3,9}\.?\s+\d{1,2},?\s+\d{4}|\d{1,2}\.?\s+[A-Za-zäÄ]{3,9}\.?,?\s+\d{4}|\d{4}-\d{2}-\d{2})/i))||fnDate:'')
+    ||deDate(t)||(ein?wordDate(t):'')||(f.modifiedTime||'').slice(0,10);
+  const enNo=ein?pick(/(?:Invoice (?:number|no\.?|#)|Receipt (?:number|no\.?|#))\s*:?\s*([A-Z0-9][A-Z0-9 -]{3,24}?)(?=\s+(?:Date|Invoice|Bill|Receipt|$))/i).trim().replace(/\s+/g,'-'):'';
   const brutto=deNum(pick(/Gesamtbetrag brutto\s*:?\s*([\d.,]+)/i))||deNum(pick(/(?:Rechnungsbetrag|Gesamtbetrag|Gesamtsumme|Endbetrag|Summe brutto|Bruttobetrag|Total|Gesamt)\s*(?:\(brutto\))?\s*:?\s*(?:EUR|€)?\s*([\d.,]+)/i));
   const netto=deNum(pick(/Gesamtbetrag netto\s*:?\s*([\d.,]+)/i));
   let due=deDate(pick(/bis (?:zum|spätestens)\s*(\d{1,2}\.\d{1,2}\.\d{2,4})\s*fällig/i))||deDate(pick(/fällig(?:\s+bis)?(?:\s+zum|\s+am)?\s*:?\s*(\d{1,2}\.\d{1,2}\.\d{2,4})/i));
@@ -7010,10 +7024,10 @@ function ddParse(text,f){
   const folder=(f.path[1]||'').replace(/^\d+_/,'').replace(/_/g,' ').trim();
   let party=f.kind!=='Eingang'?folder:'';
   if(!party){const m=/Geesthacht\s+(.{3,60}?)\s+[A-ZÄÖÜ][\wäöüß.-]*\s?(?:straße|str\.|damm|weg|platz|allee|ring|chaussee)\b/i.exec(t);party=m?m[1].trim():''}
-  if(f.kind==='Eingang'&&!party)party=f.name.replace(/\.pdf$/i,'').replace(/[_-]+/g,' ').slice(0,40);
+  if(f.kind==='Eingang'&&!party){const sm=/^\d{4}-\d{2}-\d{2}_(?:[^_]+_)?(.+?)\.pdf$/i.exec(f.name);party=(sm?sm[1]:f.name.replace(/\.pdf$/i,'')).replace(/[_-]+/g,' ').slice(0,40)}
   const posM=/Gesamtpreis\s+(.*?)\s+(?:Gesamtbetrag|Zahlungsbedingungen)/i.exec(t);
   const pos=(posM?posM[1]:'').replace(/\d+,\d{2}\s*Stk|[\d.]+,\d{2}\s*EUR/g,'').replace(/\s+/g,' ').trim().slice(0,160);
-  if(f.kind==='Eingang'){const bt=belegTotal(t);return {pv:2,no,date,amount:bt.amount,orig:bt.amount,cur:bt.cur,netto,due,party,pos,vtxt:t.slice(0,400).toLowerCase(),priv:PRIVATE_RX.test(t)||PRIVATE_RX.test(f.name)}}
+  if(f.kind==='Eingang'){const bt=belegTotal(t);return {pv:3,no:enNo||no,date,amount:bt.amount,orig:bt.amount,cur:bt.cur,eurTot:bt.eur,netto,due,party,pos,vtxt:t.slice(0,400).toLowerCase(),priv:PRIVATE_RX.test(t)||PRIVATE_RX.test(f.name)}}
   return {no,date,amount:brutto||netto,netto,due,party,pos,vtxt:'',priv:PRIVATE_RX.test(t)||PRIVATE_RX.test(f.name)};
 }
 async function ddReadPdf(f){
@@ -7028,12 +7042,13 @@ async function scanDriveInvoices(force){
   DD_STATE='busy';DD_ERR='';ddStatus();
   try{
     const files=await ddCollect();
-    const todo=files.filter(f=>force||!ddCache[f.id]||ddCache[f.id].m!==f.modifiedTime||(f.kind==='Eingang'&&!(ddCache[f.id].d||{}).pv));
+    const todo=files.filter(f=>force||!ddCache[f.id]||ddCache[f.id].m!==f.modifiedTime||(f.kind==='Eingang'&&(((ddCache[f.id].d||{}).pv||0)<3||(ddCache[f.id].d||{}).fxRetry)));
     let done=0;
     const work=async()=>{while(todo.length){const f=todo.shift();
       try{const txt=await ddReadPdf(f);const d=ddParse(txt,f);
         /* Fremdwährung ohne gespeicherten Euro-Betrag: EZB-Kurs vom Rechnungsdatum */
-        if(f.kind==='Eingang'&&d.cur&&d.cur!=='EUR'&&d.orig>0&&d.date&&!(f.appProperties||{}).lmEur){try{const fx=await fxRate(d.cur,d.date);d.amount=Math.round(d.orig*fx.rate*100)/100;d.fxSrc='EZB '+fx.date}catch(_){d.amount=0;d.check=true}}
+        if(f.kind==='Eingang'&&d.cur&&d.cur!=='EUR'&&d.eurTot>0){d.amount=d.eurTot;d.fxSrc='Beleg'}
+        else if(f.kind==='Eingang'&&d.cur&&d.cur!=='EUR'&&d.orig>0&&d.date&&!(f.appProperties||{}).lmEur){try{const fx=await fxRate(d.cur,d.date);d.amount=Math.round(d.orig*fx.rate*100)/100;d.fxSrc='EZB '+fx.date}catch(_){d.amount=0;d.check=true;d.fxRetry=1}}
         ddCache[f.id]={m:f.modifiedTime,d}}
       catch(e){ddCache[f.id]={m:f.modifiedTime,d:{err:e.message,date:(f.modifiedTime||'').slice(0,10)}}}
       done++;DD_PROGRESS=done+' von '+(done+todo.length);ddStatus();}};
@@ -9587,8 +9602,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.38';
+const APP_VERSION='2026-11-01.39';
 const CHANGELOG=[
+  {v:'2026-11-01.39',d:'01.11.2026',items:['Englische Belege bekommen das richtige Rechnungsdatum (z. B. „September 19, 2026“) statt des Datums, an dem die Datei in Drive kam','Dadurch stimmen der EZB-Kurs und der Monat in „Ausgaben“, z. B. Higgsfield vom 19.09.','Steht ein Euro-Gesamtbetrag auf einem Dollar-Beleg, gilt der direkt','Klappt die Kursabfrage nicht, versucht das Studio es beim nächsten Einlesen erneut','Alle Ausgaben-Belege werden dafür einmal neu eingelesen']},
   {v:'2026-11-01.38',d:'01.11.2026',items:['Ausgaben landen in Eingangsrechnungen / Jahr laut Rechnungsdatum / Kategorie','Vier feste Kategorien: 01_Equipment, 02_Domain, 03_Buchhaltung, 04_Programme. Ein neues Jahr bekommt alle vier Ordner automatisch','Kontist, Bankgebühren und sevDesk gehen in Buchhaltung, Abos wie Higgsfield, Artlist und Adobe in Programme','Fremdwährung: Betrag im Original plus in Euro, laut Kontist-Abbuchung oder EZB-Kurs vom Rechnungsdatum','Es zählt immer der Gesamtbetrag (Total), nie „Amount due 0,00“. Ohne erkennbaren Betrag steht „Betrag prüfen“ statt 0 €']},
   {v:'2026-11-01.37',d:'01.11.2026',items:['Ausgaben landen wieder direkt im passenden Kategorie-Ordner unter Eingangsrechnungen, z. B. 02_Programme','Keine Jahres-Ordner mehr, fehlende Kategorie-Ordner legt das Studio bei Bedarf an','Umstellen Ausgabe/Umsatz verschiebt die Datei in den neuen Ordner','Der Reiter „Ausgaben“ liest weiter alle Belege, auch aus schon angelegten Jahres-Ordnern']},
   {v:'2026-11-01.36',d:'01.11.2026',items:['Rechnungen: neuer Reiter „Ausgaben“ mit Datum, Lieferant, Betrag, Kategorie, Status und Beleg, oben die Summe im Zeitraum','Ausgaben kommen aus dem Kontist-Export und den Belegen in Drive, doppelte Buchungen zählen einmal','Beim Hochladen erkennt das Studio, ob es eine Rechnung von LeMatic oder eine Ausgabe ist, und zeigt es an, umstellbar per Klick','Ausgaben landen in Eingangsrechnungen / Jahr / Kategorie und zählen nie zum Umsatz','Private Buchungen sieht nur Lennart']},
