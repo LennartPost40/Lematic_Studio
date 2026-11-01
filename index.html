@@ -1030,7 +1030,17 @@ html.theme-dark{--fin-out:#F0A04B;--fin-goal:#FCD717;--fin-open:#FCD717}
 .ana-nav b{min-width:128px;text-align:center;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
 .ana-bar .sp{flex:1}
 .ana-bar small{font-size:12px;color:var(--ink-3)}
-.ana-k{grid-template-columns:repeat(4,minmax(0,1fr))}
+.ana-k{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ana-rev{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.ana-rev .ana-open{margin-top:8px;padding:4px 10px;border-radius:999px;border:0;background:rgba(252,215,23,.32);color:#6B4E00;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;min-height:30px}
+.ana-rev .ana-open:hover{background:rgba(252,215,23,.5)}
+.ana-rev .ana-open:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.ana-rev .ana-ber{font-size:12px;color:var(--ink-3);margin-top:4px}
+html.theme-dark .ana-rev .ana-open{background:rgba(252,215,23,.18);color:#FCD717}
+.ana-oi{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(118,118,128,.12);color:inherit;text-decoration:none}
+.ana-oi:last-child{border-bottom:0}.ana-oi:hover b{text-decoration:underline}
+.ana-oi .n small{display:block;color:var(--ink-3);font-size:11.5px}.ana-oi .num{font-size:12.5px;color:var(--ink-2)}
+@media (pointer:coarse){.ana-rev .ana-open{min-height:44px;padding:8px 14px}}
 .ana-grid.ana-top{grid-template-columns:3fr 2fr}
 .ana-k .neg strong{color:#B42318}
 html.theme-dark .ana-k .neg strong{color:#FF8A80}
@@ -9164,11 +9174,13 @@ function renderAna(){
     <button class="btn btn-glass sm" data-anacsv>Kontist-CSV laden</button>
   </div>
   <div class="kstats ana-k">
-    ${tile(eur0(N.berechnet),'Umsatz, '+N.rech.length+(N.rech.length===1?' Rechnung':' Rechnungen'))}
-    ${tile(eur0(N.eingenommen),'bezahlt')}
-    ${tile(eur0(N.offen),'offen'+(N.open.length?', '+N.open.map(i=>invWho(i)).filter((v,i,a)=>a.indexOf(v)===i).slice(0,2).join(', '):''))}
+    <div class="ana-rev"><strong>${eur0(N.eingenommen)}</strong><span>Eingenommen ${esc(isYear?String(ANA.y):MONTHS[ANA.m-1]+' '+ANA.y)}</span>
+      ${N.open.length?`<button type="button" class="ana-open" data-anaopen aria-expanded="false" aria-controls="anaOpenList">+ ${N.open.length} ${N.open.length===1?'Rechnung':'Rechnungen'} offen · ${eur0(N.offen)}</button>`:''}
+      <small class="ana-ber">Berechnet gesamt: ${eur0(N.berechnet)}</small></div>
     ${N.ausN||N.hasFin?tile(eur0(N.ausAll),'Ausgaben'+(N.ausChk?`, <b class="warn-t">${N.ausChk} Betrag prüfen</b>`:'')+(N.privat?', plus '+eur0(N.privat)+' privat':'')):tile('–',noFin)}
   </div>
+  ${N.open.length?`<section class="glass panel ana-openlist" id="anaOpenList" hidden><h2>Offene Rechnungen</h2><p class="sub">${esc(r.label)}, nach Rechnungsdatum</p>
+    ${[...N.open].sort((a,b)=>invOverdue(b)-invOverdue(a)||String(a.date).localeCompare(String(b.date))).map(i=>`<a class="ana-oi" href="#/rechnungen"><span class="num">${dm(i.date)}</span><span class="n">${esc(invWho(i))}<small>${esc(i.no||'ohne Nummer')}${invOverdue(i)>0?' · '+invOverdue(i)+' Tage überfällig':''}</small></span><b>${eur0(i.amount)}</b></a>`).join('')}</section>`:''}
   ${finGap?`<p class="ana-empty">Hinweis: Die Kontist-Daten reichen nur bis ${dm(N.finTo)}, Ausgaben danach fehlen noch, bitte einen neuen Export laden.</p>`:''}
   <div class="ana-grid ana-top">${finChartCard(chart)}${quote}</div>
   <section class="glass panel ana-ai" id="anaAI"></section>
@@ -9189,8 +9201,7 @@ function renderAna(){
     ${F.signed.length?`<p class="ana-empty">${F.signed.map(x=>`${esc(x.name)}: Angebot ${esc(x.a.no||'')} über ${eur0(x.a.amount)}, seitdem ${eur0(x.billed)} berechnet`).join(' · ')}. Prüfen, ob die Rechnung noch fehlt.</p>`:''}
   </section>
   <section class="glass panel ana-how"><details><summary>So rechnet das Studio</summary><ul>
-    <li><b>Umsatz:</b> alle Rechnungen mit Rechnungsdatum im Zeitraum. Angebote zählen nie, ersetzte und abgelehnte Rechnungen auch nicht.</li>
-    <li><b>bezahlt:</b> davon die mit Status Bezahlt in Notion. <b>offen</b> ist die Differenz. In der Grafik grün und gelb, pro Monat nach Rechnungsdatum.</li>
+    <li><b>Eingenommen:</b> Rechnungen mit Rechnungsdatum im Zeitraum und Status Bezahlt in Notion. <b>Offen</b> sind die übrigen, <b>Berechnet gesamt</b> ist beides zusammen. Angebote zählen nie, ersetzte und abgelehnte Rechnungen auch nicht. In der Grafik grün und gelb, pro Monat nach Rechnungsdatum.</li>
     <li><b>Ausgaben:</b> wie im Reiter „Ausgaben“ bei Rechnungen: Abbuchungen aus dem Kontist-Export plus Belege aus Drive, zu denen es keine Abbuchung gibt. Privates zählt nicht.</li>
     <li><b>Angebote-Quote:</b> angenommene und unterschriebene Angebote geteilt durch alle Angebote im Zeitraum (nach Angebotsdatum), ersetzte Fassungen zählen nicht.</li>
     <li><b>Kontobewegung:</b> aus dem Kontist-Export, nach Buchungsdatum. Überweisungen mit „privat“ im Text zählen nicht als Ausgabe. Die Kategorie setzt das Studio nach dem Empfänger, sie lässt sich pro Buchung ändern.</li>
@@ -9253,6 +9264,7 @@ document.addEventListener('click',e=>{
   const st=e.target.closest('[data-anastep]');if(st){const d=+st.dataset.anastep;if(ANA.mode==='jahr')ANA.y+=d;else{const t=new Date(ANA.y,ANA.m-1+d,1);ANA.y=t.getFullYear();ANA.m=t.getMonth()+1}anaRefreshAll();return}
   if(e.target.closest('[data-anacsv]')){$('bankFile').click();return}
   if(e.target.closest('[data-anaai]')){anaAI(true);return}
+  const op=e.target.closest('[data-anaopen]');if(op){const l=$('anaOpenList');if(l){l.hidden=!l.hidden;op.setAttribute('aria-expanded',String(!l.hidden));if(!l.hidden)l.scrollIntoView({block:'nearest',behavior:REDUCED?'auto':'smooth'})}return}
   const fc=e.target.closest('[data-fincat]');
   if(fc){const id=fc.dataset.fincat,t=FIN.tx.find(x=>x.id===id);if(!t)return;const cur=finCat(t);
     popMenu(fc,'Kategorie',FIN_CATS.map(c=>({label:c,on:c===cur,fn:()=>{FIN.cats[id]={c,at:new Date().toISOString(),by:ME};finSave();anaRefreshAll();toast(t.name+': '+c)}})).concat(FIN.cats[id]?[{label:'Automatisch zuordnen',fn:()=>{FIN.cats[id]={c:finAutoCat(t),at:new Date().toISOString(),by:ME};finSave();anaRefreshAll()}}]:[]));}
@@ -9628,8 +9640,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.40';
+const APP_VERSION='2026-11-01.41';
 const CHANGELOG=[
+  {v:'2026-11-01.41',d:'01.11.2026',items:['Analyse: Die erste Kachel zeigt groß, was wirklich eingenommen wurde','Darunter in Gelb die offenen Rechnungen mit Summe, ein Klick zeigt die Liste','Grau darunter: berechnet gesamt','Die doppelten Kacheln „bezahlt“ und „offen“ sind dafür weg']},
   {v:'2026-11-01.40',d:'01.11.2026',items:['Neuer Punkt „Analyse“ in der Seitenleiste, direkt unter Rechnungen','Oben Monat oder Jahr wählen, das gilt für die ganze Seite','Umsatz, bezahlt, offen und Ausgaben auf einen Blick','Balken pro Monat: bezahlt grün, offen gelb','Angebote-Quote: wie viele Angebote angenommen wurden','Rechnungen zeigt nur noch die Liste und das Hochladen'],tour:[
     {img:'whatsnew/v40-analyse.webp',t:'Analyse hat jetzt eine eigene Seite',txt:'Alle Zahlen zu Umsatz, Ausgaben und Angeboten an einem Ort, in der Seitenleiste unter Rechnungen.',
      steps:['In der Seitenleiste auf „Analyse“ tippen, am Handy unter „Mehr“','Oben Monat oder Jahr wählen und mit den Pfeilen blättern','Grün ist bezahlt, gelb noch offen','Die Angebote-Quote zeigt, wie viele Angebote angenommen wurden']}]},
