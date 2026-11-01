@@ -8800,7 +8800,7 @@ document.addEventListener('click',async e=>{
 
 /* ---------- Rechnungen: Analysen ----------
    Einnahmen aus Notion, Ausgaben aus dem Kontist-Export (gespeichert in Drive: _Studio_Daten/Kontist_Umsaetze.json, für beide gleich).
-   Alle Zahlen und die Prognose rechnet das Studio nach festen Regeln. LeMatic Intelligence erklärt sie nur und gibt Empfehlungen. */
+   Alle Zahlen rechnet das Studio nach festen Regeln. LeMatic Intelligence erklärt sie nur und gibt Empfehlungen. */
 const FIN_FILE='Kontist_Umsaetze.json';
 let FIN={tx:[],cats:{},at:'',by:''},FIN_ID=null,FIN_LOADED=false,FIN_LOADING=null,FIN_T=null;
 try{const s=JSON.parse(localStorage.getItem('lm_fin')||'null');if(s&&Array.isArray(s.tx))FIN={tx:s.tx,cats:s.cats||{},at:s.at||'',by:s.by||''}}catch(_){}
@@ -8978,7 +8978,7 @@ function renderAna(){
   const kItems=Object.entries(N.kund).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([l,v])=>({l,v}));
   const outs=[...N.tx.filter(t=>t.amount<0)].sort((a,b)=>isYear?a.amount-b.amount:String(b.date).localeCompare(String(a.date)));
   const txRow=t=>`<div class="ftx-r"><span class="num">${dm(t.date)}</span><span class="n">${esc(t.name||'—')}<small>${esc(t.note||t.purpose||'')}</small></span><b>${eur(-t.amount)}</b><button class="fcat" data-fincat="${esc(t.id)}" aria-label="Kategorie ändern: ${esc(finCat(t))}">${esc(finCat(t))}</button></div>`;
-  const W=F.warm,fr=F.rows.slice(0,14);
+  
   el.innerHTML=`
   <div class="ana-bar">
     <div class="seg" role="group" aria-label="Zeitraum"><button data-anamode="monat" aria-pressed="${!isYear}">Monat</button><button data-anamode="jahr" aria-pressed="${isYear}">Jahr</button></div>
@@ -9004,30 +9004,18 @@ function renderAna(){
     <section class="glass panel"><h2>Umsatz nach Kunde</h2><p class="sub">${esc(r.label)}, berechnet</p>${finBars(kItems,'in')}</section>
   </div>
   <section class="glass panel">
-    <h2>Ausblick</h2><p class="sub">Wie es realistisch weitergeht, nach Kundenstatus, letzten Gesprächen und Umsatz der letzten 12 Monate</p>
-    <h4 class="ksub">Bis Ende ${F.year}</h4>
+    <h2>Bis Ende ${F.year}</h2><p class="sub">Was noch reinkommt: offene Rechnungen und unterschriebene Angebote</p>
     <div class="ana-sc">
       <div><strong>${eur0(F.berechnetBisher)}</strong><span>Berechnet ${F.year} bisher</span></div>
       <div><strong>${eur0(F.offenJahr)}</strong><span>Noch offen bei Kunden</span></div>
       <div><strong>${eur0(F.signedRest)}</strong><span>Unterschrieben, noch nicht abgerechnet${F.signed.length?': '+esc(F.signed.map(x=>x.name).join(', ')):''}</span></div>
     </div>
     ${F.signed.length?`<p class="ana-empty">${F.signed.map(x=>`${esc(x.name)}: Angebot ${esc(x.a.no||'')} über ${eur0(x.a.amount)}, seitdem ${eur0(x.billed)} berechnet`).join(' · ')}. Prüfen, ob die Rechnung noch fehlt.</p>`:''}
-    <h4 class="ksub" style="margin-top:14px">Prognose ${F.ny}</h4>
-    <div class="ana-sc">
-      <div><strong>${eur0(F.vorsichtig)}</strong><span>Vorsichtig: nur Bestandskunden</span></div>
-      <div class="hl"><strong>${eur0(F.realistisch)}</strong><span>Realistisch: alle Kunden nach Chance gewichtet</span></div>
-      <div><strong>${eur0(F.gut)}</strong><span>Wenn es gut läuft</span></div>
-    </div>
-    <div class="ana-warm">${['Bestandskunde','Warm','Angefragt','Kalt'].map(s=>`<span>${s}: <b>${W[s].n}</b> · ${eur0(W[s].exp)}</span>`).join('')}</div>
-    ${fr.length?`<table class="ftab"><thead><tr><th>Kunde</th><th class="gl">Grundlage</th><th class="r">Chance</th><th class="r">Erwartet ${F.ny}</th></tr></thead><tbody>
-      ${fr.map(x=>`<tr><td><b>${esc(x.name)}</b><small>${esc(x.why)}</small>${x.next?`<small>Nächster Schritt: ${esc(x.next.slice(0,90))}</small>`:''}</td><td class="gl">${esc(x.basis)}<small>${eur0(x.val)}</small></td><td class="r">${Math.round(x.p*100)} %</td><td class="r"><b>${eur0(x.exp)}</b></td></tr>`).join('')}
-    </tbody></table>${F.rows.length>fr.length?`<p class="ana-empty">Plus ${F.rows.length-fr.length} weitere Kunden mit zusammen ${eur0(F.rows.slice(fr.length).reduce((a,x)=>a+x.exp,0))}.</p>`:''}`:'<p class="ana-empty">Die Kundenkartei lädt noch.</p>'}
   </section>
   <section class="glass panel ana-how"><details><summary>So rechnet das Studio</summary><ul>
     <li><b>Berechnet:</b> alle Rechnungen mit Rechnungsdatum im Zeitraum. Angebote zählen nie, ersetzte und abgelehnte Rechnungen auch nicht.</li>
     <li><b>Eingenommen:</b> davon die mit Status Bezahlt in Notion. <b>Offen</b> ist die Differenz.</li>
     <li><b>Ausgaben und Kontobewegung:</b> aus dem Kontist-Export, nach Buchungsdatum. Überweisungen mit „privat“ im Text zählen nicht als Ausgabe. Die Kategorie setzt das Studio nach dem Empfänger, sie lässt sich pro Buchung ändern.</li>
-    <li><b>Prognose:</b> pro Kunde Grundlage mal Chance. Grundlage ist der Umsatz der letzten 12 Monate, sonst ein offenes Angebot, sonst das Budget aus dem letzten Gespräch, sonst ein typischer Auftrag (Median der letzten 12 Monate: ${eur0(F.median)}). Chance nach Status: Bestandskunde 75 %, Warm 30 %, Angefragt 25 %, Kalt 8 %. Gibt es ein Gespräch mit Chance Hoch, Mittel oder Niedrig, gilt 60, 35 oder 12 %. „Wenn es gut läuft“ rechnet mit der 1,6-fachen Chance.</li>
     <li><b>Unterschrieben, noch nicht abgerechnet:</b> Angebot minus allem, was dem Kunden seit dem Angebotsdatum berechnet wurde.</li>
   </ul></details></section>`;
   safe('anaAI',()=>anaAI(false,N,F));
@@ -9042,8 +9030,6 @@ function anaContext(N,F){
   if(N.hasFin)L.push('Größte Ausgaben: '+[...N.tx.filter(t=>t.amount<0)].sort((a,b)=>a.amount-b.amount).slice(0,8).map(t=>`${t.date} ${t.name} ${eur0(-t.amount)} (${finCat(t)}${t.note?', '+t.note:''})`).join('; '));
   L.push('Umsatz nach Kunde: '+Object.entries(N.kund).sort((a,b)=>b[1]-a[1]).map(([k,v])=>k+' '+eur0(v)).join(', '));
   L.push(`Bis Ende ${F.year}: berechnet bisher ${eur0(F.berechnetBisher)}, offen ${eur0(F.offenJahr)}, unterschrieben aber noch nicht abgerechnet ${eur0(F.signedRest)}${F.signed.length?' ('+F.signed.map(x=>`${x.name}: Angebot ${eur0(x.a.amount)}, seitdem berechnet ${eur0(x.billed)}`).join('; ')+')':''}.`);
-  L.push(`Prognose ${F.ny}: vorsichtig ${eur0(F.vorsichtig)}, realistisch ${eur0(F.realistisch)}, gut ${eur0(F.gut)}. Kunden nach Status: `+Object.entries(F.warm).map(([s,v])=>`${s} ${v.n} (${eur0(v.exp)})`).join(', '));
-  L.push('Prognose pro Kunde: '+F.rows.slice(0,20).map(x=>`${x.name} [${x.status}, ${Math.round(x.p*100)} %, Grundlage ${x.basis} ${eur0(x.val)}, erwartet ${eur0(x.exp)}${x.next?', nächster Schritt: '+x.next.slice(0,80):''}]`).join('; '));
   return L.join('\n');
 }
 function anaHash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return String(h)}
@@ -9066,7 +9052,7 @@ async function anaAI(force,N,F){
   if(!$('anaAI'))return;
   N=N||anaNumbers();F=F||anaForecast();
   const ctx=anaContext(N,F),h=anaHash(ctx),key=N.r.key;
-  let cache={};try{cache=JSON.parse(localStorage.getItem('lm_fin_ai')||'{}')||{}}catch(_){}
+  let cache={};try{cache=JSON.parse(localStorage.getItem('lm_fin_ai2')||'{}')||{}}catch(_){}
   const c=cache[key];
   const ready=NOTION_LIVE&&KARTEI_LOADED&&(FIN_LOADED||!GAUTH);
   if(!force&&c&&(c.h===h||Date.now()-new Date(c.at).getTime()<6*36e5)){anaAIRender({d:c.d,at:c.at});return}
@@ -9078,7 +9064,7 @@ async function anaAI(force,N,F){
     const m=String(t).match(/\{[\s\S]*\}/);if(!m)throw new Error('Keine auswertbare Antwort. Bitte noch einmal versuchen.');
     const d=JSON.parse(m[0]);cache[key]={h,d,at:new Date().toISOString()};
     const keys=Object.keys(cache).sort((a,b)=>String(cache[b].at).localeCompare(String(cache[a].at)));keys.slice(12).forEach(k=>delete cache[k]);
-    try{localStorage.setItem('lm_fin_ai',JSON.stringify(cache))}catch(_){}
+    try{localStorage.setItem('lm_fin_ai2',JSON.stringify(cache))}catch(_){}
     if(anaRange().key===key)anaAIRender({d,at:cache[key].at});
   }catch(e){if(anaRange().key===key)anaAIRender({err:e.message})}
   finally{ANA_AI_BUSY=false}
@@ -9360,9 +9346,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
 const APP_VERSION='2026-11-01.35';
 const CHANGELOG=[
-  {v:'2026-11-01.35',d:'01.11.2026',items:['Rechnungen haben jetzt „Analysen“: Monat oder Jahr wählen, Berechnet, Eingenommen, Offen, Ausgaben und Kontostand-Bewegung','Ausgaben aus dem Kontist-Export nach Kategorie, für euch beide gleich, Kategorie per Klick änderbar','Ausblick bis Jahresende und Prognose fürs nächste Jahr pro Kunde, nach Status und Gesprächen','LeMatic Intelligence schreibt Einschätzung und drei Empfehlungen dazu'],tour:[
-    {img:'whatsnew/v35-analysen.webp',t:'Analysen im Rechnungen-Tab',txt:'Einnahmen, Ausgaben und Ausblick auf einer Seite, für einen Monat oder das ganze Jahr.',
-     steps:['Rechnungen öffnen und oben auf „Analysen“ tippen','Monat oder Jahr wählen, mit den Pfeilen blättern','Einmal im Monat den CSV-Export aus Kontist laden: Dann stimmen Ausgaben und Kontobewegung','Unten steht die Prognose pro Kunde, „So rechnet das Studio“ erklärt die Regel']}]},
+  {v:'2026-11-01.35',d:'01.11.2026',items:['Rechnungen haben jetzt „Analysen“: Monat oder Jahr wählen, Berechnet, Eingenommen, Offen, Ausgaben und Kontostand-Bewegung','Ausgaben aus dem Kontist-Export nach Kategorie, für euch beide gleich, Kategorie per Klick änderbar','Bis Jahresende: was noch offen ist und welche unterschriebenen Angebote noch abgerechnet werden müssen','LeMatic Intelligence schreibt Einschätzung und drei Empfehlungen dazu'],tour:[
+    {img:'whatsnew/v35-analysen.webp',t:'Analysen im Rechnungen-Tab',txt:'Einnahmen und Ausgaben auf einer Seite, für einen Monat oder das ganze Jahr.',
+     steps:['Rechnungen öffnen und oben auf „Analysen“ tippen','Monat oder Jahr wählen, mit den Pfeilen blättern','Einmal im Monat den CSV-Export aus Kontist laden: Dann stimmen Ausgaben und Kontobewegung','Unten steht, was bis Jahresende noch reinkommt, „So rechnet das Studio“ erklärt die Regeln']}]},
   {v:'2026-11-01.34',d:'01.11.2026',items:['Rechnungen zeigen getrennt: Berechnet, Eingenommen (nur Bezahlt) und Offen als Differenz','Angebote zählen nie zum Umsatz, auch nicht unterschrieben','Ersetzte und abgelehnte Rechnungen fallen aus allen Umsatzzahlen raus','LeMatic Intelligence nennt bei Umsatzfragen dieselben drei Zahlen']},
   {v:'2026-11-01.33',d:'01.11.2026',items:['Mails mit Ordnern wie in Gmail: Posteingang, Gesendet, Entwürfe und Alle Mails','Posteingang ist Standard, gesendete Mails tauchen dort nicht mehr auf','Gesendet zeigt nur Mails von info@lematic.de, neueste zuerst','Filter und Suche gelten im gewählten Ordner, die Zahl ungelesener Mails nur beim Posteingang']},
   {v:'2026-11-01.32',d:'01.11.2026',items:['Indian Spirit zählt wieder normal mit: offene Rechnungen pro Kunde stimmen in LeMatic Intelligence']},

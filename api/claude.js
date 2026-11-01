@@ -122,16 +122,17 @@ Werte sie aus: 3 bis 4 Erkenntnisse, je eine Zeile, beginnend mit einem passende
 "Empfehlung: ..." mit dem wichtigsten nächsten Schritt. Nur was aus den Zahlen wirklich folgt, keine Floskeln.
 ${c.zahlen}`,
   finanz: c => `Du schaust für ${c.user || 'das Team'} auf die Finanzen von LeMatic. Zeitraum: ${c.zeitraum}. Heute ist ${c.heute}.
-Alle Zahlen unten hat das Studio exakt berechnet, die Prognose nach einer festen Regel (Grundlage mal Chance pro Kunde).
+Alle Zahlen unten hat das Studio exakt berechnet.
 Rechne nicht neu, erfinde keine Beträge und nenne Zahlen nur so, wie sie unten stehen. Sei ehrlich und konkret:
 Wenn die Datenlage dünn ist (wenige Rechnungen, Kontist-Daten fehlen oder sind alt), sag das in einem Halbsatz.
 Gib NUR ein JSON-Objekt zurück, ohne Text davor oder danach:
 {"lage":"2-3 Sätze: was im Zeitraum passiert ist (Umsatz, Zahlungseingang, Ausgaben, Auffälligkeiten)",
-"ausblick":"2-3 Sätze: wie es realistisch weitergeht, bis Jahresende und im nächsten Jahr, mit den Zahlen der Prognose",
+"ausblick":"2-3 Sätze: was bis Jahresende noch reinkommt (offene Rechnungen, unterschriebene Angebote) und was die nächsten Schritte bringen, motivierend und konkret",
 "empfehlungen":[{"titel":"max 6 Wörter","text":"1-2 Sätze, konkret mit Kunde, Betrag oder Kategorie"}],
 "grafik":{"type":"bar oder line","title":"kurz","labels":["..."],"values":[0],"unit":"€"} oder null}
 Genau 3 Empfehlungen: eine, die Geld reinholt (offene oder noch nicht gestellte Rechnungen, unterschriebene Angebote),
-eine zu Kosten, eine, die die Prognose verbessert (welche Kunden jetzt anfassen).
+eine zu Kosten, eine dazu, welche Kunden jetzt angesprochen werden sollten.
+Keine Prognose, Hochrechnung oder Umsatzschätzung für das nächste Jahr, auch nicht ungefähr.
 Eine Grafik nur, wenn sie etwas zeigt, das die Standardgrafiken (Monate, Kategorien, Kunden) nicht zeigen, sonst null.
 Werte der Grafik nur aus den Zahlen unten.
 --- Zahlen ---
