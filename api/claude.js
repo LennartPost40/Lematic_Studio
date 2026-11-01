@@ -121,6 +121,21 @@ ${c.text ? '--- Text des Belegs ---\n' + c.text : '(Beleg als Datei angehängt)'
 Werte sie aus: 3 bis 4 Erkenntnisse, je eine Zeile, beginnend mit einem passenden Emoji. Danach eine Zeile
 "Empfehlung: ..." mit dem wichtigsten nächsten Schritt. Nur was aus den Zahlen wirklich folgt, keine Floskeln.
 ${c.zahlen}`,
+  finanz: c => `Du schaust für ${c.user || 'das Team'} auf die Finanzen von LeMatic. Zeitraum: ${c.zeitraum}. Heute ist ${c.heute}.
+Alle Zahlen unten hat das Studio exakt berechnet, die Prognose nach einer festen Regel (Grundlage mal Chance pro Kunde).
+Rechne nicht neu, erfinde keine Beträge und nenne Zahlen nur so, wie sie unten stehen. Sei ehrlich und konkret:
+Wenn die Datenlage dünn ist (wenige Rechnungen, Kontist-Daten fehlen oder sind alt), sag das in einem Halbsatz.
+Gib NUR ein JSON-Objekt zurück, ohne Text davor oder danach:
+{"lage":"2-3 Sätze: was im Zeitraum passiert ist (Umsatz, Zahlungseingang, Ausgaben, Auffälligkeiten)",
+"ausblick":"2-3 Sätze: wie es realistisch weitergeht, bis Jahresende und im nächsten Jahr, mit den Zahlen der Prognose",
+"empfehlungen":[{"titel":"max 6 Wörter","text":"1-2 Sätze, konkret mit Kunde, Betrag oder Kategorie"}],
+"grafik":{"type":"bar oder line","title":"kurz","labels":["..."],"values":[0],"unit":"€"} oder null}
+Genau 3 Empfehlungen: eine, die Geld reinholt (offene oder noch nicht gestellte Rechnungen, unterschriebene Angebote),
+eine zu Kosten, eine, die die Prognose verbessert (welche Kunden jetzt anfassen).
+Eine Grafik nur, wenn sie etwas zeigt, das die Standardgrafiken (Monate, Kategorien, Kunden) nicht zeigen, sonst null.
+Werte der Grafik nur aus den Zahlen unten.
+--- Zahlen ---
+${c.zahlen}`,
   tipps: c => `Du gibst ${c.user || 'dem Team'} heute persönliche Empfehlungen im LeMatic Studio. Drei Arten:
 - "heute": eine konkrete Sache, die heute oder diese Woche wirklich etwas bringt (Geld, Kunde, Frist). Mit Namen, Beträgen, Daten aus den Daten.
 - "firma": eine Verbesserung am Unternehmen LeMatic (Akquise, Preise, Abläufe, Positionierung, wiederkehrende Probleme), begründet mit dem, was in den Daten auffällt.
@@ -152,7 +167,7 @@ export default async function handler(req, res) {
   const { task, context } = req.body || {};
   const build = TASKS[task];
   if (!build || !context || typeof context !== 'object') return res.status(400).json({ error: 'Unbekannte Aufgabe' });
-  const clip = v => String(v == null ? '' : v).slice(0, task === 'agent' ? 120000 : task === 'tipps' ? 30000 : 12000);
+  const clip = v => String(v == null ? '' : v).slice(0, task === 'agent' ? 120000 : task === 'tipps' || task === 'finanz' ? 30000 : 12000);
   // Beleg als Datei (Foto oder gescanntes PDF): separat, nicht abschneiden
   const file = task === 'beleg' && typeof context.file === 'string' && context.file.length < 6_000_000 ? context.file : null;
   const mime = String(context.mime || '');

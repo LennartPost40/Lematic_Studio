@@ -990,6 +990,73 @@ textarea.input{font-family:inherit}
 .kstats div{padding:14px;border-radius:16px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8)}
 .kstats strong{display:block;font-size:22px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
 .kstats span{font-size:12px;color:var(--ink-2)}
+/* Rechnungen: Analysen */
+:root{--fin-in:var(--brand-2);--fin-out:#C2570C;--fin-goal:#B8A200}
+html.theme-dark{--fin-out:#F0A04B;--fin-goal:#FCD717}
+.inv-tabs{margin:-4px 0 14px}
+.ana{display:flex;flex-direction:column;gap:16px}
+.ana[hidden]{display:none}
+.ana-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.ana-nav{display:inline-flex;align-items:center;gap:4px}
+.ana-nav b{min-width:128px;text-align:center;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.ana-bar .sp{flex:1}
+.ana-bar small{font-size:12px;color:var(--ink-3)}
+.ana-k{grid-template-columns:repeat(5,minmax(0,1fr))}
+.ana-k .neg strong{color:#B42318}
+html.theme-dark .ana-k .neg strong{color:#FF8A80}
+.ana-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ana .panel h2{font-size:17px}
+.ana .panel>p.sub{font-size:13px;color:var(--ink-2);margin:2px 0 12px}
+.ana-ai .ai-h{font-size:14px;font-weight:600;color:var(--brand);display:flex;align-items:center;gap:6px}
+html.theme-dark .ana-ai .ai-h{color:var(--brand-2)}
+.ana-ai .txt{font-size:13.5px;margin-top:6px}
+.ana-ai{border:1px solid rgba(7,61,48,.18);background:linear-gradient(135deg,rgba(252,215,23,.10),rgba(7,61,48,.04))}
+.ana-ai .ai-sec{margin-top:8px}
+.ana-ai .ai-g .chart-card{max-width:520px;box-shadow:none}
+.ana-ai .ai-sec h4{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3);margin-bottom:3px}
+.ana-ai .ai-sec p{font-size:13.5px;line-height:1.55}
+.ana-recs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:6px}
+.ana-recs div{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.6);border:1px solid rgba(7,61,48,.1)}
+html.theme-dark .ana-recs div{background:rgba(34,43,40,.55);border-color:rgba(255,255,255,.06)}
+.ana-recs b{display:block;font-size:13.5px;margin-bottom:3px}.ana-recs span{font-size:13px;color:var(--ink-2);line-height:1.45}
+.ana-ai .ai-foot{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:12px;color:var(--ink-3)}
+.fbars{display:flex;flex-direction:column;gap:7px}
+.fbar{display:grid;grid-template-columns:minmax(0,170px) 1fr auto;gap:10px;align-items:center;font-size:13px}
+.fbar .l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fbar .t{height:10px;border-radius:6px;background:rgba(118,118,128,.12);overflow:hidden}
+.fbar .t i{display:block;height:100%;border-radius:6px;background:var(--fin-out)}
+.fbar.in .t i{background:var(--fin-in)}
+.fbar b{font-variant-numeric:tabular-nums;font-weight:600}
+.ftx{display:flex;flex-direction:column}
+.ftx-r{display:grid;grid-template-columns:62px minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid rgba(118,118,128,.14);font-size:13px}
+.ftx-r small{display:block;color:var(--ink-3);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ftx-r .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ftx-r b{font-variant-numeric:tabular-nums;text-align:right}
+.fcat{border:1px solid rgba(118,118,128,.25);background:transparent;border-radius:999px;padding:3px 10px;font-size:12px;color:var(--ink-2);cursor:pointer;white-space:nowrap;min-height:28px;font:inherit;font-size:12px}
+.fcat:hover{border-color:var(--brand);color:var(--brand)}
+.ana details summary{cursor:pointer;font-size:13.5px;font-weight:600;padding:6px 0}
+.ana-warm{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
+.ana-warm span{padding:6px 12px;border-radius:999px;font-size:12.5px;background:rgba(118,118,128,.1)}
+.ana-warm span b{font-variant-numeric:tabular-nums}
+.ana-sc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.ana-sc div{padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.8)}
+html.theme-dark .ana-sc div{background:rgba(34,43,40,.55);border-color:rgba(255,255,255,.06)}
+.ana-sc div.hl{border-color:var(--brand)}
+.ana-sc strong{display:block;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}.ana-sc span{font-size:12px;color:var(--ink-2)}
+.ftab{width:100%;border-collapse:collapse;font-size:13px}
+.ftab th{text-align:left;font-size:11.5px;font-weight:600;color:var(--ink-3);padding:6px 8px 6px 0;border-bottom:1px solid rgba(118,118,128,.2)}
+.ftab td{padding:8px 8px 8px 0;border-bottom:1px solid rgba(118,118,128,.12);vertical-align:top}
+.ftab td.r,.ftab th.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ftab small{display:block;color:var(--ink-3);font-size:11.5px}
+.ana-how{font-size:13px;line-height:1.55;color:var(--ink-2)}
+.ana-how ul{margin:6px 0 0 18px;list-style:disc}.ana-how li{margin:3px 0}
+.ana-empty{font-size:13px;color:var(--ink-2);padding:6px 0}
+.chart-svg .s-in rect{fill:var(--fin-in)}.chart-svg .s-out rect{fill:var(--fin-out)}
+.chart-svg .s-hi rect{opacity:1}.chart-svg .dim rect{opacity:.45}
+.chart-svg .ln.s-in{stroke:var(--fin-in)}.chart-svg .ln.s-goal{stroke:var(--fin-goal);stroke-dasharray:5 4}.chart-svg .ln.s-out{stroke:var(--fin-out)}
+.flg{display:inline-flex;gap:12px;margin-left:auto;font-size:11.5px;font-weight:400;color:var(--ink-2)}
+.flg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+@media (max-width:860px){.ana-k{grid-template-columns:repeat(2,minmax(0,1fr))}.ana-grid,.ana-recs,.ana-sc{grid-template-columns:1fr}.fbar{grid-template-columns:minmax(0,120px) 1fr auto}.ftx-r{grid-template-columns:52px minmax(0,1fr) auto}.ftx-r .fcat{grid-column:2;justify-self:start}.ftab .gl{display:none}.flg{margin-left:0;width:100%}.chart-card figcaption{flex-wrap:wrap}.ana-bar .sp{display:none}}
 .inv td{white-space:nowrap}
 .inv td.party{white-space:normal}
 .inv td.party small{display:block;font-size:12px;color:var(--ink-2)}
@@ -2648,7 +2715,9 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
           <button class="btn btn-glass btn-more" id="invMore" aria-label="Weitere Aktionen" aria-haspopup="menu"><svg class="i sm"><use href="#i-dots"/></svg></button>
         </div>
       </header>
+      <div class="seg inv-tabs" id="invTabs" role="group" aria-label="Ansicht"><button aria-pressed="true" data-invtab="liste">Liste</button><button aria-pressed="false" data-invtab="analysen">Analysen</button></div>
       <p class="dd-status" style="margin:-6px 0 12px"></p>
+      <div id="invAna" class="ana" hidden></div>
       <div class="grid inv-grid" id="invGrid">
         <section class="glass panel c5" id="invUpPanel" aria-labelledby="up2-title">
           <div class="panel-head"><div><h2 id="up2-title">Rechnung hochladen</h2><p>Einfach reinziehen: LeMatic Intelligence erkennt Art, Kunde, Betrag und den richtigen Drive-Ordner</p></div><button class="icon-btn" id="invUpClose" aria-label="Hochladen schließen"><svg class="i sm"><use href="#i-x"/></svg></button></div>
@@ -3926,6 +3995,7 @@ function go(route){
   views.forEach(x=>x.classList.toggle('active',x.dataset.view===v));
   const navV=v==='archiv'?'medien':v==='premium'?'einstellungen':v;document.querySelectorAll('[data-route]').forEach(a=>a.classList.toggle('active',a.dataset.route===navV));
   if(v==='kalender')safe('cal',renderCal);
+  if(v==='rechnungen')safe('invTab',()=>invTab(parts[1]==='analysen'?'analysen':'liste'));
   if(v==='heute')safe('home',renderHome);
   if(v==='akquise')safe('leads',renderLeads);
   if(v==='kunden')safe('kartei',renderKartei);
@@ -4817,6 +4887,7 @@ function renderInvoices(){
   }).join('');
   INVOICES.forEach(i=>i.fresh=false);
   updateBadges();saveState();
+  if(typeof anaOn==='function'&&anaOn())safe('ana',renderAna);
 }
 (function(){
   const rows=$('invRows');if(!rows)return;
@@ -5950,6 +6021,7 @@ async function loadKartei(){
     rebuildMailMap();
     fillKundenSelects();
     renderKartei();renderSideClients();
+    safe('ana',()=>{if(anaOn())renderAna()});
     if(GMAIL){safe('mailsR',renderMails)}
     if(kOpen&&$('kdWrap').classList.contains('show'))renderKundeSheet(kOpen);
     if(MY_CAL_LOADED)safe('calKid',()=>EVENTS.forEach(e=>{if(!e.kid&&isTermin(e)){const id=kundeIdForText(e.t);if(id){e.kid=id;e.p=(KUNDEN.find(k=>k.id===id)||{}).name||e.p}}}));
@@ -7622,7 +7694,7 @@ function chartData(){
   const inv=agentInvoices();
   const dd=driveDocsLI().filter(d=>d.kind==='Ausgang');
   const src=dd.length?dd:inv.filter(invCounts);
-  const umsatz={type:'bar',title:'Rechnungen pro Monat'+(dd.length?' (aus Drive)':''),unit:'€',labels:months.map(m=>m.l),values:months.map(m=>src.filter(i=>(i.date||'').startsWith(m.k)).reduce((a,i)=>a+(i.amount||0),0)),go:'rechnungen'};
+  const umsatz={type:'bar',title:'Rechnungen pro Monat'+(dd.length?' (aus Drive)':''),unit:'€',labels:months.map(m=>m.l),values:months.map(m=>src.filter(i=>(i.date||'').startsWith(m.k)).reduce((a,i)=>a+(i.amount||0),0)),go:'rechnungen/analysen'};
   const order=['Bestandskunde','Warm','Angefragt','Kalt','Abgesagt'];
   const pipe={type:'bar',title:'Kunden nach Status',labels:order,values:order.map(s=>KUNDEN.filter(k=>k.status===s).length),go:'kunden'};
   const weeks=[];for(let i=7;i>=0;i--){const end=addDays(TODAY,-i*7),start=addDays(end,-6);weeks.push({start,end,l:dm(start)})}
@@ -8710,6 +8782,7 @@ async function bankLoad(file){
   const tx=rows.map(r=>({date:r['Buchungsdatum']||r['Datum']||'',name:r['Empfänger']||r['Auftraggeber']||r['Name']||'',amount:num(r['Betrag']),purpose:r['Verwendungszweck']||'',note:r['Persönliche Notiz']||'',status:r['Buchungsstatus']||''})).filter(t=>t.date&&t.amount&&!/vorgemerkt|pending/i.test(t.status));
   if(!tx.length){toast('In der Datei wurden keine Buchungen gefunden. Ist es der CSV-Export aus Kontist?');return}
   BANK=bankMatch(tx);BANK.tx=tx;renderBank();
+  safe('finImport',()=>finImport(tx));
   try{localStorage.setItem('lm_bank_last',JSON.stringify({at:new Date().toISOString(),from:tx[0].date,to:tx[tx.length-1].date}))}catch(_){}
 }
 document.addEventListener('change',e=>{if(e.target.id==='bankFile'&&e.target.files[0])bankLoad(e.target.files[0]).catch(x=>toast('Konnte die Datei nicht lesen: '+x.message))});
@@ -8723,6 +8796,302 @@ document.addEventListener('click',async e=>{
   for(const r of picks){try{await notionUpdate('rechnungen',r.inv.nid,{Status:{select:{name:'Bezahlt'}}});r.inv.status='bezahlt';r.already=true;ok++}catch(x){toast(r.inv.no+': '+x.message)}}
   safe('inv',renderInvoices);safe('home',renderHome);safe('dd',()=>{ddMergeStatus()});renderBank();
   toast(ok+(ok===1?' Rechnung':' Rechnungen')+' als bezahlt eingetragen');if(ok&&typeof confetti==='function')try{confetti(50)}catch(_){}
+});
+
+/* ---------- Rechnungen: Analysen ----------
+   Einnahmen aus Notion, Ausgaben aus dem Kontist-Export (gespeichert in Drive: _Studio_Daten/Kontist_Umsaetze.json, für beide gleich).
+   Alle Zahlen und die Prognose rechnet das Studio nach festen Regeln. LeMatic Intelligence erklärt sie nur und gibt Empfehlungen. */
+const FIN_FILE='Kontist_Umsaetze.json';
+let FIN={tx:[],cats:{},at:'',by:''},FIN_ID=null,FIN_LOADED=false,FIN_LOADING=null,FIN_T=null;
+try{const s=JSON.parse(localStorage.getItem('lm_fin')||'null');if(s&&Array.isArray(s.tx))FIN={tx:s.tx,cats:s.cats||{},at:s.at||'',by:s.by||''}}catch(_){}
+let ANA={mode:'jahr',y:+TODAY.slice(0,4),m:+TODAY.slice(5,7)};
+const FIN_CATS=['Software & Abos','Equipment & Technik','Freelancer & Dienstleister','Auslagen an Lennart','Auslagen an Martin','Fahrt & Reise','Bank & Gebühren','Steuern & Abgaben','Sonstiges','Privat'];
+function finAutoCat(t){
+  const nm=String(t.name||'').toLowerCase(),s=(nm+' '+(t.purpose||'')+' '+(t.note||'')).toLowerCase();
+  if(/privat/.test(s))return 'Privat';
+  if(/sevdesk|higgsfield|artlist|autoenhance|adobe|openai|anthropic|elevenlabs|magnific|notion|vercel|google|apple\.com|dropbox|frame\.io|envato|epidemic|musicbed|canva|figma|kling|runway|spotify|microsoft/.test(s))return 'Software & Abos';
+  if(/ageras|shine germany|kontist|kontoführ|bankgebühr|entgelt/.test(s))return 'Bank & Gebühren';
+  if(/finanzamt|steuer|\bihk\b|rundfunk|berufsgenossen|künstlersozial/.test(s))return 'Steuern & Abgaben';
+  if(/\baral\b|\bshell\b|\besso\b|\btotal\b|\bjet\b|tankstelle|deutsche bahn|\bdb\b|flixbus|hotel|parkhaus|parken|\buber\b|sixt/.test(s))return 'Fahrt & Reise';
+  if(/amazon|media ?markt|saturn|coolblue|\bexpert\b|thomann|calumet|foto|\bdji\b|cyberport|notebooksbilliger|conrad/.test(s))return 'Equipment & Technik';
+  if(/lennart/.test(nm))return 'Auslagen an Lennart';
+  if(/martin|schmick/.test(nm))return 'Auslagen an Martin';
+  if(/r(e|g|echnung)[\s.:-]*\d|rechnung/i.test(t.purpose||''))return 'Freelancer & Dienstleister';
+  return 'Sonstiges';
+}
+const finCat=t=>(FIN.cats[t.id]&&FIN.cats[t.id].c)||finAutoCat(t);
+function finStore(){try{localStorage.setItem('lm_fin',JSON.stringify(FIN))}catch(_){}}
+function finMerge(src){
+  const by=new Map(FIN.tx.map(t=>[t.id,t]));(src.tx||[]).forEach(t=>{if(t&&t.id&&!by.has(t.id))by.set(t.id,t)});
+  FIN.tx=[...by.values()].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  Object.entries(src.cats||{}).forEach(([id,v])=>{if(v&&(!FIN.cats[id]||String(v.at)>String(FIN.cats[id].at)))FIN.cats[id]=v});
+  if(String(src.at||'')>String(FIN.at||'')){FIN.at=src.at;FIN.by=src.by||''}
+}
+async function finFile(){const dir=await agDir();const f=(await ddList(`'${dir}' in parents and name='${FIN_FILE}' and trashed=false`))[0];return{dir,f}}
+function finLoad(){
+  if(FIN_LOADED||!GAUTH)return Promise.resolve(FIN);
+  if(FIN_LOADING)return FIN_LOADING;
+  FIN_LOADING=(async()=>{try{const {f}=await finFile();
+      if(f){FIN_ID=f.id;const r=await (await gfetch('https://www.googleapis.com/drive/v3/files/'+f.id+'?alt=media&supportsAllDrives=true')).json();if(r&&Array.isArray(r.tx))finMerge(r)}
+      FIN_LOADED=true;finStore()}catch(e){console.warn('Kontist-Daten',e)}finally{FIN_LOADING=null}return FIN})();
+  return FIN_LOADING;
+}
+function finSave(){
+  finStore();if(!GAUTH)return;
+  clearTimeout(FIN_T);FIN_T=setTimeout(async()=>{try{
+    const body=JSON.stringify({tx:FIN.tx,cats:FIN.cats,at:FIN.at,by:FIN.by,savedBy:USER,savedAt:new Date().toISOString()});
+    if(!FIN_ID){const {dir,f}=await finFile();if(f)FIN_ID=f.id;else{const up=await driveUpload(new File([body],FIN_FILE,{type:'application/json'}),FIN_FILE,dir);FIN_ID=up.id;return}}
+    await gfetch('https://www.googleapis.com/upload/drive/v3/files/'+FIN_ID+'?uploadType=media&supportsAllDrives=true',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
+  }catch(e){toast('Kontist-Daten nur auf diesem Gerät gespeichert: '+e.message)}},700);
+}
+async function finImport(tx){
+  await finLoad();
+  const seen={},before=FIN.tx.length;
+  const rows=tx.map(t=>{const base=[t.date,(+t.amount).toFixed(2),t.name,t.purpose].join('|');seen[base]=(seen[base]||0)+1;
+    return{id:base+'#'+seen[base],date:String(t.date).slice(0,10),name:t.name||'',amount:+t.amount||0,purpose:t.purpose||'',note:t.note||''}});
+  finMerge({tx:rows,at:new Date().toISOString(),by:USER});finSave();
+  const n=FIN.tx.length-before;
+  toast(n?`${n} neue Kontobewegungen für die Analysen übernommen`:'Kontist-Daten waren schon aktuell');
+  safe('ana',()=>{if(anaOn())renderAna()});
+}
+const nrmId=x=>String(x||'').replace(/-/g,'');
+const kOf=i=>{const ids=(i.kids||[]).map(nrmId);return KUNDEN.find(k=>ids.includes(nrmId(k.id)))};
+const invWho=i=>{const k=kOf(i);return k?k.name:(i.party&&i.party!=='—'?i.party:'Ohne Kunde')};
+const fsum=a=>a.reduce((s,x)=>s+(+x.amount||0),0);
+const eur0=n=>Math.round(n).toLocaleString('de-DE')+' €';
+function anaRange(){
+  if(ANA.mode==='monat'){const k=ANA.y+'-'+pad(ANA.m);return{from:k+'-01',to:k+'-31',key:k,label:MONTHS[ANA.m-1]+' '+ANA.y}}
+  return{from:ANA.y+'-01-01',to:ANA.y+'-12-31',key:String(ANA.y),label:'Jahr '+ANA.y};
+}
+const inR=(d,r)=>{d=String(d||'').slice(0,10);return d>=r.from&&d<=r.to};
+function anaMonths(){
+  const out=[];
+  if(ANA.mode==='jahr'){for(let m=1;m<=12;m++)out.push({k:ANA.y+'-'+pad(m),l:MON[m-1]})}
+  else{for(let i=11;i>=0;i--){const d=new Date(ANA.y,ANA.m-1-i,1);out.push({k:d.getFullYear()+'-'+pad(d.getMonth()+1),l:MON[d.getMonth()]+(d.getMonth()===0?' '+String(d.getFullYear()).slice(2):'')})}}
+  return out;
+}
+function anaNumbers(){
+  const r=anaRange();
+  const cnt=INVOICES.filter(invCounts),rech=cnt.filter(i=>inR(i.date,r));
+  const berechnet=fsum(rech),eingenommen=fsum(rech.filter(i=>i.status==='bezahlt'));
+  const tx=FIN.tx.filter(t=>inR(t.date,r));
+  const outAll=tx.filter(t=>t.amount<0),out=outAll.filter(t=>finCat(t)!=='Privat');
+  const ausgaben=-fsum(out),privat=-fsum(outAll.filter(t=>finCat(t)==='Privat'));
+  const rein=fsum(tx.filter(t=>t.amount>0)),saldo=fsum(tx);
+  const cats={};outAll.forEach(t=>{const c=finCat(t);cats[c]=(cats[c]||0)-t.amount});
+  const kund={};rech.forEach(i=>{const n=invWho(i);kund[n]=(kund[n]||0)+(+i.amount||0)});
+  const months=anaMonths().map(m=>({...m,ber:fsum(cnt.filter(i=>String(i.date).startsWith(m.k))),aus:-fsum(FIN.tx.filter(t=>t.amount<0&&String(t.date).startsWith(m.k)&&finCat(t)!=='Privat'))}));
+  const dates=FIN.tx.map(t=>t.date).sort();
+  return{r,rech,berechnet,eingenommen,offen:berechnet-eingenommen,open:rech.filter(i=>i.status!=='bezahlt'),tx,out,ausgaben,privat,rein,saldo,cats,kund,months,
+    finFrom:dates[0]||'',finTo:dates[dates.length-1]||'',hasFin:FIN.tx.length>0};
+}
+function parseBudget(s){
+  const vals=[];String(s||'').replace(/(\d{1,3}(?:\.\d{3})+|\d+(?:,\d+)?)\s*(k|tsd|tausend)?/gi,(m,n,k)=>{let v=parseFloat(n.replace(/\./g,'').replace(',','.'));if(k)v*=1000;if(v>=100)vals.push(v);return m});
+  return vals.length?Math.round(vals.slice(0,2).reduce((a,b)=>a+b,0)/Math.min(2,vals.length)):0;
+}
+function anaForecast(){
+  const ny=+TODAY.slice(0,4)+1,since=addDays(TODAY,-365);
+  const cnt=INVOICES.filter(invCounts);
+  const sizes=cnt.filter(i=>i.date>=since).map(i=>+i.amount||0).filter(a=>a>=200).sort((a,b)=>a-b);
+  const median=sizes.length?sizes[Math.floor(sizes.length/2)]:1500;
+  const P={Bestandskunde:.75,Warm:.3,Angefragt:.25,Kalt:.08},CH={Hoch:.6,Mittel:.35,Niedrig:.12};
+  const has=(x,k)=>(x.kids||[]).map(nrmId).includes(nrmId(k.id));
+  const rows=KUNDEN.filter(k=>P[k.status]!=null&&notPrivate(k.name)).map(k=>{
+    const inv=cnt.filter(i=>has(i,k)),last12=fsum(inv.filter(i=>i.date>=since));
+    const g=GESPR.filter(x=>has(x,k)).sort((a,b)=>String(b.date).localeCompare(String(a.date)))[0];
+    const ang=fsum(INVOICES.filter(i=>i.kind==='Angebot'&&i.status==='offen'&&has(i,k)));
+    const budget=g?parseBudget(g.budget):0;
+    let p=P[k.status],why='Status '+k.status;
+    if(k.status==='Bestandskunde'&&!last12){p=.4;why='Bestandskunde, aber kein Umsatz in 12 Monaten'}
+    if(g&&CH[g.chance]){p=k.status==='Bestandskunde'?Math.max(p,CH[g.chance]):CH[g.chance];why+=', Gespräch '+dm(g.date)+': Chance '+g.chance}
+    let basis,val;
+    if(last12>0){basis='Umsatz der letzten 12 Monate';val=last12}
+    else if(ang>0){basis='offenes Angebot';val=ang}
+    else if(budget>0){basis='Budget aus dem Gespräch';val=budget}
+    else{basis='typischer Auftrag (geschätzt)';val=median}
+    return{k,name:k.name,status:k.status,p,why,basis,val,exp:Math.round(val*p/50)*50,best:Math.round(val*Math.min(.95,p*1.6)/50)*50,chance:g?g.chance:'',next:g?(g.next||''):''};
+  }).filter(r=>r.exp>0).sort((a,b)=>b.exp-a.exp);
+  const by=s=>rows.filter(r=>r.status===s);
+  const warm={};['Bestandskunde','Warm','Angefragt','Kalt'].forEach(s=>{warm[s]={n:by(s).length,exp:by(s).reduce((a,r)=>a+r.exp,0)}});
+  /* Bis Jahresende: offene Rechnungen und unterschriebene Angebote, die noch nicht voll abgerechnet sind */
+  const y=TODAY.slice(0,4),Ry=revYear(y);
+  const signed=INVOICES.filter(i=>i.kind==='Angebot'&&i.status==='unterschrieben'&&i.date>=since).map(a=>{
+    const k=kOf(a);const billed=k?fsum(cnt.filter(i=>has(i,k)&&i.date>=a.date)):0;
+    return{a,name:invWho(a),billed,rest:Math.max(0,(+a.amount||0)-billed)};
+  }).filter(x=>x.rest>0);
+  return{ny,median,rows,warm,realistisch:rows.reduce((a,r)=>a+r.exp,0),vorsichtig:by('Bestandskunde').reduce((a,r)=>a+r.exp,0),gut:rows.reduce((a,r)=>a+r.best,0),
+    year:y,berechnetBisher:Ry.berechnet,offenJahr:Ry.offen,signed,signedRest:signed.reduce((a,x)=>a+x.rest,0)};
+}
+function finChartSVG(c){
+  const W=440,H=200,P={l:36,r:10,t:14,b:30},labels=c.labels||[],n=labels.length;if(!n)return '';
+  const all=[].concat(...c.series.map(s=>s.values.map(v=>+v||0)));const max=Math.max(1,...all),iw=W-P.l-P.r,ih=H-P.t-P.b,step=iw/n;
+  const nice=v=>v>=1000?Math.round(v/100)/10+'k':String(Math.round(v));
+  const y=v=>P.t+ih-(v/max)*ih;
+  let s=`<svg viewBox="0 0 ${W} ${H}" class="chart-svg" role="img" aria-label="${esc(c.title||'Grafik')}">`;
+  [0,.5,1].forEach(f=>{const yy=P.t+ih-f*ih;s+=`<line x1="${P.l}" x2="${W-P.r}" y1="${yy}" y2="${yy}" class="grid-l"/><text x="${P.l-6}" y="${yy+4}" text-anchor="end" class="ax">${nice(max*f)}</text>`});
+  labels.forEach((l,i)=>{if(n<=12||i%Math.ceil(n/12)===0)s+=`<text x="${P.l+step*i+step/2}" y="${H-10}" text-anchor="middle" class="ax">${esc(String(l).slice(0,7))}</text>`});
+  if(c.type==='line'){
+    c.series.forEach(se=>{const pts=se.values.map((v,i)=>v==null?null:[P.l+step*i+step/2,y(+v||0),i]).filter(Boolean);if(!pts.length)return;
+      s+=`<path d="${pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" class="ln ${se.cls}"/>`;
+      if(!se.noPts)pts.forEach(p=>{s+=`<g class="pt" tabindex="0"><circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5"/><title>${esc(labels[p[2]])} · ${esc(se.name)}: ${eur0(se.values[p[2]])}</title></g>`})});
+  }else{
+    const k=c.series.length,bw=Math.min(18,step*.7/k);
+    c.series.forEach((se,j)=>se.values.forEach((v,i)=>{v=+v||0;const x=P.l+step*i+(step-bw*k)/2+bw*j,yy=y(v);
+      s+=`<g class="bar-g ${se.cls}${c.hi!=null&&c.hi!==i?' dim':''}" tabindex="0" style="--d:${i*30}ms"><rect x="${x.toFixed(1)}" y="${yy.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0,P.t+ih-yy).toFixed(1)}" rx="3"/><title>${esc(labels[i])} · ${esc(se.name)}: ${eur0(v)}</title></g>`}));
+  }
+  return s+'</svg>';
+}
+function finChartCard(c){
+  const lg=`<span class="flg">${c.series.map(se=>`<span><i style="background:var(${se.cls==='s-out'?'--fin-out':se.cls==='s-goal'?'--fin-goal':'--fin-in'})"></i>${esc(se.name)}</span>`).join('')}</span>`;
+  return `<figure class="glass chart-card"><figcaption>${esc(c.title)}${c.note?` <small>${esc(c.note)}</small>`:''}${lg}</figcaption>${finChartSVG(c)}</figure>`;
+}
+function finBars(items,cls){
+  if(!items.length)return '<p class="ana-empty">Keine Daten im Zeitraum.</p>';
+  const max=Math.max(...items.map(x=>x.v),1);
+  return `<div class="fbars">${items.map(x=>`<div class="fbar ${cls||''}"><span class="l" title="${esc(x.l)}">${esc(x.l)}</span><span class="t"><i style="width:${(x.v/max*100).toFixed(1)}%"></i></span><b>${eur0(x.v)}</b></div>`).join('')}</div>`;
+}
+const anaOn=()=>{const a=$('invAna');return !!a&&!a.hidden&&location.hash.indexOf('rechnungen')>-1};
+function invTab(t){
+  const ana=t==='analysen';
+  document.querySelectorAll('[data-invtab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.invtab===t)));
+  const g=$('invGrid'),a=$('invAna'),st=document.querySelector('[data-view="rechnungen"] .dd-status');
+  if(g)g.hidden=ana;if(a)a.hidden=!ana;if(st)st.hidden=ana;
+  if(ana){renderAna();finLoad().then(()=>safe('ana',renderAna))}
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-invtab]');if(!b)return;location.hash='#/rechnungen'+(b.dataset.invtab==='analysen'?'/analysen':'')});
+function renderAna(){
+  const el=$('invAna');if(!el||el.hidden)return;
+  const N=anaNumbers(),F=anaForecast(),r=N.r,isYear=ANA.mode==='jahr';
+  const stand=N.hasFin?`Kontist-Daten ${dm(N.finFrom)} bis ${dm(N.finTo)}`:'Noch keine Kontist-Daten';
+  const finGap=N.hasFin&&r.to>N.finTo&&r.from<=TODAY&&diffDays(TODAY,N.finTo)>10;
+  const tile=(v,l,cls)=>`<div class="${cls||''}"><strong>${v}</strong><span>${l}</span></div>`;
+  const noFin='<span>Kontist-CSV laden</span>';
+  const charts=[];
+  charts.push({title:isYear?'Berechnet und Ausgaben pro Monat':'Letzte 12 Monate',note:isYear?'':'markiert: '+MONTHS[ANA.m-1],labels:N.months.map(m=>m.l),hi:isYear?null:11,
+    series:[{name:'Berechnet',cls:'s-in',values:N.months.map(m=>m.ber)}].concat(N.hasFin?[{name:'Ausgaben',cls:'s-out',values:N.months.map(m=>m.aus)}]:[])});
+  if(isYear){let c=0;const cur=TODAY.slice(0,7);const cum=N.months.map(m=>{c+=m.ber;return m.k>cur?null:c});
+    charts.push({type:'line',title:'Umsatz '+ANA.y+' aufsummiert',note:'Ziel '+eur0(GOAL),labels:N.months.map(m=>m.l),
+      series:[{name:'Berechnet',cls:'s-in',values:cum},{name:'Ziel',cls:'s-goal',noPts:true,values:N.months.map((m,i)=>GOAL/12*(i+1))}]});}
+  else{const ein=N.months.map(m=>fsum(INVOICES.filter(i=>invCounts(i)&&i.status==='bezahlt'&&String(i.date).startsWith(m.k))));
+    charts.push({title:'Berechnet und davon bezahlt',labels:N.months.map(m=>m.l),hi:11,series:[{name:'Berechnet',cls:'s-in',values:N.months.map(m=>m.ber)},{name:'Bezahlt',cls:'s-goal',values:ein}]});}
+  const catItems=Object.entries(N.cats).sort((a,b)=>b[1]-a[1]).map(([l,v])=>({l,v}));
+  const kItems=Object.entries(N.kund).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([l,v])=>({l,v}));
+  const outs=[...N.tx.filter(t=>t.amount<0)].sort((a,b)=>isYear?a.amount-b.amount:String(b.date).localeCompare(String(a.date)));
+  const txRow=t=>`<div class="ftx-r"><span class="num">${dm(t.date)}</span><span class="n">${esc(t.name||'—')}<small>${esc(t.note||t.purpose||'')}</small></span><b>${eur(-t.amount)}</b><button class="fcat" data-fincat="${esc(t.id)}" aria-label="Kategorie ändern: ${esc(finCat(t))}">${esc(finCat(t))}</button></div>`;
+  const W=F.warm,fr=F.rows.slice(0,14);
+  el.innerHTML=`
+  <div class="ana-bar">
+    <div class="seg" role="group" aria-label="Zeitraum"><button data-anamode="monat" aria-pressed="${!isYear}">Monat</button><button data-anamode="jahr" aria-pressed="${isYear}">Jahr</button></div>
+    <div class="ana-nav"><button class="icon-btn" data-anastep="-1" aria-label="Zurück">‹</button><b>${esc(isYear?String(ANA.y):MONTHS[ANA.m-1]+' '+ANA.y)}</b><button class="icon-btn" data-anastep="1" aria-label="Weiter">›</button></div>
+    <span class="sp"></span><small>${esc(stand)}</small>
+    <button class="btn btn-glass sm" data-anacsv>Kontist-CSV laden</button>
+  </div>
+  <div class="kstats ana-k">
+    ${tile(eur0(N.berechnet),'Berechnet, '+N.rech.length+(N.rech.length===1?' Rechnung':' Rechnungen'))}
+    ${tile(eur0(N.eingenommen),'Eingenommen, Status Bezahlt')}
+    ${tile(eur0(N.offen),'Offen'+(N.open.length?', '+N.open.map(i=>invWho(i)).filter((v,i,a)=>a.indexOf(v)===i).slice(0,2).join(', '):''))}
+    ${N.hasFin?tile(eur0(N.ausgaben),'Ausgaben laut Konto'+(N.privat?', plus '+eur0(N.privat)+' privat':'')):tile('–',noFin)}
+    ${N.hasFin?tile(eur0(N.saldo),'Geld rein minus raus laut Konto',N.saldo<0?'neg':''):tile('–',noFin)}
+  </div>
+  ${finGap?`<p class="ana-empty">Hinweis: Die Kontist-Daten reichen nur bis ${dm(N.finTo)}, Ausgaben danach fehlen noch, bitte einen neuen Export laden.</p>`:''}
+  <section class="glass panel ana-ai" id="anaAI"></section>
+  <div class="ana-grid">${charts.map(finChartCard).join('')}</div>
+  <div class="ana-grid">
+    <section class="glass panel"><h2>Wofür das Geld rausging</h2><p class="sub">${esc(r.label)}${N.hasFin?', laut Kontist':''}</p>
+      ${N.hasFin?finBars(catItems):'<p class="ana-empty">Lade einmal den CSV-Export aus Kontist (Umsätze, als CSV). Danach siehst du hier die Ausgaben nach Kategorie, für euch beide.</p>'}
+      ${outs.length?`<details ${isYear?'':'open'}><summary>${outs.length} Ausgaben${isYear?', größte zuerst':''}</summary><div class="ftx">${outs.slice(0,isYear?60:200).map(txRow).join('')}</div></details>`:''}
+    </section>
+    <section class="glass panel"><h2>Umsatz nach Kunde</h2><p class="sub">${esc(r.label)}, berechnet</p>${finBars(kItems,'in')}</section>
+  </div>
+  <section class="glass panel">
+    <h2>Ausblick</h2><p class="sub">Wie es realistisch weitergeht, nach Kundenstatus, letzten Gesprächen und Umsatz der letzten 12 Monate</p>
+    <h4 class="ksub">Bis Ende ${F.year}</h4>
+    <div class="ana-sc">
+      <div><strong>${eur0(F.berechnetBisher)}</strong><span>Berechnet ${F.year} bisher</span></div>
+      <div><strong>${eur0(F.offenJahr)}</strong><span>Noch offen bei Kunden</span></div>
+      <div><strong>${eur0(F.signedRest)}</strong><span>Unterschrieben, noch nicht abgerechnet${F.signed.length?': '+esc(F.signed.map(x=>x.name).join(', ')):''}</span></div>
+    </div>
+    ${F.signed.length?`<p class="ana-empty">${F.signed.map(x=>`${esc(x.name)}: Angebot ${esc(x.a.no||'')} über ${eur0(x.a.amount)}, seitdem ${eur0(x.billed)} berechnet`).join(' · ')}. Prüfen, ob die Rechnung noch fehlt.</p>`:''}
+    <h4 class="ksub" style="margin-top:14px">Prognose ${F.ny}</h4>
+    <div class="ana-sc">
+      <div><strong>${eur0(F.vorsichtig)}</strong><span>Vorsichtig: nur Bestandskunden</span></div>
+      <div class="hl"><strong>${eur0(F.realistisch)}</strong><span>Realistisch: alle Kunden nach Chance gewichtet</span></div>
+      <div><strong>${eur0(F.gut)}</strong><span>Wenn es gut läuft</span></div>
+    </div>
+    <div class="ana-warm">${['Bestandskunde','Warm','Angefragt','Kalt'].map(s=>`<span>${s}: <b>${W[s].n}</b> · ${eur0(W[s].exp)}</span>`).join('')}</div>
+    ${fr.length?`<table class="ftab"><thead><tr><th>Kunde</th><th class="gl">Grundlage</th><th class="r">Chance</th><th class="r">Erwartet ${F.ny}</th></tr></thead><tbody>
+      ${fr.map(x=>`<tr><td><b>${esc(x.name)}</b><small>${esc(x.why)}</small>${x.next?`<small>Nächster Schritt: ${esc(x.next.slice(0,90))}</small>`:''}</td><td class="gl">${esc(x.basis)}<small>${eur0(x.val)}</small></td><td class="r">${Math.round(x.p*100)} %</td><td class="r"><b>${eur0(x.exp)}</b></td></tr>`).join('')}
+    </tbody></table>${F.rows.length>fr.length?`<p class="ana-empty">Plus ${F.rows.length-fr.length} weitere Kunden mit zusammen ${eur0(F.rows.slice(fr.length).reduce((a,x)=>a+x.exp,0))}.</p>`:''}`:'<p class="ana-empty">Die Kundenkartei lädt noch.</p>'}
+  </section>
+  <section class="glass panel ana-how"><details><summary>So rechnet das Studio</summary><ul>
+    <li><b>Berechnet:</b> alle Rechnungen mit Rechnungsdatum im Zeitraum. Angebote zählen nie, ersetzte und abgelehnte Rechnungen auch nicht.</li>
+    <li><b>Eingenommen:</b> davon die mit Status Bezahlt in Notion. <b>Offen</b> ist die Differenz.</li>
+    <li><b>Ausgaben und Kontobewegung:</b> aus dem Kontist-Export, nach Buchungsdatum. Überweisungen mit „privat“ im Text zählen nicht als Ausgabe. Die Kategorie setzt das Studio nach dem Empfänger, sie lässt sich pro Buchung ändern.</li>
+    <li><b>Prognose:</b> pro Kunde Grundlage mal Chance. Grundlage ist der Umsatz der letzten 12 Monate, sonst ein offenes Angebot, sonst das Budget aus dem letzten Gespräch, sonst ein typischer Auftrag (Median der letzten 12 Monate: ${eur0(F.median)}). Chance nach Status: Bestandskunde 75 %, Warm 30 %, Angefragt 25 %, Kalt 8 %. Gibt es ein Gespräch mit Chance Hoch, Mittel oder Niedrig, gilt 60, 35 oder 12 %. „Wenn es gut läuft“ rechnet mit der 1,6-fachen Chance.</li>
+    <li><b>Unterschrieben, noch nicht abgerechnet:</b> Angebot minus allem, was dem Kunden seit dem Angebotsdatum berechnet wurde.</li>
+  </ul></details></section>`;
+  safe('anaAI',()=>anaAI(false,N,F));
+}
+function anaContext(N,F){
+  const L=[];
+  L.push(`Zeitraum: ${N.r.label}. Umsatzziel ${ANA.y}: ${eur0(GOAL)}.`);
+  L.push(`Berechnet: ${eur0(N.berechnet)} (${N.rech.length} Rechnungen). Eingenommen: ${eur0(N.eingenommen)}. Offen: ${eur0(N.offen)}${N.open.length?' ('+N.open.map(i=>invWho(i)+' '+(i.no||'')+' '+eur0(i.amount)+(invOverdue(i)>0?', '+invOverdue(i)+' Tage überfällig':'')).join('; ')+')':''}.`);
+  L.push(N.hasFin?`Konto (Kontist, Daten ${N.finFrom} bis ${N.finTo}): Ausgaben ${eur0(N.ausgaben)}, privat ${eur0(N.privat)}, Geld rein ${eur0(N.rein)}, Saldo der Bewegungen ${eur0(N.saldo)}.`:'Kontist-Daten fehlen noch, Ausgaben unbekannt.');
+  L.push('Pro Monat (Berechnet / Ausgaben): '+N.months.map(m=>`${m.l} ${eur0(m.ber)} / ${eur0(m.aus)}`).join(', '));
+  if(N.hasFin)L.push('Ausgaben nach Kategorie: '+Object.entries(N.cats).sort((a,b)=>b[1]-a[1]).map(([c,v])=>c+' '+eur0(v)).join(', '));
+  if(N.hasFin)L.push('Größte Ausgaben: '+[...N.tx.filter(t=>t.amount<0)].sort((a,b)=>a.amount-b.amount).slice(0,8).map(t=>`${t.date} ${t.name} ${eur0(-t.amount)} (${finCat(t)}${t.note?', '+t.note:''})`).join('; '));
+  L.push('Umsatz nach Kunde: '+Object.entries(N.kund).sort((a,b)=>b[1]-a[1]).map(([k,v])=>k+' '+eur0(v)).join(', '));
+  L.push(`Bis Ende ${F.year}: berechnet bisher ${eur0(F.berechnetBisher)}, offen ${eur0(F.offenJahr)}, unterschrieben aber noch nicht abgerechnet ${eur0(F.signedRest)}${F.signed.length?' ('+F.signed.map(x=>`${x.name}: Angebot ${eur0(x.a.amount)}, seitdem berechnet ${eur0(x.billed)}`).join('; ')+')':''}.`);
+  L.push(`Prognose ${F.ny}: vorsichtig ${eur0(F.vorsichtig)}, realistisch ${eur0(F.realistisch)}, gut ${eur0(F.gut)}. Kunden nach Status: `+Object.entries(F.warm).map(([s,v])=>`${s} ${v.n} (${eur0(v.exp)})`).join(', '));
+  L.push('Prognose pro Kunde: '+F.rows.slice(0,20).map(x=>`${x.name} [${x.status}, ${Math.round(x.p*100)} %, Grundlage ${x.basis} ${eur0(x.val)}, erwartet ${eur0(x.exp)}${x.next?', nächster Schritt: '+x.next.slice(0,80):''}]`).join('; '));
+  return L.join('\n');
+}
+function anaHash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return String(h)}
+let ANA_AI_BUSY=false;
+function anaAIRender(o){
+  const el=$('anaAI');if(!el)return;
+  if(o.loading){el.innerHTML=`<h3 class="ai-h">✨ LeMatic Intelligence: Einschätzung</h3><div class="txt ai-dots">LeMatic Intelligence schaut sich die Zahlen an</div>`;return}
+  if(o.err){el.innerHTML=`<h3 class="ai-h">✨ LeMatic Intelligence: Einschätzung</h3><p class="ana-empty" style="color:#A8231B">${esc(o.err)}</p><div class="ai-foot"><button class="btn btn-glass sm" data-anaai>Noch einmal</button></div>`;return}
+  if(!o.d){el.innerHTML=`<h3 class="ai-h">✨ LeMatic Intelligence: Einschätzung</h3><div class="ai-foot"><button class="btn btn-primary sm" data-anaai>Einschätzung holen</button><span>Was passiert ist, wie es weitergeht, was zu tun ist</span></div>`;return}
+  const d=o.d,g=d.grafik;
+  const okG=g&&Array.isArray(g.labels)&&Array.isArray(g.values)&&g.labels.length&&g.labels.length===g.values.length&&g.values.every(v=>isFinite(+v));
+  el.innerHTML=`<h3 class="ai-h">✨ LeMatic Intelligence: Einschätzung</h3>
+    ${d.lage?`<div class="ai-sec"><h4>Was passiert ist</h4><p>${esc(d.lage)}</p></div>`:''}
+    ${d.ausblick?`<div class="ai-sec"><h4>Wie es weitergeht</h4><p>${esc(d.ausblick)}</p></div>`:''}
+    ${Array.isArray(d.empfehlungen)&&d.empfehlungen.length?`<div class="ai-sec"><h4>Empfehlungen</h4><div class="ana-recs">${d.empfehlungen.slice(0,3).map(x=>`<div><b>${esc(x.titel||'')}</b><span>${esc(x.text||'')}</span></div>`).join('')}</div></div>`:''}
+    ${okG?`<div class="ai-sec ai-g"><h4>Grafik von LeMatic Intelligence</h4>${chartCard({type:g.type==='line'?'line':'bar',title:String(g.title||''),labels:g.labels.map(String),values:g.values.map(Number),unit:g.unit==='€'?'€':String(g.unit||'')})}</div>`:''}
+    <div class="ai-foot"><span>Stand ${o.at?new Date(o.at).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):''}</span><button class="btn btn-glass sm" data-anaai>Neu einschätzen</button></div>`;
+}
+async function anaAI(force,N,F){
+  if(!$('anaAI'))return;
+  N=N||anaNumbers();F=F||anaForecast();
+  const ctx=anaContext(N,F),h=anaHash(ctx),key=N.r.key;
+  let cache={};try{cache=JSON.parse(localStorage.getItem('lm_fin_ai')||'{}')||{}}catch(_){}
+  const c=cache[key];
+  const ready=NOTION_LIVE&&KARTEI_LOADED&&(FIN_LOADED||!GAUTH);
+  if(!force&&c&&(c.h===h||Date.now()-new Date(c.at).getTime()<6*36e5)){anaAIRender({d:c.d,at:c.at});return}
+  if(!force&&(!ready||ANA_AI_BUSY)){anaAIRender(c?{d:c.d,at:c.at}:{});return}
+  if(ANA_AI_BUSY)return;
+  ANA_AI_BUSY=true;anaAIRender({loading:true});
+  try{
+    const t=await askClaude('finanz',{user:USER,heute:TODAY,zeitraum:N.r.label,zahlen:ctx});
+    const m=String(t).match(/\{[\s\S]*\}/);if(!m)throw new Error('Keine auswertbare Antwort. Bitte noch einmal versuchen.');
+    const d=JSON.parse(m[0]);cache[key]={h,d,at:new Date().toISOString()};
+    const keys=Object.keys(cache).sort((a,b)=>String(cache[b].at).localeCompare(String(cache[a].at)));keys.slice(12).forEach(k=>delete cache[k]);
+    try{localStorage.setItem('lm_fin_ai',JSON.stringify(cache))}catch(_){}
+    if(anaRange().key===key)anaAIRender({d,at:cache[key].at});
+  }catch(e){if(anaRange().key===key)anaAIRender({err:e.message})}
+  finally{ANA_AI_BUSY=false}
+}
+document.addEventListener('click',e=>{
+  const ana=e.target.closest('#invAna');if(!ana)return;
+  const md=e.target.closest('[data-anamode]');if(md){ANA.mode=md.dataset.anamode;renderAna();return}
+  const st=e.target.closest('[data-anastep]');if(st){const d=+st.dataset.anastep;if(ANA.mode==='jahr')ANA.y+=d;else{const t=new Date(ANA.y,ANA.m-1+d,1);ANA.y=t.getFullYear();ANA.m=t.getMonth()+1}renderAna();return}
+  if(e.target.closest('[data-anacsv]')){$('bankFile').click();return}
+  if(e.target.closest('[data-anaai]')){anaAI(true);return}
+  const fc=e.target.closest('[data-fincat]');
+  if(fc){const id=fc.dataset.fincat,t=FIN.tx.find(x=>x.id===id);if(!t)return;const cur=finCat(t);
+    popMenu(fc,'Kategorie',FIN_CATS.map(c=>({label:c,on:c===cur,fn:()=>{FIN.cats[id]={c,at:new Date().toISOString(),by:ME};finSave();renderAna();toast(t.name+': '+c)}})).concat(FIN.cats[id]?[{label:'Automatisch zuordnen',fn:()=>{FIN.cats[id]={c:finAutoCat(t),at:new Date().toISOString(),by:ME};finSave();renderAna()}}]:[]));}
 });
 
 
@@ -8989,8 +9358,11 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.34';
+const APP_VERSION='2026-11-01.35';
 const CHANGELOG=[
+  {v:'2026-11-01.35',d:'01.11.2026',items:['Rechnungen haben jetzt „Analysen“: Monat oder Jahr wählen, Berechnet, Eingenommen, Offen, Ausgaben und Kontostand-Bewegung','Ausgaben aus dem Kontist-Export nach Kategorie, für euch beide gleich, Kategorie per Klick änderbar','Ausblick bis Jahresende und Prognose fürs nächste Jahr pro Kunde, nach Status und Gesprächen','LeMatic Intelligence schreibt Einschätzung und drei Empfehlungen dazu'],tour:[
+    {img:'whatsnew/v35-analysen.webp',t:'Analysen im Rechnungen-Tab',txt:'Einnahmen, Ausgaben und Ausblick auf einer Seite, für einen Monat oder das ganze Jahr.',
+     steps:['Rechnungen öffnen und oben auf „Analysen“ tippen','Monat oder Jahr wählen, mit den Pfeilen blättern','Einmal im Monat den CSV-Export aus Kontist laden: Dann stimmen Ausgaben und Kontobewegung','Unten steht die Prognose pro Kunde, „So rechnet das Studio“ erklärt die Regel']}]},
   {v:'2026-11-01.34',d:'01.11.2026',items:['Rechnungen zeigen getrennt: Berechnet, Eingenommen (nur Bezahlt) und Offen als Differenz','Angebote zählen nie zum Umsatz, auch nicht unterschrieben','Ersetzte und abgelehnte Rechnungen fallen aus allen Umsatzzahlen raus','LeMatic Intelligence nennt bei Umsatzfragen dieselben drei Zahlen']},
   {v:'2026-11-01.33',d:'01.11.2026',items:['Mails mit Ordnern wie in Gmail: Posteingang, Gesendet, Entwürfe und Alle Mails','Posteingang ist Standard, gesendete Mails tauchen dort nicht mehr auf','Gesendet zeigt nur Mails von info@lematic.de, neueste zuerst','Filter und Suche gelten im gewählten Ordner, die Zahl ungelesener Mails nur beim Posteingang']},
   {v:'2026-11-01.32',d:'01.11.2026',items:['Indian Spirit zählt wieder normal mit: offene Rechnungen pro Kunde stimmen in LeMatic Intelligence']},
@@ -9968,7 +10340,7 @@ on('invMore','click',e=>popMenu(e.currentTarget,'',[
   const view=document.querySelector('[data-view="rechnungen"]');if(!view)return;let t=0;
   const hasFiles=e=>e.dataTransfer&&[...(e.dataTransfer.types||[])].includes('Files');
   view.addEventListener('dragover',e=>{if(!hasFiles(e))return;e.preventDefault();document.body.classList.add('inv-drag');clearTimeout(t);t=setTimeout(()=>document.body.classList.remove('inv-drag'),250)});
-  view.addEventListener('drop',e=>{document.body.classList.remove('inv-drag');if(!hasFiles(e)||e.target.closest('#dz'))return;e.preventDefault();const f=e.dataTransfer.files[0];if(!f)return;invUp(true);setFile(f)});
+  view.addEventListener('drop',e=>{document.body.classList.remove('inv-drag');if(!hasFiles(e)||e.target.closest('#dz'))return;e.preventDefault();const f=e.dataTransfer.files[0];if(!f)return;if(/\.csv$/i.test(f.name)||f.type==='text/csv'){bankLoad(f).catch(x=>toast('Konnte die Datei nicht lesen: '+x.message));return}invUp(true);setFile(f)});
 })();
 
 document.addEventListener('click',e=>{const b=e.target.closest('[data-goto]');if(b)location.hash='#/'+b.dataset.goto});
