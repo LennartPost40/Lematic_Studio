@@ -3802,6 +3802,18 @@ const startOfWeek=()=>{const d=parse(TODAY);const dow=(d.getDay()+6)%7;d.setDate
 const nId=x=>String(x||'').replace(/-/g,'').toLowerCase();
 let INV_FRESH=false;
 const invIsOpen=i=>i&&i.kind==='Ausgang'&&String(i.rawStatus||'')==='Offen';
+/* Umsatz-Regel: nur Rechnungen zählen, nie Angebote. Ersetzte und abgelehnte Rechnungen fallen raus.
+   Berechnet = alle zählenden Rechnungen mit Rechnungsdatum im Jahr, Eingenommen = davon Status Bezahlt, Offen = Differenz. */
+const invCounts=i=>!!i&&i.kind==='Ausgang'&&i.status!=='ersetzt'&&i.status!=='abgelehnt';
+function revYear(y,list){
+  const all=(list||INVOICES).filter(invCounts);
+  const rech=all.filter(i=>String(i.date||'').startsWith(y));
+  const sum=a=>a.reduce((s,i)=>s+(+i.amount||0),0);
+  const berechnet=sum(rech),eingenommen=sum(rech.filter(i=>i.status==='bezahlt'));
+  const open=rech.filter(i=>i.status!=='bezahlt');
+  const older=all.filter(i=>String(i.date||'')<y&&i.status!=='bezahlt');
+  return{rech,open,berechnet,eingenommen,offen:berechnet-eingenommen,olderSum:sum(older),olderN:older.length};
+}
 let INVOICES=[
   {id:1,kind:'Ausgang',src:'notion',no:'RE-1015',party:'Felix Michalski',note:'Dreharbeiten Airbeat One, 08.–12.07.',date:'2026-07-15',amount:500,status:'bezahlt',p:'Dreh'},
   {id:2,kind:'Angebot',src:'notion',no:'LM-2605-0005',party:'Radio NRJ',note:'Energy Live Recap, von 3.000 auf 1.900 gedrückt',date:'2026-07-13',amount:1900,status:'abgelehnt',p:'Akquise'},
@@ -4343,9 +4355,9 @@ function renderHome(){
     const st=e.status||'Geplant';const pc=st==='Im Schnitt'?'info':st==='Angenommen'?'warn':'done';
     return `<div class="deliv"><div><h3>${esc(e.t)}</h3><span class="proj"><i style="background:${PROJ[e.p]||'#8E8E93'}"></i>${esc(e.p)}</span></div><span class="pill ${pc}"><i></i>${st}</span><span class="when">${wd(e.d)}, ${dm(e.d)}${e.time?', '+e.time:''}</span></div>`;
   }).join(''):'<p class="empty">Nichts offen.</p>';
-  const rev=INVOICES.filter(i=>i.kind==='Ausgang'&&i.date.startsWith('2026')).reduce((a,i)=>a+i.amount,0);
+  const RY=revYear(TODAY.slice(0,4)),rev=RY.berechnet;
   const signed=INVOICES.filter(i=>i.kind==='Angebot'&&i.status==='unterschrieben').reduce((a,i)=>a+i.amount,0);
-  const openSum=INVOICES.filter(i=>i.kind==='Ausgang'&&i.status!=='bezahlt').reduce((a,i)=>a+i.amount,0);
+  const openSum=RY.offen;
   const pct=Math.min(100,rev/GOAL*100);
   const toFull=diffDays('2027-01-01',TODAY);
   if($('homeGoal'))$('homeGoal').innerHTML=`
@@ -4779,14 +4791,13 @@ document.getElementById('invFilter').addEventListener('click',e=>{
 });
 function renderInvoices(){
   const y=TODAY.slice(0,4);
-  const rev=INVOICES.filter(i=>i.kind==='Ausgang'&&i.date.startsWith(y)).reduce((a,i)=>a+i.amount,0);
-  const open=INVOICES.filter(invIsOpen);
-  const signed=INVOICES.filter(i=>i.kind==='Angebot'&&i.status==='unterschrieben').reduce((a,i)=>a+i.amount,0);
+  const R=revYear(y),rev=R.berechnet,open=R.open;
+  const over=open.filter(i=>invOverdue(i)>0);
   document.getElementById('invStats').innerHTML=`
-    <div><strong>${eur(rev)}</strong><span>Berechnet ${y}</span></div>
-    <div><strong>${eur(signed)}</strong><span>Angebote unterschrieben, zählt nicht mit</span></div>
-    <div class="${open.some(i=>invOverdue(i)>0)?'st-over':''}"><strong>${eur(open.reduce((a,i)=>a+i.amount,0))}</strong><span>${open.length} offen beim Kunden${open.some(i=>invOverdue(i)>0)?`, davon <b>${eur(open.filter(i=>invOverdue(i)>0).reduce((a,i)=>a+i.amount,0))} überfällig</b> (längste seit ${Math.max(...open.map(invOverdue))} Tagen)`:''}</span></div>
-    <div><strong>${Math.round(rev/GOAL*100)} %</strong><span>vom Ziel ${eur(GOAL)}</span></div>`;
+    <div><strong>${eur(R.berechnet)}</strong><span>Berechnet ${y}, ${R.rech.length} ${R.rech.length===1?'Rechnung':'Rechnungen'}</span></div>
+    <div><strong>${eur(R.eingenommen)}</strong><span>Eingenommen ${y}, Status Bezahlt</span></div>
+    <div class="${over.length?'st-over':''}"><strong>${eur(R.offen)}</strong><span>Offen ${y}${open.length?`, ${open.length} ${open.length===1?'Rechnung':'Rechnungen'}`:''}${over.length?`, davon <b>${eur(over.reduce((a,i)=>a+i.amount,0))} überfällig</b> (längste seit ${Math.max(...over.map(invOverdue))} Tagen)`:''}${R.olderN?`. Dazu ${eur(R.olderSum)} aus Vorjahren`:''}</span></div>
+    <div><strong>${Math.round(rev/GOAL*100)} %</strong><span>vom Ziel ${eur(GOAL)}, berechnet</span></div>`;
   const rank=i=>invCanBeOverdue(i)?1:0;
   const list=INVOICES.filter(i=>invF==='all'||i.kind===invF).sort((a,b)=>rank(b)-rank(a)||(rank(a)?invOverdue(b)-invOverdue(a):0)||String(b.date).localeCompare(String(a.date)));
   document.getElementById('invRows').innerHTML=list.map(i=>{
@@ -7597,6 +7608,7 @@ function agentWissen(){
     L.push('\n## Rechnungssummen pro Kunde (Ausgangsrechnungen, alle Jahre)');
     Object.entries(by).sort((a,b)=>(b[1].b+b[1].o)-(a[1].b+a[1].o)).forEach(([p,v])=>L.push(`- ${p}: ${v.n} Rechnungen, bezahlt ${eur(v.b)}, offen ${eur(v.o)}, gesamt ${eur(v.b+v.o)}`));
   }
+  if(inv.length){const y=TODAY.slice(0,4),R=revYear(y,inv);L.push(`\n## Umsatz ${y} (feste Regel: nur Rechnungen, nie Angebote; Status Ersetzt/Abgelehnt zählt nicht)\n- Berechnet ${y}: ${eur(R.berechnet)} (${R.rech.length} Rechnungen mit Rechnungsdatum ${y})\n- Eingenommen ${y}: ${eur(R.eingenommen)} (Status Bezahlt)\n- Offen ${y}: ${eur(R.offen)} (Berechnet minus Eingenommen)${R.olderN?`\n- Offen aus Vorjahren: ${eur(R.olderSum)}`:''}\nNenne bei Umsatzfragen immer diese Zahlen.`)}
   if(inv.length){L.push('\n## Rechnungsliste aus Notion'+(dw?' (für den Zahlstatus; Beträge im Zweifel aus Drive)':''));inv.slice(0,120).forEach(i=>L.push(`- [Rechnung-ID ${i.id}] ${i.date} ${i.kind} ${i.no||''} ${i.party&&i.party!=='—'?i.party+' ':''}${eur(i.amount)} · ${i.status} · ${cut(i.note,80)}`))}
   if(LEADS.length){L.push('\n## Akquise-Leads');LEADS.filter(l=>notPrivate(l.n,l.note)).slice(0,40).forEach(l=>L.push(`- ${l.n} · Potenzial ${eur(l.val||0)} · ${['offen','in Arbeit','erledigt'][l.stage]||''} · ${l.seg||''} ${l.saison||''} · ${cut(l.note,120)}`))}
   return L.join('\n');
@@ -7609,7 +7621,7 @@ function chartData(){
   for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push({k:d.getFullYear()+'-'+pad(d.getMonth()+1),l:MON[d.getMonth()]+(d.getMonth()===0?' '+String(d.getFullYear()).slice(2):'')})}
   const inv=agentInvoices();
   const dd=driveDocsLI().filter(d=>d.kind==='Ausgang');
-  const src=dd.length?dd:inv.filter(i=>i.kind==='Ausgang');
+  const src=dd.length?dd:inv.filter(invCounts);
   const umsatz={type:'bar',title:'Rechnungen pro Monat'+(dd.length?' (aus Drive)':''),unit:'€',labels:months.map(m=>m.l),values:months.map(m=>src.filter(i=>(i.date||'').startsWith(m.k)).reduce((a,i)=>a+(i.amount||0),0)),go:'rechnungen'};
   const order=['Bestandskunde','Warm','Angefragt','Kalt','Abgesagt'];
   const pipe={type:'bar',title:'Kunden nach Status',labels:order,values:order.map(s=>KUNDEN.filter(k=>k.status===s).length),go:'kunden'};
@@ -7618,7 +7630,7 @@ function chartData(){
   const kontakt={type:'line',title:'Kundenmails pro Woche',labels:weeks.map(w=>w.l),values:weeks.map(w=>ms.filter(m=>{const d=iso(new Date(m.internal));return m.client&&d>=w.start&&d<=w.end}).length),go:'mails',note:ms.length?'':'Mails laden nach dem Login'};
   const who=['LP','MS'];
   const tasks={type:'bar',title:'Aufgaben: offen / erledigt (30 Tage)',labels:['LP offen','LP erledigt','MS offen','MS erledigt'],values:[].concat(...who.map(w=>[TASKS.filter(t=>!t.done&&t.who===w).length,TASKS.filter(t=>t.done&&(t.doneBy||t.who)===w&&(t.doneAt||'').slice(0,10)>=addDays(TODAY,-30)).length])),go:'aufgaben'};
-  const offen=inv.filter(i=>i.kind==='Ausgang'&&i.status!=='bezahlt'),ang=inv.filter(i=>i.kind==='Angebot'&&i.status==='offen');
+  const offen=inv.filter(i=>invCounts(i)&&i.status!=='bezahlt'),ang=inv.filter(i=>i.kind==='Angebot'&&i.status==='offen');
   return{charts:[umsatz,pipe,kontakt,tasks],kpis:[
     ['Offen beim Kunden',eur(offen.reduce((a,i)=>a+i.amount,0)),offen.length+' Rechnungen'],
     ['Angebote ausstehend',eur(ang.reduce((a,i)=>a+i.amount,0)),ang.length+' Angebote'],
@@ -8977,8 +8989,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.33';
+const APP_VERSION='2026-11-01.34';
 const CHANGELOG=[
+  {v:'2026-11-01.34',d:'01.11.2026',items:['Rechnungen zeigen getrennt: Berechnet, Eingenommen (nur Bezahlt) und Offen als Differenz','Angebote zählen nie zum Umsatz, auch nicht unterschrieben','Ersetzte und abgelehnte Rechnungen fallen aus allen Umsatzzahlen raus','LeMatic Intelligence nennt bei Umsatzfragen dieselben drei Zahlen']},
   {v:'2026-11-01.33',d:'01.11.2026',items:['Mails mit Ordnern wie in Gmail: Posteingang, Gesendet, Entwürfe und Alle Mails','Posteingang ist Standard, gesendete Mails tauchen dort nicht mehr auf','Gesendet zeigt nur Mails von info@lematic.de, neueste zuerst','Filter und Suche gelten im gewählten Ordner, die Zahl ungelesener Mails nur beim Posteingang']},
   {v:'2026-11-01.32',d:'01.11.2026',items:['Indian Spirit zählt wieder normal mit: offene Rechnungen pro Kunde stimmen in LeMatic Intelligence']},
   {v:'2026-11-01.30',d:'01.11.2026',items:['Angebotsrechner: Zusätze in Klammern im Kundennamen (z. B. „(Eventagentur Hamburg)“) landen nicht mehr auf dem Angebot']},
