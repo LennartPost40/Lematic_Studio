@@ -6808,8 +6808,7 @@ function ddMergeStatus(){
   const byNo={};INVOICES.forEach(i=>{if(i.no)byNo[i.no.trim().toUpperCase()]=i});
   DRIVE_DOCS.forEach(d=>{const n=byNo[(d.no||'').toUpperCase()];d.status=n?n.status:(d.kind==='Eingang'?'':'nicht in Notion')});
 }
-const docPriv=d=>!!d.priv||!notPrivate(d.name,d.folder,d.party);
-function driveDocsLI(){return DRIVE_DOCS.filter(d=>!d.err&&(ME==='LP'||!docPriv(d)))}
+function driveDocsLI(){return DRIVE_DOCS.filter(d=>!d.priv&&!d.err&&notPrivate(d.name,d.folder,d.party))}
 function ddStatus(){
   const els=document.querySelectorAll('.dd-status');if(!els.length)return;
   const docs=driveDocsLI();
@@ -6825,7 +6824,7 @@ function driveDocsWissen(){
   const L=['\n## Rechnungen und Angebote aus Google Drive (ORIGINALE, maßgeblich für Beträge und Kunden)'];
   const aus=docs.filter(d=>d.kind==='Ausgang');
   if(aus.length){
-    const by={};aus.forEach(d=>{const p=(d.party||'(unbekannt)')+(docPriv(d)?' (privat)':'');by[p]=by[p]||{n:0,s:0,b:0,list:[]};by[p].n++;by[p].s+=d.amount||0;if(d.status==='bezahlt')by[p].b+=d.amount||0;by[p].list.push(d.no)});
+    const by={};aus.forEach(d=>{const p=d.party||'(unbekannt)';by[p]=by[p]||{n:0,s:0,b:0,list:[]};by[p].n++;by[p].s+=d.amount||0;if(d.status==='bezahlt')by[p].b+=d.amount||0;by[p].list.push(d.no)});
     L.push('Summen pro Kunde (Ausgangsrechnungen, brutto, alle Jahre; bezahlt laut Notion):');
     Object.entries(by).sort((a,b)=>b[1].s-a[1].s).forEach(([p,v])=>L.push(`- ${p}: ${v.n} Rechnungen, gesamt ${eur(v.s)}, davon als bezahlt markiert ${eur(v.b)} (${v.list.filter(Boolean).join(', ')})`));
     L.push(`Gesamt alle Ausgangsrechnungen: ${eur(aus.reduce((a,d)=>a+(d.amount||0),0))}`);
@@ -7453,7 +7452,7 @@ async function loadKFiles(k){
 /* ---------- LeMatic-Agent und Auswertung ---------- */
 /* Alles, was privat ist, kommt nie in den Kontext des Agenten oder in die Grafiken. */
 /* Privat: alles, was in Notion auf „Privat (Lennart)“ steht, plus feste Stichworte. Martin sieht davon nichts. */
-const PRIVATE_EXTRA=['indian spirit','nature one','fairground'];
+const PRIVATE_EXTRA=['nature one','fairground'];
 let PRIVATE_RX=new RegExp(PRIVATE_EXTRA.map(w=>w.replace(/\s+/g,'\\s*')).join('|'),'i');
 function setPrivate(rows){
   PRIV_IDS=new Set(rows.map(r=>String(r.id).replace(/-/g,'')));
@@ -7462,9 +7461,7 @@ function setPrivate(rows){
   PRIVATE_RX=new RegExp([...new Set([...PRIVATE_EXTRA,...names])].map(esc2).join('|'),'i');
 }
 const notPrivate=(...xs)=>!xs.some(x=>PRIVATE_RX.test(String(x||'')));
-const invPriv=i=>!notPrivate(i.party,i.note,i.no,i.p);
-/* Private Rechnungen sieht nur Lennart (für Martin bleiben sie unsichtbar) */
-function agentInvoices(){return INVOICES.filter(i=>ME==='LP'||!invPriv(i))}
+function agentInvoices(){return INVOICES.filter(i=>notPrivate(i.party,i.note,i.no,i.p))}
 function agentMails(){return MAILS.filter(m=>notPrivate(m.from,m.subj,m.snip,m.client))}
 function agentWissen(){
   const L=[];const cut=(s,n)=>String(s||'').replace(/\s+/g,' ').trim().slice(0,n);
@@ -7492,11 +7489,11 @@ function agentWissen(){
   const dw=driveDocsWissen();if(dw)L.push(dw);
   const inv=agentInvoices();
   if(inv.length&&!dw){
-    const by={};inv.filter(i=>i.kind==='Ausgang').forEach(i=>{const p=(i.party&&i.party!=='—'?i.party:'(ohne Kunde)')+(invPriv(i)?' (privat)':'');by[p]=by[p]||{b:0,o:0,n:0};by[p].n++;if(i.status==='bezahlt')by[p].b+=i.amount;else by[p].o+=i.amount});
+    const by={};inv.filter(i=>i.kind==='Ausgang').forEach(i=>{const p=i.party&&i.party!=='—'?i.party:'(ohne Kunde)';by[p]=by[p]||{b:0,o:0,n:0};by[p].n++;if(i.status==='bezahlt')by[p].b+=i.amount;else by[p].o+=i.amount});
     L.push('\n## Rechnungssummen pro Kunde (Ausgangsrechnungen, alle Jahre)');
     Object.entries(by).sort((a,b)=>(b[1].b+b[1].o)-(a[1].b+a[1].o)).forEach(([p,v])=>L.push(`- ${p}: ${v.n} Rechnungen, bezahlt ${eur(v.b)}, offen ${eur(v.o)}, gesamt ${eur(v.b+v.o)}`));
   }
-  if(inv.length){L.push('\n## Rechnungsliste aus Notion'+(dw?' (für den Zahlstatus; Beträge im Zweifel aus Drive)':''));inv.slice(0,120).forEach(i=>L.push(`- [Rechnung-ID ${i.id}] ${i.date} ${i.kind} ${i.no||''} ${i.party&&i.party!=='—'?i.party+' ':''}${eur(i.amount)} · ${i.status}${invPriv(i)?' · privat (nur Lennart)':''} · ${cut(i.note,80)}`))}
+  if(inv.length){L.push('\n## Rechnungsliste aus Notion'+(dw?' (für den Zahlstatus; Beträge im Zweifel aus Drive)':''));inv.slice(0,120).forEach(i=>L.push(`- [Rechnung-ID ${i.id}] ${i.date} ${i.kind} ${i.no||''} ${i.party&&i.party!=='—'?i.party+' ':''}${eur(i.amount)} · ${i.status} · ${cut(i.note,80)}`))}
   if(LEADS.length){L.push('\n## Akquise-Leads');LEADS.filter(l=>notPrivate(l.n,l.note)).slice(0,40).forEach(l=>L.push(`- ${l.n} · Potenzial ${eur(l.val||0)} · ${['offen','in Arbeit','erledigt'][l.stage]||''} · ${l.seg||''} ${l.saison||''} · ${cut(l.note,120)}`))}
   return L.join('\n');
 }
@@ -8876,9 +8873,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.31';
+const APP_VERSION='2026-11-01.32';
 const CHANGELOG=[
-  {v:'2026-11-01.31',d:'01.11.2026',items:['LeMatic Intelligence: Für Lennart zählen private Rechnungen bei „offen“ wieder mit (als privat markiert), für Martin bleiben sie unsichtbar']},
+  {v:'2026-11-01.32',d:'01.11.2026',items:['Indian Spirit zählt wieder normal mit: offene Rechnungen pro Kunde stimmen in LeMatic Intelligence']},
   {v:'2026-11-01.30',d:'01.11.2026',items:['Angebotsrechner: Zusätze in Klammern im Kundennamen (z. B. „(Eventagentur Hamburg)“) landen nicht mehr auf dem Angebot']},
   {v:'2026-11-01.29',d:'01.11.2026',items:['Kundendaten über LeMatic Intelligence: Adresse, Rechnungs-Mail, Branche und Notizen landen im richtigen Feld statt mit Fehler abzubrechen','Eigene Rechnungs-Mail pro Kunde: Rechnungs-Entwürfe gehen automatisch dorthin, Angebote weiter an die normale Mail','Kundenkarte zeigt „Rechnungen an“, wenn eine eigene Rechnungs-Mail hinterlegt ist']},
   {v:'2026-11-01.28',d:'01.11.2026',tour:[
