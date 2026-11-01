@@ -4756,9 +4756,9 @@ function updatePath(){
     const nf=$('newFolderBox');if(nf)nf.hidden=true;invNewFolder=false;
     const cat=document.getElementById('invCat').value;
     const f=EINGANG_FOLDERS[cat];
-    parts=['LeMatic','02_Rechnungen_und_Finanzen','Eingangsrechnungen',date.slice(0,4),f?f.name:'04_Sonstiges'];
-    invTargetUrl=EINGANG_ROOT_URL;invTargetId='1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O';
-    note='Ausgabe: zählt nie zum Umsatz. Jahres- und Kategorie-Ordner legt das Studio bei Bedarf an.';
+    parts=['LeMatic','02_Rechnungen_und_Finanzen','Eingangsrechnungen',f?f.name:'04_Sonstiges'];
+    invTargetUrl=f?driveUrl(f.id):EINGANG_ROOT_URL;invTargetId=f?f.id:'1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O';
+    note='Ausgabe: zählt nie zum Umsatz. Fehlende Kategorie-Ordner legt das Studio bei Bedarf an.';
   }
   invPathParts=parts;
   document.getElementById('invPath').innerHTML=parts.map(esc).join('<svg class="i"><use href="#i-chev"/></svg>');
@@ -4845,7 +4845,7 @@ document.getElementById('invSave').addEventListener('click',async()=>{
         saveState();
         btn.lastChild.textContent='Wird hochgeladen …';
       }
-      if(invKind==='Eingang'){btn.lastChild.textContent='Ordner wird gesucht …';driveTargetId=await einFolderFor(date.slice(0,4),$('invCat').value);driveLink=driveUrl(driveTargetId);btn.lastChild.textContent='Wird hochgeladen …'}
+      if(invKind==='Eingang'){btn.lastChild.textContent='Ordner wird gesucht …';driveTargetId=await einFolderFor($('invCat').value);driveLink=driveUrl(driveTargetId);btn.lastChild.textContent='Wird hochgeladen …'}
       const up=await driveUpload(invFile,fname,driveTargetId);
       driveLink=up.webViewLink||driveLink;driveFileId=up.id||null;realUpload=true;
     }catch(e){
@@ -9183,17 +9183,18 @@ function renderAusgaben(){
     <p class="aus-hint">${A.from?`Kontist-Export ${dm(A.from)} bis ${dm(A.to)} plus Belege aus Drive (Eingangsrechnungen).`:'Noch kein Kontist-Export geladen, darum nur Belege aus Drive.'} Doppelte Buchungen zählen einmal. Ausgaben zählen nie zum Umsatz.</p>
     ${A.rows.length?`<div class="aus-r h"><span>Datum</span><span>Lieferant</span><span style="text-align:right">Betrag</span><span>Kategorie</span><span>Status</span><span>Beleg</span></div>${A.rows.map(row).join('')}`:`<p class="ana-empty">Keine Ausgaben in ${esc(anaPeriodTxt())}.${A.from?'':' Lade einmal den CSV-Export aus Kontist.'}</p>`}`;
 }
-/* Ablage der Belege: Eingangsrechnungen / Jahr / Kategorie */
+/* Ablage der Belege: Eingangsrechnungen / Kategorie (bestehende Ordner, kein Jahres-Ordner) */
 const EINGANG_ROOT_ID='1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O';
 const einCatFolderName=cat=>(EINGANG_FOLDERS[cat]&&EINGANG_FOLDERS[cat].name)||'04_Sonstiges';
-async function einFolderFor(y,cat){
-  let map={};try{map=JSON.parse(localStorage.getItem('lm_ein_dirs')||'{}')||{}}catch(_){}
-  const key=y+'|'+cat;if(map[key])return map[key];
-  const find=async(name,parent)=>(await ddList(`'${parent}' in parents and name='${qesc(name)}' and mimeType='application/vnd.google-apps.folder' and trashed=false`))[0];
-  const yf=(await find(String(y),EINGANG_ROOT_ID))||await driveCreateFolder(String(y),EINGANG_ROOT_ID);
+async function einFolderFor(cat){
+  const f=EINGANG_FOLDERS[cat];if(f&&f.id)return f.id;
   const cn=einCatFolderName(cat);
-  const cf=(await find(cn,yf.id))||await driveCreateFolder(cn,yf.id);
-  map[key]=cf.id;try{localStorage.setItem('lm_ein_dirs',JSON.stringify(map))}catch(_){}
+  let map={};try{map=JSON.parse(localStorage.getItem('lm_ein_cat')||'{}')||{}}catch(_){}
+  if(map[cn])return map[cn];
+  const hit=(await ddList(`'${EINGANG_ROOT_ID}' in parents and name='${qesc(cn)}' and mimeType='application/vnd.google-apps.folder' and trashed=false`))[0];
+  const cf=hit||await driveCreateFolder(cn,EINGANG_ROOT_ID);
+  if(!cf||!cf.id)throw new Error('Ordner „'+cn+'“ konnte nicht angelegt werden');
+  map[cn]=cf.id;try{localStorage.setItem('lm_ein_cat',JSON.stringify(map));localStorage.removeItem('lm_ein_dirs')}catch(_){}
   return cf.id;
 }
 async function driveMove(fileId,to,from){
@@ -9216,11 +9217,11 @@ document.addEventListener('click',async e=>{
       inv.kind='Ausgang';inv.status='offen';inv.rawStatus='Offen';inv.nid=pg.id;inv.faellig=addDays(inv.date,14);
       L.parent=AUSGANG_ROOT_ID;L.path='Ausgangsrechnungen';toast('Umgestellt: Rechnung von LeMatic. Bitte noch den Kunden in Notion verknüpfen.');
     }else{
-      const cat=guessEinCat(inv.party+' '+(inv.note||''));const to=await einFolderFor(String(inv.date).slice(0,4),cat);
+      const cat=guessEinCat(inv.party+' '+(inv.note||''));const to=await einFolderFor(cat);
       if(L.fileId)await driveMove(L.fileId,to,L.parent);
       if(inv.nid)await napi('/api/notion?db=rechnungen&id='+encodeURIComponent(inv.nid),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({archive:true})});
       inv.kind='Eingang';inv.status='bezahlt';inv.rawStatus='';inv.nid=null;inv.cat=cat;
-      L.parent=to;L.path='Eingangsrechnungen / '+String(inv.date).slice(0,4)+' / '+einCatFolderName(cat);toast('Umgestellt: Ausgabe, zählt nicht zum Umsatz');
+      L.parent=to;L.path='Eingangsrechnungen / '+einCatFolderName(cat);toast('Umgestellt: Ausgabe, zählt nicht zum Umsatz');
     }
     safe('inv',renderInvoices);safe('home',renderHome);safe('dd',()=>scanDriveInvoices());invFiledBox();
   }catch(x){toast('Nicht umgestellt: '+x.message);sw.disabled=false;invFiledBox()}
@@ -9489,8 +9490,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.36';
+const APP_VERSION='2026-11-01.37';
 const CHANGELOG=[
+  {v:'2026-11-01.37',d:'01.11.2026',items:['Ausgaben landen wieder direkt im passenden Kategorie-Ordner unter Eingangsrechnungen, z. B. 02_Programme','Keine Jahres-Ordner mehr, fehlende Kategorie-Ordner legt das Studio bei Bedarf an','Umstellen Ausgabe/Umsatz verschiebt die Datei in den neuen Ordner','Der Reiter „Ausgaben“ liest weiter alle Belege, auch aus schon angelegten Jahres-Ordnern']},
   {v:'2026-11-01.36',d:'01.11.2026',items:['Rechnungen: neuer Reiter „Ausgaben“ mit Datum, Lieferant, Betrag, Kategorie, Status und Beleg, oben die Summe im Zeitraum','Ausgaben kommen aus dem Kontist-Export und den Belegen in Drive, doppelte Buchungen zählen einmal','Beim Hochladen erkennt das Studio, ob es eine Rechnung von LeMatic oder eine Ausgabe ist, und zeigt es an, umstellbar per Klick','Ausgaben landen in Eingangsrechnungen / Jahr / Kategorie und zählen nie zum Umsatz','Private Buchungen sieht nur Lennart']},
   {v:'2026-11-01.35',d:'01.11.2026',items:['Rechnungen haben jetzt „Analysen“: Monat oder Jahr wählen, Berechnet, Eingenommen, Offen, Ausgaben und Kontostand-Bewegung','Ausgaben aus dem Kontist-Export nach Kategorie, für euch beide gleich, Kategorie per Klick änderbar','Bis Jahresende: was noch offen ist und welche unterschriebenen Angebote noch abgerechnet werden müssen','LeMatic Intelligence schreibt Einschätzung und drei Empfehlungen dazu'],tour:[
     {img:'whatsnew/v35-analysen.webp',t:'Analysen im Rechnungen-Tab',txt:'Einnahmen und Ausgaben auf einer Seite, für einen Monat oder das ganze Jahr.',
