@@ -1631,7 +1631,7 @@ html.theme-dark .tour-dots button.on{background:#62C7A2}
 @media (prefers-reduced-motion:reduce){.hst-down svg{animation:none}}
 .view[data-view="heute"] #homeTop #hDate,.view[data-view="heute"] #homeTop #hGreet,.view[data-view="heute"] #homeTop .actions{display:none}
 .view[data-view="heute"] #homeTop{padding-top:8px}
-@media (max-width:640px){.home-stage{min-height:calc(100svh - 90px);padding-top:24px!important}.home-stage form{flex-wrap:nowrap}.home-stage .btn-primary{padding:0 14px}.home-stage .li-mic{display:none}.hst-chip{font-size:13px;padding:8px 12px}}
+@media (max-width:640px){.home-stage{min-height:calc(100svh - 90px);padding-top:24px!important}.home-stage form{flex-wrap:nowrap}.home-stage .btn-primary{padding:0 14px}.hst-chip{font-size:13px;padding:8px 12px}}
 /* Archiv */
 .drivegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .drivecard{text-align:left;border:0;font:inherit;color:inherit;cursor:pointer;padding:16px;border-radius:18px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.8);transition:background .15s,box-shadow .15s;width:100%}
@@ -2096,6 +2096,40 @@ html.theme-dark .fun-strip .chip{background:rgba(34,43,40,.7)}
   .lg{min-height:36px}
   .task .del,.task .tmv{opacity:1}
 }
+/* Großer Sprechen-Knopf: diktieren, Text landet im Feld, danach weitertippen */
+button.li-mic,.li-hero button.li-mic,.home-stage button.li-mic{flex:none;width:auto;height:52px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:0 22px;border:0;border-radius:999px;
+  background:linear-gradient(135deg,#FCD717,#E0B400);color:#073D30;font:inherit;font-size:15px;font-weight:650;cursor:pointer;box-shadow:0 8px 20px -10px rgba(160,120,0,.7);transition:transform .12s,background .2s}
+button.li-mic .i{width:22px;height:22px}
+button.li-mic:active{transform:scale(.96)}
+.home-stage button.li-mic{background:var(--brand);color:#FCD717;box-shadow:0 8px 20px -10px rgba(7,61,48,.6)}
+button.li-mic.on,.home-stage button.li-mic.on{background:#E5484D;color:#fff;animation:micRing 1.3s ease-out infinite}
+@keyframes micRing{0%{box-shadow:0 0 0 0 rgba(229,72,77,.55)}80%{box-shadow:0 0 0 14px rgba(229,72,77,0)}100%{box-shadow:0 0 0 0 rgba(229,72,77,0)}}
+form.listening .input{border-color:#E5484D!important;box-shadow:0 0 0 3px rgba(229,72,77,.15)!important}
+.ag-form{align-items:stretch}
+.ag-btns{display:flex;gap:10px;align-items:flex-end}
+.ag-btns .ag-send{height:52px;padding:0 22px;border-radius:999px;font-size:15px}
+@media (prefers-reduced-motion:reduce){button.li-mic.on{animation:none}}
+html.theme-dark .home-stage button.li-mic,html.theme-dark .li-hero button.li-mic{background:#1C7A5E;color:#FCD717}
+html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
+@media (max-width:860px){body:has(.view[data-view="agent"].active) .toast{bottom:calc(250px + env(safe-area-inset-bottom))}}
+@media (max-width:860px){
+  .ag-form{flex-direction:column;gap:10px}
+  .ag-form .input{min-height:64px;font-size:16px}
+  .ag-btns{display:grid;grid-template-columns:1fr auto}
+  .ag-btns button.li-mic{height:58px;font-size:17px}
+  .ag-btns button.li-mic .i{width:26px;height:26px}
+  .ag-btns .ag-send{height:58px}
+  #agForm{position:sticky;bottom:calc(84px + env(safe-area-inset-bottom));z-index:6;margin:12px -10px -6px;padding:10px;border-radius:24px;background:var(--panel-solid,#F7F9F8);box-shadow:0 -10px 30px -16px rgba(7,40,32,.35),0 0 0 1px rgba(7,40,32,.06)}
+  html.theme-dark #agForm{background:#161E1B;box-shadow:0 -10px 30px -16px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.06)}
+  .li-drawer .ag-form{padding-bottom:env(safe-area-inset-bottom)}
+}
+@media (max-width:640px){
+  .home-stage form{flex-wrap:wrap!important;row-gap:8px}
+  .home-stage form .nav-ag.lg{display:none}
+  .home-stage form .input{flex:1 1 100%}
+  .home-stage button.li-mic{flex:1 1 auto;height:54px;font-size:16px}
+  .home-stage form .btn-primary{height:54px}
+}
 /* MOBILE-START: eigene Handy-Oberfläche (bis 860px) */
 .more-wrap{display:none}
 @media (max-width:860px){
@@ -2261,7 +2295,6 @@ html.theme-dark .fun-strip .chip{background:rgba(34,43,40,.7)}
   .av-card small{font-size:12px;line-height:1.3}
   .hst-mbar{position:absolute;top:calc(4px + env(safe-area-inset-top));left:0;right:0;z-index:2;justify-content:space-between}
   .hst-mbar .mark{visibility:hidden}
-  .li-mic{display:none!important}
   .cell{min-height:52px}
   .dow{font-size:12px}
 }
@@ -2422,7 +2455,7 @@ html.theme-dark .fun-strip .chip{background:rgba(34,43,40,.7)}
           <h1 class="hst-hi" id="hstHi">Hallo</h1>
           <button type="button" class="hst-world" id="hstWorld" title="Farbwelt wechseln" aria-label="Farbwelt wechseln"><i></i></button>
           <p class="hst-line"><span id="hstLine">Was gehen wir heute an?</span><button type="button" class="hst-dice" id="hstDice" title="Anderer Spruch" aria-label="Anderer Spruch">↻</button></p>
-          <div class="hs-wrap"><form id="homeAsk"><span class="nav-ag lg">LI</span><input class="input" id="homeAskIn" placeholder="Frag mich was oder such nach Kunden, Rechnungen, Mails …" aria-label="Frage an LeMatic Intelligence" autocomplete="off"><button type="button" class="icon-btn li-mic" data-for="homeAskIn" aria-label="Spracheingabe" title="Reinsprechen">🎙️</button><button class="btn btn-primary" type="submit">Fragen</button></form><div class="home-suggest glass" id="homeSuggest" hidden role="listbox" aria-label="Suchtreffer"></div></div>
+          <div class="hs-wrap"><form id="homeAsk"><span class="nav-ag lg">LI</span><input class="input" id="homeAskIn" placeholder="Frag mich was oder such nach Kunden, Rechnungen, Mails …" aria-label="Frage an LeMatic Intelligence" autocomplete="off"><button type="button" class="li-mic" data-for="homeAskIn" aria-label="Sprechen: diktieren, danach weitertippen" title="Diktieren"><svg class="i"><use href="#i-mic"/></svg><span class="mt">Sprechen</span></button><button class="btn btn-primary" type="submit">Fragen</button></form><div class="home-suggest glass" id="homeSuggest" hidden role="listbox" aria-label="Suchtreffer"></div></div>
           <div class="hst-chips" id="hstChips"></div>
         </div>
         <button type="button" class="hst-down" id="hstDown"><span id="hstDownTxt">Deine Woche</span><svg class="i sm"><use href="#i-chev"/></svg></button>
@@ -2814,7 +2847,7 @@ html.theme-dark .fun-strip .chip{background:rgba(34,43,40,.7)}
             <button class="chip-q" data-agq="Zeig mir die Rechnungssummen der letzten Monate als Grafik und sag kurz, was auffällt.">Umsatz als Grafik</button>
             <button class="chip-q" data-agq="Was ist überfällig oder bleibt gerade liegen?">Was bleibt liegen?</button>
           </div>
-          <form class="ag-form" id="agForm"><textarea class="input" id="agInput" rows="2" placeholder="z. B. Was ist bei Körber offen und was sollte Martin als Nächstes tun?" aria-label="Frage an LeMatic Intelligence"></textarea><button type="button" class="icon-btn li-mic" data-for="agInput" aria-label="Spracheingabe" title="Reinsprechen">🎙️</button><button class="btn btn-primary ag-send" id="agSend" type="submit">Fragen</button></form>
+          <form class="ag-form" id="agForm"><textarea class="input" id="agInput" rows="2" placeholder="z. B. Was ist bei Körber offen und was sollte Martin als Nächstes tun?" aria-label="Frage an LeMatic Intelligence"></textarea><div class="ag-btns"><button type="button" class="li-mic" data-for="agInput" aria-label="Sprechen: diktieren, danach weitertippen" title="Diktieren"><svg class="i"><use href="#i-mic"/></svg><span class="mt">Sprechen</span></button><button class="btn btn-primary ag-send" id="agSend" type="submit">Fragen</button></div></form>
         </section>
         <section class="c5 ag-side" aria-labelledby="ins-title">
           <div class="glass panel">
@@ -3252,7 +3285,7 @@ html.theme-dark .fun-strip .chip{background:rgba(34,43,40,.7)}
     <div class="li-head"><span class="nav-ag lg">LI</span><div><b>LeMatic Intelligence</b><small class="ag-curt">Durchsucht Kartei, Kalender, Mails, Rechnungen und Drive</small></div><button class="icon-btn" data-aghist aria-expanded="false" title="Frühere Chats" aria-label="Frühere Chats">🕘</button><button class="icon-btn" data-agnew title="Neuer Chat" aria-label="Neuer Chat">＋</button><button class="icon-btn" id="liFull" title="Groß öffnen" aria-label="Groß öffnen">⤢</button><button class="icon-btn" data-liclose aria-label="Schließen">✕</button></div>
     <div class="ag-hist glass" hidden></div>
     <div class="ag-log" id="liDLog" aria-live="polite"></div>
-    <form class="ag-form" id="liDForm"><textarea class="input" id="liDIn" rows="2" placeholder="Frag mich alles über LeMatic …" aria-label="Frage an LeMatic Intelligence"></textarea><button type="button" class="icon-btn li-mic" data-for="liDIn" aria-label="Spracheingabe" title="Reinsprechen">🎙️</button><button class="btn btn-primary ag-send" type="submit">Fragen</button></form>
+    <form class="ag-form" id="liDForm"><textarea class="input" id="liDIn" rows="2" placeholder="Frag mich alles über LeMatic …" aria-label="Frage an LeMatic Intelligence"></textarea><div class="ag-btns"><button type="button" class="li-mic" data-for="liDIn" aria-label="Sprechen: diktieren, danach weitertippen" title="Diktieren"><svg class="i"><use href="#i-mic"/></svg><span class="mt">Sprechen</span></button><button class="btn btn-primary ag-send" type="submit">Fragen</button></div></form>
   </div>
 </aside>
 <div class="remind-stack" id="remindStack" aria-live="polite"></div>
@@ -7444,7 +7477,7 @@ function agentWissen(){
     L.push('\n## Rechnungssummen pro Kunde (Ausgangsrechnungen, alle Jahre)');
     Object.entries(by).sort((a,b)=>(b[1].b+b[1].o)-(a[1].b+a[1].o)).forEach(([p,v])=>L.push(`- ${p}: ${v.n} Rechnungen, bezahlt ${eur(v.b)}, offen ${eur(v.o)}, gesamt ${eur(v.b+v.o)}`));
   }
-  if(inv.length){L.push('\n## Rechnungsliste aus Notion'+(dw?' (für den Zahlstatus; Beträge im Zweifel aus Drive)':''));inv.slice(0,120).forEach(i=>L.push(`- ${i.date} ${i.kind} ${i.no||''} ${i.party&&i.party!=='—'?i.party+' ':''}${eur(i.amount)} · ${i.status} · ${cut(i.note,80)}`))}
+  if(inv.length){L.push('\n## Rechnungsliste aus Notion'+(dw?' (für den Zahlstatus; Beträge im Zweifel aus Drive)':''));inv.slice(0,120).forEach(i=>L.push(`- [Rechnung-ID ${i.id}] ${i.date} ${i.kind} ${i.no||''} ${i.party&&i.party!=='—'?i.party+' ':''}${eur(i.amount)} · ${i.status} · ${cut(i.note,80)}`))}
   if(LEADS.length){L.push('\n## Akquise-Leads');LEADS.filter(l=>notPrivate(l.n,l.note)).slice(0,40).forEach(l=>L.push(`- ${l.n} · Potenzial ${eur(l.val||0)} · ${['offen','in Arbeit','erledigt'][l.stage]||''} · ${l.seg||''} ${l.saison||''} · ${cut(l.note,120)}`))}
   return L.join('\n');
 }
@@ -8035,8 +8068,18 @@ function liActLabel(a){
       return[art==='belegt'?'⛔':art==='dreh'?'🎥':'📅',(art==='belegt'?'Belegung eintragen':TYPE_ONE[art]+' anlegen'),`${a.title} · ${when(a.date||TODAY,a.time)}${a.time&&a.time_end?'–'+a.time_end:''}${bis}${a.who?' · '+NAMES[a.who]:''}${a.ort?' · '+a.ort:''}${k?' · '+k.name:''}${a.erinnerung_min?' · Erinnerung '+remTxt(+a.erinnerung_min):''}`,busy.map(busyText).join(' · ')]}
     case 'event_move':return['↪️','Termin verschieben',`${e?e.t:'(Termin nicht gefunden)'} → ${when(a.date,a.time)}`];
     case 'event_delete':return['🗑️','Termin löschen',e?`${e.t} · ${when(e.d,e.time)}`:'(Termin nicht gefunden)'];
-    case 'kunde_status':return['↪️','Kunde verschieben',`${k?k.name:'(Kunde nicht gefunden)'} → ${a.status||'?'}`];
+    case 'kunde_status':return['👤','Kunde verschieben',`${k?k.name:'(Kunde nicht gefunden)'} → ${a.status||'?'}`];
     case 'note_add':return['📝','Notiz in Kundenkarte',`${k?k.name:'?'}: ${String(a.text||'').slice(0,90)}`];
+    case 'event_update':{const ch=[a.title&&'„'+a.title+'“',(a.date||a.time)&&when(a.date||(e&&e.d),a.time),a.time_end&&'bis '+a.time_end,a.ort&&a.ort,a.who&&NAMES[a.who],a.art&&TYPE_ONE[a.art],a.notiz&&'Notiz',a.erinnerung_min!=null&&a.erinnerung_min!==''&&'Erinnerung '+remTxt(+a.erinnerung_min)].filter(Boolean).join(' · ');
+      return['✍','Termin ändern',`${e?e.t:'(Termin nicht gefunden)'}${ch?' → '+ch:''}`]}
+    case 'task_update':return['✍','Aufgabe ändern',`${t?t.t:'(Aufgabe nicht gefunden)'} → ${[a.title&&'„'+a.title+'“',a.due&&when(a.due,a.time),a.who&&NAMES[a.who],k&&k.name].filter(Boolean).join(' · ')}`];
+    case 'kunde_create':return['👤','Kunde anlegen',[a.name,a.status,a.typ,a.ansprechpartner,a.email].filter(Boolean).join(' · ')];
+    case 'kunde_update':return['✍','Kundendaten ändern',`${k?k.name:'(Kunde nicht gefunden)'}: ${Object.entries(a.felder||{}).map(([f,v])=>f+' = '+String(v).slice(0,40)).join(' · ')}`];
+    case 'gespraech_add':return['📞','Gespräch festhalten',`${k?k.name+' · ':''}${a.titel||a.title||''}${a.datum?' · '+when(a.datum):''}`];
+    case 'rechnung_bezahlt':case 'rechnung_offen':{const i=liFindInvoice(a);return['🧾',a.type==='rechnung_bezahlt'?'Als bezahlt markieren':'Wieder auf offen setzen',i?`${i.no||'Beleg'} · ${i.party||''} · ${eur(i.amount)}`:'(Rechnung nicht gefunden)']}
+    case 'mail_entwurf':return['✉','Mail-Entwurf in Gmail',`an ${a.an||(k&&k.email)||'(Empfänger fehlt)'} · ${a.betreff||''}`];
+    case 'angebot':return['📝','Angebot schreiben',k?'Angebotsrechner mit '+k.name:'Angebotsrechner öffnen'];
+    case 'oeffnen':return['📂','Öffnen',k?'Kundenkarte '+k.name:(LI_PAGES[a.ziel]||a.ziel||'')];
     default:return['⚙️',a.type,''];
   }
 }
@@ -8074,6 +8117,32 @@ document.addEventListener('click',e=>{
     {ic:'🤝',label:'An '+NAMES[other]+' übergeben',fn:async()=>{const old=t.who;t.who=other;try{const bd=taskEventBody(t);const em=other!==ME?personMail(other):'';if(em)bd.attendees=[{email:em}];await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id)+(em?'?sendUpdates=all':''),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(bd)});if(other!==ME)safe('wa',()=>waNotify(other,t.t,fmtWhen(t.due,t.time,true)));safe('tasksR',renderTasks);safe('homeR',renderHome);toast('Liegt jetzt bei '+NAMES[other],{undo:async()=>{t.who=old;await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))});safe('tasksR',renderTasks)}})}catch(x){t.who=old;toast('Nicht übergeben: '+x.message)}}}
   ]);
 },true);
+/* Notion-Feld passend zum Typ bauen */
+function nProp(type,v){
+  if(v==null)return null;
+  switch(type){
+    case 'title':return{title:[{text:{content:String(v).slice(0,2000)}}]};
+    case 'rich_text':return{rich_text:richChunks(String(v))};
+    case 'email':return{email:String(v).trim()||null};
+    case 'phone_number':return{phone_number:String(v).trim()||null};
+    case 'url':{let u=String(v).trim();if(u&&!/^https?:/i.test(u))u='https://'+u;return{url:u||null}}
+    case 'number':{const n=typeof v==='number'?v:parseFloat(String(v).replace(/[^\d,.-]/g,'').replace(/\.(?=\d{3})/g,'').replace(',','.'));return isNaN(n)?null:{number:n}}
+    case 'select':return{select:String(v).trim()?{name:String(v).trim().slice(0,100)}:null};
+    case 'status':return String(v).trim()?{status:{name:String(v).trim()}}:null;
+    case 'multi_select':return{multi_select:(Array.isArray(v)?v:String(v).split(/[,/]/)).map(x=>String(x).trim()).filter(Boolean).map(name=>({name:name.slice(0,100)}))};
+    case 'date':return /^\d{4}-\d{2}-\d{2}/.test(String(v))?{date:{start:String(v)}}:null;
+    case 'checkbox':return{checkbox:v===true||/^(ja|true|1)$/i.test(String(v))};
+  }
+  return null;
+}
+let GESPR_SCHEMA=null;
+async function gesprSchema(){if(!GESPR_SCHEMA){const j=await napi('/api/notion?db=gespraeche&schema=1');GESPR_SCHEMA=j.props||{}}return GESPR_SCHEMA}
+const LI_PAGES={heute:'Heute',kalender:'Kalender',aufgaben:'Aufgaben',rechnungen:'Rechnungen',angebot:'Angebotsrechner',kunden:'Kundenkartei',mails:'Mails',medien:'Dateien',archiv:'Festplatten',einstellungen:'Einstellungen',kunde:'Mammutmarsch Portal'};
+function liFindInvoice(a){
+  const id=a.id||a.rechnung_id;let i=id&&INVOICES.find(x=>String(x.id)===String(id)||x.nid===id);
+  if(!i&&(a.nr||a.nummer)){const n=String(a.nr||a.nummer).toUpperCase();const c=INVOICES.filter(x=>String(x.no||'').toUpperCase()===n);if(c.length===1)i=c[0]}
+  return i||null;
+}
 /* IDs aus der Antwort; wenn die nicht passt, über den Titel suchen */
 function liFindTask(a){
   let t=a.id&&TASKS.find(x=>x.id===a.id);
@@ -8153,6 +8222,95 @@ async function liRunAction(a){
     const e=EVENTS.find(x=>x.gcalId===a.id);if(e){e.d=a.date||e.d;if(a.time)e.time=a.time}
     safe('calR',renderCal);safe('homeR',renderHome);return 'verschoben';
   }
+  if(a.type==='task_update'){
+    const t=liFindTask(a);if(!t)throw new Error('Aufgabe nicht gefunden');
+    const old={t:t.t,due:t.due,time:t.time,who:t.who,kid:t.kid,kname:t.kname};
+    if(a.title)t.t=String(a.title).slice(0,300);if(a.due)t.due=a.due;if(a.due&&a.time!==undefined)t.time=a.time||null;if(a.who==='LP'||a.who==='MS')t.who=a.who;if(k){t.kid=k.id;t.kname=k.name}
+    const handed=t.who!==old.who&&t.who!==ME;const bd=taskEventBody(t);const em=handed?personMail(t.who):'';if(em)bd.attendees=[{email:em}];
+    try{await gfetch(cal+'/'+encodeURIComponent(t.id)+(em?'?sendUpdates=all':''),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(bd)})}catch(x){Object.assign(t,old);throw x}
+    if(handed)safe('wa',()=>waNotify(t.who,t.t,fmtWhen(t.due,t.time,true)));
+    syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome);return 'geändert';
+  }
+  if(a.type==='event_update'){
+    const e=liFindEvent(a);if(!e)throw new Error('Termin nicht gefunden');
+    let ev={};try{ev=await (await gfetch(cal+'/'+encodeURIComponent(e.gcalId))).json()}catch(_){}
+    if(!ev||!ev.start){const d=e.d;ev={description:'',extendedProperties:{private:{lmArt:e.art||e.type,lmWho:e.who||'',lmNote:e.note||''}},
+      start:e.time?{dateTime:d+'T'+e.time+':00'}:{date:d},end:e.time?{dateTime:d+'T'+(e.endTime||pad(Math.min(23,+e.time.slice(0,2)+1))+e.time.slice(2))+':00'}:{date:addDays(e.end||d,1)}}}
+    const priv=Object.assign({},(ev.extendedProperties&&ev.extendedProperties.private)||{});const patch={};
+    const art=a.art&&LI_ARTS.includes(a.art)&&a.art!=='aufgabe'?a.art:null;
+    if(art){priv.lmArt=art;patch.colorId=ART_COLOR[art]||'5'}
+    if(a.who==='LP'||a.who==='MS'||a.who===''){priv.lmWho=a.who}
+    if(a.title){patch.summary=(priv.lmArt==='belegt')?'Belegt: '+a.title+' ('+NAMES[priv.lmWho||ME]+')':String(a.title).slice(0,300);if(priv.lmArt==='belegt')priv.lmTitle=String(a.title).slice(0,300)}
+    if(a.ort!=null&&a.ort!=='')patch.location=a.ort;
+    if(a.notiz){const oldN=priv.lmNote||'';priv.lmNote=String(a.notiz).slice(0,900);patch.description=[a.notiz,...String(ev.description||'').split('\n').filter(l=>l&&l!==oldN)].join('\n')}
+    if(k){priv.lmKid=k.id;priv.lmKname=k.name.slice(0,200)}
+    if(a.erinnerung_min!=null&&a.erinnerung_min!=='')patch.reminders={useDefault:false,overrides:[{method:'popup',minutes:+a.erinnerung_min}]};
+    if(a.date||a.time||a.time_end){
+      if(ev.start&&ev.start.dateTime&&a.time!==''){
+        const dur=new Date(ev.end.dateTime)-new Date(ev.start.dateTime);const date=a.date||ev.start.dateTime.slice(0,10),time=a.time||ev.start.dateTime.slice(11,16);
+        let te=a.time_end;if(!te){const en=new Date(new Date(date+'T'+time+':00').getTime()+dur);te=pad(en.getHours())+':'+pad(en.getMinutes())}
+        patch.start={dateTime:date+'T'+time+':00',timeZone:'Europe/Berlin'};patch.end={dateTime:date+'T'+te+':00',timeZone:'Europe/Berlin'};
+      }else if(a.time){const date=a.date||ev.start.date;let te=a.time_end;if(!te){const [h,m]=a.time.split(':').map(Number);te=pad(Math.min(23,h+1))+':'+pad(m)}
+        patch.start={dateTime:date+'T'+a.time+':00',timeZone:'Europe/Berlin'};patch.end={dateTime:date+'T'+te+':00',timeZone:'Europe/Berlin'};
+      }else{const days=ev.start.date?Math.max(1,diffDays(ev.end.date,ev.start.date)):1;const date=a.date||ev.start.date||ev.start.dateTime.slice(0,10);patch.start={date};patch.end={date:addDays(date,days)}}
+    }
+    patch.extendedProperties={private:priv};
+    const inv=(a.who==='LP'||a.who==='MS')&&a.who!==ME?personMail(a.who):'';
+    if(inv){const at=(ev.attendees||[]).filter(x=>x.email!==inv);patch.attendees=[...at,{email:inv}]}
+    await gfetch(cal+'/'+encodeURIComponent(e.gcalId)+(inv?'?sendUpdates=all':''),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(patch)});
+    if(a.title)e.t=String(a.title);if(art){e.art=art;e.type=art}if(a.who!==undefined&&a.who!==null)e.who=a.who;if(a.ort)e.place=a.ort;if(a.notiz)e.note=a.notiz;if(k){e.kid=k.id;e.p=k.name}
+    if(patch.start){e.d=(patch.start.date||patch.start.dateTime.slice(0,10));e.time=patch.start.dateTime?patch.start.dateTime.slice(11,16):null;e.endTime=patch.end.dateTime?patch.end.dateTime.slice(11,16):null}
+    if(patch.reminders)e.rem=String(a.erinnerung_min);
+    if(inv&&a.who!==ME)safe('wa',()=>waNotify(a.who,e.t,fmtWhen(e.d,e.time)));
+    safe('calR',renderCal);safe('homeR',renderHome);return inv?'geändert, Einladung ist raus':'geändert';
+  }
+  if(a.type==='kunde_create'){
+    if(!KARTEI_LOADED||!KSCHEMA)throw new Error('Kundenkartei lädt noch');
+    const name=String(a.name||'').trim();if(!name)throw new Error('Name fehlt');
+    if(KUNDEN.some(x=>x.name.toLowerCase()===name.toLowerCase()))throw new Error(name+' gibt es schon in der Kartei');
+    const props={[kTitleKey()]:{title:[{text:{content:name}}]}};
+    const put=(f,v)=>{if(v==null||v===''||!KSCHEMA[f])return;const pv=nProp(KSCHEMA[f].type,v);if(pv)props[f]=pv};
+    put('Status',a.status||'Angefragt');put('Typ',a.typ);put('Ansprechpartner',a.ansprechpartner);put('E-Mail',a.email);put('Telefon',a.telefon);put('Website',a.website);put('Nächster Schritt',a.naechster_schritt);
+    if(a.notiz){const stamp=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});put('Notizen','['+stamp+' · '+USER+'] '+a.notiz)}
+    const j=await notionCreate('kunden',props);await loadKartei();if(j&&j.id)a.kunde_id=j.id;return 'angelegt';
+  }
+  if(a.type==='kunde_update'){
+    if(!k)throw new Error('Kunde nicht gefunden');if(!KSCHEMA)throw new Error('Kundenkartei lädt noch');
+    const props={};const skip=[];
+    Object.entries(a.felder||{}).forEach(([f,v])=>{const key=f==='Name'?kTitleKey():f;const sc=KSCHEMA[key];if(!sc||key==='Notizen'||sc.type==='relation'){skip.push(f);return}const pv=nProp(sc.type,v);if(pv)props[key]=pv;else skip.push(f)});
+    if(!Object.keys(props).length)throw new Error('Kein änderbares Feld'+(skip.length?' ('+skip.join(', ')+')':''));
+    await notionUpdate('kunden',k.id,props);await loadKartei();if(kOpen===k.id)safe('ks',()=>renderKundeSheet(k.id));
+    return 'gespeichert'+(skip.length?', nicht geändert: '+skip.join(', '):'');
+  }
+  if(a.type==='gespraech_add'){
+    const sc=await gesprSchema();const props={};
+    const put=(f,v)=>{if(v==null||v===''||!sc[f])return;const pv=nProp(sc[f].type,v);if(pv)props[f]=pv};
+    const tk=Object.keys(sc).find(f=>sc[f].type==='title')||'Titel';
+    props[tk]={title:[{text:{content:String(a.titel||a.title||'Gespräch').slice(0,200)}}]};
+    put('Datum',a.datum||TODAY);put('Art',a.art);put('Wünsche / Bedarf',a.bedarf);put('Budget',a.budget);put('Nächster Schritt',a.naechster_schritt);put('Einschätzung',a.einschaetzung);put('Chance',a.chance);
+    if(k&&sc['Kunde'])props['Kunde']={relation:[{id:k.id}]};
+    const j=await notionCreate('gespraeche',props);
+    GESPR.unshift({id:j&&j.id,title:String(a.titel||a.title||'Gespräch'),date:a.datum||TODAY,art:a.art||'',chance:a.chance||'',bedarf:a.bedarf||'',budget:a.budget||'',next:a.naechster_schritt||'',kids:k?[k.id]:[]});
+    if(k&&kOpen===k.id)safe('ks',()=>renderKundeSheet(k.id));return 'gespeichert';
+  }
+  if(a.type==='rechnung_bezahlt'||a.type==='rechnung_offen'){
+    const i=liFindInvoice(a);if(!i)throw new Error('Rechnung nicht gefunden');
+    const paid=a.type==='rechnung_bezahlt';const old=[i.status,i.rawStatus];
+    i.status=paid?'bezahlt':'offen';i.rawStatus=paid?'Bezahlt':'Offen';
+    try{if(i.nid)await notionUpdate('rechnungen',i.nid,{'Status':{select:{name:paid?'Bezahlt':'Offen'}}})}catch(x){[i.status,i.rawStatus]=old;throw x}
+    safe('invR',renderInvoices);safe('homeR',renderHome);safe('kartR',renderKartei);return paid?'als bezahlt markiert':'wieder offen';
+  }
+  if(a.type==='mail_entwurf'){
+    const to=String(a.an||(k&&k.email)||'').trim();
+    if(!COMPOSE_OK)await composeToken();
+    const enc=t=>'=?UTF-8?B?'+b64utf8(t)+'?=';
+    const mime=['MIME-Version: 1.0',...(to?['To: '+to]:[]),'Subject: '+enc(String(a.betreff||'')),'Content-Type: text/plain; charset="UTF-8"','Content-Transfer-Encoding: base64','',wrap76(b64utf8(String(a.text||'')))].join('\r\n');
+    const raw=btoa(mime).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    const j=await (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/drafts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:{raw}})})).json();
+    a._link=draftUrl({mid:j.message&&j.message.id});return 'liegt in Gmail-Entwürfen'+(to?'':' (Empfänger noch eintragen)');
+  }
+  if(a.type==='angebot'){closeLiDrawer();angOpenFor(k?k.name:'');return 'geöffnet'}
+  if(a.type==='oeffnen'){closeLiDrawer();if(k){location.hash='#/kunden';setTimeout(()=>openKunde(k.id),60)}else if(LI_PAGES[a.ziel])location.hash='#/'+a.ziel;else throw new Error('Unbekannte Seite');return 'geöffnet'}
   if(a.type==='note_add'){
     if(!k)throw new Error('Kunde nicht gefunden');
     const stamp=new Date().toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'});
@@ -8166,7 +8324,7 @@ async function liRunAction(a){
 function liActionsHTML(m,mi){
   if(!m.acts||!m.acts.length)return '';
   const allDone=m.acts.every(a=>a._st==='ok');
-  return `<div class="li-acts">${m.acts.map((a,i)=>{const [ic,l,d,warn]=liActLabel(a);const editable=!a._st&&(a.type==='event_create'||a.type==='task_create');return `<div class="li-act ${a._st||''}"><span class="ic">${ic}</span><span><b>${esc(l)}</b><small>${esc(d)}</small>${warn?`<em class="li-warn">${esc(warn)}</em>`:''}${a._err?`<em>${esc(a._err)}</em>`:''}</span><span class="st">${a._st==='ok'?'✓ '+esc(a._res||'erledigt'):a._st==='err'?'Fehler':editable?`<button type="button" class="btn btn-glass xs" data-liedit="${mi}:${i}">Anpassen</button>`:''}</span></div>`}).join('')}
+  return `<div class="li-acts">${m.acts.map((a,i)=>{const [ic,l,d,warn]=liActLabel(a);const editable=!a._st&&(a.type==='event_create'||a.type==='task_create');return `<div class="li-act ${a._st||''}"><span class="ic">${ic}</span><span><b>${esc(l)}</b><small>${esc(d)}</small>${warn?`<em class="li-warn">${esc(warn)}</em>`:''}${a._err?`<em>${esc(a._err)}</em>`:''}</span><span class="st">${a._st==='ok'?'✓ '+esc(a._res||'erledigt')+(a._link?` <a href="${esc(a._link)}" target="_blank" rel="noopener">Öffnen</a>`:''):a._st==='err'?'Fehler':editable?`<button type="button" class="btn btn-glass xs" data-liedit="${mi}:${i}">Anpassen</button>`:''}</span></div>`}).join('')}
     ${allDone?'':`<div class="kd-row"><button class="btn btn-primary sm" data-lirun="${mi}">${m.acts.length>1?'Alle ausführen':'Ausführen'}</button><button class="btn btn-glass sm" data-lino="${mi}">Lieber nicht</button></div>`}</div>`;
 }
 document.addEventListener('click',async e=>{
@@ -8180,25 +8338,51 @@ document.addEventListener('click',async e=>{
   const ok=m.acts.filter(a=>a._st==='ok').length;toast(ok===m.acts.length?'Erledigt: '+ok+(ok===1?' Aktion':' Aktionen'):ok+' von '+m.acts.length+' ausgeführt');
 });
 
-/* ---------- Spracheingabe ---------- */
+/* ---------- Spracheingabe ----------
+   Großer „Sprechen“-Knopf: hört zu, bis man nochmal drückt oder länger nichts sagt (Pausen sind ok).
+   Der Text landet im Eingabefeld, es wird nichts automatisch abgeschickt. Danach steht der Cursor im Feld zum Weitertippen. */
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-function liMicSetup(){
-  document.querySelectorAll('.li-mic').forEach(b=>{b.hidden=!SR});
+function liMicSetup(){document.querySelectorAll('.li-mic').forEach(b=>{b.hidden=false})}
+let LIV=null;
+const liJoin=(...p)=>p.map(x=>String(x||'').trim()).filter(Boolean).join(' ');
+function liTalkUi(S,on){
+  S.btn.classList.toggle('on',on);
+  const l=S.btn.querySelector('.mt');if(l)l.textContent=on?'Fertig':'Sprechen';
+  const f=S.inp.form;if(f)f.classList.toggle('listening',on);
+  if(on){S.ph=S.inp.placeholder;S.inp.placeholder='Ich höre zu … drück „Fertig“, wenn du fertig bist'}else if(S.ph!=null)S.inp.placeholder=S.ph;
 }
-let liRec=null;
-document.addEventListener('click',e=>{
-  const b=e.target.closest('.li-mic');if(!b||!SR)return;
-  e.preventDefault();
-  if(liRec){liRec.stop();return}
-  const inp=$(b.dataset.for);if(!inp)return;
-  const rec=new SR();rec.lang='de-DE';rec.interimResults=true;rec.continuous=false;liRec=rec;
-  const base=inp.value?inp.value.trim()+' ':'';
-  b.classList.add('on');
-  rec.onresult=ev=>{let t='';for(const r of ev.results)t+=r[0].transcript;inp.value=base+t};
-  rec.onerror=ev=>{if(ev.error==='not-allowed')toast('Mikrofon nicht erlaubt. In den Browser-Einstellungen freigeben.')};
-  rec.onend=()=>{b.classList.remove('on');liRec=null;if(inp.value.trim()&&inp.form)inp.form.requestSubmit()};
+function liCaretEnd(i){
+  if(!i.value.trim())return;i.focus();try{i.setSelectionRange(i.value.length,i.value.length)}catch(_){}
+  if(i.tagName==='TEXTAREA'){i.style.height='auto';i.style.height=Math.min(220,i.scrollHeight+2)+'px'}
+}
+function liTalkRun(S){
+  if(!S.on)return;
+  const rec=new SR();rec.lang='de-DE';rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=1;S.rec=rec;
+  let fin='',tmp='',heard=false;
+  rec.onresult=ev=>{fin='';tmp='';for(const r of ev.results){if(r.isFinal)fin+=r[0].transcript;else tmp+=r[0].transcript}heard=heard||!!(fin+tmp).trim();S.inp.value=liJoin(S.base,S.txt,fin+tmp);S.inp.dispatchEvent(new Event('input',{bubbles:true}))};
+  rec.onerror=ev=>{if(ev.error==='not-allowed'||ev.error==='service-not-allowed'){S.on=false;toast('Mikrofon ist nicht erlaubt. Im Browser für das Studio freigeben, oder das Mikrofon der Tastatur nutzen.')}else if(ev.error==='network'){S.on=false;toast('Spracherkennung gerade nicht erreichbar. Das Mikrofon der Tastatur geht trotzdem.')}};
+  rec.onend=()=>{const add=(fin||tmp).trim();if(add)S.txt=liJoin(S.txt,add);S.inp.value=liJoin(S.base,S.txt);
+    if(S.on&&heard){try{liTalkRun(S)}catch(_){liTalkStop()}return}
+    if(LIV===S)liTalkStop();else liCaretEnd(S.inp)};
   rec.start();
+}
+function liTalkStop(){
+  const S=LIV;if(!S)return;LIV=null;S.on=false;
+  try{S.rec&&S.rec.stop()}catch(_){}
+  liTalkUi(S,false);liCaretEnd(S.inp);
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.li-mic');if(!b)return;
+  e.preventDefault();
+  if(LIV){const same=LIV.btn===b;liTalkStop();if(same)return}
+  const inp=$(b.dataset.for);if(!inp)return;
+  if(!SR){inp.focus();toast('Hier bitte über das Mikrofon auf der Tastatur diktieren. Der Text landet direkt im Feld.');return}
+  const S={btn:b,inp,base:inp.value.trim(),txt:'',on:true,rec:null};LIV=S;
+  liTalkUi(S,true);
+  try{liTalkRun(S)}catch(x){liTalkStop();toast('Spracheingabe ließ sich nicht starten: '+x.message)}
 });
+/* Beim Abschicken oder Schließen hört das Mikro auf */
+document.addEventListener('submit',()=>{if(LIV)liTalkStop()},true);
 
 /* ---------- Erinnerungen, die direkt auftauchen ---------- */
 let remindSeen={};try{remindSeen=JSON.parse(sessionStorage.getItem('lm_remind')||'{}')||{}}catch(_){}
@@ -8662,8 +8846,15 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.27';
+const APP_VERSION='2026-11-01.28';
 const CHANGELOG=[
+  {v:'2026-11-01.28',d:'01.11.2026',tour:[
+    {img:'whatsnew/v28-intelligence.webp',t:'LeMatic Intelligence macht jetzt alles',txt:'Einfach reinsprechen oder tippen, was passieren soll. Die Intelligence schlägt die passenden Schritte vor, du drückst „Ausführen“, fertig.',
+     steps:['Auf „Sprechen“ drücken und lossprechen, Pausen sind kein Problem. Der Text landet im Feld','Mit „Fertig“ aufhören. Nichts geht automatisch raus: Du kannst den Text noch korrigieren oder weitertippen, dann „Fragen“','Neu: Kunden anlegen und ändern, Termine ändern (Zeit, Ort, Notiz, für wen), Gespräche festhalten, Rechnungen auf bezahlt setzen, Mail-Entwürfe in Gmail','Mehrere Sachen in einem Satz gehen auch: „Trag für Martin morgen ein Telefonat mit Fronius ein und setz RE-1016 auf bezahlt“','Auf dem Handy bleibt die Eingabe immer unten über der Tab-Leiste']}
+  ],items:[
+    'LeMatic Intelligence kann jetzt alles im Studio: Kunden anlegen und ändern, Termine ändern, Gespräche festhalten, Rechnungen auf bezahlt, Mail-Entwürfe, Angebotsrechner und Seiten öffnen',
+    'Großer „Sprechen“-Knopf überall, auch auf dem Handy: hört zu, bis du „Fertig“ drückst, danach direkt weitertippen'
+  ]},
   {v:'2026-11-01.27',d:'01.11.2026',tour:[
     {img:'whatsnew/v27-aufgeraeumt.webp',t:'Aufgeräumt: weniger, dafür klarer',txt:'Alles, was doppelt war oder kaum gebraucht wurde, ist raus oder liegt eine Ebene tiefer. Die Knöpfe sind größer und lassen sich leichter treffen.',
      steps:['Heute: ohne die großen Kacheln, Schnelllinks, Einordnung, Gespräche, Lieferungen und Ziel 2026. Oben Woche, Aufgaben und Termine, darunter die Empfehlungen','Kalender: „Wer ist frei“ ist weg. Beim Eintragen warnt das Studio weiter, und jetzt zählt auch ein Drehtag als belegt','Rechnungen: oben „Rechnung hochladen“ klappt das Formular auf. Ein PDF kann man auch einfach irgendwo auf die Seite ziehen. Drive-Ordner und Kontoabgleich liegen unter „…“','Kundenkartei: vorne nur Laufend, Alle, Archiv, der Rest unter „Weitere Filter“','Seitenleiste: Medien und Archiv heißen jetzt „Dateien“, Akquise ist raus, Zentrale Pro findest du in den Einstellungen']}
