@@ -428,6 +428,8 @@ body:has(.view[data-view="agent"].active) .li-fab,body:has(.view[data-view="ange
 .inv-auto{border-radius:14px;padding:12px 14px;margin:0 0 14px;font-size:13.5px;line-height:1.5;background:rgba(7,61,48,.05);border:1px solid rgba(7,61,48,.12);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .inv-auto.ok{background:rgba(52,199,89,.1);border-color:rgba(52,199,89,.35)}
 .inv-auto.warn{background:rgba(252,215,23,.15);border-color:rgba(212,166,0,.35)}
+.warn-t{color:#9A6B00;font-weight:600}html.theme-dark .warn-t{color:#F5C842}
+.aus-r b.chk{color:#9A6B00;font-weight:600;font-size:12px}html.theme-dark .aus-r b.chk{color:#F5C842}
 .inv-auto small{color:var(--ink-2)}
 .inv-auto .ia-act{display:flex;gap:8px}
 
@@ -2761,6 +2763,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
             <label>Rechnungsnummer<input class="input" id="invNo"></label>
             <label>Datum<input class="input" type="date" id="invDate"></label>
             <label>Betrag in €<input class="input" id="invAmount" inputmode="decimal" placeholder="4500"></label>
+            <p class="full dc-note" id="invFxNote" hidden></p>
             <label class="full" id="dueField" hidden><span>Fällig am</span><input class="input" type="date" id="invDue"></label>
             <label class="full" id="adrField" hidden><span>Adresse des Kunden</span><input class="input" id="invAdr" placeholder="Straße, PLZ Ort"></label>
             <label class="full" id="leistField" hidden><span>Leistung</span><input class="input" id="invLeist" placeholder="Zum Beispiel Aftermovie Dynabeat 2026"></label>
@@ -3851,7 +3854,11 @@ const PARTY_SUGGEST={
   Eingang:['Freelancer Kamera B','Equipment','Adobe','sevDesk']
 };
 document.querySelectorAll('[data-drivetest]').forEach(a=>a.href=DRIVE_ROOT_URL);
-document.getElementById('invCat').innerHTML=Object.keys(EINGANG_FOLDERS).map(k=>`<option>${k}</option>`).join('')+'<option value="Sonstiges">Sonstiges (Freelancer, Reisekosten, …)</option>';
+/* Ablage der Ausgaben: Eingangsrechnungen / <Jahr> / <eine von vier Kategorien> (v.38) */
+const EIN_CATS_ORDER=['Equipment','Domain','Buchhaltung','Programme'];
+const EIN_SUB={Equipment:'01_Equipment',Domain:'02_Domain',Buchhaltung:'03_Buchhaltung',Programme:'04_Programme'};
+const EIN_HINT={Equipment:'Kamera, Licht, Ton, Technik',Domain:'Domain, Hosting, Server',Buchhaltung:'Kontist, sevDesk, Steuer, Versicherung',Programme:'Software, Abos, KI-Tools'};
+document.getElementById('invCat').innerHTML='<option value="">Kategorie wählen</option>'+EIN_CATS_ORDER.map(k=>`<option value="${k}">${EIN_SUB[k]} (${EIN_HINT[k]})</option>`).join('');
 
 const NOW=new Date();
 const pad=n=>String(n).padStart(2,'0');
@@ -4302,12 +4309,12 @@ async function driveCreateFolder(name,parentId){
   });
   return r.json();
 }
-async function driveUpload(file,name,parentId){
+async function driveUpload(file,name,parentId,appProperties){
   if(!file)throw new Error('Keine Datei');
   if(file.size!=null&&file.size>MAX_UPLOAD_MB*1048576)throw new Error('Datei größer als '+MAX_UPLOAD_MB+' MB');
   if(!parentId)throw new Error('Kein Zielordner');
   const form=new FormData();
-  form.append('metadata',new Blob([JSON.stringify({name,parents:[parentId]})],{type:'application/json'}));
+  form.append('metadata',new Blob([JSON.stringify(appProperties?{name,parents:[parentId],appProperties}:{name,parents:[parentId]})],{type:'application/json'}));
   form.append('file',file);
   const r=await gfetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,name,webViewLink',{method:'POST',body:form});
   return r.json();
@@ -4732,7 +4739,7 @@ function setKind(k){
   document.getElementById('angStatusField').hidden=k!=='Angebot';
   if(k==='Ausgang'&&!document.getElementById('invDue').value)document.getElementById('invDue').value=addDays(document.getElementById('invDate').value||TODAY,14);
   document.getElementById('partyList').innerHTML=PARTY_SUGGEST[k].map(v=>`<option value="${esc(v)}">`).join('');
-  updatePath();
+  updatePath();safe('fx',fxNote);
 }
 let invTargetUrl=RECHNUNGEN_ROOT_URL,invTargetId='1e2POXqZfgyM1y2486tV3RudWlHW2cbp8',invPathParts=[],invNewFolder=false;
 function updatePath(){
@@ -4755,10 +4762,9 @@ function updatePath(){
   }else{
     const nf=$('newFolderBox');if(nf)nf.hidden=true;invNewFolder=false;
     const cat=document.getElementById('invCat').value;
-    const f=EINGANG_FOLDERS[cat];
-    parts=['LeMatic','02_Rechnungen_und_Finanzen','Eingangsrechnungen',f?f.name:'04_Sonstiges'];
-    invTargetUrl=f?driveUrl(f.id):EINGANG_ROOT_URL;invTargetId=f?f.id:'1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O';
-    note='Ausgabe: zählt nie zum Umsatz. Fehlende Kategorie-Ordner legt das Studio bei Bedarf an.';
+    parts=['LeMatic','02_Rechnungen_und_Finanzen','Eingangsrechnungen',date.slice(0,4),EIN_SUB[cat]||'Kategorie wählen'];
+    invTargetUrl=EINGANG_ROOT_URL;invTargetId='1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O';
+    note='Ausgabe: zählt nie zum Umsatz. Ordner nach Rechnungsdatum. Ein neues Jahr legt das Studio mit allen vier Kategorie-Ordnern an.';
   }
   invPathParts=parts;
   document.getElementById('invPath').innerHTML=parts.map(esc).join('<svg class="i"><use href="#i-chev"/></svg>');
@@ -4805,7 +4811,9 @@ document.getElementById('invSave').addEventListener('click',async()=>{
   const amount=parseFloat(document.getElementById('invAmount').value.replace(/\./g,'').replace(',','.'));
   if(!invFile){err.textContent='Bitte zuerst eine Datei auswählen.';return}
   if(!party){err.textContent=(invKind==='Ausgang'?'Bitte den Kunden eintragen.':'Bitte den Lieferanten eintragen.');return}
-  if(!(amount>0)){err.textContent='Bitte einen Betrag eintragen.';return}
+  if(invKind==='Eingang'&&!EIN_SUB[$('invCat').value]){err.textContent='Bitte die Kategorie wählen.';return}
+  if(!(amount>0)&&invKind!=='Eingang'){err.textContent='Bitte einen Betrag eintragen.';return}
+  const amtCheck=invKind==='Eingang'&&!(amount>0);
   err.textContent='';
   /* Doppelte Nummer? */
   const dup=invKind!=='Eingang'&&invDupFind(document.getElementById('invNo').value);
@@ -4845,8 +4853,8 @@ document.getElementById('invSave').addEventListener('click',async()=>{
         saveState();
         btn.lastChild.textContent='Wird hochgeladen …';
       }
-      if(invKind==='Eingang'){btn.lastChild.textContent='Ordner wird gesucht …';driveTargetId=await einFolderFor($('invCat').value);driveLink=driveUrl(driveTargetId);btn.lastChild.textContent='Wird hochgeladen …'}
-      const up=await driveUpload(invFile,fname,driveTargetId);
+      if(invKind==='Eingang'){btn.lastChild.textContent='Ordner wird gesucht …';driveTargetId=await einFolderFor(date.slice(0,4),$('invCat').value);driveLink=driveUrl(driveTargetId);btn.lastChild.textContent='Wird hochgeladen …'}
+      const up=await driveUpload(invFile,fname,driveTargetId,invKind==='Eingang'?einAppProps(amount,amtCheck):null);
       driveLink=up.webViewLink||driveLink;driveFileId=up.id||null;realUpload=true;
     }catch(e){
       err.textContent='Upload fehlgeschlagen: '+e.message+'. Hat dieses Google-Konto Schreibrechte auf den Ordner?';
@@ -4857,7 +4865,7 @@ document.getElementById('invSave').addEventListener('click',async()=>{
   const localStatus=invKind==='Eingang'?'bezahlt':(invKind==='Angebot'?angStatusVal.toLowerCase():'offen');
   const inv={id:Date.now(),kind:invKind,no:document.getElementById('invNo').value.trim(),party,note:fname,date,amount,status:localStatus,rawStatus:invKind==='Ausgang'?'Offen':'',kids:kunde?[nId(kunde.id)]:[],faellig:invKind==='Ausgang'?(dueVal||addDays(date,14)):'',p:$('invProj').value,drive:driveLink,driveFileId,fresh:true};
   INVOICES.unshift(inv);
-  if(invKind==='Eingang')inv.cat=$('invCat').value;
+  if(invKind==='Eingang'){inv.cat=$('invCat').value;if(amtCheck){inv.amount=0;inv.check=true}const fx=IA_FX&&IA_FX.cur!=='EUR'?IA_FX:null;if(fx){inv.cur=fx.cur;inv.orig=fx.orig;inv.fxSrc=fx.src}}
   INV_LAST=realUpload&&invKind!=='Angebot'?{inv,fileId:driveFileId,parent:driveTargetId,path:invPathParts.slice(2).join(' / ')}:null;
   if(realUpload&&invKind==='Eingang')setTimeout(()=>safe('dd',()=>scanDriveInvoices()),1500);
   toast(realUpload?(wantsNewFolder?'Neuer Ordner „'+party+'“ angelegt, Datei abgelegt':'In Drive abgelegt: '+invPathParts.join(' / ')):'Demo: nicht wirklich hochgeladen, dafür mit Google anmelden');
@@ -4905,7 +4913,7 @@ function renderInvoices(){
       <td class="num">${dm(i.date)}</td>
       <td class="party">${esc(i.party)}<small>${i.kind}${i.src==='notion'?', aus Notion':i.src?', aus sevDesk exportiert':''}, ${esc(i.note)}</small></td>
       <td class="hide-sm">${esc(i.no||'Beleg')}</td>
-      <td class="r num">${i.kind==='Eingang'?'−':''}${eur(i.amount)}</td>
+      <td class="r num">${i.kind==='Eingang'&&(i.check||!(+i.amount>0))?'<b class="warn-t">Betrag prüfen</b>':(i.kind==='Eingang'?'−':'')+eur(i.amount)}</td>
       <td title="${i.kind==='Ausgang'&&st!=='bezahlt'?esc('Fällig am '+dm(invDue(i))+(invDueInfo(i).est?', geschätzt (Rechnungsdatum + 14 Tage), in Notion „Fällig am“ fehlt':'')):''}">${st==='bezahlt'&&i.kind!=='Angebot'?`<button class="pill ok pill-btn" data-unpay="${i.id}" aria-label="${esc(i.party)} wieder als offen markieren"><i></i>${label}</button>`:i.kind!=='Angebot'?`<button class="pill ${pc} pill-btn" data-pay="${i.id}" aria-label="${esc(i.party)} als bezahlt markieren"><i></i>${label}</button>`:`<span class="pill ${pc}"><i></i>${label}</span>`}</td>
       <td><span style="display:flex;gap:2px;justify-content:flex-end">
         ${(i.driveFileId||driveIdFrom(i.drive))?`<button class="icon-btn" data-print="${esc(i.driveFileId||driveIdFrom(i.drive))}" data-pname="${esc(i.note||'')}" aria-label="${esc(i.no||i.party)} drucken" title="Drucken">🖨️</button>`:''}
@@ -6950,7 +6958,7 @@ function loadPdfJs(){
 async function ddList(q){
   const out=[];let pt='';
   do{
-    const u='https://www.googleapis.com/drive/v3/files?'+new URLSearchParams({q,pageSize:'1000',fields:'nextPageToken,files(id,name,mimeType,modifiedTime,webViewLink,parents)',supportsAllDrives:'true',includeItemsFromAllDrives:'true',...(pt?{pageToken:pt}:{})});
+    const u='https://www.googleapis.com/drive/v3/files?'+new URLSearchParams({q,pageSize:'1000',fields:'nextPageToken,files(id,name,mimeType,modifiedTime,webViewLink,parents,appProperties)',supportsAllDrives:'true',includeItemsFromAllDrives:'true',...(pt?{pageToken:pt}:{})});
     const j=await (await gfetch(u)).json();out.push(...(j.files||[]));pt=j.nextPageToken||'';
   }while(pt);
   return out;
@@ -6973,6 +6981,21 @@ async function ddCollect(){
 }
 const deNum=s=>{const m=String(s||'').match(/-?\d{1,3}(?:\.\d{3})*(?:,\d{1,2})|-?\d+(?:,\d{1,2})?/);return m?parseFloat(m[0].replace(/\./g,'').replace(',','.')):0};
 const deDate=s=>{const m=/(\d{1,2})\.(\d{1,2})\.(\d{2,4})/.exec(s||'');if(!m)return '';const y=m[3].length===2?'20'+m[3]:m[3];return y+'-'+pad(+m[2])+'-'+pad(+m[1])};
+/* Betrag in de- oder en-Schreibweise: 1.234,56 · 1,234.56 · 29.00 · 29 */
+function anyNum(s){
+  s=String(s||'').replace(/[^\d.,-]/g,'');if(!s)return 0;
+  const m=/[.,](\d{1,2})$/.exec(s);
+  const n=m?parseFloat(s.slice(0,m.index).replace(/[.,]/g,'')+'.'+m[1]):parseFloat(s.replace(/[.,]/g,''));
+  return isFinite(n)?n:0;
+}
+/* Ausgaben: immer den Gesamtbetrag (Total), nie „Amount due“/„Balance due“ (bei bezahlten Belegen 0,00) */
+function belegTotal(t){
+  const cur=/\bUSD\b|US\$|\$\s?\d|\d\s?\$/.test(t)?'USD':/\bGBP\b|£/.test(t)?'GBP':/\bCHF\b/.test(t)?'CHF':'EUR';
+  const re=/(?<![a-zäöü])(total(?: amount| inkl\.? mwst\.?| incl\.? (?:vat|tax))?|gesamtbetrag(?: brutto)?|rechnungsbetrag|gesamtsumme|endbetrag|summe brutto|bruttobetrag|amount paid|bezahlter betrag)\b(?!\s*(?:excl|exkl|netto|net\b|ohne|before))[^\d\n-]{0,24}?(-?\d[\d.,]*\d|\d)/gi;
+  let best=0,m;
+  while((m=re.exec(t))){const v=anyNum(m[2]);if(v>best&&v<1e6)best=v}
+  return{amount:best,cur};
+}
 function ddParse(text,f){
   const t=text.replace(/\s+/g,' ');
   const pick=re=>{const m=re.exec(t);return m?m[1]:''};
@@ -6990,7 +7013,8 @@ function ddParse(text,f){
   if(f.kind==='Eingang'&&!party)party=f.name.replace(/\.pdf$/i,'').replace(/[_-]+/g,' ').slice(0,40);
   const posM=/Gesamtpreis\s+(.*?)\s+(?:Gesamtbetrag|Zahlungsbedingungen)/i.exec(t);
   const pos=(posM?posM[1]:'').replace(/\d+,\d{2}\s*Stk|[\d.]+,\d{2}\s*EUR/g,'').replace(/\s+/g,' ').trim().slice(0,160);
-  return {no,date,amount:brutto||netto,netto,due,party,pos,vtxt:f.kind==='Eingang'?t.slice(0,400).toLowerCase():'',priv:PRIVATE_RX.test(t)||PRIVATE_RX.test(f.name)};
+  if(f.kind==='Eingang'){const bt=belegTotal(t);return {pv:2,no,date,amount:bt.amount,orig:bt.amount,cur:bt.cur,netto,due,party,pos,vtxt:t.slice(0,400).toLowerCase(),priv:PRIVATE_RX.test(t)||PRIVATE_RX.test(f.name)}}
+  return {no,date,amount:brutto||netto,netto,due,party,pos,vtxt:'',priv:PRIVATE_RX.test(t)||PRIVATE_RX.test(f.name)};
 }
 async function ddReadPdf(f){
   const pdfjs=await loadPdfJs();
@@ -7004,15 +7028,23 @@ async function scanDriveInvoices(force){
   DD_STATE='busy';DD_ERR='';ddStatus();
   try{
     const files=await ddCollect();
-    const todo=files.filter(f=>force||!ddCache[f.id]||ddCache[f.id].m!==f.modifiedTime);
+    const todo=files.filter(f=>force||!ddCache[f.id]||ddCache[f.id].m!==f.modifiedTime||(f.kind==='Eingang'&&!(ddCache[f.id].d||{}).pv));
     let done=0;
     const work=async()=>{while(todo.length){const f=todo.shift();
-      try{const txt=await ddReadPdf(f);ddCache[f.id]={m:f.modifiedTime,d:ddParse(txt,f)}}
+      try{const txt=await ddReadPdf(f);const d=ddParse(txt,f);
+        /* Fremdwährung ohne gespeicherten Euro-Betrag: EZB-Kurs vom Rechnungsdatum */
+        if(f.kind==='Eingang'&&d.cur&&d.cur!=='EUR'&&d.orig>0&&d.date&&!(f.appProperties||{}).lmEur){try{const fx=await fxRate(d.cur,d.date);d.amount=Math.round(d.orig*fx.rate*100)/100;d.fxSrc='EZB '+fx.date}catch(_){d.amount=0;d.check=true}}
+        ddCache[f.id]={m:f.modifiedTime,d}}
       catch(e){ddCache[f.id]={m:f.modifiedTime,d:{err:e.message,date:(f.modifiedTime||'').slice(0,10)}}}
       done++;DD_PROGRESS=done+' von '+(done+todo.length);ddStatus();}};
     await Promise.all([work(),work(),work()]);
     const keep=new Set(files.map(f=>f.id));Object.keys(ddCache).forEach(k=>{if(!keep.has(k))delete ddCache[k]});ddSaveCache();
-    DRIVE_DOCS=files.map(f=>({id:f.id,name:f.name,kind:f.kind,folder:f.path.slice(1).join(' / ')||f.path[0],link:f.webViewLink,...(ddCache[f.id]||{}).d}));
+    DRIVE_DOCS=files.map(f=>{const a=f.appProperties||{},o={id:f.id,name:f.name,kind:f.kind,folder:f.path.slice(1).join(' / ')||f.path[0],link:f.webViewLink,...(ddCache[f.id]||{}).d};
+      /* Beim Hochladen gespeicherte Werte haben Vorrang vor dem PDF-Text */
+      if(f.kind==='Eingang'){if(+a.lmEur>0){o.amount=+a.lmEur;o.check=false}else if(a.lmCheck){o.amount=0;o.check=true}
+        if(a.lmCur){o.cur=a.lmCur;o.orig=+a.lmOrig||o.orig;o.fxSrc=a.lmFxSrc||o.fxSrc}
+        if(!(o.amount>0))o.check=true}
+      return o});
     ddMergeStatus();DD_STATE='ok';
   }catch(e){DD_STATE='err';DD_ERR=e.message}
   ddStatus();
@@ -7493,12 +7525,13 @@ document.addEventListener('click',async e=>{
 
 /* ---------- Rechnung hochladen: automatisch erkennen und einsortieren ---------- */
 const EIN_CATS={
+  Buchhaltung:/steuerberat|buchhaltung|sevdesk|kontist|kontoführung|kontogebühr|bankgebühr|lexoffice|datev|finanzamt|steuer|ihk|handelskammer|versicherung|\bbank\b/i,
   Equipment:/kamera|objektiv|sony|canon|blackmagic|dji|rode|sennheiser|stativ|gimbal|akku|speicherkarte|sd-?karte|ssd|festplatte|mikrofon|licht|leuchte|aputure|godox|calumet|foto ?koch|thomann|technik/i,
-  Programme:/adobe|creative cloud|davinci|software|lizenz|abo(nnement)?\b|subscription|higgsfield|openai|chatgpt|anthropic|claude|elevenlabs|magnific|kling|runway|frame\.io|dropbox|google workspace|microsoft|notion|canva|figma|vercel|github/i,
-  Domain:/domain|hosting|webspace|ionos|strato|hetzner|all-?inkl|netcup|namecheap|godaddy|server/i,
-  Buchhaltung:/steuerberat|buchhaltung|sevdesk|lexoffice|datev|finanzamt|steuer|ihk|handelskammer|versicherung|bank|kontoführung/i
+  Programme:/artlist|adobe|creative cloud|davinci|software|lizenz|abo(nnement)?\b|subscription|higgsfield|openai|chatgpt|anthropic|claude|elevenlabs|magnific|kling|runway|frame\.io|dropbox|google workspace|microsoft|notion|canva|figma|vercel|github/i,
+  Domain:/domain|hosting|webspace|ionos|strato|hetzner|all-?inkl|netcup|namecheap|godaddy|server/i
 };
-function guessEinCat(t){for(const [k,re] of Object.entries(EIN_CATS))if(re.test(t))return k;return 'Sonstiges'}
+function guessEinCat(t){for(const [k,re] of Object.entries(EIN_CATS))if(re.test(t))return k;return ''}
+const einCatPick=(k,t)=>EIN_SUB[k]&&!(k!=='Buchhaltung'&&EIN_CATS.Buchhaltung.test(t))?k:guessEinCat(t);
 async function readUploadText(f){
   if(!/pdf$/i.test(f.type)&&!/\.pdf$/i.test(f.name))return '';
   const pdfjs=await loadPdfJs();const doc=await pdfjs.getDocument({data:await f.arrayBuffer()}).promise;
@@ -7510,9 +7543,9 @@ let autoT=null;
 async function autoDetectInvoice(f){
   clearTimeout(autoT);
   const box=$('invAuto');box.hidden=false;box.className='inv-auto busy';box.innerHTML='<span class="spin dd"></span> LeMatic Intelligence liest den Beleg …';
-  let r=null;
+  let r=null,text='';
   try{
-    const text=await readUploadText(f).catch(()=>'');
+    text=await readUploadText(f).catch(()=>'');
     const own=/lematic\s*(→|->|>|-)\s*friedrich|IHR ANSPRECHPARTNER\s+(Lennart Post|Martin Schmick)/i.test(text);
     const toUs=!own&&belegAnUns(text);
     let j={};
@@ -7525,29 +7558,36 @@ async function autoDetectInvoice(f){
       r={kind:isOffer?'Angebot':'Ausgang',party:p.party||j.partei||'',no:p.no||j.nummer||'',date:p.date||j.datum||'',amount:p.amount||+j.betrag||0,due:p.due||j.faellig||'',adr:j.adresse||'',leist:j.beschreibung||'',src:'pdf'};
     }else if(j.art){
       const art=toUs?'Eingang':/ausgang|rechnung an/i.test(j.art||'')?'Ausgang':/angebot/i.test(j.art||'')?'Angebot':'Eingang';
-      r={kind:art,party:j.partei||'',no:j.nummer||'',date:j.datum||'',amount:+j.betrag||0,due:j.faellig||'',adr:j.adresse||'',leist:j.beschreibung||'',cat:EINGANG_FOLDERS[j.kategorie]?j.kategorie:guessEinCat((j.partei||'')+' '+(j.beschreibung||'')+' '+text),src:'li'};
+      r={kind:art,party:j.partei||'',no:j.nummer||'',date:j.datum||'',amount:art==='Eingang'?0:(+j.betrag||0),due:j.faellig||'',adr:j.adresse||'',leist:j.beschreibung||'',cat:einCatPick(j.kategorie,(j.partei||'')+' '+(j.beschreibung||'')),src:'li',cur:j.waehrung,orig:j.betrag};
     }else{
       /* Fremdbeleg: LI liest Lieferant, Betrag, Datum, Nummer und die passende Kategorie */
       const ctx=text.trim().length>80?{text:text.slice(0,8000)}:(f.size<3*1048576?{file:await fileToB64(f),mime:f.type||'application/pdf'}:{text:'(Datei zu groß zum Lesen) Dateiname: '+f.name});
       const out=await napi('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:'beleg',context:ctx})});
       const j=JSON.parse(String(out.text||'{}').replace(/^[^{]*/,'').replace(/[^}]*$/,''));
       const art=toUs?'Eingang':/ausgang|rechnung an/i.test(j.art||'')?'Ausgang':/angebot/i.test(j.art||'')?'Angebot':'Eingang';
-      r={kind:art,party:j.partei||'',no:j.nummer||'',date:j.datum||'',amount:+j.betrag||0,due:j.faellig||'',cat:EINGANG_FOLDERS[j.kategorie]?j.kategorie:guessEinCat((j.partei||'')+' '+(j.beschreibung||'')+' '+text),src:'li'};
+      r={kind:art,party:j.partei||'',no:j.nummer||'',date:j.datum||'',amount:art==='Eingang'?0:(+j.betrag||0),due:j.faellig||'',cat:einCatPick(j.kategorie,(j.partei||'')+' '+(j.beschreibung||'')),src:'li',cur:j.waehrung,orig:j.betrag};
     }
   }catch(e){box.className='inv-auto warn';box.innerHTML='Konnte den Beleg nicht automatisch lesen ('+esc(e.message)+'). Bitte Art, Kunde und Betrag kurz selbst eintragen.';return}
+  /* Ausgaben: Betrag in Originalwährung plus Euro (Kontist-Abbuchung oder EZB-Kurs vom Rechnungsdatum) */
+  IA_FX=null;
+  if(r.kind==='Eingang'){
+    const pt=ddParse(text||'',{name:f.name,kind:'Eingang',path:['',''],modifiedTime:''});
+    const orig=+r.orig>0?+r.orig:(pt.orig||0),cur=String(r.cur||pt.cur||'EUR').toUpperCase().slice(0,3);
+    if(orig>0){try{IA_FX=await einEuro(orig,cur,r.date||pt.date||TODAY,r.party+' '+text);r.amount=IA_FX.eur}catch(_){IA_FX={cur,orig,eur:0,src:'',err:1};r.amount=0}}
+  }
   /* Formular füllen */
   setKind(r.kind);
   if(r.party)$('invParty').value=r.party.replace(/\s+(GmbH & Co\. KG)$/,' $1');
   if(r.no)$('invNo').value=r.no;
   if(/^\d{4}-\d{2}-\d{2}$/.test(r.date||''))$('invDate').value=r.date;
-  if(r.amount)$('invAmount').value=String(r.amount).replace('.',',');
+  $('invAmount').value=r.amount>0?String(r.amount).replace('.',','):'';fxNote();
   if(r.kind==='Ausgang'&&/^\d{4}-\d{2}-\d{2}$/.test(r.due||''))$('invDue').value=r.due;
   if(r.adr)$('invAdr').value=r.adr;if(r.leist)$('invLeist').value=r.leist;
   if(r.kind==='Ausgang'&&!r.adr){const k=customerFor(r.party);if(k&&(k.raw||{})['Adresse'])$('invAdr').value=String(k.raw['Adresse'])}
   const dup=invDupCheck();
-  if(r.kind==='Eingang'){const sel=$('invCat');sel.value=EINGANG_FOLDERS[r.cat]?r.cat:'Sonstiges'}
+  if(r.kind==='Eingang'){const sel=$('invCat');sel.value=EIN_SUB[r.cat]?r.cat:''}
   updatePath();
-  const ok=r.party&&r.amount>0;
+  const ok=r.party&&(r.amount>0||r.kind==='Eingang');
   const what=r.kind==='Ausgang'?'Rechnung an':r.kind==='Angebot'?'Angebot an':'Beleg von';
   if(!ok){box.className='inv-auto warn';box.innerHTML=`Erkannt: ${what} <b>${esc(r.party||'?')}</b>${r.amount?', '+eur(r.amount):''}. ${!r.party?'Kunde/Lieferant':'Betrag'} fehlt noch, bitte ergänzen und auf „Hochladen und ablegen“ klicken.`;return}
   INV_LAST=null;IA_R=r;if(r.kind!=='Angebot'){iaBox();return}
@@ -7560,23 +7600,67 @@ function belegAnUns(text){
   const us='(lematic|lennart[\s.-]*post|martin[\s.-]*schmick)';
   return new RegExp('(\\bbill(ed)?\\b.{0,60}?\\bto\\b|invoice to|sold to|rechnungsempf[aä]nger|rechnung an)\\s.{0,160}?'+us,'i').test(t);
 }
-let IA_R=null;
+let IA_R=null,IA_FX=null;
+/* Fremdwährung: Euro-Betrag aus dem Kontist-Export (Abbuchung passt zum Lieferanten), sonst EZB-Kurs vom Rechnungsdatum */
+const FX_CACHE={};
+async function fxRate(cur,date){
+  const k=cur+'|'+date;if(FX_CACHE[k])return FX_CACHE[k];
+  const r=await fetch('https://api.frankfurter.dev/v1/'+encodeURIComponent(date)+'?base='+encodeURIComponent(cur)+'&symbols=EUR');
+  if(!r.ok)throw new Error('Kurs nicht abrufbar');
+  const j=await r.json();const rate=j&&j.rates&&+j.rates.EUR;if(!(rate>0))throw new Error('Kurs nicht abrufbar');
+  return FX_CACHE[k]={rate,date:j.date||date};
+}
+function kontistMatch(txt,date,orig){
+  const t=String(txt||'').toLowerCase();let best=null,bd=99;
+  (FIN.tx||[]).forEach(x=>{if(!(x.amount<0)||!x.date)return;const dd=diffDays(x.date,date);if(dd<-3||dd>20)return;
+    if(!ausTok(x.name).some(w=>t.includes(w)))return;
+    if(orig&&-x.amount>orig*3)return;
+    if(Math.abs(dd)<bd){best=x;bd=Math.abs(dd)}});
+  return best;
+}
+async function einEuro(orig,cur,date,txt){
+  const r2=n=>Math.round(n*100)/100;
+  if(cur==='EUR')return{cur,orig,eur:r2(orig),src:''};
+  const k=kontistMatch(txt,date,orig);
+  if(k)return{cur,orig,eur:r2(-k.amount),src:'Kontist',srcDate:k.date};
+  const fx=await fxRate(cur,date);
+  return{cur,orig,eur:r2(orig*fx.rate),rate:fx.rate,src:'EZB',srcDate:fx.date};
+}
+const dmy=d=>String(d||'').slice(0,10).split('-').reverse().join('.');
+const fmtCur=(n,c)=>(+n||0).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' '+c;
+function fxNote(){
+  const el=$('invFxNote');if(!el)return;const F=IA_FX;
+  if(invKind!=='Eingang'){el.hidden=true;return}
+  if(!$('invAmount').value.trim()){el.hidden=false;el.className='full dc-note warn-t';el.textContent='Betrag prüfen: auf dem Beleg war kein Gesamtbetrag (Total) erkennbar.'+(F&&F.err?' Der Kurs für '+F.cur+' war nicht abrufbar.':'');return}
+  if(!F||F.cur==='EUR'){el.hidden=true;return}
+  el.hidden=false;el.className='full dc-note';
+  el.textContent='Original '+fmtCur(F.orig,F.cur)+(F.src==='Kontist'?', in Euro laut Kontist-Abbuchung vom '+dmy(F.srcDate):', umgerechnet mit dem EZB-Kurs vom '+dmy(F.srcDate)+' ('+String(F.rate).replace('.',',')+')')+'.';
+}
+function einAppProps(amount,check){
+  const p={lmKind:'Eingang'};const F=IA_FX;
+  if(amount>0)p.lmEur=String(Math.round(amount*100)/100);
+  if(check)p.lmCheck='1';
+  if(F&&F.cur&&F.cur!=='EUR'&&F.orig){p.lmCur=F.cur;p.lmOrig=String(F.orig);if(F.src)p.lmFxSrc=F.src+(F.srcDate?' '+F.srcDate:'');if(F.rate)p.lmRate=String(F.rate)}
+  return p;
+}
 function iaBox(){
   const box=$('invAuto');if(!box||!IA_R)return;const r=IA_R,isEin=invKind==='Eingang';
   const party=$('invParty').value,known=isEin||customerFor(party),dup=!isEin&&invDupCheck();
   box.hidden=false;box.className='inv-auto ok';
-  box.innerHTML=`<div><b>Erkannt als ${isEin?'Ausgabe':'Rechnung von LeMatic (Umsatz)'}</b> · ${isEin?'von':'an'} <b>${esc(party||'?')}</b> · ${$('invAmount').value?esc($('invAmount').value)+' €':'Betrag fehlt'} · ${esc(dm($('invDate').value||TODAY))}<br><small>Wird abgelegt in ${esc(invPathParts.slice(2).join(' / '))}${invNewFolder?' (neuer Ordner)':''}. ${isEin?'Zählt nicht zum Umsatz.':'Zählt zum Umsatz.'}${known?'':' Den Kunden gibt es noch nicht in der Kartei, beim Ablegen wird gefragt.'}${dup?' Achtung: Die Nummer gibt es schon.':''} Bitte prüfen, dann „Ablegen“.</small></div><button class="btn btn-glass sm" data-iaswap>${isEin?'Ist eine Rechnung von LeMatic':'Ist eine Ausgabe'}</button>`;
+  const fx=isEin&&IA_FX&&IA_FX.cur!=='EUR'&&IA_FX.orig?' ('+esc(fmtCur(IA_FX.orig,IA_FX.cur))+')':'';
+  box.innerHTML=`<div><b>Erkannt als ${isEin?'Ausgabe':'Rechnung von LeMatic (Umsatz)'}</b> · ${isEin?'von':'an'} <b>${esc(party||'?')}</b> · ${$('invAmount').value?esc($('invAmount').value)+' €'+fx:'<b class="warn-t">Betrag prüfen</b>'} · ${esc(dm($('invDate').value||TODAY))}<br><small>Wird abgelegt in ${esc(invPathParts.slice(2).join(' / '))}${invNewFolder?' (neuer Ordner)':''}.${isEin&&!$('invCat').value?' Bitte die Kategorie wählen.':''} ${isEin?'Zählt nicht zum Umsatz.':'Zählt zum Umsatz.'}${known?'':' Den Kunden gibt es noch nicht in der Kartei, beim Ablegen wird gefragt.'}${dup?' Achtung: Die Nummer gibt es schon.':''} Bitte prüfen, dann „Ablegen“.</small></div><button class="btn btn-glass sm" data-iaswap>${isEin?'Ist eine Rechnung von LeMatic':'Ist eine Ausgabe'}</button>`;
 }
 document.addEventListener('click',e=>{
   if(!e.target.closest('[data-iaswap]'))return;
   const toEin=invKind!=='Eingang';const party=$('invParty').value;setKind(toEin?'Eingang':'Ausgang');$('invParty').value=party;
-  if(toEin){$('invCat').value=EINGANG_FOLDERS[guessEinCat(party)]?guessEinCat(party):'Sonstiges'}
+  if(toEin){$('invCat').value=guessEinCat(party)}
   updatePath();iaBox();
 });
 document.addEventListener('click',e=>{
   if(e.target.closest('[data-iago]')){clearTimeout(autoT);$('invAuto').hidden=true;$('invSave').click()}
   if(e.target.closest('[data-iastop]')){clearTimeout(autoT);const b=$('invAuto');b.className='inv-auto';b.innerHTML='Automatik angehalten. Felder prüfen und auf „Hochladen und ablegen“ klicken.'}
 });
+$('invAmount').addEventListener('input',fxNote);
 ['invParty','invNo','invAmount','invDate'].forEach(id=>{const el=$(id);el&&el.addEventListener('input',()=>{if(autoT){clearTimeout(autoT);autoT=null;const b=$('invAuto');if(b&&!b.hidden){b.className='inv-auto';b.innerHTML='Automatik angehalten, weil du etwas geändert hast. Zum Ablegen auf „Hochladen und ablegen“ klicken.'}}})});
 
 
@@ -9142,18 +9226,18 @@ const anaPeriodTxt=()=>ANA.mode==='jahr'?String(ANA.y):MONTHS[ANA.m-1]+' '+ANA.y
 function ausLabel(){const b=document.querySelector('#invFilter [data-f="ausgaben"]');if(b)b.textContent='Ausgaben '+(ANA.mode==='jahr'?ANA.y:MON[ANA.m-1]+' '+ANA.y);
   const on=invF==='ausgaben';setText('inv-title',on?'Ausgaben':'Alle Rechnungen');setText('inv-sub',on?'Belege an LeMatic und Abbuchungen vom Konto. Zählen nie zum Umsatz.':'Status per Klick auf bezahlt setzen')}
 const EIN2FIN={Equipment:'Equipment & Technik',Programme:'Software & Abos',Domain:'Software & Abos',Buchhaltung:'Bank & Gebühren',Sonstiges:'Sonstiges'};
-const einCatOfFolder=f=>{f=String(f||'');return Object.keys(EINGANG_FOLDERS).find(k=>f.includes(EINGANG_FOLDERS[k].name)||new RegExp('\\b'+k+'\\b','i').test(f))||'Sonstiges'};
+const einCatOfFolder=f=>{f=String(f||'').toLowerCase();return EIN_CATS_ORDER.find(k=>f.includes(k.toLowerCase()))||'Sonstiges'};
 const AUS_STOP=new Set('gmbh inc ltd llc corp invoice rechnung beleg kartenzahlung lastschrift überweisung www com germany deutschland payment zahlung mit kontist gesendet amazon'.split(' '));
 const ausTok=s=>String(s||'').toLowerCase().replace(/[*.,]/g,' ').split(/[^a-z0-9äöüß]+/).filter(w=>w.length>=4&&!AUS_STOP.has(w)&&!/^\d+$/.test(w));
 function ausData(){
-  const docs=driveDocsLI().filter(d=>d.kind==='Eingang'&&d.date).map(d=>({id:'d'+d.id,fid:d.id,date:String(d.date).slice(0,10),party:d.party||d.name,amount:+d.amount||0,cat:EIN2FIN[einCatOfFolder(d.folder)],link:d.link,txt:(d.vtxt||'')+' '+String(d.name||'').toLowerCase()+' '+String(d.party||'').toLowerCase()}));
-  INVOICES.filter(i=>i.kind==='Eingang'&&i.date&&!docs.some(d=>d.fid&&d.fid===i.driveFileId)).forEach(i=>docs.push({id:'i'+i.id,fid:i.driveFileId,date:String(i.date).slice(0,10),party:i.party,amount:+i.amount||0,cat:EIN2FIN[i.cat]||'Sonstiges',link:i.drive,txt:String(i.party||'').toLowerCase()+' '+String(i.note||'').toLowerCase()}));
+  const docs=driveDocsLI().filter(d=>d.kind==='Eingang'&&d.date).map(d=>({id:'d'+d.id,fid:d.id,date:String(d.date).slice(0,10),party:d.party||d.name,amount:+d.amount||0,check:!!d.check||!(+d.amount>0),cur:d.cur,orig:d.orig,cat:EIN2FIN[einCatOfFolder(d.folder)],link:d.link,txt:(d.vtxt||'')+' '+String(d.name||'').toLowerCase()+' '+String(d.party||'').toLowerCase()}));
+  INVOICES.filter(i=>i.kind==='Eingang'&&i.date&&!docs.some(d=>d.fid&&d.fid===i.driveFileId)).forEach(i=>docs.push({id:'i'+i.id,fid:i.driveFileId,date:String(i.date).slice(0,10),party:i.party,amount:+i.amount||0,check:!!i.check||!(+i.amount>0),cur:i.cur,orig:i.orig,cat:EIN2FIN[i.cat]||'Sonstiges',link:i.drive,txt:String(i.party||'').toLowerCase()+' '+String(i.note||'').toLowerCase()}));
   const out=FIN.tx.filter(t=>t.amount<0&&finVis(t));
   const used=new Set(),beleg={};
   /* Beleg zu Abbuchung: gleicher Betrag kurz danach, oder Lieferantenname im Beleg (z. B. Dollar-Rechnung, Euro-Abbuchung) */
   docs.forEach(d=>{let best=null,bs=0;
     out.forEach(t=>{if(used.has(t.id))return;const dd=diffDays(t.date,d.date);let sc=0;
-      const amt=d.amount&&Math.abs(-t.amount-d.amount)<0.02,name=ausTok(t.name).some(w=>d.txt.includes(w));
+      const amt=d.amount>0&&Math.abs(-t.amount-d.amount)<0.02,name=ausTok(t.name).some(w=>d.txt.includes(w));
       if(amt&&dd>=-5&&dd<=60)sc=3+(name?2:0);else if(name&&dd>=-3&&dd<=15)sc=2;
       if(sc>bs||(sc===bs&&sc&&best&&Math.abs(dd)<Math.abs(diffDays(best.date,d.date)))){best=t;bs=sc}});
     if(best){used.add(best.id);beleg[best.id]=d;d.paid=best}});
@@ -9162,9 +9246,9 @@ function ausData(){
 function ausRows(){
   const r=anaRange(),D=ausData();
   const dates=FIN.tx.map(t=>t.date).sort(),from=dates[0]||'',to=dates[dates.length-1]||'';
-  const rows=D.out.filter(t=>inR(t.date,r)).map(t=>{const d=D.beleg[t.id];return{key:t.id,date:t.date,party:t.name||'—',sub:t.note||t.purpose||'',amount:-t.amount,cat:finCat(t),catEdit:true,status:'bezahlt',link:d?d.link:'',src:'konto'}});
+  const rows=D.out.filter(t=>inR(t.date,r)).map(t=>{const d=D.beleg[t.id];return{key:t.id,date:t.date,party:t.name||'—',sub:(t.note||t.purpose||'')+(d&&d.cur&&d.cur!=='EUR'&&d.orig?' · Beleg '+fmtCur(d.orig,d.cur):''),amount:-t.amount,cat:finCat(t),catEdit:true,status:'bezahlt',link:d?d.link:'',src:'konto'}});
   D.docs.filter(d=>!d.paid&&inR(d.date,r)).forEach(d=>{const check=from&&d.date>=from&&d.date<=to;
-    rows.push({key:d.id,date:d.date,party:d.party||'Beleg',sub:'Beleg in Drive',amount:d.amount,cat:d.cat,catEdit:false,status:check?'offen':'ohne Abgleich',link:d.link,src:'beleg'})});
+    rows.push({key:d.id,date:d.date,party:d.party||'Beleg',sub:'Beleg in Drive'+(d.cur&&d.cur!=='EUR'&&d.orig?' · '+fmtCur(d.orig,d.cur):''),amount:d.check?0:d.amount,check:d.check,cat:d.cat,catEdit:false,status:d.check?'Betrag prüfen':check?'offen':'ohne Abgleich',link:d.link,src:'beleg'})});
   rows.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
   return{r,rows,from,to};
 }
@@ -9172,30 +9256,41 @@ function renderAusgaben(){
   const el=$('invAus');if(!el||el.hidden)return;
   const A=ausRows(),isYear=ANA.mode==='jahr';
   const counted=A.rows.filter(x=>x.cat!=='Privat');
-  const sum=counted.reduce((a,x)=>a+x.amount,0),offen=counted.filter(x=>x.status==='offen').reduce((a,x)=>a+x.amount,0);
+  const sum=counted.reduce((a,x)=>a+x.amount,0),offen=counted.filter(x=>x.status==='offen').reduce((a,x)=>a+x.amount,0),chk=counted.filter(x=>x.check).length;
   const priv=A.rows.filter(x=>x.cat==='Privat').reduce((a,x)=>a+x.amount,0);
-  const row=x=>`<div class="aus-r"><span class="num">${dm(x.date)}</span><span class="n">${esc(x.party)}<small>${esc(x.sub)}</small></span><b>${eur2(x.amount)}</b>${x.catEdit?`<button class="fcat" data-fincat="${esc(x.key)}">${esc(x.cat)}</button>`:`<span class="fcat ro">${esc(x.cat)}</span>`}<span class="st${x.status==='bezahlt'?'':' off'}" title="${x.status==='bezahlt'?'Abbuchung im Kontist-Export':x.status==='offen'?'Keine passende Abbuchung im Kontist-Export gefunden':'Liegt außerhalb der geladenen Kontist-Daten'}"><i></i>${esc(x.status)}</span>${x.link?`<a class="icon-btn bl" href="${esc(x.link)}" target="_blank" rel="noopener" aria-label="Beleg öffnen" title="Beleg öffnen"><svg class="i sm"><use href="#i-open"/></svg></a>`:'<span class="bl"></span>'}</div>`;
+  const row=x=>`<div class="aus-r"><span class="num">${dm(x.date)}</span><span class="n">${esc(x.party)}<small>${esc(x.sub)}</small></span>${x.check?'<b class="chk">Betrag prüfen</b>':`<b>${eur2(x.amount)}</b>`}${x.catEdit?`<button class="fcat" data-fincat="${esc(x.key)}">${esc(x.cat)}</button>`:`<span class="fcat ro">${esc(x.cat)}</span>`}<span class="st${x.status==='bezahlt'?'':' off'}" title="${x.status==='bezahlt'?'Abbuchung im Kontist-Export':x.check?'Auf dem Beleg war kein Gesamtbetrag erkennbar':x.status==='offen'?'Keine passende Abbuchung im Kontist-Export gefunden':'Liegt außerhalb der geladenen Kontist-Daten'}"><i></i>${esc(x.status)}</span>${x.link?`<a class="icon-btn bl" href="${esc(x.link)}" target="_blank" rel="noopener" aria-label="Beleg öffnen" title="Beleg öffnen"><svg class="i sm"><use href="#i-open"/></svg></a>`:'<span class="bl"></span>'}</div>`;
   el.innerHTML=`<div class="aus-top">
       <div class="seg" role="group" aria-label="Zeitraum"><button data-anamode="monat" aria-pressed="${!isYear}">Monat</button><button data-anamode="jahr" aria-pressed="${isYear}">Jahr</button></div>
       <div class="ana-nav"><button class="icon-btn" data-anastep="-1" aria-label="Zurück">‹</button><b>${esc(anaPeriodTxt())}</b><button class="icon-btn" data-anastep="1" aria-label="Weiter">›</button></div>
       <span class="sp" style="flex:1"></span><button class="btn btn-glass sm" data-anacsv>Kontist-CSV laden</button></div>
-    <div class="aus-sum"><strong>${eur2(sum)}</strong><span>Ausgaben ${esc(anaPeriodTxt())}, ${counted.length} ${counted.length===1?'Posten':'Posten'}${offen?', davon '+eur2(offen)+' offen':''}${priv?' · '+eur2(priv)+' privat, nicht mitgezählt':''}</span></div>
+    <div class="aus-sum"><strong>${eur2(sum)}</strong><span>Ausgaben ${esc(anaPeriodTxt())}, ${counted.length} ${counted.length===1?'Posten':'Posten'}${offen?', davon '+eur2(offen)+' offen':''}${priv?' · '+eur2(priv)+' privat, nicht mitgezählt':''}${chk?` · <b class="warn-t">${chk} ${chk===1?'Beleg':'Belege'}: Betrag prüfen</b>`:''}</span></div>
     <p class="aus-hint">${A.from?`Kontist-Export ${dm(A.from)} bis ${dm(A.to)} plus Belege aus Drive (Eingangsrechnungen).`:'Noch kein Kontist-Export geladen, darum nur Belege aus Drive.'} Doppelte Buchungen zählen einmal. Ausgaben zählen nie zum Umsatz.</p>
     ${A.rows.length?`<div class="aus-r h"><span>Datum</span><span>Lieferant</span><span style="text-align:right">Betrag</span><span>Kategorie</span><span>Status</span><span>Beleg</span></div>${A.rows.map(row).join('')}`:`<p class="ana-empty">Keine Ausgaben in ${esc(anaPeriodTxt())}.${A.from?'':' Lade einmal den CSV-Export aus Kontist.'}</p>`}`;
 }
-/* Ablage der Belege: Eingangsrechnungen / Kategorie (bestehende Ordner, kein Jahres-Ordner) */
+/* Ablage der Belege: Eingangsrechnungen / <Jahr laut Rechnungsdatum> / <01_Equipment | 02_Domain | 03_Buchhaltung | 04_Programme>.
+   Ein neues Jahr bekommt sofort alle vier Unterordner. Nie Kategorie-Ordner ohne Jahr. */
 const EINGANG_ROOT_ID='1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O';
-const einCatFolderName=cat=>(EINGANG_FOLDERS[cat]&&EINGANG_FOLDERS[cat].name)||'04_Sonstiges';
-async function einFolderFor(cat){
-  const f=EINGANG_FOLDERS[cat];if(f&&f.id)return f.id;
-  const cn=einCatFolderName(cat);
-  let map={};try{map=JSON.parse(localStorage.getItem('lm_ein_cat')||'{}')||{}}catch(_){}
-  if(map[cn])return map[cn];
-  const hit=(await ddList(`'${EINGANG_ROOT_ID}' in parents and name='${qesc(cn)}' and mimeType='application/vnd.google-apps.folder' and trashed=false`))[0];
-  const cf=hit||await driveCreateFolder(cn,EINGANG_ROOT_ID);
-  if(!cf||!cf.id)throw new Error('Ordner „'+cn+'“ konnte nicht angelegt werden');
-  map[cn]=cf.id;try{localStorage.setItem('lm_ein_cat',JSON.stringify(map));localStorage.removeItem('lm_ein_dirs')}catch(_){}
-  return cf.id;
+const einCatFolderName=cat=>EIN_SUB[cat]||'';
+try{localStorage.removeItem('lm_ein_dirs');localStorage.removeItem('lm_ein_cat')}catch(_){}
+async function einYearFolders(y){
+  y=String(y);if(!/^\d{4}$/.test(y))throw new Error('Rechnungsdatum fehlt');
+  let map={};try{map=JSON.parse(localStorage.getItem('lm_ein_y')||'{}')||{}}catch(_){}
+  if(map[y]&&EIN_CATS_ORDER.every(c=>map[y][c]))return map[y];
+  const fq=parent=>`'${parent}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`;
+  const yf=(await ddList(fq(EINGANG_ROOT_ID))).find(f=>f.name===y)||await driveCreateFolder(y,EINGANG_ROOT_ID);
+  if(!yf||!yf.id)throw new Error('Jahres-Ordner '+y+' konnte nicht angelegt werden');
+  const subs=await ddList(fq(yf.id)),ids={};
+  for(const c of EIN_CATS_ORDER){
+    const f=subs.find(x=>x.name===EIN_SUB[c])||await driveCreateFolder(EIN_SUB[c],yf.id);
+    if(!f||!f.id)throw new Error('Ordner '+y+' / '+EIN_SUB[c]+' konnte nicht angelegt werden');
+    ids[c]=f.id;
+  }
+  map[y]=ids;try{localStorage.setItem('lm_ein_y',JSON.stringify(map))}catch(_){}
+  return ids;
+}
+async function einFolderFor(y,cat){
+  if(!EIN_SUB[cat])throw new Error('Kategorie fehlt');
+  return (await einYearFolders(y))[cat];
 }
 async function driveMove(fileId,to,from){
   await gfetch('https://www.googleapis.com/drive/v3/files/'+fileId+'?addParents='+encodeURIComponent(to)+(from?'&removeParents='+encodeURIComponent(from):'')+'&supportsAllDrives=true',{method:'PATCH',headers:{'Content-Type':'application/json'},body:'{}'});
@@ -9217,11 +9312,13 @@ document.addEventListener('click',async e=>{
       inv.kind='Ausgang';inv.status='offen';inv.rawStatus='Offen';inv.nid=pg.id;inv.faellig=addDays(inv.date,14);
       L.parent=AUSGANG_ROOT_ID;L.path='Ausgangsrechnungen';toast('Umgestellt: Rechnung von LeMatic. Bitte noch den Kunden in Notion verknüpfen.');
     }else{
-      const cat=guessEinCat(inv.party+' '+(inv.note||''));const to=await einFolderFor(cat);
+      let cat=guessEinCat(inv.party+' '+(inv.note||''));
+      if(!cat){cat=await new Promise(res=>popMenu(sw,'Kategorie',EIN_CATS_ORDER.map(c=>({label:EIN_SUB[c],fn:()=>res(c)}))));}
+      const y=String(inv.date).slice(0,4);const to=await einFolderFor(y,cat);
       if(L.fileId)await driveMove(L.fileId,to,L.parent);
       if(inv.nid)await napi('/api/notion?db=rechnungen&id='+encodeURIComponent(inv.nid),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({archive:true})});
       inv.kind='Eingang';inv.status='bezahlt';inv.rawStatus='';inv.nid=null;inv.cat=cat;
-      L.parent=to;L.path='Eingangsrechnungen / '+einCatFolderName(cat);toast('Umgestellt: Ausgabe, zählt nicht zum Umsatz');
+      L.parent=to;L.path='Eingangsrechnungen / '+y+' / '+einCatFolderName(cat);toast('Umgestellt: Ausgabe, zählt nicht zum Umsatz');
     }
     safe('inv',renderInvoices);safe('home',renderHome);safe('dd',()=>scanDriveInvoices());invFiledBox();
   }catch(x){toast('Nicht umgestellt: '+x.message);sw.disabled=false;invFiledBox()}
@@ -9490,8 +9587,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.37';
+const APP_VERSION='2026-11-01.38';
 const CHANGELOG=[
+  {v:'2026-11-01.38',d:'01.11.2026',items:['Ausgaben landen in Eingangsrechnungen / Jahr laut Rechnungsdatum / Kategorie','Vier feste Kategorien: 01_Equipment, 02_Domain, 03_Buchhaltung, 04_Programme. Ein neues Jahr bekommt alle vier Ordner automatisch','Kontist, Bankgebühren und sevDesk gehen in Buchhaltung, Abos wie Higgsfield, Artlist und Adobe in Programme','Fremdwährung: Betrag im Original plus in Euro, laut Kontist-Abbuchung oder EZB-Kurs vom Rechnungsdatum','Es zählt immer der Gesamtbetrag (Total), nie „Amount due 0,00“. Ohne erkennbaren Betrag steht „Betrag prüfen“ statt 0 €']},
   {v:'2026-11-01.37',d:'01.11.2026',items:['Ausgaben landen wieder direkt im passenden Kategorie-Ordner unter Eingangsrechnungen, z. B. 02_Programme','Keine Jahres-Ordner mehr, fehlende Kategorie-Ordner legt das Studio bei Bedarf an','Umstellen Ausgabe/Umsatz verschiebt die Datei in den neuen Ordner','Der Reiter „Ausgaben“ liest weiter alle Belege, auch aus schon angelegten Jahres-Ordnern']},
   {v:'2026-11-01.36',d:'01.11.2026',items:['Rechnungen: neuer Reiter „Ausgaben“ mit Datum, Lieferant, Betrag, Kategorie, Status und Beleg, oben die Summe im Zeitraum','Ausgaben kommen aus dem Kontist-Export und den Belegen in Drive, doppelte Buchungen zählen einmal','Beim Hochladen erkennt das Studio, ob es eine Rechnung von LeMatic oder eine Ausgabe ist, und zeigt es an, umstellbar per Klick','Ausgaben landen in Eingangsrechnungen / Jahr / Kategorie und zählen nie zum Umsatz','Private Buchungen sieht nur Lennart']},
   {v:'2026-11-01.35',d:'01.11.2026',items:['Rechnungen haben jetzt „Analysen“: Monat oder Jahr wählen, Berechnet, Eingenommen, Offen, Ausgaben und Kontostand-Bewegung','Ausgaben aus dem Kontist-Export nach Kategorie, für euch beide gleich, Kategorie per Klick änderbar','Bis Jahresende: was noch offen ist und welche unterschriebenen Angebote noch abgerechnet werden müssen','LeMatic Intelligence schreibt Einschätzung und drei Empfehlungen dazu'],tour:[

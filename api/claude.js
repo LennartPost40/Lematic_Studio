@@ -109,17 +109,20 @@ ${c.verlauf || '(neu)'}
 ${c.frage}`,
   beleg: c => `Lies den Beleg und gib NUR ein JSON-Objekt zurück, ohne Text davor oder danach:
 {"art":"Eingang|Ausgang|Angebot","partei":"Firmenname des Lieferanten bzw. Kunden","nummer":"Rechnungsnummer oder leer",
-"datum":"JJJJ-MM-TT","betrag":Bruttobetrag als Zahl,"faellig":"JJJJ-MM-TT (Fälligkeitsdatum; steht nur ein Zahlungsziel in Tagen da, z. B. zahlbar innerhalb von 30 Tagen, dann Rechnungsdatum plus diese Tage) oder leer",
-"kategorie":"Equipment|Programme|Domain|Buchhaltung|Sonstiges","beschreibung":"max. 8 Wörter, was gekauft/geleistet wurde (bei Rechnungen von LeMatic: die Leistung, z. B. Aftermovie Dynabeat 2026)",
+"datum":"JJJJ-MM-TT","betrag":Gesamtbetrag als Zahl in der Währung des Belegs oder null,"waehrung":"EUR|USD|GBP|CHF … (ISO-Code der Währung des Betrags)","faellig":"JJJJ-MM-TT (Fälligkeitsdatum; steht nur ein Zahlungsziel in Tagen da, z. B. zahlbar innerhalb von 30 Tagen, dann Rechnungsdatum plus diese Tage) oder leer",
+"kategorie":"Equipment|Domain|Buchhaltung|Programme oder leer","beschreibung":"max. 8 Wörter, was gekauft/geleistet wurde (bei Rechnungen von LeMatic: die Leistung, z. B. Aftermovie Dynabeat 2026)",
 "adresse":"Postadresse des Rechnungsempfängers bei Ausgangsrechnungen bzw. des Lieferanten bei Eingangsrechnungen, einzeilig: Straße Nr, PLZ Ort; sonst leer"}
 Steht "zahlbar bis zum …" oder "fällig am …", ist das "faellig". Bei Rechnungen von LeMatic an Kunden ist "partei" der Kunde (Empfänger), nicht LeMatic.
 "art" entscheidest du nach Absender und Empfänger:
 - "Ausgang": LeMatic (Lennart Post / Martin Schmick, Geesthacht) stellt die Rechnung aus, steht also oben im Briefkopf bzw. in der Fußzeile mit Bankverbindung; Empfänger ist ein Kunde. Das ist Umsatz.
 - "Eingang": Ein Lieferant, Dienst oder Freelancer stellt die Rechnung aus, LeMatic, Lennart Post, Martin Schmick oder eine ihrer Mailadressen (z. B. info@lennart-post.de, info@lematic.de) steht als Empfänger ("Bill to", "Rechnung an", Adressfeld). Das ist eine Ausgabe, z. B. Abos wie Higgsfield, Adobe, Software, Technik, Reisen.
 - "Angebot": ein Angebot von LeMatic.
-Betrag in Euro, wenn der Beleg einen Euro-Betrag nennt; sonst den Betrag in der Währung des Belegs.
-Kategorien: Equipment = Kamera, Licht, Ton, Technik; Programme = Software, Abos, KI-Tools; Domain = Domain, Hosting, Server;
-Buchhaltung = Steuer, Buchhaltung, Versicherung, Bank; sonst Sonstiges.
+"betrag" ist immer der Gesamtbetrag brutto ("Total", "Gesamtbetrag", "Rechnungsbetrag") in der Originalwährung des Belegs, nicht umgerechnet.
+Nie "Amount due", "Balance due", "Zahlbetrag" oder "Offener Betrag" nehmen: Bei schon bezahlten Belegen steht dort 0,00, das ist nicht der Rechnungsbetrag.
+Ist kein Gesamtbetrag erkennbar, "betrag": null. Nie 0 erfinden.
+Kategorien: Equipment = Kamera, Licht, Ton, Technik; Domain = Domain, Hosting, Server;
+Buchhaltung = Bank- und Kontogebühren (z. B. Kontist), sevDesk, Steuer, Buchhaltung, Versicherung;
+Programme = Software, Abos, KI-Tools (z. B. Higgsfield, Artlist, Adobe). Passt nichts davon, "kategorie" leer lassen.
 ${c.text ? '--- Text des Belegs ---\n' + c.text : '(Beleg als Datei angehängt)'}`,
   insights: c => `Unten stehen die aktuellen Kennzahlen von LeMatic, aus denen gerade Grafiken gezeichnet werden.
 Werte sie aus: 3 bis 4 Erkenntnisse, je eine Zeile, beginnend mit einem passenden Emoji. Danach eine Zeile
