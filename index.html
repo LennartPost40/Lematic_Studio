@@ -1035,6 +1035,18 @@ textarea.input{font-family:inherit}
 .connect-card li .i{color:var(--ok-dot)}
 .connect-card small{display:block;font-size:12px;color:var(--ink-3);margin-top:12px}
 .mail-tools{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+/* Mail-Ordner wie in Gmail (v.33) */
+.mbox{display:flex;gap:2px;margin:-6px 0 12px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.mbox::-webkit-scrollbar{display:none}
+.mbox button{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;border:0;background:none;font:inherit;font-size:14px;font-weight:500;color:var(--ink-2);padding:8px 11px 10px;min-height:36px;white-space:nowrap;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:8px 8px 0 0}
+.mbox button:hover{color:var(--ink);background:rgba(118,118,128,.08)}
+.mbox button[aria-selected="true"]{color:var(--brand);border-bottom-color:var(--brand);font-weight:600}
+.mbox small{min-width:19px;height:19px;padding:0 6px;border-radius:10px;background:var(--brand);color:#fff;font-size:11px;font-weight:600;display:inline-grid;place-items:center;font-variant-numeric:tabular-nums}
+.mbox small[hidden]{display:none}
+html.theme-dark .mbox button[aria-selected="true"]{color:var(--brand-2);border-bottom-color:var(--brand-2)}
+html.theme-dark .mbox small{background:var(--brand-2);color:#06261e}
+@media (pointer:coarse){.mbox button{min-height:44px}}
+@media (max-width:860px){.mbox{gap:0;margin-top:-2px}.mbox button{flex:1 1 auto;justify-content:center;padding:8px 4px 10px;font-size:13.5px;gap:5px}}
 .mail{display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;width:100%;text-align:left;border:0;background:transparent;padding:12px 10px;border-radius:14px;cursor:pointer;font:inherit;color:inherit}
 .mail+.mail{margin-top:2px}
 .mail:hover{background:rgba(255,255,255,.6)}
@@ -2528,8 +2540,14 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
       </section>
       <div class="grid" id="mailApp" hidden>
         <section class="glass panel c5" aria-label="Posteingang">
+          <div class="mbox" role="tablist" aria-label="Ordner" id="mBox">
+            <button role="tab" aria-selected="true" data-mbox="inbox">Posteingang<small class="num" id="mBoxIn" hidden></small></button>
+            <button role="tab" aria-selected="false" data-mbox="sent">Gesendet</button>
+            <button role="tab" aria-selected="false" data-mbox="drafts">Entwürfe</button>
+            <button role="tab" aria-selected="false" data-mbox="all">Alle Mails</button>
+          </div>
           <div class="mail-tools">
-            <input class="input" id="mSearch" type="search" placeholder="Mails durchsuchen" aria-label="Mails durchsuchen">
+            <input class="input" id="mSearch" type="search" placeholder="In diesem Ordner suchen" aria-label="Im Ordner suchen">
             <div class="seg" role="group" aria-label="Mails filtern" id="mFilter">
               <button aria-pressed="true" data-mf="all">Alle</button>
               <button aria-pressed="false" data-mf="unread">Ungelesen</button>
@@ -4243,7 +4261,7 @@ function hstData(){
   const over=INVOICES.filter(i=>invOverdue(i)>0).sort((a,b)=>invOverdue(b)-invOverdue(a));
   const ev=EVENTS.filter(e=>e.type!=='aufgabe'&&e.d>=TODAY&&e.d<=addDays(TODAY,1)).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||'')))[0];
   const rad=KARTEI_LOADED?radarList().slice(0,3):[];
-  const unread=GMAIL?MAILS.filter(m=>m.unread&&!m.sent).length:0;
+  const unread=GMAIL?inboxUnread():0;
   const kn=k=>k.name.split(/\s[–-]\s|\s\(/)[0];
   const lines=[],chips=[];
   /* aus den Daten */
@@ -4843,7 +4861,42 @@ document.addEventListener('click',e=>{
 
 /* ---------- Gmail ---------- */
 let GMAIL=false,mailSel=null,mailF='all',mailBodyCache={};
-let MAILS=[];
+/* MAILS: alles außer Entwürfen (Kartei, Verlauf, Intelligence lesen hier). DRAFTS: nur die Mail-Ansicht. */
+let MAILS=[],DRAFTS=[];
+const LM_MAIL='info@lematic.de';
+/* Ordner wie in Gmail. Filter (Ungelesen, Kunden, Rechnungen) gelten innerhalb des Ordners. */
+const MAIL_BOXES={
+  inbox:{t:'Posteingang',q:'in:inbox'},
+  sent:{t:'Gesendet',q:'in:sent from:'+LM_MAIL},
+  drafts:{t:'Entwürfe',q:'in:draft',base:'-in:spam -in:trash'},
+  all:{t:'Alle Mails',q:''}
+};
+let mailBox='inbox',mailHits=null,mailBgBusy=false;
+const BOXST={};
+function boxSt(b){return BOXST[b]||(BOXST[b]={next:'',loaded:false})}
+function inMailBox(m,b){
+  if(b==='drafts')return m.draft;
+  if(m.draft)return false;
+  if(b==='inbox')return m.inbox&&!m.sent;
+  if(b==='sent')return m.sent&&m.fromMe;
+  return true;
+}
+function boxFor(m){return m.draft?'drafts':inMailBox(m,'inbox')?'inbox':inMailBox(m,'sent')?'sent':'all'}
+function boxList(b){return (b==='drafts'?DRAFTS:MAILS).filter(m=>inMailBox(m,b))}
+function mailById(id){return MAILS.find(x=>x.id===id)||DRAFTS.find(x=>x.id===id)||null}
+function inboxUnread(){return MAILS.filter(m=>m.unread&&inMailBox(m,'inbox')).length}
+function mergeMails(arr){
+  const put=(pool,m)=>{const i=pool.findIndex(x=>x.id===m.id);if(i>=0)pool[i]=m;else pool.push(m)};
+  arr.forEach(m=>put(m.draft?DRAFTS:MAILS,m));
+  MAILS.sort((a,b)=>b.internal-a.internal);DRAFTS.sort((a,b)=>b.internal-a.internal);
+}
+/* Mail von woanders öffnen (Kundenkarte, Startseite): passenden Ordner wählen */
+function openMailIn(m,id){
+  if(m)mergeMails([m]);
+  const x=mailById(id||(m&&m.id));
+  mailQ='';mailHits=null;const s=$('mSearch');if(s)s.value='';
+  if(x){mailBox=boxFor(x);mailSel=x.id;x.unread=false}
+}
 
 /* Kunden anhand der Absenderdomain erkennen. Bei Bedarf hier weitere Domains ergänzen. */
 const CLIENT_DOMAINS={'mammutmarsch.de':'Mammutmarsch'};
@@ -4892,22 +4945,25 @@ function gmailWhen(dateHeader){
   return dm(ds);
 }
 const MAIL_BASE_Q='-in:spam -in:trash -in:draft';
-let mailNext='',mailQ='',mailLoading=false;
+let mailQ='',mailLoading=false;
 function parseMail(d){
   const h=Object.fromEntries((d.payload&&d.payload.headers||[]).map(x=>[x.name,x.value]));
   const split=v=>{const nameM=/^"?([^"<]*)"?\s*<?/.exec(v||'');const addrM=/<([^>]+)>/.exec(v||'');return{name:((nameM&&nameM[1].trim())||v||'').replace(/^"|"$/g,''),addr:(addrM?addrM[1]:(v||'')).trim()}};
   const f=split(h.From),to=split((h.To||'').split(',')[0]);
-  const sent=(d.labelIds||[]).includes('SENT');
-  const other=sent?to:f;
+  const labels=d.labelIds||[];
+  const sent=labels.includes('SENT'),draft=labels.includes('DRAFT');
+  const other=(sent||draft)?to:f;
   const client=clientForEmail(other.addr)||clientForEmail(f.addr);
   return{
-    id:d.id,threadId:d.threadId,from:sent?'An: '+(to.name||to.addr):(f.name||f.addr),addr:other.addr,ini:initials(other.name||other.addr),
-    sent,client,unread:(d.labelIds||[]).includes('UNREAD'),
+    id:d.id,threadId:d.threadId,from:(sent||draft)?'An: '+(to.name||to.addr||'noch kein Empfänger'):(f.name||f.addr),addr:other.addr,ini:initials(other.name||other.addr||'?'),
+    sent,draft,inbox:labels.includes('INBOX'),fromMe:(f.addr||'').toLowerCase()===LM_MAIL,
+    client,unread:labels.includes('UNREAD'),
     subj:h.Subject||'(kein Betreff)',snip:d.snippet||'',
     dateHeader:h.Date||'',internal:+d.internalDate||0,
-    tags:[client?'Kunde':null,sent?'Gesendet':null,/rechnung|invoice|beleg|quittung/i.test(h.Subject||'')?'Rechnung':null].filter(Boolean)
+    tags:mailTags(client,sent,draft,h.Subject||'')
   };
 }
+function mailTags(client,sent,draft,subj){return [client?'Kunde':null,sent?'Gesendet':null,draft?'Entwurf':null,/rechnung|invoice|beleg|quittung/i.test(subj||'')?'Rechnung':null].filter(Boolean)}
 async function fetchMailDetails(ids){
   const out=[];
   for(let i=0;i<ids.length;i+=10){
@@ -4918,35 +4974,53 @@ async function fetchMailDetails(ids){
   }
   return out.map(parseMail);
 }
-async function gmailList(q,pageToken,max){
-  const p={maxResults:String(max||50),q:(q?q+' ':'')+MAIL_BASE_Q};
+async function gmailList(q,pageToken,max,base){
+  const p={maxResults:String(max||50),q:(q?q+' ':'')+(base||MAIL_BASE_Q)};
   if(pageToken)p.pageToken=pageToken;
   return (await gfetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?'+new URLSearchParams(p))).json();
+}
+/* Eine Seite eines Ordners laden (optional mit Gmail-Suche) und in MAILS/DRAFTS einsortieren */
+async function fetchBox(b,o={}){
+  const B=MAIL_BOXES[b];
+  const list=await gmailList([B.q,o.q].filter(Boolean).join(' '),o.page||'',50,B.base);
+  const ids=(list.messages||[]).map(m=>m.id);
+  const pool=b==='drafts'?DRAFTS:MAILS,known=new Set(pool.map(m=>m.id));
+  const fresh=await fetchMailDetails(o.skipKnown?ids.filter(id=>!known.has(id)):ids);
+  if(b==='drafts'&&!o.q&&!o.page)DRAFTS=DRAFTS.filter(m=>ids.includes(m.id));/* verschickte oder gelöschte Entwürfe raus */
+  mergeMails(fresh);
+  return{ids,next:list.nextPageToken||'',fresh};
+}
+function mailEnsureSel(){
+  const vis=boxList(mailBox).filter(m=>!mailHits||mailHits.ids.has(m.id));
+  if(!mailSel||!vis.some(m=>m.id===mailSel))mailSel=vis[0]?vis[0].id:null;
 }
 async function loadGmail(opts={}){
   const el=$('mList');if(!el)return;
   if(!GAUTH){$('mailConnect').hidden=false;$('mailApp').hidden=true;return}
   if(mailLoading)return;mailLoading=true;
+  const b=mailBox,st=boxSt(b);
   try{
-    const more=!!opts.more;
-    if(!more&&!opts.quiet)el.innerHTML='<p class="empty">Postfach wird geladen …</p>';
-    const list=await gmailList(mailQ,more?mailNext:'',50);
-    const known=new Set(MAILS.map(m=>m.id));
-    const ids=(list.messages||[]).map(m=>m.id).filter(id=>!(more||opts.quiet)||!known.has(id));
-    const fresh=await fetchMailDetails(ids);
-    if(more)MAILS=MAILS.concat(fresh);
-    else if(opts.quiet)MAILS=fresh.concat(MAILS);
-    else MAILS=fresh;
-    MAILS.sort((a,b)=>b.internal-a.internal);
-    if(!opts.quiet)mailNext=list.nextPageToken||'';
+    let newIn=[];
+    if(mailQ){
+      if(opts.more&&mailHits){const r=await fetchBox(b,{q:mailQ,page:mailHits.next,skipKnown:true});r.ids.forEach(id=>mailHits.ids.add(id));mailHits.next=r.next}
+      else if(!opts.quiet){el.innerHTML='<p class="empty">Wird gesucht …</p>';const r=await fetchBox(b,{q:mailQ});mailHits={ids:new Set(r.ids),next:r.next}}
+    }else if(opts.more){const r=await fetchBox(b,{page:st.next,skipKnown:true});st.next=r.next}
+    else if(opts.quiet){
+      const r=await fetchBox('inbox',{skipKnown:true});newIn=r.fresh.filter(m=>m.unread&&inMailBox(m,'inbox'));
+      if(b!=='inbox')await fetchBox(b,{skipKnown:b!=='drafts'});
+    }else{
+      if(!st.loaded)el.innerHTML='<p class="empty">'+esc(MAIL_BOXES[b].t)+' wird geladen …</p>';
+      const r=await fetchBox(b);st.next=r.next;st.loaded=true;
+    }
     GMAIL=true;
     $('mailConnect').hidden=true;$('mailApp').hidden=false;
     const em=$('uMail')?$('uMail').textContent:'';
     setHTML('gmailPill','<svg class="i xs"><use href="#i-check"/></svg>Verbunden: '+esc(em||'Gmail'));
     const gp=$('setGmail');if(gp)gp.innerHTML='<span class="pill ok"><i></i>Verbunden</span>';
-    if(!mailSel&&MAILS[0])mailSel=MAILS[0].id;
-    if(opts.quiet&&fresh.length&&fresh.some(m=>m.unread&&!m.sent))toast(fresh.filter(m=>m.unread&&!m.sent).length+' neue Mail(s)');
+    mailEnsureSel();
+    if(newIn.length)toast(newIn.length+(newIn.length===1?' neue Mail':' neue Mails'));
     renderMails();renderClientMails();safe('kartM',renderKartei);safe('brainM',renderBrain);if(!opts.quiet&&!opts.more)safe('autoKontakt',autoLetzterKontakt);
+    safe('mailBg',loadMailBg);
   }catch(e){
     if(!opts.quiet){
       GMAIL=false;
@@ -4958,10 +5032,21 @@ async function loadGmail(opts={}){
     }
   }finally{mailLoading=false}
 }
+/* Einmal im Hintergrund „Alle Mails“ laden: Kartei, Verlauf, letzter Kontakt und Intelligence kennen so wie bisher auch gesendete Mails */
+async function loadMailBg(){
+  const st=boxSt('all');
+  if(st.loaded||mailBgBusy||!GMAIL)return;
+  mailBgBusy=true;
+  try{
+    const r=await fetchBox('all',{skipKnown:true});
+    if(!st.loaded){st.next=r.next;st.loaded=true}
+    if(r.fresh.length){renderMails();renderClientMails();safe('kartM',renderKartei);safe('brainM',renderBrain);safe('autoKontakt',autoLetzterKontakt)}
+  }catch(_){}finally{mailBgBusy=false}
+}
 function retagMails(){
-  MAILS.forEach(m=>{
+  MAILS.concat(DRAFTS).forEach(m=>{
     m.client=clientForEmail(m.addr);
-    m.tags=[m.client?'Kunde':null,m.sent?'Gesendet':null,/rechnung|invoice|beleg|quittung/i.test(m.subj)?'Rechnung':null].filter(Boolean);
+    m.tags=mailTags(m.client,m.sent,m.draft,m.subj);
   });
 }
 on('gmailRetry','click',()=>{
@@ -4976,24 +5061,36 @@ function mailItem(m){
     <span class="av">${m.ini}</span>
     <span style="min-width:0"><span class="row1"><b>${esc(m.from)}</b><time>${gmailWhen(m.dateHeader)}</time></span>
     <span class="subj" style="display:block">${esc(m.subj)}</span><span class="snip" style="display:block">${esc(m.snip)}</span>
-    <span class="tags">${m.client?`<span class="proj"><i style="background:var(--brand)"></i>${esc(m.client)}</span>`:''}${m.sent?'<span class="tag">Gesendet</span>':''}${m.tags.includes('Rechnung')?'<span class="tag">Rechnung</span>':''}</span></span>
+    <span class="tags">${m.client?`<span class="proj"><i style="background:var(--brand)"></i>${esc(m.client)}</span>`:''}${m.sent&&mailBox==='all'?'<span class="tag">Gesendet</span>':''}${m.tags.includes('Rechnung')?'<span class="tag">Rechnung</span>':''}</span></span>
   </button>`;
+}
+function renderMailBoxes(unread){
+  document.querySelectorAll('#mBox [data-mbox]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.mbox===mailBox)));
+  const n=$('mBoxIn');if(n){n.textContent=unread;n.hidden=!unread}
 }
 function renderMails(){
   const q=($('mSearch').value||'').trim().toLowerCase();
   const local=mailQ?'':q;
-  const list=MAILS.filter(m=>(mailF==='all'||(mailF==='unread'&&m.unread)||(mailF==='client'&&m.client)||(mailF==='invoice'&&m.tags.includes('Rechnung')))&&(!local||(m.from+' '+m.addr+' '+m.subj+' '+m.snip+' '+(m.client||'')).toLowerCase().includes(local)));
-  $('mList').innerHTML=(mailQ?`<p class="grp">Gmail-Suche: „${esc(mailQ)}“ <button class="link" id="mClearQ" style="border:0;background:none;cursor:pointer">zurück zum Postfach</button></p>`:'')+
-    (list.length?list.map(mailItem).join(''):'<p class="empty">Keine Mails gefunden.'+(q&&!mailQ?' Enter drücken, um das ganze Postfach zu durchsuchen.':'')+'</p>')+
-    (mailNext?'<div class="mail-more"><button class="btn btn-glass sm" id="mMore">Ältere Mails laden</button></div>':'');
-  const unread=MAILS.filter(m=>m.unread&&!m.sent).length;
-  setHTML('mSummary',`<b>${unread} ungelesen</b> von ${MAILS.length} geladenen Mails aus info@lematic.de, ${MAILS.filter(m=>m.client).length} davon Kunden aus der Kartei zugeordnet`);
+  const B=MAIL_BOXES[mailBox],inBox=boxList(mailBox);
+  const list=inBox.filter(m=>(!mailQ||(mailHits&&mailHits.ids.has(m.id)))&&(mailF==='all'||(mailF==='unread'&&m.unread)||(mailF==='client'&&m.client)||(mailF==='invoice'&&m.tags.includes('Rechnung')))&&(!local||(m.from+' '+m.addr+' '+m.subj+' '+m.snip+' '+(m.client||'')).toLowerCase().includes(local)));
+  const next=mailQ?(mailHits&&mailHits.next):boxSt(mailBox).next;
+  const st=boxSt(mailBox);
+  $('mList').innerHTML=(mailQ?`<p class="grp">Gmail-Suche in ${esc(B.t)}: „${esc(mailQ)}“ <button class="link" id="mClearQ" style="border:0;background:none;cursor:pointer">zurück zu ${esc(B.t)}</button></p>`:'')+
+    (list.length?list.map(mailItem).join(''):(!st.loaded&&!mailQ?'<p class="empty">'+esc(B.t)+' wird geladen …</p>':'<p class="empty">'+(mailBox==='drafts'&&!q&&mailF==='all'?'Keine Entwürfe.':'Keine Mails gefunden.')+(q&&!mailQ?' Enter drücken, um ganz '+esc(B.t)+' zu durchsuchen.':'')+'</p>'))+
+    (next?'<div class="mail-more"><button class="btn btn-glass sm" id="mMore">Ältere Mails laden</button></div>':'');
+  const unread=inboxUnread();
+  const kz=inBox.filter(m=>m.client).length;
+  setHTML('mSummary',mailBox==='inbox'?`<b>${unread} ungelesen</b> im Posteingang von ${LM_MAIL}, ${inBox.length} geladen, ${kz} davon Kunden aus der Kartei zugeordnet`
+    :mailBox==='sent'?`<b>${inBox.length} gesendete Mails</b> von ${LM_MAIL}, neueste zuerst`
+    :mailBox==='drafts'?`<b>${inBox.length} ${inBox.length===1?'Entwurf':'Entwürfe'}</b> in ${LM_MAIL}. Verschickt wird nur aus Gmail`
+    :`<b>${inBox.length} Mails</b> aus ${LM_MAIL} ohne Entwürfe, ${kz} davon Kunden aus der Kartei zugeordnet`);
+  renderMailBoxes(unread);
   renderMailRead();
   safe('inboxZero',funAfterMails);
   const nm=$('navMail');if(nm){nm.textContent=unread;nm.hidden=!unread}
 }
 async function renderMailRead(){
-  const m=MAILS.find(x=>x.id===mailSel);
+  const m=mailById(mailSel);
   const box=$('mRead');if(!box)return;
   if(!m){box.innerHTML='<p class="empty">Mail auswählen</p>';return}
   box.innerHTML='<p class="empty">Wird geladen …</p>';
@@ -5010,22 +5107,23 @@ async function renderMailRead(){
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${m.client?`<span class="auto"><svg class="i xs"><use href="#i-check"/></svg>Zugeordnet: ${esc(m.client)}</span>`:''}${m.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
     <h2>${esc(m.subj)}</h2>
     <div class="from"><span class="av">${m.ini}</span><div><strong>${esc(m.from)}</strong><span>${esc(m.addr)}</span></div><time>${gmailWhen(m.dateHeader)}</time></div>
-    ${mailCtxHTML(m)}
-    ${!m.client&&!m.sent?`<div class="kd-row" style="margin:8px 0"><span style="font-size:12px;color:var(--ink-3)">Keinem Kunden zugeordnet.</span><button class="btn btn-glass sm" data-maction="tokunde">Absender zu Kunde zuordnen</button></div>`:''}
+    ${m.draft?'':mailCtxHTML(m)}
+    ${!m.client&&!m.sent&&!m.draft?`<div class="kd-row" style="margin:8px 0"><span style="font-size:12px;color:var(--ink-3)">Keinem Kunden zugeordnet.</span><button class="btn btn-glass sm" data-maction="tokunde">Absender zu Kunde zuordnen</button></div>`:''}
     <div class="body">${esc(full.body).split('\n').filter(Boolean).map(p=>`<p>${p}</p>`).join('')}</div>
     ${full.attachments.map((a,i)=>`<div class="attach"><svg class="i"><use href="#i-receipt"/></svg><div>${esc(a.filename)}<small>${a.mimeType||''}, ${Math.round((a.size||0)/1024)} KB</small></div><button class="icon-btn ghost" data-att="${i}" aria-label="${esc(a.filename)} als Rechnung ablegen" style="margin-left:auto"><svg class="i sm"><use href="#i-receipt"/></svg></button></div>`).join('')}
     <div class="read-actions">
-      <button class="btn btn-glass sm" data-maction="task"><svg class="i sm"><use href="#i-tasks"/></svg>Aufgabe für morgen</button>
+      ${m.draft?'':'<button class="btn btn-glass sm" data-maction="task"><svg class="i sm"><use href="#i-tasks"/></svg>Aufgabe für morgen</button>'}
       ${m.client&&kundeForName(m.client)?`<button class="btn btn-glass sm" data-kopen="${kundeForName(m.client).id}"><svg class="i sm"><use href="#i-users"/></svg>Kundenkarte</button>`:''}
-      <a class="btn btn-glass sm" href="https://mail.google.com/mail/?authuser=info@lematic.de#all/${encodeURIComponent(m.threadId||m.id)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Gmail antworten</a>
+      ${m.draft?`<a class="btn btn-glass sm" href="https://mail.google.com/mail/?authuser=info@lematic.de#drafts?compose=${encodeURIComponent(m.id)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Gmail öffnen</a>`
+        :`<a class="btn btn-glass sm" href="https://mail.google.com/mail/?authuser=info@lematic.de#all/${encodeURIComponent(m.threadId||m.id)}" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>In Gmail antworten</a>`}
     </div>`;
   box.dataset.attachments=JSON.stringify(full.attachments.map(a=>({filename:a.filename,mimeType:a.mimeType,attachmentId:a.attachmentId})));
 }
 on('mList','click',e=>{
   if(e.target.closest('#mMore')){e.target.closest('#mMore').disabled=true;loadGmail({more:true});return}
-  if(e.target.closest('#mClearQ')){mailQ='';$('mSearch').value='';mailSel=null;loadGmail();return}
+  if(e.target.closest('#mClearQ')){mailQ='';mailHits=null;$('mSearch').value='';mailSel=null;mailEnsureSel();renderMails();return}
   const b=e.target.closest('[data-mail]');if(!b)return;
-  mailSel=b.dataset.mail;const m=MAILS.find(x=>x.id===mailSel);if(m)m.unread=false;
+  mailSel=b.dataset.mail;const m=mailById(mailSel);if(m)m.unread=false;
   renderMails();
   if(window.innerWidth<1240)$('mRead').scrollIntoView({behavior:'smooth',block:'start'});
 });
@@ -5033,14 +5131,21 @@ on('mSearch','input',()=>{if(!mailQ)renderMails()});
 on('mSearch','keydown',e=>{
   if(e.key!=='Enter')return;e.preventDefault();
   const q=($('mSearch').value||'').trim();
-  mailQ=q;mailSel=null;loadGmail();
+  mailQ=q;mailHits=null;mailSel=null;
+  if(q)loadGmail();else{mailEnsureSel();renderMails()}
+});
+on('mBox','click',e=>{
+  const b=e.target.closest('[data-mbox]');if(!b||b.dataset.mbox===mailBox&&!mailQ)return;
+  mailBox=b.dataset.mbox;mailQ='';mailHits=null;$('mSearch').value='';mailSel=null;
+  mailEnsureSel();renderMails();
+  if(!boxSt(mailBox).loaded||mailBox==='drafts')loadGmail();
 });
 on('mFilter','click',e=>{
   const b=e.target.closest('[data-mf]');if(!b)return;
   document.querySelectorAll('#mFilter button').forEach(x=>x.setAttribute('aria-pressed',x===b));mailF=b.dataset.mf;renderMails();
 });
 on('mRead','click',async e=>{
-  const m=MAILS.find(x=>x.id===mailSel);if(!m)return;
+  const m=mailById(mailSel);if(!m)return;
   const att=e.target.closest('[data-att]');
   if(att){
     const list=JSON.parse($('mRead').dataset.attachments||'[]');
@@ -5097,7 +5202,7 @@ function renderClientMails(){
 }
 on('clientMails','click',e=>{
   const b=e.target.closest('[data-cmail]');if(!b)return;
-  mailSel=b.dataset.cmail;const m=MAILS.find(x=>x.id===mailSel);if(m)m.unread=false;
+  openMailIn(null,b.dataset.cmail);
   location.hash='#/mails';renderMails();
 });
 /* ---------- Medien: Upload, Vorschau, Löschen ---------- */
@@ -6170,7 +6275,7 @@ on('kdSheet','click',async e=>{
   const nt=e.target.closest('[data-nexttask]');
   if(nt){try{await createTask({title:k.raw['Nächster Schritt'].slice(0,200),who:ME,due:addDays(TODAY,1),kid:k.id,kname:k.name});toast('Nächster Schritt steht morgen im Kalender');renderKundeSheet(k.id)}catch(x){toast('Nicht angelegt: '+x.message)}return}
   const vm=e.target.closest('[data-vmail]');
-  if(vm){const m=(k._mails||[]).find(x=>x.id===vm.dataset.vmail)||MAILS.find(x=>x.id===vm.dataset.vmail);if(m&&!MAILS.find(x=>x.id===m.id)){MAILS.push(m);MAILS.sort((a,b)=>b.internal-a.internal)}mailSel=vm.dataset.vmail;closeKunde();location.hash='#/mails';safe('mr',renderMails);return}
+  if(vm){const m=(k._mails||[]).find(x=>x.id===vm.dataset.vmail)||mailById(vm.dataset.vmail);openMailIn(m&&!mailById(m.id)?m:null,vm.dataset.vmail);closeKunde();location.hash='#/mails';safe('mr',renderMails);return}
   if(e.target.closest('#kdArchive')){setKundeStatus(k,k.status==='Archiv'?(k.prevStatus||'Warm'):'Archiv');return}
   if(e.target.closest('#kdNoteSave')){
     const ta=$('kdNoteText'),text=(ta.value||'').trim(),err=$('kdNoteErr'),btn=e.target.closest('#kdNoteSave');
@@ -6208,8 +6313,7 @@ on('kdSheet','click',async e=>{
   const cm=e.target.closest('[data-kmail]');
   if(cm){
     const m=(k._mails||[]).find(x=>x.id===cm.dataset.kmail);
-    if(m&&!MAILS.find(x=>x.id===m.id)){MAILS.push(m);MAILS.sort((a,b)=>b.internal-a.internal)}
-    mailSel=cm.dataset.kmail;closeKunde();location.hash='#/mails';safe('mr',renderMails);
+    openMailIn(m&&!mailById(m.id)?m:null,cm.dataset.kmail);closeKunde();location.hash='#/mails';safe('mr',renderMails);
   }
 });
 on('kdSheet','submit',async e=>{
@@ -7969,7 +8073,7 @@ function onbBrief(){
   const today=mine.filter(t=>t.due&&t.due<=TODAY);
   const nextEv=EVENTS.filter(e=>e.type!=='aufgabe'&&(e.end||e.d)>=TODAY).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||'')))[0];
   const radar=KARTEI_LOADED?radarList()[0]:null;
-  const unread=MAILS.filter(m=>m.unread);
+  const unread=MAILS.filter(m=>m.unread&&inMailBox(m,'inbox'));
   return [
     ['✅','Für dich fällig',today.length?today.length+(today.length===1?' Aufgabe':' Aufgaben'):'Nichts fällig',today[0]?today[0].t:(mine[0]?'Als Nächstes: '+mine[0].t+' ('+dm(mine[0].due)+')':'Freie Bahn'),'aufgaben'],
     ['📅','Nächster Termin',nextEv?(nextEv.d===TODAY?'Heute':dm(nextEv.d))+(nextEv.time?' · '+nextEv.time:''):'Keiner geplant',nextEv?nextEv.t:'Kalender ist leer','kalender'],
@@ -8835,7 +8939,7 @@ async function angOpenFor(name){
 }
 function premGo(k,el){
   const kd=el&&el.closest('#kdSheet'),k0=kd&&KUNDEN.find(x=>x.id===kOpen);
-  if(k==='offer'){const m=el&&el.closest('[data-view="mails"]')&&typeof mailSel!=='undefined'&&MAILS.find(x=>x.id===mailSel);if(k0)closeKunde();angOpenFor(k0?k0.name:(m&&m.client)||'');return}
+  if(k==='offer'){const m=el&&el.closest('[data-view="mails"]')&&typeof mailSel!=='undefined'&&mailById(mailSel);if(k0)closeKunde();angOpenFor(k0?k0.name:(m&&m.client)||'');return}
   if(k==='report'){openLiDrawer('Schreib mir den Wochenbericht für LeMatic auf einer Seite: offene Angebote, Umsatz diesen Monat, überfällige Rechnungen, Termine und Fristen diese Woche, welche Kunden dran sind.');return}
   if(k==='reminders'){try{Notification.requestPermission().then(p=>toast(p==='granted'?'Mitteilungen sind an.':'Mitteilungen bleiben aus. Im Browser unter Website-Einstellungen änderbar.'))}catch(_){toast('Dieser Browser kann keine Mitteilungen.')}return}
   if(k==='calls'){if(k0){KTAB='verlauf';renderKundeSheet(k0.id)}else location.hash='#/kunden';return}
@@ -8873,8 +8977,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.32';
+const APP_VERSION='2026-11-01.33';
 const CHANGELOG=[
+  {v:'2026-11-01.33',d:'01.11.2026',items:['Mails mit Ordnern wie in Gmail: Posteingang, Gesendet, Entwürfe und Alle Mails','Posteingang ist Standard, gesendete Mails tauchen dort nicht mehr auf','Gesendet zeigt nur Mails von info@lematic.de, neueste zuerst','Filter und Suche gelten im gewählten Ordner, die Zahl ungelesener Mails nur beim Posteingang']},
   {v:'2026-11-01.32',d:'01.11.2026',items:['Indian Spirit zählt wieder normal mit: offene Rechnungen pro Kunde stimmen in LeMatic Intelligence']},
   {v:'2026-11-01.30',d:'01.11.2026',items:['Angebotsrechner: Zusätze in Klammern im Kundennamen (z. B. „(Eventagentur Hamburg)“) landen nicht mehr auf dem Angebot']},
   {v:'2026-11-01.29',d:'01.11.2026',items:['Kundendaten über LeMatic Intelligence: Adresse, Rechnungs-Mail, Branche und Notizen landen im richtigen Feld statt mit Fehler abzubrechen','Eigene Rechnungs-Mail pro Kunde: Rechnungs-Entwürfe gehen automatisch dorthin, Angebote weiter an die normale Mail','Kundenkarte zeigt „Rechnungen an“, wenn eine eigene Rechnungs-Mail hinterlegt ist']},
@@ -9789,7 +9894,7 @@ document.addEventListener('input',e=>{
 /* Inbox Zero und Feierabend */
 let inboxZeroShown=false;
 function funAfterMails(){
-  const unread=MAILS.filter(m=>m.unread&&!m.sent).length;
+  const unread=inboxUnread();
   if(GMAIL&&!unread&&!inboxZeroShown&&MAILS.length){inboxZeroShown=true;toast('📭 Inbox Zero. Legendär.')}
 }
 
