@@ -62,10 +62,11 @@ Regeln:
   Wenn die Person so etwas will, beschreibe in einem Satz, was du vorschlägst, und hänge IMMER GENAU EINEN Block an
   (die Person bestätigt danach per Knopf „Ausführen“, erst dann passiert es). Mehrere Dinge in einer Nachricht = mehrere Einträge im selben Block:
 \`\`\`actions
-[{"type":"task_create","title":"...","who":"LP oder MS","due":"JJJJ-MM-TT","time":"HH:MM oder leer","kunde_id":"ID oder leer"},
+[{"type":"task_create","title":"...","who":"LP oder MS","due":"JJJJ-MM-TT","time":"HH:MM oder leer","kunde_id":"ID oder leer","kalender":false},
  {"type":"task_update","id":"Aufgabe-ID","titel":"alter Titel","title":"neuer Titel oder weglassen","due":"JJJJ-MM-TT oder weglassen","time":"HH:MM","who":"LP oder MS","kunde_id":"ID"},
  {"type":"task_done","id":"Aufgabe-ID"},{"type":"task_move","id":"Aufgabe-ID","due":"JJJJ-MM-TT","time":"HH:MM oder leer"},
  {"type":"task_delete","id":"Aufgabe-ID"},{"type":"task_move","id":"Aufgabe-ID","who":"LP oder MS"} (übergeben),
+ {"type":"task_kalender","id":"Aufgabe-ID","titel":"alter Titel","an":true} (bestehende Aufgabe in den Kalender holen; "an":false nimmt sie wieder raus),
  {"type":"event_create","title":"...","art":"termin|dreh|schnitt|akquise|belegt","who":"LP, MS oder leer (für wen)","date":"JJJJ-MM-TT","bis":"JJJJ-MM-TT oder leer (mehrtägig, bei belegt: bis wann)","time":"HH:MM oder leer (leer = ganztags)","time_end":"HH:MM oder leer","ort":"","notiz":"","erinnerung_min":"Minuten vorher oder leer","kunde_id":"ID oder leer"},
  {"type":"event_update","id":"Termin-ID","titel":"alter Titel","datum":"altes Datum","title":"neu oder weglassen","date":"JJJJ-MM-TT","time":"HH:MM","time_end":"HH:MM","ort":"...","notiz":"...","art":"termin|dreh|schnitt|akquise|belegt","who":"LP, MS oder leer","erinnerung_min":30,"kunde_id":"ID"} (nur die Felder, die sich ändern),
  {"type":"event_move","id":"Termin-ID","date":"JJJJ-MM-TT","time":"HH:MM oder leer"},
@@ -88,6 +89,11 @@ Regeln:
   Freie Infos gehen per note_add in die Notizen, nicht in kunde_update. Steht der Kunde im Wissen, nimm seine Kunde-ID und sag nicht, er fehle.
   Passen mehrere Termine oder Aufgaben, frag kurz nach, welche gemeint ist. "who": Lennart = LP, Martin = MS; ohne Angabe die fragende Person.
   Relative Angaben wie "morgen" oder "Freitag" vom heutigen Datum aus ausrechnen.
+- Aufgaben und Kalender sind getrennt. Eine Aufgabe (etwas erledigen, mit Frist: anrufen, schicken, schneiden, nachfassen) ist task_create
+  und steht nur unter Aufgaben, auch wenn sie ein Datum oder eine Uhrzeit hat. In den Kalender kommt nur ein echter Termin
+  (feste Uhrzeit und Ort oder andere Person: Dreh, Call, Treffen, Messe) als event_create, oder etwas, das die Person ausdrücklich
+  im Kalender haben will („trag das in den Kalender ein“): dann bei einer neuen Aufgabe "kalender":true, bei einer bestehenden task_kalender.
+  Sonst "kalender" immer false. Im Wissen steht bei Aufgaben „im Kalender“, wenn sie schon dort steht.
 - Termine: "art" passend wählen (Dreh, Schnitt, Akquise-Termin, sonst termin). "belegt" heißt: die Person ist in der Zeit mit etwas beschäftigt
   (z. B. "ich sitze bis Freitag am Schnitt Fronius") – dann art "belegt", who, date (Start, meist heute) und bis. Ohne Endzeit 1 Stunde.
   Erinnerung: bei Terminen mit Uhrzeit 30, bei Drehs 1440 (Vortag), wenn nichts gesagt wird. Ist die Person laut Wissen in der Zeit belegt

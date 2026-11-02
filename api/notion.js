@@ -17,7 +17,7 @@ const DS = {
   kunden:     '1a47c61b-a5b6-416e-b4f2-d32454de35f2',
   gespraeche: 'cb294d68-10dd-4427-aa3b-ba6eda7086ec',
   laufwerke:  '0bba1261-69bd-49c1-ab22-beaf50ead987',
-  // Nur als Eingang für neue Aufgaben vom WhatsApp-Bot (Filter "Im Studio" = nein, siehe ?neu=1)
+  // Aufgaben: seit v.42 die einzige Ablage für Aufgaben im Studio (?studio=1), nicht mehr der Kalender
   aufgaben:   'cc64b42c-e0db-4186-a540-7c824cfa8bb1'
 };
 
@@ -119,7 +119,21 @@ export default async function handler(req, res) {
       for (let i = 0; i < 5; i++) {
         const body = { page_size: 100 };
         if (cursor) body.start_cursor = cursor;
-        if (db === 'aufgaben') body.filter = { and: [
+        if (db === 'aufgaben' && req.query.studio === '1') {
+          // Seit v.42: Aufgaben stehen nur noch hier. Alles, was das Studio kennt (Im Studio) oder seit dem
+          // Start des Bot-Eingangs neu ist, ohne alte Erledigte (älter als 45 Tage bearbeitet).
+          const since = new Date(Date.now() - 45 * 864e5).toISOString();
+          body.filter = { and: [
+            { or: [
+              { property: 'Im Studio', checkbox: { equals: true } },
+              { timestamp: 'created_time', created_time: { on_or_after: '2026-10-31' } }
+            ] },
+            { or: [
+              { property: 'Status', status: { does_not_equal: 'Erledigt' } },
+              { timestamp: 'last_edited_time', last_edited_time: { on_or_after: since } }
+            ] }
+          ] };
+        } else if (db === 'aufgaben') body.filter = { and: [
           { property: 'Im Studio', checkbox: { equals: false } },
           { timestamp: 'created_time', created_time: { on_or_after: '2026-10-31' } }
         ] };
@@ -160,7 +174,7 @@ export default async function handler(req, res) {
       if (parent !== dsId.replace(/-/g, '')) return res.status(400).json({ error: 'Seite gehört nicht zu ' + db });
       const r = await fetch(`https://api.notion.com/v1/pages/${id}`, {
         method: 'PATCH', headers,
-        body: JSON.stringify(req.body.archive === true ? { archived: true } : { properties: req.body.properties })
+        body: JSON.stringify(typeof req.body.archive === 'boolean' ? { archived: req.body.archive } : { properties: req.body.properties })
       });
       const j = await r.json();
       if (!r.ok) return res.status(r.status).json({ error: j.message || 'Notion-Fehler' });

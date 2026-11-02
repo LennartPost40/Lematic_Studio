@@ -323,12 +323,13 @@ select.input{-webkit-appearance:none;appearance:none;background:#fff url("data:i
 .t-privat{background:rgba(10,155,138,.14);color:#06655A}
 .t-aufgabe{background:rgba(252,215,23,.32);color:#5C4A00}
 
-/* Aufgaben aus dem Kalender */
+/* Aufgaben */
 .task .kd{font-size:12px;color:var(--ink-2);display:inline-flex;align-items:center;gap:4px;cursor:pointer;background:none;border:0;padding:0}
 .task .kd:hover{color:var(--brand);text-decoration:underline}
-.task .del,.task .tmv{opacity:0;transition:opacity .15s}
-.task:hover .del,.task .del:focus-visible,.task:hover .tmv,.task .tmv:focus-visible{opacity:1}
-@media (hover:none){.task .del,.task .tmv{opacity:.6}}
+.task .del,.task .tmv,.task .tcal{opacity:0;transition:opacity .15s}
+.task:hover .del,.task .del:focus-visible,.task:hover .tmv,.task .tmv:focus-visible,.task:hover .tcal,.task .tcal:focus-visible,.task .tcal.on{opacity:1}
+.task .tcal.on{color:var(--brand)}
+@media (hover:none){.task .del,.task .tmv,.task .tcal{opacity:.6}.task .tcal.on{opacity:1}}
 .add-task.v2{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1.3fr) 110px 150px 110px auto;gap:8px}
 @media (max-width:980px){.add-task.v2{grid-template-columns:1fr 1fr}.add-task.v2 #atTitle{grid-column:1/-1}}
 
@@ -2213,7 +2214,7 @@ html.theme-dark .fun-strip .chip{background:rgba(34,43,40,.7)}
   .icon-btn{min-width:44px;min-height:44px}
   .seg button{min-height:38px}
   .lg{min-height:36px}
-  .task .del,.task .tmv{opacity:1}
+  .task .del,.task .tmv,.task .tcal{opacity:1}
 }
 /* Großer Sprechen-Knopf: diktieren, Text landet im Feld, danach weitertippen */
 button.li-mic,.li-hero button.li-mic,.home-stage button.li-mic{flex:none;width:auto;height:52px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:0 22px;border:0;border-radius:999px;
@@ -2377,7 +2378,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
   .task .tt{font-size:15px;line-height:1.35}
   .task .sub{flex-wrap:wrap;gap:4px 12px}
   .task .right{grid-column:2;flex-wrap:wrap;white-space:normal;gap:8px;font-size:12.5px}
-  .task .del,.task .tmv{opacity:1}
+  .task .del,.task .tmv,.task .tcal{opacity:1}
 
   /* Rechnungen: Karten statt Tabelle */
   .tscroll{overflow:visible}
@@ -2606,7 +2607,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
           <div class="week" id="week"></div>
         </section>
         <section class="glass panel c7" aria-labelledby="ht-title">
-          <div class="panel-head"><div><h2 id="ht-title">Aufgaben</h2><p>Fällig bis Sonntag, aus dem LeMatic-Kalender</p></div><a class="link" href="#/aufgaben">Alle Aufgaben</a></div>
+          <div class="panel-head"><div><h2 id="ht-title">Aufgaben</h2><p>Fällig bis Sonntag</p></div><a class="link" href="#/aufgaben">Alle Aufgaben</a></div>
           <div id="homeTasks"></div>
         </section>
         <section class="glass panel c5" aria-labelledby="he-title">
@@ -2641,7 +2642,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
         <ul>
           <li><svg class="i sm"><use href="#i-check"/></svg>Kundenmails erscheinen direkt auf der Kundenseite</li>
           <li><svg class="i sm"><use href="#i-check"/></svg>Rechnungen im Anhang mit einem Klick ablegen</li>
-          <li><svg class="i sm"><use href="#i-check"/></svg>Aus jeder Mail eine Aufgabe im Kalender machen</li>
+          <li><svg class="i sm"><use href="#i-check"/></svg>Aus jeder Mail eine Aufgabe machen</li>
         </ul>
         <button class="btn btn-primary" id="gmailRetry"><svg class="i sm"><use href="#i-mail"/></svg>Erneut mit Google anmelden</button>
         <small id="mailConnectHint">Dabei fragt Google auch nach dem Mail-Zugriff — bitte den Haken setzen.</small>
@@ -2677,7 +2678,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
           <div class="mobile-brand"><div class="mark" aria-hidden="true">L</div><strong>LeMatic Studio</strong><a class="icon-btn m-settings" href="#/einstellungen" aria-label="Einstellungen"><svg class="i"><use href="#i-gear"/></svg></a></div>
           <span class="intern"><svg class="i xs"><use href="#i-cal"/></svg>Mit Google Calendar synchronisiert</span>
           <h1>Kalender</h1>
-          <p class="summary">Der LeMatic-Kalender von info@lematic.de, Termine und Aufgaben in einer Ansicht</p>
+          <p class="summary">Der LeMatic-Kalender von info@lematic.de, nur echte Termine. Aufgaben stehen unter Aufgaben.</p>
         </div>
         <div class="actions">
           <button class="btn btn-glass" id="openTrash" title="Zuletzt gelöscht: Einträge der letzten 30 Tage wiederherstellen"><svg class="i sm"><use href="#i-trash"/></svg><span class="label">Zuletzt gelöscht</span><small class="tr-n"></small></button>
@@ -2725,7 +2726,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
             <select class="input" id="atWho" aria-label="Zuständig"><option value="LP">Lennart</option><option value="MS">Martin</option></select>
             <input class="input" type="date" id="atDue" aria-label="Fällig am">
             <input class="input" type="time" id="atTime" aria-label="Uhrzeit, optional" title="Uhrzeit (optional) — ohne Uhrzeit ganztägig">
-            <button class="btn btn-primary" type="submit" id="atGo"><svg class="i sm"><use href="#i-plus"/></svg>In den Kalender</button>
+            <button class="btn btn-primary" type="submit" id="atGo"><svg class="i sm"><use href="#i-plus"/></svg>Anlegen</button>
           </form>
           <div class="filters">
             <div class="seg" role="group" aria-label="Nach Person filtern" id="tWho">
@@ -3058,7 +3059,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
           <div class="setting" style="border:0;padding:0"><span><b id="pt-title" style="font-size:15px">Zentrale-Pro-Knöpfe anzeigen</b><small>Zeigt die Zusatzknöpfe (Wochenbericht, Angebot aus Mail, Mitteilungen) überall im Studio.</small></span><input type="checkbox" id="premToggle" class="chk" aria-label="Premium-Test anzeigen"></div>
         </section>
         <section class="glass panel c12" aria-labelledby="fb-title">
-          <div class="panel-head"><div><h2 id="fb-title">Verbesserungsvorschlag</h2><p>Landet als Aufgabe für Lennart im LeMatic-Kalender</p></div></div>
+          <div class="panel-head"><div><h2 id="fb-title">Verbesserungsvorschlag</h2><p>Landet als Aufgabe für Lennart</p></div></div>
           <textarea id="fbText" class="input" style="height:90px;padding:10px 12px;resize:vertical;width:100%" placeholder="Was sollte anders sein, fehlen oder besser funktionieren?" aria-label="Verbesserungsvorschlag"></textarea>
           <p class="form-err" id="fbErr" role="alert"></p>
           <button class="btn btn-primary sm" id="fbSend" style="margin-top:8px">Absenden</button>
@@ -3076,7 +3077,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
           <div class="panel-head"><div><h2 id="set-conn-title">Verbindungen</h2><p>Woher das Tool seine Daten holt und wohin es ablegt</p></div></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-folder"/></svg></span><div><strong>Google Drive</strong><span id="setDriveText">Ordner „LeMatic“, erst nach dem Google-Login verbunden</span></div><span style="display:flex;gap:6px;align-items:center"><span class="pill done" id="setDrivePill"><i></i>Nicht verbunden</span><a class="btn btn-glass sm" data-drivetest href="#" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>Öffnen</a></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-mail"/></svg></span><div><strong>Mails</strong><span id="setGmailText">info@lematic.de über Google Workspace</span></div><span id="setGmail"><span class="pill done"><i></i>Später</span></span></div>
-          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-cal"/></svg></span><div><strong>Google Calendar</strong><span id="setCalText">LeMatic-Kalender von info@lematic.de, inklusive Aufgaben</span></div><span id="setCalPill"><span class="pill warn"><i></i>Prüfe …</span></span></div>
+          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-cal"/></svg></span><div><strong>Google Calendar</strong><span id="setCalText">LeMatic-Kalender von info@lematic.de, nur Termine</span></div><span id="setCalPill"><span class="pill warn"><i></i>Prüfe …</span></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-receipt"/></svg></span><div><strong>sevDesk</strong><span>Kein API-Zugang, Buchhaltung Pro war es nicht wert — Export und Upload statt Automatik</span></div><span class="pill done"><i></i>Manuell</span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-table"/></svg></span><div><strong>Notion — LeMatic OS</strong><span id="setNotionText">Kundenkartei, Rechnungen und Akquise-Pipeline</span></div><span id="setNotionPill"><span class="pill warn"><i></i>Prüfe …</span></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-ticket"/></svg></span><div><strong>Ticketshop-Tracking Mammutmarsch</strong><span>Nötig für echte Ticketzahlen</span></div><button class="btn btn-glass sm" data-toast="Anfrage an Alex vorbereitet">Zugang anfragen</button></div>
@@ -3339,7 +3340,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
       <label>Format<select id="upFmt"><option>Reel 9:16</option><option>Ticket-Sales-Creative</option><option>Creator-Content</option><option>Template</option><option>Rohmaterial</option></select></label>
     </div>
     <div class="switch"><span>Direkt zur Freigabe senden<small>Alex bekommt eine Benachrichtigung</small></span><input type="checkbox" id="upSend" aria-label="Direkt zur Freigabe senden"></div>
-    <div class="switch"><span>Martin benachrichtigen<small>Legt eine Aufgabe für morgen im LeMatic-Kalender an</small></span><input type="checkbox" id="upNotify" checked aria-label="Martin benachrichtigen"></div>
+    <div class="switch"><span>Martin benachrichtigen<small>Legt eine Aufgabe für morgen an</small></span><input type="checkbox" id="upNotify" checked aria-label="Martin benachrichtigen"></div>
     <div class="switch"><span>Tracking-Link erstellen<small>Wird nach der Freigabe aktiv</small></span><input type="checkbox" id="upTrack" checked aria-label="Tracking-Link erstellen"></div>
     <p class="form-err" id="upErr" role="alert"></p>
     <div class="sheet-actions">
@@ -3368,6 +3369,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
       <label class="full" id="evOrtL">Ort oder Link<input type="text" id="evOrt" placeholder="Adresse, Teams- oder Meet-Link"></label>
       <label class="full">Notiz<textarea class="input" id="evNote" rows="2" placeholder="Was muss der andere wissen?"></textarea></label>
       <label class="full chkline" id="evInvL"><input type="checkbox" id="evInvite" checked><span id="evInvTxt">Per Kalender-Einladung erinnern</span></label>
+      <label class="full chkline" id="evCalL" hidden><input type="checkbox" id="evCal"><span>Auch in den Kalender eintragen</span></label>
     </div>
     <div class="ev-warn" id="evWarn" hidden></div>
     <p class="form-err" id="evErr" role="alert"></p>
@@ -3436,7 +3438,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
   <div class="note-tools"><div class="seg" id="noteF" role="group" aria-label="Filter"><button data-nf="all">Alle</button><button data-nf="wichtig">Wichtig</button></div><button class="link" data-noteread>Alle gelesen</button><button class="link" data-noteclear>Leeren</button></div>
   <div class="note-list" id="noteList"></div>
 </aside></div>
-<div class="modal-wrap" id="trashWrap" aria-hidden="true"><div class="glass sheet trash-sheet" role="dialog" aria-modal="true" aria-labelledby="trashTitle"><div class="kd-h"><h2 id="trashTitle">Zuletzt gelöscht</h2><button class="icon-btn" data-trclose aria-label="Schließen"><svg class="i sm"><use href="#i-x"/></svg></button></div><p class="tr-sub">Gelöschte Termine und Aufgaben der letzten 30 Tage, von Lennart und Martin. Wiederherstellen legt sie wieder in den LeMatic-Kalender.</p><div id="trashList"></div></div></div>
+<div class="modal-wrap" id="trashWrap" aria-hidden="true"><div class="glass sheet trash-sheet" role="dialog" aria-modal="true" aria-labelledby="trashTitle"><div class="kd-h"><h2 id="trashTitle">Zuletzt gelöscht</h2><button class="icon-btn" data-trclose aria-label="Schließen"><svg class="i sm"><use href="#i-x"/></svg></button></div><p class="tr-sub">Gelöschte Termine und Aufgaben der letzten 30 Tage, von Lennart und Martin. Wiederherstellen holt sie zurück an ihren Platz.</p><div id="trashList"></div></div></div>
 <div class="modal-wrap tour-wrap" id="tourWrap" aria-hidden="true"><div class="tour-sheet" role="dialog" aria-modal="true" aria-labelledby="tourTitle" id="tourSheet"></div></div>
 <div class="modal-wrap" id="newsWrap" aria-hidden="true"><div class="glass sheet news-sheet" role="dialog" aria-modal="true" aria-labelledby="newsTitle" id="newsSheet"></div></div>
 <!-- Willkommen mit LeMatic Intelligence -->
@@ -3813,7 +3815,7 @@ document.getElementById('upGo').addEventListener('click',async()=>{
     try{
       const mm=KUNDEN.find(k=>/mammut/i.test(k.name));
       await createTask({title:'Neues Asset von '+USER+' prüfen: '+t,who:ME==='MS'?'LP':'MS',due:addDays(TODAY,1),kid:mm?mm.id:'',kname:mm?mm.name:'Mammutmarsch'});
-    }catch(e){toast('Hochgeladen, aber Aufgabe im Kalender nicht angelegt: '+e.message)}
+    }catch(e){toast('Hochgeladen, aber Aufgabe nicht angelegt: '+e.message)}
   }
   medLoadedOnce=false;loadMammutDrive();
 });
@@ -3917,7 +3919,7 @@ let EVENTS=[]; /* Bewusst leer — die frei erfundenen Platzhaltertermine waren 
    Ab dem Google-Login kommen hier nur noch echte Kalendertermine der eingeloggten Person rein. */
 const onDay=(ds,filter)=>EVENTS.filter(e=>e.d<=ds&&(e.end||e.d)>=ds&&(!filter||filter.has(e.art||e.type))).sort((a,b)=>(a.type==='belegt'?-1:0)-(b.type==='belegt'?-1:0)||(a.time||'00:00').localeCompare(b.time||'00:00'));
 
-/* Aufgaben kommen ausschließlich aus dem LeMatic-Kalender (Termine mit Markierung „lmTask“). */
+/* Aufgaben kommen aus Notion „Aufgaben“ (seit v.42), nicht mehr aus dem Kalender. */
 let TASKS=[];
 /* Kundenkartei aus Notion „Kunden & Kontakte“ */
 let KUNDEN=[],KSCHEMA=null,KARTEI_LOADED=false,GESPR=[],GESPR_ERR='',PRIV_IDS=new Set();
@@ -4390,7 +4392,7 @@ function taskRow(t){
   return `<div class="task${t.done?' done':''}">
     <input type="checkbox" class="chk" data-task="${t.id}" ${t.done?'checked':''} aria-label="${esc(t.t)} erledigt">
     <div><div class="tt">${esc(t.t)}</div><div class="sub">${kd}${t.by&&t.by!==t.who?`<span class="proj" style="color:var(--ink-3)">von ${esc(NAMES[t.by]||t.by)}</span>`:''}</div></div>
-    <div class="right"><span class="due ${cls}">${label}</span><span class="av us sm" title="${NAMES[t.who]||''}" data-who="${t.who}">${t.who}</span>${t.done?'':`<button class="icon-btn ghost tmv" data-tmove="${t.id}" aria-label="${esc(t.t)} verschieben" title="Verschieben oder übergeben">↪</button>`}<button class="icon-btn ghost del" data-tdel="${t.id}" aria-label="${esc(t.t)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button></div>
+    <div class="right"><span class="due ${cls}">${label}</span><span class="av us sm" title="${NAMES[t.who]||''}" data-who="${t.who}">${t.who}</span>${t.done?'':`<button class="icon-btn ghost tcal${t.cal?' on':''}" data-tcal="${t.id}" aria-pressed="${!!t.cal}" aria-label="${esc(t.t)} ${t.cal?'aus dem Kalender nehmen':'in den Kalender'}" title="${t.cal?'Steht im Kalender. Klick nimmt sie wieder raus.':'In Kalender'}"><svg class="i sm"><use href="#i-cal"/></svg></button><button class="icon-btn ghost tmv" data-tmove="${t.id}" aria-label="${esc(t.t)} verschieben" title="Verschieben oder übergeben">↪</button>`}<button class="icon-btn ghost del" data-tdel="${t.id}" aria-label="${esc(t.t)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button></div>
   </div>`;
 }
 /* ---------- Startbühne: Gruß, frecher Spruch, Suche, Vorschläge ---------- */
@@ -4510,7 +4512,17 @@ document.addEventListener('change',e=>{
 document.addEventListener('click',e=>{
   const d=e.target.closest('[data-tdel]');if(!d)return;
   const t=TASKS.find(x=>x.id===d.dataset.tdel);if(!t)return;
-  askConfirm('„'+t.t+'“ aus dem LeMatic-Kalender löschen?',()=>safe('tdel',()=>deleteTask(t)),'Löschen');
+  askConfirm('Aufgabe „'+t.t+'“ löschen?',()=>safe('tdel',()=>deleteTask(t)),'Löschen');
+});
+async function taskCalToggle(t){
+  try{if(t.cal){await taskFromCal(t);toast('Aus dem Kalender genommen, steht weiter unter Aufgaben')}
+    else{await taskToCal(t);toast('Steht jetzt auch im Kalender: '+t.t.slice(0,40))}}
+  catch(x){toast('Kalender nicht geändert: '+x.message)}
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-tcal]');if(!b)return;e.preventDefault();
+  const t=TASKS.find(x=>x.id===b.dataset.tcal);if(!t)return;b.disabled=true;
+  taskCalToggle(t).finally(()=>{b.disabled=false});
 });
 
 /* ---------- Kalender ---------- */
@@ -4619,9 +4631,10 @@ document.getElementById('calPrev').addEventListener('click',()=>{if(calMode==='w
 document.getElementById('calNext').addEventListener('click',()=>{if(calMode==='week'){selDay=addDays(selDay,7);const d=parse(selDay);calMonth=new Date(d.getFullYear(),d.getMonth(),1)}else calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+1,1);renderCal()});
 document.getElementById('calToday').addEventListener('click',()=>{calMonth=new Date(NOW.getFullYear(),NOW.getMonth(),1);selDay=TODAY;renderCal()});
 
-/* ---------- Aufgaben über Google Kalender ----------
-   Jede Aufgabe ist ein Termin im LeMatic-Kalender (info@lematic.de) mit der Markierung lmTask=1.
-   Damit sehen Lennart und Martin sie auch direkt in Google Kalender auf dem Handy. */
+/* ---------- Aufgaben ----------
+   Seit v.42 stehen Aufgaben nur in Notion „Aufgaben“ (mit wer, Frist, Status). Im LeMatic-Kalender stehen nur echte Termine.
+   Eine Aufgabe kommt nur in den Kalender, wenn jemand sie ausdrücklich dorthin holt („In Kalender“): dann hängt ein
+   normaler Termin mit lmTaskRef an der Aufgabe, und die Kalender-ID steht in Notion. */
 const projOptions=Object.keys(PROJ).map(p=>`<option>${p}</option>`).join('');
 const TASK_COLOR={LP:'10',MS:'5',done:'8'};
 let tWho='all',CAL_ID='primary';
@@ -4648,11 +4661,13 @@ function renderTasks(){
   ];
   if(showDone)groups.push(['Erledigt',list.filter(t=>t.done).reverse()]);
   const html=groups.filter(g=>g[1].length).map(g=>`<p class="grp">${g[0]} <span>${g[1].length}</span></p>${g[1].map(taskRow).join('')}`).join('');
-  document.getElementById('taskGroups').innerHTML=html||(GAUTH?(CAL_LOADED?'<p class="empty">Keine Aufgaben mit diesem Filter.</p>':'<p class="empty">Kalender wird geladen …</p>'):'<p class="empty">Nach dem Login mit info@lematic.de erscheinen hier die Aufgaben aus dem LeMatic-Kalender.</p>');
+  document.getElementById('taskGroups').innerHTML=html||(GAUTH?(TASKS_LOADED?'<p class="empty">Keine Aufgaben mit diesem Filter.</p>':TASKS_ERR?'<p class="empty">Aufgaben nicht geladen: '+esc(TASKS_ERR)+'</p>':'<p class="empty">Aufgaben werden geladen …</p>'):'<p class="empty">Nach dem Login mit info@lematic.de erscheinen hier die Aufgaben.</p>');
   const open=TASKS.filter(t=>!t.done);
-  document.getElementById('tSummary').innerHTML=`<b>${open.length} offen</b>${open.filter(t=>t.due<TODAY).length?`, ${open.filter(t=>t.due<TODAY).length} überfällig`:''}. Jede Aufgabe steht als Termin im LeMatic-Kalender.`;
+  const inCal=open.filter(t=>t.cal).length;
+  document.getElementById('tSummary').innerHTML=`<b>${open.length} offen</b>${open.filter(t=>t.due<TODAY).length?`, ${open.filter(t=>t.due<TODAY).length} überfällig`:''}${inCal?`, ${inCal} davon im Kalender`:''}.`;
   updateBadges();
 }
+/* Alte Aufgaben-Termine (bis v.41): Termin mit lmTask=1. Nur noch zum Umziehen nach Notion gelesen. */
 function taskFromEvent(it){
   const x=(it.extendedProperties&&it.extendedProperties.private)||{};
   const allDay=!it.start.dateTime;
@@ -4660,73 +4675,180 @@ function taskFromEvent(it){
     id:it.id,t:x.lmTitle||(it.summary||'').replace(/^[☐✓]\s*/,'').replace(/\s*\((Lennart|Martin)\)$/,''),
     who:x.lmWho==='MS'?'MS':'LP',by:x.lmBy||'',done:x.lmDone==='1',
     due:(it.start.dateTime||it.start.date).slice(0,10),time:allDay?null:it.start.dateTime.slice(11,16),
-    kid:x.lmKid||'',kname:x.lmKname||'',doneAt:x.lmDoneAt||'',doneBy:x.lmDoneBy||'',raw:x,
-    art:x.lmArt||'aufgabe',note:x.lmNote||'',nid:x.lmNid||'',rem:(it.reminders&&it.reminders.overrides&&it.reminders.overrides[0]||{}).minutes,att:(it.attendees||[]).map(a=>a.email)
+    kid:x.lmKid||'',kname:x.lmKname||'',doneAt:x.lmDoneAt||'',doneBy:x.lmDoneBy||'',
+    art:x.lmArt||'aufgabe',note:x.lmNote||'',nid:x.lmNid||''
   };
 }
-function taskEventBody(t){
-  const summary=(t.done?'✓ ':'☐ ')+t.t+' ('+NAMES[t.who]+')';
-  const priv={lmTask:'1',lmWho:t.who,lmDone:t.done?'1':'0',lmDoneAt:t.doneAt||'',lmDoneBy:t.doneBy||'',lmTitle:t.t.slice(0,900),lmKid:t.kid||'',lmKname:(t.kname||'').slice(0,200),lmBy:t.by||ME,lmArt:t.art||'aufgabe',lmNote:String(t.note||'').slice(0,900),lmNid:t.nid||''};
-  const description=['Aufgabe für '+NAMES[t.who],t.note||'',t.kname?'Kunde: '+t.kname:'','Angelegt von '+(NAMES[t.by]||USER)+' im LeMatic Studio'].filter(Boolean).join('\n');
-  const rem=t.rem===0||t.rem===''?null:(t.rem!=null?+t.rem:(t.time?30:960));
-  const body={summary,description,colorId:t.done?TASK_COLOR.done:TASK_COLOR[t.who],extendedProperties:{private:priv},transparency:'transparent',
-    reminders:t.done||rem==null?{useDefault:false,overrides:[]}:{useDefault:false,overrides:[{method:'popup',minutes:rem}]}};
-  if(t.time){
-    const [h,m]=t.time.split(':').map(Number);const end=new Date(2000,0,1,h,m+30);
+/* ---------- Aufgaben in Notion ---------- */
+let TASKS_LOADED=false,TASKS_ERR='',CAL_REFS=null;
+const ART_BEREICH={dreh:'Dreh',schnitt:'Schnitt',akquise:'Akquise'};
+const BEREICH_ART={Dreh:'dreh',Schnitt:'schnitt',Akquise:'akquise'};
+const codeOf=n=>n==='Martin'?'MS':n==='Lennart'?'LP':'';
+const idEq=(a,b)=>!!a&&!!b&&String(a).replace(/-/g,'')===String(b).replace(/-/g,'');
+/* Notion-Datum in Berliner Zeit: „2026-11-04T09:00:00.000+01:00“ → {due:'2026-11-04',time:'09:00'} */
+function nDeadline(s){
+  s=String(s||'');if(!s)return{due:'',time:null};
+  if(!/T\d/.test(s))return{due:s.slice(0,10),time:null};
+  if(/(Z|[+-]\d\d:?\d\d)$/.test(s)){
+    const p={};new Intl.DateTimeFormat('de-DE',{timeZone:'Europe/Berlin',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(s)).forEach(x=>p[x.type]=x.value);
+    return{due:p.year+'-'+p.month+'-'+p.day,time:p.hour+':'+p.minute};
+  }
+  return{due:s.slice(0,10),time:s.slice(11,16)};
+}
+function taskFromRow(r){
+  const dl=nDeadline(r['Deadline']),title=String(r['Aufgabe']||'').trim();
+  const kids=Array.isArray(r['Kunde'])?r['Kunde']:[];
+  const k=kids.length?KUNDEN.find(q=>kids.some(x=>idEq(x,q.id))):null;
+  return{id:r.id,t:title,who:codeOf(r['Wer'])||(/\blennart\b/i.test(title)?'LP':'MS'),by:codeOf(r['Angelegt von']),
+    done:r['Status']==='Erledigt',due:dl.due,time:dl.time,kid:k?k.id:'',kname:k?k.name:'',kidRaw:k?[]:kids,
+    doneAt:r['Erledigt am']||'',doneBy:codeOf(r['Erledigt von']),art:BEREICH_ART[r['Bereich']]||'aufgabe',note:r['Notiz']||'',
+    cal:String(r['Kalender-ID']||'').trim(),url:r.url||'',_wer:!!r['Wer'],_neu:r['Im Studio']!==true};
+}
+/* Nur die angegebenen Felder nach Notion schreiben (keys leer = alle) */
+function taskProps(t,keys){
+  const p={},has=k=>!keys||keys.includes(k);
+  if(has('t'))p['Aufgabe']={title:[{text:{content:String(t.t).slice(0,2000)}}]};
+  if(has('who'))p['Wer']={select:{name:NAMES[t.who]||'Lennart'}};
+  if(has('due'))p['Deadline']={date:t.time?{start:t.due+'T'+t.time+':00',time_zone:'Europe/Berlin'}:{start:t.due}};
+  if(has('done')){p['Status']={status:{name:t.done?'Erledigt':'Nicht begonnen'}};
+    p['Erledigt am']={date:t.done?{start:(t.doneAt||new Date().toISOString())}:null};
+    p['Erledigt von']={select:t.done&&t.doneBy?{name:NAMES[t.doneBy]}:null}}
+  if(has('kid')&&(t.kid||!(t.kidRaw||[]).length))p['Kunde']={relation:t.kid?[{id:t.kid}]:[]};
+  if(has('note'))p['Notiz']={rich_text:t.note?[{text:{content:String(t.note).slice(0,1900)}}]:[]};
+  if(has('art')&&ART_BEREICH[t.art])p['Bereich']={select:{name:ART_BEREICH[t.art]}};
+  if(has('by')&&t.by)p['Angelegt von']={select:{name:NAMES[t.by]}};
+  if(has('cal'))p['Kalender-ID']={rich_text:t.cal?[{text:{content:t.cal}}]:[]};
+  return p;
+}
+function notionArchive(db,id,flag){
+  return napi('/api/notion?db='+encodeURIComponent(db)+'&id='+encodeURIComponent(id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({archive:flag})});
+}
+async function loadTasks(){
+  if(!GAUTH)return;
+  let rows;
+  try{rows=(await napi('/api/notion?db=aufgaben&studio=1')).rows||[];TASKS_ERR=''}
+  catch(e){TASKS_ERR=e.message;safe('tasksR',renderTasks);throw e}
+  const list=rows.filter(r=>String(r['Aufgabe']||'').trim()).map(taskFromRow);
+  TASKS=list;TASKS_LOADED=true;syncTaskEvents();
+  /* Neu aus WhatsApp-Bot oder Notion: einmal übernehmen (Im Studio, Wer, Frist) */
+  const fresh=list.filter(t=>t._neu||!t.due||!t._wer);let n=0;
+  for(const t of fresh){
+    const props={'Im Studio':{checkbox:true}};
+    if(!t.due){t.due=addDays(TODAY,1);Object.assign(props,taskProps(t,['due']))}
+    if(!t._wer)Object.assign(props,taskProps(t,['who']));
+    try{await notionUpdate('aufgaben',t.id,props);t._wer=true;
+      if(t._neu&&!t.done){n++;if(t.who!==ME)safe('wa',()=>waNotify(t.who,t.t,fmtWhen(t.due,t.time,true)))}
+      t._neu=false}catch(_){}
+  }
+  if(n)toast('📥 '+n+(n===1?' neue Aufgabe':' neue Aufgaben')+' übernommen (WhatsApp/Notion)');
+  safe('tasksR',renderTasks);safe('homeR',renderHome);safe('kartR',renderKartei);
+}
+async function saveTask(t,keys){
+  await notionUpdate('aufgaben',t.id,taskProps(t,keys));
+  if(t.cal&&!(keys&&keys.length===1&&keys[0]==='cal'))safe('taskCal',()=>taskCalSync(t));
+}
+/* ---------- Aufgabe ausdrücklich in den Kalender holen ---------- */
+function taskCalBody(t){
+  const body={summary:(t.done?'✓ ':'')+t.t+' ('+NAMES[t.who]+')',
+    description:['Aufgabe für '+NAMES[t.who],t.note||'',t.kname?'Kunde: '+t.kname:'','Aus dem LeMatic Studio in den Kalender geholt. Abhaken unter Aufgaben.'].filter(Boolean).join('\n'),
+    colorId:t.done?TASK_COLOR.done:TASK_COLOR[t.who],transparency:'transparent',
+    extendedProperties:{private:{lmTaskRef:t.id,lmArt:'aufgabe',lmWho:t.who,lmKid:t.kid||'',lmKname:(t.kname||'').slice(0,200)}},
+    reminders:t.done?{useDefault:false,overrides:[]}:{useDefault:false,overrides:[{method:'popup',minutes:t.time?30:960}]}};
+  if(t.time){const [h,m]=t.time.split(':').map(Number);const end=new Date(2000,0,1,h,m+30);
     body.start={dateTime:t.due+'T'+t.time+':00',timeZone:'Europe/Berlin'};
     body.end={dateTime:(end.getDate()>1?addDays(t.due,1):t.due)+'T'+pad(end.getHours())+':'+pad(end.getMinutes())+':00',timeZone:'Europe/Berlin'};
-  }else{
-    body.start={date:t.due};body.end={date:addDays(t.due,1)};
-  }
+  }else{body.start={date:t.due};body.end={date:addDays(t.due,1)}}
   return body;
 }
-async function createTask({title,who,due,time,kid,kname,art,note,rem,invite,nid}){
+async function taskCalSync(t){
+  if(!t.cal)return;
+  try{await gfetch(calUrl(t.cal),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskCalBody(t)),noUndo:true})}
+  catch(e){if(/404|410|not found|deleted/i.test(e.message)){t.cal='';syncTaskEvents();await notionUpdate('aufgaben',t.id,taskProps(t,['cal'])).catch(()=>{})}else throw e}
+}
+async function taskToCal(t){
+  if(t.cal)return;
+  const body=taskCalBody(t);const em=t.who!==ME?personMail(t.who):'';if(em)body.attendees=[{email:em}];
+  const j=await (await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events'+(em?'?sendUpdates=all':''),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
+  t.cal=j.id;if(CAL_REFS)CAL_REFS.add(j.id);
+  try{await saveTask(t,['cal'])}catch(e){await gfetch(calUrl(j.id),{method:'DELETE',noUndo:true}).catch(()=>{});t.cal='';throw e}
+  syncTaskEvents();safe('tasksR',renderTasks);safe('calR',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
+}
+async function taskFromCal(t){
+  if(!t.cal)return;const id=t.cal;
+  try{await gfetch(calUrl(id),{method:'DELETE',noUndo:true})}catch(e){if(!/404|410/.test(e.message))throw e}
+  t.cal='';if(CAL_REFS)CAL_REFS.delete(id);await saveTask(t,['cal']);
+  syncTaskEvents();safe('tasksR',renderTasks);safe('calR',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
+}
+async function createTask({title,who,due,time,kid,kname,art,note,invite,cal}){
   if(!GAUTH)throw new Error('Bitte zuerst mit info@lematic.de anmelden');
-  const t={t:title,who:who||ME,due:due||addDays(TODAY,1),time:time||null,done:false,kid:kid||'',kname:kname||'',by:ME,art:art||'aufgabe',note:note||'',rem,nid:nid||''};
-  /* Auch in Notion „Aufgaben“ führen, damit der Status dort stimmt (außer sie kam schon von dort) */
-  if(!t.nid){try{const props={'Aufgabe':{title:[{text:{content:t.t.slice(0,200)}}]},'Wer':{select:{name:NAMES[t.who]}},'Deadline':{date:{start:t.due}},'Quelle':{select:{name:'Studio'}},'Im Studio':{checkbox:true}};
-    const ber={dreh:'Dreh',schnitt:'Schnitt',akquise:'Akquise'}[t.art];if(ber)props['Bereich']={select:{name:ber}};
-    if(t.kid)props['Kunde']={relation:[{id:t.kid}]};
-    const pg=await notionCreate('aufgaben',props);t.nid=pg.id||''}catch(_){}}
-  const body=taskEventBody(t);
-  const forOther=t.who!==ME&&invite!==false;
-  const em=forOther?personMail(t.who):'';if(em)body.attendees=[{email:em}];
-  const r=await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events'+(em?'?sendUpdates=all':''),{
-    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)
-  });
-  const j=await r.json();
-  t.id=j.id;TASKS.push(t);syncTaskEvents();
-  if(forOther)safe('wa',()=>waNotify(t.who,t.t,fmtWhen(t.due,t.time,true)));
+  const t={t:String(title).slice(0,300),who:who||ME,due:due||addDays(TODAY,1),time:time||null,done:false,kid:kid||'',kname:kname||'',by:ME,art:art||'aufgabe',note:note||'',cal:''};
+  const pg=await notionCreate('aufgaben',{...taskProps(t,['t','who','due','kid','note','art','by']),'Status':{status:{name:'Nicht begonnen'}},'Quelle':{select:{name:'Studio'}},'Im Studio':{checkbox:true}});
+  t.id=pg.id;t.url=pg.url||'';TASKS.push(t);syncTaskEvents();
+  if(cal)try{await taskToCal(t)}catch(e){toast('Aufgabe angelegt, aber nicht im Kalender: '+e.message)}
+  if(t.who!==ME&&invite!==false)safe('wa',()=>waNotify(t.who,t.t,fmtWhen(t.due,t.time,true)));
   safe('tasksR',renderTasks);safe('homeR',renderHome);safe('kartR',renderKartei);safe('calR',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
   return t;
 }
 async function toggleTask(t,done){
   const before=t.done,beforeAt=t.doneAt,beforeBy=t.doneBy;t.done=done;
   t.doneAt=done?new Date().toISOString():'';t.doneBy=done?ME:'';
-  safe('tasksR',renderTasks);safe('homeR',renderHome);
+  syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome);
   try{
-    await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id),{
-      method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))
-    });
-    if(t.nid)notionUpdate('aufgaben',t.nid,{'Status':{status:{name:done?'Erledigt':'Nicht begonnen'}}}).catch(()=>{});
+    await saveTask(t,['done']);
     if(done)safe('fun',()=>celebrateTask(t));
     if(done&&payOwned('feuerwerk'))safe('fw',()=>fireworks());
-    syncTaskEvents();safe('kartR',renderKartei);if(kOpen)safe('ks',()=>renderKundeSheet(kOpen));
+    safe('kartR',renderKartei);if(kOpen)safe('ks',()=>renderKundeSheet(kOpen));
   }catch(e){
-    t.done=before;t.doneAt=beforeAt;t.doneBy=beforeBy;safe('tasksR',renderTasks);safe('homeR',renderHome);
-    toast('Kalender nicht aktualisiert: '+e.message);
+    t.done=before;t.doneAt=beforeAt;t.doneBy=beforeBy;syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome);
+    toast('Nicht gespeichert: '+e.message);
   }
 }
+function taskSnap(t){return{id:'task:'+t.id,_nid:t.id,summary:t.t,start:t.time?{dateTime:t.due+'T'+t.time+':00'}:{date:t.due},extendedProperties:{private:{lmTask:'1',lmTitle:t.t,lmWho:t.who}}}}
 async function deleteTask(t){
-  try{
-    await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id),{method:'DELETE'});
-  }catch(e){if(!/410|404/.test(e.message)){toast('Nicht gelöscht: '+e.message);return}}
+  try{await notionArchive('aufgaben',t.id,true)}catch(e){toast('Nicht gelöscht: '+e.message);return}
+  if(t.cal)gfetch(calUrl(t.cal),{method:'DELETE',noUndo:true}).catch(()=>{});
   TASKS=TASKS.filter(x=>x!==t);syncTaskEvents();
+  safe('undoReg',()=>undoRegister('DELETE',taskSnap(t),''));
   safe('tasksR',renderTasks);safe('homeR',renderHome);safe('kartR',renderKartei);if(kOpen)safe('ks',()=>renderKundeSheet(kOpen));
   toast('Aufgabe gelöscht');
 }
+/* Im Kalender stehen nur Aufgaben, die jemand ausdrücklich dorthin geholt hat */
 function syncTaskEvents(){
-  EVENTS=EVENTS.filter(e=>e.type!=='aufgabe').concat(TASKS.filter(t=>!t.done||(t.doneAt||'').slice(0,10)>=addDays(TODAY,-30)||t.due>=addDays(TODAY,-30)).map(t=>({d:t.due,time:t.time,t:t.t,type:'aufgabe',art:t.art||'aufgabe',p:t.kname||'LeMatic',who:t.who,taskId:t.id,done:t.done,note:t.note,kid:t.kid})));
+  EVENTS=EVENTS.filter(e=>!(e.type==='aufgabe'&&e.taskId)).concat(TASKS.filter(t=>t.cal&&(!CAL_REFS||CAL_REFS.has(t.cal))).map(t=>({d:t.due,time:t.time,t:t.t,type:'aufgabe',art:'aufgabe',p:t.kname||'LeMatic',who:t.who,taskId:t.id,gcalId:t.cal,done:t.done,note:t.note,kid:t.kid})));
+}
+/* Einmal aufräumen: alte Aufgaben-Termine (lmTask=1) nach Notion übernehmen und aus dem Kalender nehmen.
+   Läuft bei jedem Kalender-Abgleich, findet nach dem ersten Mal nichts mehr (oder Nachzügler aus alten Tabs). */
+let MIG_BUSY=false;
+async function migrateTaskEvents(){
+  if(!GAUTH||MIG_BUSY||!TASKS_LOADED)return;MIG_BUSY=true;let n=0,fail=0;
+  try{
+    const base='https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events';
+    const items=[];let pageToken='';
+    for(let i=0;i<10;i++){const q={privateExtendedProperty:'lmTask=1',maxResults:'250',showDeleted:'false'};if(pageToken)q.pageToken=pageToken;
+      const j=await (await gfetch(base+'?'+new URLSearchParams(q))).json();items.push(...(j.items||[]));if(!j.nextPageToken)break;pageToken=j.nextPageToken}
+    for(const it of items){
+      if(!it.start||it.status==='cancelled')continue;
+      const o=taskFromEvent(it);
+      if(o.done&&!o.doneAt)o.doneAt=o.due;
+      const keys=['t','who','due','done','art','by'].concat(o.kid?['kid']:[],o.note?['note']:[]);
+      try{
+        let hit=o.nid?TASKS.find(x=>idEq(x.id,o.nid)):TASKS.find(x=>x.t===o.t&&x.due===o.due);
+        let id=hit?hit.id:o.nid,gone=false;
+        const tt={...o,cal:'',kidRaw:[]};
+        if(id){try{await notionUpdate('aufgaben',id,{...taskProps(tt,keys),'Im Studio':{checkbox:true}})}
+          catch(e){if(/archived/i.test(e.message))gone=true;else if(/404|not found|Could not find|gehört nicht/i.test(e.message))id='';else throw e}}
+        if(!id&&!gone){await notionCreate('aufgaben',{...taskProps(tt,keys),'Quelle':{select:{name:'Studio'}},'Im Studio':{checkbox:true}})}
+        await gfetch(calUrl(it.id)+'?sendUpdates=none',{method:'DELETE',noUndo:true});
+        n++;
+      }catch(e){fail++;console.warn('Aufgabe umziehen',o.t,e)}
+    }
+    if(n){await loadTasks().catch(()=>{});
+      const msg=n+(n===1?' Aufgabe':' Aufgaben')+' aus dem Kalender genommen. Sie stehen jetzt nur unter Aufgaben.';
+      toast(msg);noteLog({t:msg,kind:'update',go:'aufgaben'});
+      safe('calR',()=>{if(location.hash.slice(2)==='kalender')renderCal()});safe('homeR',renderHome)}
+    if(fail)console.warn(fail+' Aufgaben-Termine nicht umgezogen, nächster Versuch beim nächsten Abgleich');
+  }catch(e){console.warn('Aufräumen Aufgaben-Termine',e)}
+  MIG_BUSY=false;
 }
 document.getElementById('addTask').addEventListener('submit',async e=>{
   e.preventDefault();
@@ -4741,7 +4863,7 @@ document.getElementById('addTask').addEventListener('submit',async e=>{
   try{
     await createTask({title,who,due:$('atDue').value||TODAY,time:$('atTime').value||null,kid:k?k.id:'',kname:k?k.name:'',invite:who!==ME});
     $('atTitle').value='';$('atTime').value='';
-    toast('Im Kalender für '+NAMES[who]+' eingetragen');
+    toast('Aufgabe für '+NAMES[who]+' angelegt');
   }catch(err){toast('Nicht angelegt: '+err.message)}
   btn.disabled=false;
 });
@@ -5632,11 +5754,13 @@ async function loadMyCalendar(){
       items.push(...(j.items||[]));
       if(!j.nextPageToken)break;pageToken=j.nextPageToken;
     }
-    const evs=[],tasks=[];
+    await loadTasks().catch(e=>console.warn('Aufgaben nicht geladen:',e.message));
+    const evs=[];let legacy=0;CAL_REFS=new Set();
     items.forEach(it=>{
       if(!it.start||it.status==='cancelled')return;
       const x=(it.extendedProperties&&it.extendedProperties.private)||{};
-      if(x.lmTask==='1'){tasks.push(taskFromEvent(it));return}
+      if(x.lmTask==='1'){legacy++;return}
+      if(x.lmTaskRef){CAL_REFS.add(it.id);if(TASKS.some(t=>idEq(t.id,x.lmTaskRef)))return}
       const allDay=!it.start.dateTime;
       const d=(it.start.dateTime||it.start.date).slice(0,10);
       let end=null;
@@ -5649,9 +5773,9 @@ async function loadMyCalendar(){
       if(!allDay&&it.end&&it.end.dateTime){const e2=it.end.dateTime.slice(0,10);if(e2>d)end=e2}
       evs.push({d,end,time,endTime,t:(art==='belegt'?String(x.lmTitle||it.summary||'').replace(/^Belegt:\s*/i,'').replace(/\s*\((Lennart|Martin)\)$/,''):(it.summary||'(ohne Titel)')),type:art==='belegt'?'belegt':art,art,who:x.lmWho||'',stand:x.lmStand!=null&&x.lmStand!==''?+x.lmStand:null,note:x.lmNote||'',p:kk?kk.name:'LeMatic',place:it.location||'',big:!!end,gcalId:it.id,link:it.htmlLink||'',kid:kid||'',rem:(it.reminders&&it.reminders.overrides&&it.reminders.overrides[0]||{}).minutes,att:(it.attendees||[]).map(a=>a.email)});
     });
-    EVENTS=evs;TASKS=tasks;syncTaskEvents();
+    EVENTS=evs;syncTaskEvents();
     MY_CAL_LOADED=CAL_LOADED=true;
-    setTimeout(()=>safe('botTasks',importBotTasks),1500);
+    setTimeout(()=>safe('migTasks',migrateTaskEvents),legacy?800:4000);
     const at=new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     setHTML('calSync','<svg class="i sm"><use href="#i-check"/></svg>LeMatic-Kalender abgeglichen um '+at+' Uhr');
     if(pill)pill.innerHTML='<span class="pill ok"><i></i>Verbunden</span>';
@@ -5684,10 +5808,10 @@ function evRenderArt(){
   const wsel=$('evWho');wsel.querySelector('option[value=""]').hidden=task||busy;if((task||busy)&&!wsel.value)wsel.value=ME;
   $('evEndL').hidden=!busy&&!(EVD.multi);$('evStandL').hidden=!busy;
   $('evTimeL').hidden=busy;$('evTimeEndL').hidden=busy||task;$('evOrtL').hidden=busy||task;$('evKundeL').hidden=busy;
-  $('evRemL').hidden=busy;
+  $('evRemL').hidden=busy||task;$('evCalL').hidden=!task;
   $('ev-title').textContent=(EVD.edit?'Bearbeiten: ':'Neu: ')+TYPE_ONE[a];
   $('evTitle').placeholder=busy?'Woran arbeitest du? Zum Beispiel: Schnitt Fronius':task?'Was ist zu tun?':a==='dreh'?'Zum Beispiel: Dreh GET Nord, Fronius':'Zum Beispiel: Call mit Körber';
-  $('evSub').textContent=busy?'Zeigt dem anderen, dass du in der Zeit belegt bist, und wie weit du bist.':task?'Wird eine Aufgabe mit Frist, mit Häkchen und Erinnerung.':'Landet im LeMatic-Kalender (info@lematic.de). Lennart und Martin sehen ihn beide.';
+  $('evSub').textContent=busy?'Zeigt dem anderen, dass du in der Zeit belegt bist, und wie weit du bist.':task?'Steht unter Aufgaben, mit Frist und Häkchen. In den Kalender nur, wenn du es unten anhakst.':'Landet im LeMatic-Kalender (info@lematic.de). Lennart und Martin sehen ihn beide.';
   $('evGo').textContent=EVD.edit?'Speichern':'Anlegen';
   evCheck();
 }
@@ -5695,8 +5819,8 @@ function evCheck(){
   const who=$('evWho').value,date=$('evDate').value,end=$('evEnd').value||date,a=EVD.art;
   /* Einladung nur, wenn es für den anderen ist */
   const other=who&&who!==ME,em=other?personMail(who):'';
-  $('evInvL').hidden=!(other&&em&&a!=='belegt');
-  $('evInvTxt').textContent=NAMES[who]+' benachrichtigen: Kalender-Einladung an '+em+(waNotifyOn()?' und Hinweis in der WhatsApp-Gruppe':'');
+  $('evInvL').hidden=!(other&&a!=='belegt'&&(em||(a==='aufgabe'&&!$('evCal').checked&&waNotifyOn())));
+  $('evInvTxt').textContent=a==='aufgabe'&&!$('evCal').checked?NAMES[who]+' benachrichtigen: Hinweis in der WhatsApp-Gruppe':NAMES[who]+' benachrichtigen: Kalender-Einladung an '+em+(waNotifyOn()?' und Hinweis in der WhatsApp-Gruppe':'');
   const w=$('evWarn');const hits=a==='belegt'?[]:busyFor(who||'',date,a==='aufgabe'?date:end).filter(b=>!EVD.edit||b.gcalId!==EVD.edit.gcalId);
   w.hidden=!hits.length;w.innerHTML=hits.length?`<svg class="i sm"><use href="#i-warn"/></svg><span>${hits.map(b=>esc(busyText(b))).join('<br>')}${hits.length?'<br><small>Trotzdem anlegen geht, '+(who?NAMES[who]:'die Person')+' sieht es dann als Hinweis.</small>':''}</span>`:'';
 }
@@ -5711,6 +5835,7 @@ function openEventDialog(pre){
   $('evKunde').innerHTML='<option value="">Kein Kunde</option>'+kSorted(KUNDEN.filter(k=>k.status!=='Archiv'&&notPrivate(k.name))).map(k=>`<option value="${k.id}">${esc(k.name)}</option>`).join('');
   $('evKunde').value=pre.kid||'';$('evOrt').value=pre.ort||'';$('evNote').value=pre.note||'';
   $('evInvite').checked=pre.invite!=null?pre.invite:true;
+  $('evCal').checked=pre.cal!=null?!!pre.cal:location.hash.slice(2)==='kalender';
   evRemOptions(!!pre.time,pre.rem);
   evRenderArt();
   w.classList.add('show');w.setAttribute('aria-hidden','false');
@@ -5722,6 +5847,7 @@ on('openBusy','click',()=>{if(!GAUTH){toast('Dafür bitte zuerst mit Google anme
 on('dayAdd','click',()=>{if(!GAUTH){toast('Dafür bitte zuerst mit Google anmelden');return}openEventDialog({date:selDay})});
 on('evCancel','click',closeEventDialog);
 document.addEventListener('click',e=>{const b=e.target.closest('[data-evart]');if(!b)return;EVD.art=b.dataset.evart;evRenderArt()});
+on('evCal','change',()=>evCheck());
 ['evWho','evDate','evEnd'].forEach(id=>on(id,'change',()=>{if(id==='evDate'&&$('evEnd').value<$('evDate').value)$('evEnd').value=$('evDate').value;evCheck()}));
 on('evTime','change',()=>{const t=$('evTime').value;evRemOptions(!!t,$('evRem').value);if(t&&!$('evTimeEnd').value){const [h,m]=t.split(':').map(Number);$('evTimeEnd').value=pad(Math.min(23,h+1))+':'+pad(m)}});
 on('evStand','input',()=>{$('evStandV').textContent=$('evStand').value+' %'});
@@ -5756,12 +5882,13 @@ on('evGo','click',async()=>{
     if(o.art==='aufgabe'){
       const who=o.who||ME;
       if(EVD.edit&&EVD.edit.taskId){const t=TASKS.find(x=>x.id===EVD.edit.taskId);if(!t)throw new Error('Aufgabe nicht mehr gefunden');
-        Object.assign(t,{t:o.title,who,due:o.date,time:o.time||null,kid:o.kid,kname:o.kname,note:o.note,rem:o.rem===''?'':+o.rem,art:'aufgabe'});
-        await gfetch(cal+'/'+encodeURIComponent(t.id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))});
-        if(t.nid)notionUpdate('aufgaben',t.nid,{'Aufgabe':{title:[{text:{content:t.t.slice(0,200)}}]},'Wer':{select:{name:NAMES[who]}},'Deadline':{date:{start:t.due}}}).catch(()=>{});
-        syncTaskEvents();
-      }else await createTask({title:o.title,who,due:o.date,time:o.time||null,kid:o.kid,kname:o.kname,art:'aufgabe',note:o.note,rem:o.rem===''?'':+o.rem,invite});
-      toast(EVD.edit?'Aufgabe gespeichert':'Aufgabe für '+NAMES[who]+(who!==ME&&invite?' angelegt, Einladung ist raus':' angelegt'));
+        const old={...t};Object.assign(t,{t:o.title,who,due:o.date,time:o.time||null,kid:o.kid,kname:o.kname,note:o.note});
+        try{await saveTask(t,['t','who','due','kid','note'])}catch(x){Object.assign(t,old);throw x}
+        if($('evCal').checked&&!t.cal)await taskToCal(t);else if(!$('evCal').checked&&t.cal)await taskFromCal(t);
+        if(who!==old.who&&who!==ME&&invite)safe('wa',()=>waNotify(who,t.t,fmtWhen(t.due,t.time,true)));
+        syncTaskEvents();safe('tasksR',renderTasks);
+      }else await createTask({title:o.title,who,due:o.date,time:o.time||null,kid:o.kid,kname:o.kname,art:'aufgabe',note:o.note,invite,cal:$('evCal').checked});
+      toast(EVD.edit?'Aufgabe gespeichert':'Aufgabe für '+NAMES[who]+' angelegt'+($('evCal').checked?', steht auch im Kalender':''));
     }else{
       const body=evBody(o);const em=invite&&o.who?personMail(o.who):'';
       if(em)body.attendees=[{email:em}];
@@ -5810,7 +5937,7 @@ function showEntryPop(anchor,e){
       ${t?(t.done?`<button class="btn btn-glass sm" data-epundo><svg class="i xs"><use href="#i-undo"/></svg>Wieder offen</button>`:`<button class="btn btn-primary sm" data-epdone><svg class="i xs"><use href="#i-check"/></svg>Erledigt</button><button class="btn btn-glass sm" data-tmove="${t.id}"><svg class="i xs"><use href="#i-skip"/></svg>Verschieben</button>`):''}
       ${e.type==='belegt'&&e.end&&e.end>TODAY?`<button class="btn btn-glass sm" data-epfertig><svg class="i xs"><use href="#i-check"/></svg>Heute fertig</button>`:''}
       <button class="btn btn-glass sm" data-epedit><svg class="i xs"><use href="#i-pencil"/></svg>Bearbeiten</button>
-      <button class="btn btn-glass sm ep-del" data-epdel><svg class="i xs"><use href="#i-trash"/></svg>Löschen</button>
+      <button class="btn btn-glass sm ep-del" data-epdel><svg class="i xs"><use href="#i-trash"/></svg>${t?'Aus Kalender':'Löschen'}</button>
     </div>`;
   document.body.append(m);ENTRY_POP=m;m._e=e;
   const r=anchor.getBoundingClientRect(),w=m.offsetWidth,h=m.offsetHeight;
@@ -5829,14 +5956,14 @@ document.addEventListener('click',async ev=>{
   if(ev.target.closest('[data-epdone]')&&t){closeEntryPop();await toggleTask(t,true);syncTaskEvents();safe('calR',renderCal);return}
   if(ev.target.closest('[data-epundo]')&&t){closeEntryPop();await toggleTask(t,false);syncTaskEvents();safe('calR',renderCal);return}
   if(ev.target.closest('[data-epedit]')){closeEntryPop();
-    if(t)openEventDialog({art:'aufgabe',edit:{taskId:t.id},title:t.t,who:t.who,date:t.due,time:t.time,kid:t.kid,note:t.note,rem:t.rem});
-    else openEventDialog({art:e.art||e.type,edit:{gcalId:e.gcalId,link:e.link},title:e.t,who:e.who,date:e.d,end:e.end||e.d,time:e.time,timeEnd:e.endTime,stand:e.stand,kid:e.kid,ort:e.place,note:e.note,rem:e.rem,invite:false});
+    if(t)openEventDialog({art:'aufgabe',edit:{taskId:t.id},title:t.t,who:t.who,date:t.due,time:t.time,kid:t.kid,note:t.note,cal:!!t.cal,invite:false});
+    else openEventDialog({art:(e.art||e.type)==='aufgabe'?'termin':(e.art||e.type),edit:{gcalId:e.gcalId,link:e.link},title:e.t,who:e.who,date:e.d,end:e.end||e.d,time:e.time,timeEnd:e.endTime,stand:e.stand,kid:e.kid,ort:e.place,note:e.note,rem:e.rem,invite:false});
     return}
   if(ev.target.closest('[data-epfertig]')){closeEntryPop();try{await patchEvent(e.gcalId,{end:{date:addDays(TODAY,1)},extendedProperties:{private:{lmStand:'100'}}});e.end=TODAY>e.d?TODAY:null;e.stand=100;safe('calR',renderCal);safe('avail',renderAvail);toast('Eingetragen: ab morgen wieder frei')}catch(x){toast('Nicht gespeichert: '+x.message)}return}
   const del=ev.target.closest('[data-epdel]');
   if(del){
-    popMenu(del,'Wirklich löschen?',[{ic:'',label:t?'Ja, Aufgabe löschen':'Ja, löschen',danger:true,fn:async()=>{closeEntryPop();
-      if(t){await deleteTask(t);syncTaskEvents();safe('calR',renderCal);return}
+    popMenu(del,t?'Aus dem Kalender nehmen? Die Aufgabe bleibt.':'Wirklich löschen?',[{ic:'',label:t?'Ja, aus dem Kalender nehmen':'Ja, löschen',danger:true,fn:async()=>{closeEntryPop();
+      if(t){try{await taskFromCal(t);toast('Aus dem Kalender genommen, steht weiter unter Aufgaben')}catch(x){toast('Nicht geändert: '+x.message)}return}
       const i=EVENTS.indexOf(e);EVENTS.splice(i,1);safe('calR',renderCal);safe('homeR',renderHome);safe('avail',renderAvail);
       try{await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(e.gcalId),{method:'DELETE'});toast('Gelöscht: '+e.t);track('act','Termin gelöscht')}
       catch(x){EVENTS.splice(i,0,e);safe('calR',renderCal);toast('Nicht gelöscht: '+x.message)}}},{ic:'',label:'Abbrechen',fn:()=>{}}]);
@@ -5846,7 +5973,7 @@ document.addEventListener('click',async ev=>{
     const arts=t?['aufgabe','dreh','schnitt','akquise']:['termin','dreh','schnitt','akquise'];
     popMenu(pa,'Art ändern',arts.map(a=>({label:TYPE_ONE[a],on:(e.art||e.type)===a,fn:async()=>{
       const old=e.art;e.art=a;if(!t)e.type=a;closeEntryPop();safe('calR',renderCal);
-      try{if(t){t.art=a;await patchEvent(t.id,taskEventBody(t))}else await patchEvent(e.gcalId,{colorId:ART_COLOR[a],extendedProperties:{private:{lmArt:a}}});toast('Art: '+TYPE_ONE[a])}
+      try{if(t){t.art=a;await saveTask(t,['art'])}else await patchEvent(e.gcalId,{colorId:ART_COLOR[a],extendedProperties:{private:{lmArt:a}}});toast('Art: '+TYPE_ONE[a])}
       catch(x){e.art=old;if(!t)e.type=old;if(t)t.art=old;safe('calR',renderCal);toast('Nicht geändert: '+x.message)}}})));
     return}
 });
@@ -6423,7 +6550,7 @@ on('kdSheet','click',async e=>{
   }
   if(e.target.closest('#kdTermin')){closeKunde();location.hash='#/kalender';setTimeout(()=>openEventDialog({kid:k.id,title:'Termin '+k.name.split(/\s[–-]\s/)[0]}),80);return}
   const nt=e.target.closest('[data-nexttask]');
-  if(nt){try{await createTask({title:k.raw['Nächster Schritt'].slice(0,200),who:ME,due:addDays(TODAY,1),kid:k.id,kname:k.name});toast('Nächster Schritt steht morgen im Kalender');renderKundeSheet(k.id)}catch(x){toast('Nicht angelegt: '+x.message)}return}
+  if(nt){try{await createTask({title:k.raw['Nächster Schritt'].slice(0,200),who:ME,due:addDays(TODAY,1),kid:k.id,kname:k.name});toast('Nächster Schritt steht morgen unter Aufgaben');renderKundeSheet(k.id)}catch(x){toast('Nicht angelegt: '+x.message)}return}
   const vm=e.target.closest('[data-vmail]');
   if(vm){const m=(k._mails||[]).find(x=>x.id===vm.dataset.vmail)||mailById(vm.dataset.vmail);openMailIn(m&&!mailById(m.id)?m:null,vm.dataset.vmail);closeKunde();location.hash='#/mails';safe('mr',renderMails);return}
   if(e.target.closest('#kdArchive')){setKundeStatus(k,k.status==='Archiv'?(k.prevStatus||'Warm'):'Archiv');return}
@@ -6474,7 +6601,7 @@ on('kdSheet','submit',async e=>{
   try{
     const who=$('kdTaskWho').value;
     await createTask({title,who,due:$('kdTaskDue').value||TODAY,time:$('kdTaskTime').value||null,kid:k.id,kname:k.name});
-    toast('Im Kalender für '+NAMES[who]+' eingetragen');renderKundeSheet(k.id);
+    toast('Aufgabe für '+NAMES[who]+' angelegt');renderKundeSheet(k.id);
   }catch(x){toast('Nicht angelegt: '+x.message);btn.disabled=false}
 });
 function richChunks(text){
@@ -6828,7 +6955,7 @@ document.addEventListener('click',async e=>{
   const b=e.target.closest('[data-radartask]');if(!b)return;
   const k=KUNDEN.find(x=>x.id===b.dataset.radartask);if(!k)return;
   b.disabled=true;
-  try{await createTask({title:'Nachfassen: '+k.name.split(/\s[–-]\s|\s\(/)[0]+(k.raw['Nächster Schritt']?' — '+k.raw['Nächster Schritt'].slice(0,120):''),who:'MS',due:addDays(TODAY,1),kid:k.id,kname:k.name});toast('Steht morgen bei Martin im Kalender');renderBrain()}
+  try{await createTask({title:'Nachfassen: '+k.name.split(/\s[–-]\s|\s\(/)[0]+(k.raw['Nächster Schritt']?' — '+k.raw['Nächster Schritt'].slice(0,120):''),who:'MS',due:addDays(TODAY,1),kid:k.id,kname:k.name});toast('Steht morgen bei Martin unter Aufgaben');renderBrain()}
   catch(x){toast('Nicht angelegt: '+x.message);b.disabled=false}
 });
 on('radarAI','click',async()=>{
@@ -7838,7 +7965,7 @@ function agentWissen(){
   L.push('- Dateien, Footage, Rechnungs-PDFs: Google Drive, LeMatic-Ordner, im Studio unter Medien und Archiv. Rechnungsordner Ausgang: '+Object.values(AUSGANG_FOLDERS||{}).map(f=>f.name).filter(n=>notPrivate(n)).join(', '));
   L.push('- Mammutmarsch hat ein eigenes Kundenportal im Studio.');
   const open=TASKS.filter(t=>!t.done&&notPrivate(t.t,t.kname)).sort((a,b)=>(a.due||'').localeCompare(b.due||''));
-  L.push('\n## Offene Aufgaben ('+open.length+')');open.slice(0,60).forEach(t=>L.push(`- fällig ${t.due||'?'}${t.time?' '+t.time:''} · ${NAMES[t.who]||t.who} · ${cut(t.t,120)}${t.kname?' · Kunde: '+t.kname:''}${t.due&&t.due<TODAY?' · ÜBERFÄLLIG':''} [Aufgabe-ID ${t.id}]`));
+  L.push('\n## Offene Aufgaben ('+open.length+')');open.slice(0,60).forEach(t=>L.push(`- fällig ${t.due||'?'}${t.time?' '+t.time:''} · ${NAMES[t.who]||t.who} · ${cut(t.t,120)}${t.kname?' · Kunde: '+t.kname:''}${t.due&&t.due<TODAY?' · ÜBERFÄLLIG':''}${t.cal?' · im Kalender':''} [Aufgabe-ID ${t.id}]`));
   const done=TASKS.filter(t=>t.done&&notPrivate(t.t,t.kname)&&(t.doneAt||'').slice(0,10)>=addDays(TODAY,-21));
   if(done.length){L.push('\n## Erledigt in den letzten 3 Wochen');done.slice(0,40).forEach(t=>L.push(`- ${(t.doneAt||'').slice(0,10)} ${NAMES[t.doneBy||t.who]||''}: ${cut(t.t,100)}`))}
   const ev=EVENTS.filter(e=>e.type!=='aufgabe'&&(e.end||e.d)>=addDays(TODAY,-14)&&e.d<=addDays(TODAY,75)&&notPrivate(e.t,e.place)).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||'')));
@@ -8325,7 +8452,8 @@ function onbSources(){
   const evs=EVENTS.filter(e=>e.type!=='aufgabe').length;
   return [
     ['✉️','Postfach info@lematic.de',st(GMAIL),GMAIL?MAILS.length+' Mails gelesen, '+MAILS.filter(m=>m.client).length+' davon Kunden zugeordnet':'liest Mails …'],
-    ['📅','LeMatic-Kalender',st(CAL_LOADED),CAL_LOADED?evs+' Termine, '+TASKS.filter(t=>!t.done).length+' offene Aufgaben':'liest Termine …'],
+    ['📅','LeMatic-Kalender',st(CAL_LOADED),CAL_LOADED?evs+' Termine':'liest Termine …'],
+    ['✅','Aufgaben (Notion)',st(TASKS_LOADED),TASKS_LOADED?TASKS.filter(t=>!t.done).length+' offene Aufgaben':'liest Aufgaben …'],
     ['🗂️','Kundenkartei',st(KARTEI_LOADED),KARTEI_LOADED?KUNDEN.length+' Kunden, '+GESPR.length+' Gespräche':'liest Kunden …'],
     ['🧾','Rechnungen & Angebote',st(NOTION_LIVE),NOTION_LIVE?agentInvoices().length+' Belege':'liest Belege …'],
     ['🎯','Akquise',st(NOTION_LIVE),NOTION_LIVE?LEADS.length+' Leads in der Pipeline':'liest Leads …']
@@ -8443,10 +8571,11 @@ function liActLabel(a){
   const t=liFindTask(a),e=liFindEvent(a);
   const when=(d,tm)=>d?(d===TODAY?'heute':dm(d))+(tm?' '+tm:''):'';
   switch(a.type){
-    case 'task_create':return['✅','Aufgabe anlegen',`${a.title} · ${NAMES[a.who]||NAMES[ME]} · ${when(a.due||addDays(TODAY,1),a.time)}${k?' · '+k.name:''}`];
+    case 'task_create':return['✅','Aufgabe anlegen',`${a.title} · ${NAMES[a.who]||NAMES[ME]} · ${when(a.due||addDays(TODAY,1),a.time)}${k?' · '+k.name:''}${a.kalender===true||a.kalender==='ja'?' · auch im Kalender':''}`];
     case 'task_done':return['☑️','Als erledigt abhaken',t?t.t:'(Aufgabe nicht gefunden)'];
     case 'task_move':return['↪️',a.who&&!a.due?'Aufgabe übergeben':'Aufgabe verschieben',`${t?t.t:'(Aufgabe nicht gefunden)'} → ${[a.due?when(a.due,a.time):'',a.who?NAMES[a.who]:''].filter(Boolean).join(' · ')}`];
     case 'task_delete':return['🗑️','Aufgabe löschen',t?t.t:'(Aufgabe nicht gefunden)'];
+    case 'task_kalender':return['📅',a.an===false||a.an==='nein'?'Aus dem Kalender nehmen':'In den Kalender holen',t?`${t.t} · ${when(t.due,t.time)}`:'(Aufgabe nicht gefunden)'];
     case 'event_create':{const art=liArt(a);const bis=a.bis&&a.bis>a.date?' bis '+when(a.bis):'';const busy=art==='belegt'?[]:busyFor(a.who||'',a.date||TODAY,a.bis||a.date||TODAY);
       return[art==='belegt'?'⛔':art==='dreh'?'🎥':'📅',(art==='belegt'?'Belegung eintragen':TYPE_ONE[art]+' anlegen'),`${a.title} · ${when(a.date||TODAY,a.time)}${a.time&&a.time_end?'–'+a.time_end:''}${bis}${a.who?' · '+NAMES[a.who]:''}${a.ort?' · '+a.ort:''}${k?' · '+k.name:''}${a.erinnerung_min?' · Erinnerung '+remTxt(+a.erinnerung_min):''}`,busy.map(busyText).join(' · ')]}
     case 'event_move':return['↪️','Termin verschieben',`${e?e.t:'(Termin nicht gefunden)'} → ${when(a.date,a.time)}`];
@@ -8479,7 +8608,7 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-liedit]');if(!b)return;
   const [mi,i]=b.dataset.liedit.split(':').map(Number);const m=AG_CHAT[mi];const a=m&&m.acts&&m.acts[i];if(!a)return;
   let pre;
-  if(a.type==='task_create'){const k=a.kunde_id&&KUNDEN.find(x=>x.id===a.kunde_id);pre={art:'aufgabe',title:a.title,who:a.who||ME,date:a.due||addDays(TODAY,1),time:a.time||'',kid:k?k.id:''}}
+  if(a.type==='task_create'){const k=a.kunde_id&&KUNDEN.find(x=>x.id===a.kunde_id);pre={art:'aufgabe',title:a.title,who:a.who||ME,date:a.due||addDays(TODAY,1),time:a.time||'',kid:k?k.id:'',cal:!!a.kalender}}
   else{const o=liEventObj(a);pre={art:o.art,title:o.title,who:o.who,date:o.date,end:o.end,time:o.time,timeEnd:o.timeEnd,stand:o.stand,rem:o.rem,kid:o.kid,ort:o.ort,note:o.note}}
   pre.onSaved=()=>{a._st='ok';a._res='über den Dialog angelegt';agSave();renderAgent()};
   closeLiDrawer();openEventDialog(pre);
@@ -8497,7 +8626,8 @@ document.addEventListener('click',e=>{
     {ic:'⏭',label:'Nächsten Montag',fn:()=>mv(nextMonday())},
     {ic:'🗓',label:'In einer Woche',fn:()=>mv(addDays(t.due>TODAY?t.due:TODAY,7))},
     {date:true,label:'Datum wählen',fn:d=>mv(d)},
-    {ic:'🤝',label:'An '+NAMES[other]+' übergeben',fn:async()=>{const old=t.who;t.who=other;try{const bd=taskEventBody(t);const em=other!==ME?personMail(other):'';if(em)bd.attendees=[{email:em}];await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id)+(em?'?sendUpdates=all':''),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(bd)});if(other!==ME)safe('wa',()=>waNotify(other,t.t,fmtWhen(t.due,t.time,true)));safe('tasksR',renderTasks);safe('homeR',renderHome);toast('Liegt jetzt bei '+NAMES[other],{undo:async()=>{t.who=old;await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events/'+encodeURIComponent(t.id),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskEventBody(t))});safe('tasksR',renderTasks)}})}catch(x){t.who=old;toast('Nicht übergeben: '+x.message)}}}
+    {ic:'🤝',label:'An '+NAMES[other]+' übergeben',fn:async()=>{const old=t.who;t.who=other;try{await saveTask(t,['who']);if(other!==ME)safe('wa',()=>waNotify(other,t.t,fmtWhen(t.due,t.time,true)));syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome);toast('Liegt jetzt bei '+NAMES[other],{undo:async()=>{t.who=old;await saveTask(t,['who']);syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome)}})}catch(x){t.who=old;toast('Nicht übergeben: '+x.message)}}},
+    {ic:'📅',label:t.cal?'Aus dem Kalender nehmen':'In den Kalender',fn:()=>taskCalToggle(t)}
   ]);
 },true);
 /* Notion-Feld passend zum Typ bauen */
@@ -8540,15 +8670,17 @@ function liFindEvent(a){
 async function liRunAction(a){
   const k=a.kunde_id&&KUNDEN.find(x=>x.id===a.kunde_id);
   const cal='https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events';
-  if(a.type==='task_create'){await createTask({title:String(a.title).slice(0,300),who:a.who==='LP'||a.who==='MS'?a.who:ME,due:a.due||addDays(TODAY,1),time:a.time||null,kid:k?k.id:'',kname:k?k.name:''});return 'angelegt'}
+  if(a.type==='task_create'){await createTask({title:String(a.title).slice(0,300),who:a.who==='LP'||a.who==='MS'?a.who:ME,due:a.due||addDays(TODAY,1),time:a.time||null,kid:k?k.id:'',kname:k?k.name:'',cal:a.kalender===true||a.kalender==='ja'});return a.kalender===true||a.kalender==='ja'?'angelegt, steht auch im Kalender':'angelegt'}
+  if(a.type==='task_kalender'){const t=liFindTask(a);if(!t)throw new Error('Aufgabe nicht gefunden');a.id=t.id;
+    if(a.an===false||a.an==='nein'){await taskFromCal(t);return 'aus dem Kalender genommen'}
+    if(t.cal)return 'steht schon im Kalender';await taskToCal(t);return 'steht im Kalender'}
   if(a.type==='task_done'||a.type==='task_delete'||a.type==='task_move'){
     const t=liFindTask(a);if(!t)throw new Error('Aufgabe nicht gefunden');a.id=t.id;
     if(a.type==='task_done'){await toggleTask(t,true);return 'abgehakt'}
     if(a.type==='task_delete'){await deleteTask(t);return 'gelöscht'}
     const old={due:t.due,time:t.time,who:t.who};t.due=a.due||t.due;if(a.time!==undefined&&a.due)t.time=a.time||null;if(a.who==='LP'||a.who==='MS')t.who=a.who;
-    const handed=t.who!==old.who&&t.who!==ME;const bd=taskEventBody(t);const em=handed?personMail(t.who):'';if(em)bd.attendees=[{email:em}];
-    try{await gfetch(cal+'/'+encodeURIComponent(t.id)+(em?'?sendUpdates=all':''),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(bd)})}
-    catch(e){Object.assign(t,old);throw e}
+    const handed=t.who!==old.who&&t.who!==ME;
+    try{await saveTask(t,['due','who'])}catch(e){Object.assign(t,old);throw e}
     if(handed)safe('wa',()=>waNotify(t.who,t.t,fmtWhen(t.due,t.time,true)));
     syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome);return 'verschoben';
   }
@@ -8609,8 +8741,8 @@ async function liRunAction(a){
     const t=liFindTask(a);if(!t)throw new Error('Aufgabe nicht gefunden');
     const old={t:t.t,due:t.due,time:t.time,who:t.who,kid:t.kid,kname:t.kname};
     if(a.title)t.t=String(a.title).slice(0,300);if(a.due)t.due=a.due;if(a.due&&a.time!==undefined)t.time=a.time||null;if(a.who==='LP'||a.who==='MS')t.who=a.who;if(k){t.kid=k.id;t.kname=k.name}
-    const handed=t.who!==old.who&&t.who!==ME;const bd=taskEventBody(t);const em=handed?personMail(t.who):'';if(em)bd.attendees=[{email:em}];
-    try{await gfetch(cal+'/'+encodeURIComponent(t.id)+(em?'?sendUpdates=all':''),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(bd)})}catch(x){Object.assign(t,old);throw x}
+    const handed=t.who!==old.who&&t.who!==ME;
+    try{await saveTask(t,['t','due','who','kid'])}catch(x){Object.assign(t,old);throw x}
     if(handed)safe('wa',()=>waNotify(t.who,t.t,fmtWhen(t.due,t.time,true)));
     syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome);return 'geändert';
   }
@@ -8848,7 +8980,7 @@ const TOUR=[
   {r:'heute',sel:'#tpList',t:'Empfehlungen',d:'LeMatic Intelligence schlägt hier jeden Tag vor, was gerade etwas bringt, was ihr als Firma besser machen könnt und wie das Studio dir mehr hilft. Mit 👍 und 👎 lernt sie, was dir hilft.'},
   {r:'mails',sel:'[data-route="mails"]',t:'Postfach info@lematic.de',d:'Alle Mails, automatisch dem richtigen Kunden zugeordnet. Aus jeder Mail: Antwort entwerfen, Termin oder Aufgabe daraus machen.'},
   {r:'kalender',sel:'[data-route="kalender"]',t:'Kalender',d:'Termine anlegen, Kunden zuordnen. Kurz vorher erscheint eine Erinnerung oben rechts.'},
-  {r:'aufgaben',sel:'[data-route="aufgaben"]',t:'Aufgaben',d:'Jede Aufgabe ist ein Kalendereintrag mit wer und bis wann. Abhaken gilt sofort für euch beide.'},
+  {r:'aufgaben',sel:'[data-route="aufgaben"]',t:'Aufgaben',d:'Jede Aufgabe hat ein wer und bis wann. Im Kalender steht sie nur, wenn ihr sie mit dem Kalender-Knopf dorthin holt. Abhaken gilt sofort für euch beide.'},
   {r:'rechnungen',sel:'#dz',t:'Rechnungen einfach reinziehen',d:'PDF oder Foto ablegen. Das Studio erkennt Kunde, Nummer und Betrag und sortiert die Datei selbst in den richtigen Drive-Ordner.'},
   {r:'angebot',sel:'[data-route="angebot"]',t:'Angebotsrechner',d:'Kunden aus der Kartei übernehmen, kalkulieren, PDF erzeugen. Das fertige Angebot liegt automatisch in Drive und Notion.'},
   {r:'kunden',sel:'[data-route="kunden"]',t:'Kundenkartei',d:'Jeder Kunde hat eine eigene Seite: Ansprechpartner, Umsatz, Rechnungen, Projekte, Gespräche, Mails und Dateien.'},
@@ -9513,33 +9645,10 @@ on('csGo','click',async()=>{
 });
 
 
-/* ---------- Aufgaben vom WhatsApp-Bot übernehmen ----------
-   Der Bot legt Aufgaben in Notion „Aufgaben“ an (Wer, Deadline, Kunde, Quelle). Das Studio holt alle,
-   die noch nicht „Im Studio“ sind, legt sie als Studio-Aufgabe an und hakt „Im Studio“ ab. */
-let botBusy=false;
-async function importBotTasks(){
-  if(!GAUTH||!CAL_LOADED||botBusy)return;botBusy=true;
-  try{
-    const rows=(await notionGet('aufgaben')).filter(r=>r['Im Studio']!==true&&r['Status']!=='Erledigt'&&String(r['Aufgabe']||'').trim());
-    let n=0;
-    for(const r of rows){
-      const title=String(r['Aufgabe']).trim().slice(0,300);
-      const who=r['Wer']==='Lennart'?'LP':r['Wer']==='Martin'?'MS':/\blennart\b/i.test(title)?'LP':'MS';
-      const kids=(Array.isArray(r['Kunde'])?r['Kunde']:[]).map(x=>String(x).replace(/-/g,''));
-      const k=KUNDEN.find(q=>kids.includes(String(q.id).replace(/-/g,'')))||(typeof kundeIdForText==='function'?KUNDEN.find(q=>q.id===kundeIdForText(title)):null);
-      if(TASKS.some(t=>t.t===title&&!t.done))continue;
-      try{
-        await notionUpdate('aufgaben',r.id,{'Im Studio':{checkbox:true}});
-        const art={Dreh:'dreh',Schnitt:'schnitt',Akquise:'akquise'}[r['Bereich']]||'aufgabe';
-        await createTask({title,who,due:String(r['Deadline']||'').slice(0,10)||addDays(TODAY,1),time:/T(\d\d:\d\d)/.test(r['Deadline']||'')?RegExp.$1:null,kid:k?k.id:'',kname:k?k.name:'',art,nid:r.id});
-        n++;
-      }catch(e){try{await notionUpdate('aufgaben',r.id,{'Im Studio':{checkbox:false}})}catch(_){}}
-    }
-    if(n)toast('📥 '+n+(n===1?' neue Aufgabe':' neue Aufgaben')+' übernommen (WhatsApp/Notion)');
-  }catch(_){}
-  botBusy=false;
-}
-setInterval(()=>safe('botTasks',importBotTasks),120000);
+/* ---------- Aufgaben vom WhatsApp-Bot ----------
+   Der Bot legt Aufgaben in Notion „Aufgaben“ an. Seit v.42 liest das Studio die Aufgaben direkt von dort (loadTasks),
+   neue werden dabei einmal übernommen (Im Studio, Wer, Frist). Alle 2 Minuten neu abgleichen. */
+setInterval(()=>{if(GAUTH&&TASKS_LOADED&&document.visibilityState==='visible')safe('tasksPoll',()=>loadTasks().catch(()=>{}))},120000);
 
 
 /* ---------- Echte Bezahlung (Stripe, Testmodus) ---------- */
@@ -9640,8 +9749,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-01.41';
+const APP_VERSION='2026-11-02.42';
 const CHANGELOG=[
+  {v:'2026-11-02.42',d:'02.11.2026',items:['Im Kalender stehen nur noch echte Termine: Drehs, Calls, Treffen','Aufgaben stehen nur unter Aufgaben und auf Heute, mit Frist und Häkchen','Neu an jeder Aufgabe: Kalender-Knopf, holt sie bei Bedarf doch in den Kalender','Die bisher automatisch angelegten Aufgaben-Termine räumt das Studio einmal aus dem Kalender, die Aufgaben bleiben']},
   {v:'2026-11-01.41',d:'01.11.2026',items:['Analyse: Die erste Kachel zeigt groß, was wirklich eingenommen wurde','Darunter in Gelb die offenen Rechnungen mit Summe, ein Klick zeigt die Liste','Grau darunter: berechnet gesamt','Die doppelten Kacheln „bezahlt“ und „offen“ sind dafür weg']},
   {v:'2026-11-01.40',d:'01.11.2026',items:['Neuer Punkt „Analyse“ in der Seitenleiste, direkt unter Rechnungen','Oben Monat oder Jahr wählen, das gilt für die ganze Seite','Umsatz, bezahlt, offen und Ausgaben auf einen Blick','Balken pro Monat: bezahlt grün, offen gelb','Angebote-Quote: wie viele Angebote angenommen wurden','Rechnungen zeigt nur noch die Liste und das Hochladen'],tour:[
     {img:'whatsnew/v40-analyse.webp',t:'Analyse hat jetzt eine eigene Seite',txt:'Alle Zahlen zu Umsatz, Ausgaben und Angeboten an einem Ort, in der Seitenleiste unter Rechnungen.',
@@ -10040,6 +10150,7 @@ function undoRegister(m,sn,body){
   renderUndo();
 }
 async function restoreSnap(sn){
+  if(sn._nid){await notionArchive('aufgaben',sn._nid,false);await loadTasks().catch(()=>{});return sn.id}
   const clean={...sn};['etag','htmlLink','created','updated','creator','organizer','iCalUID','sequence','hangoutLink','conferenceData','kind'].forEach(k=>delete clean[k]);
   clean.status='confirmed';
   try{await gfetch(calUrl(sn.id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(clean),noUndo:true});return sn.id}
@@ -10051,8 +10162,6 @@ async function undoRun(u){
     if(u.m==='DELETE'){await restoreSnap(u.sn);trashRemove(u.sn.id)}
     else{const clean={...u.sn};['etag','htmlLink','created','updated','creator','organizer','kind'].forEach(k=>delete clean[k]);
       await gfetch(calUrl(u.sn.id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(clean),noUndo:true})}
-    const x=(u.sn.extendedProperties&&u.sn.extendedProperties.private)||{};
-    if(x.lmNid&&u.kind!=='Geändert')notionUpdate('aufgaben',x.lmNid,{'Status':{status:{name:x.lmDone==='1'?'Erledigt':'Nicht begonnen'}}}).catch(()=>{});
     toast('Rückgängig gemacht: '+u.title);
     await loadMyCalendar();safe('avail',renderAvail);
   }catch(e){toast('Nicht rückgängig gemacht: '+e.message)}
@@ -10170,7 +10279,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('noteWrap')&&$('n
 /* Neu für mich: vom anderen eingetragene Aufgaben und Termine einmal melden */
 function notesFromCalendar(){
   if(!GAUTH)return;let seen={};try{seen=JSON.parse(localStorage.getItem('lm_notes_seen_'+ME)||'{}')||{}}catch(_){}
-  const first=!Object.keys(seen).length;let n=0;
+  const first=!Object.keys(seen).length||!seen._v42;seen._v42=1;let n=0;
   TASKS.filter(t=>!t.done&&t.who===ME&&t.by&&t.by!==ME).forEach(t=>{if(seen['t'+t.id])return;seen['t'+t.id]=1;if(!first&&n++<6)noteLog({t:'Neu von '+NAMES[t.by]+': '+t.t,s:fmtWhen(t.due,t.time,true)+(t.kname?' · '+t.kname:''),kind:'neu',go:'aufgaben'})});
   EVENTS.filter(e=>isTermin(e)&&e.who===ME&&e.gcalId&&e.d>=TODAY).forEach(e=>{if(seen['e'+e.gcalId])return;seen['e'+e.gcalId]=1;if(!first&&n++<6)noteLog({t:'Für dich eingetragen: '+e.t,s:fmtWhen(e.d,e.time),kind:'neu',go:'kalender'})});
   try{localStorage.setItem('lm_notes_seen_'+ME,JSON.stringify(seen))}catch(_){}
