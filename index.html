@@ -897,6 +897,15 @@ textarea.input{font-family:inherit}
 .day-h{display:flex;align-items:baseline;justify-content:space-between;font-size:12px;color:var(--ink-2);padding:0 2px 4px}
 .day-h b{font-size:19px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
 .ev{display:block;font-size:11px;font-weight:600;padding:4px 7px;border-radius:7px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cell .ev,.wk-all .ev{white-space:normal;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-overflow:clip}
+.wk-ev span{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.agenda{display:flex;flex-direction:column;gap:6px}
+.ag-day>h3{font-size:13px;font-weight:700;color:var(--ink-2);padding:12px 8px 4px}
+.ag-day.today>h3{color:var(--brand)}
+.ag-none{font-size:13px;color:var(--ink-3);padding:4px 8px 8px}
+.ag-day .dayev h3{font-size:15px;line-height:1.3;white-space:normal;word-break:break-word}
+.ag-tasks{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--yellow-soft);color:var(--ink);font-size:13px;font-weight:600}
+.ag-tasks small{margin-left:auto;font-weight:500;color:var(--ink-2)}
 .day .ev{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .day .none{font-size:11px;color:var(--ink-3);padding:4px 2px}
 
@@ -1434,7 +1443,7 @@ body.fun-korn::after{content:"";position:fixed;inset:0;z-index:97;pointer-events
 .wk-body{position:relative;display:grid;grid-template-columns:52px repeat(7,minmax(0,1fr))}
 .wk-gut{position:relative}
 .wk-hr{position:absolute;left:0;right:0;font-size:10.5px;color:var(--ink-3);text-align:right;padding-right:8px;transform:translateY(-6px)}
-.wk-col{position:relative;border-left:1px solid var(--line);background-image:repeating-linear-gradient(180deg,transparent 0 calc(var(--wkpx,46px) - 1px),rgba(29,29,31,.06) calc(var(--wkpx,46px) - 1px) var(--wkpx,46px));cursor:copy}
+.wk-col{position:relative;border-left:1px solid var(--line);background-image:repeating-linear-gradient(180deg,transparent 0 calc(var(--wkpx,56px) - 1px),rgba(29,29,31,.06) calc(var(--wkpx,56px) - 1px) var(--wkpx,56px));cursor:copy}
 .wk-col.today{background-color:rgba(252,215,23,.05)}
 .wk-ev{position:absolute;border-radius:8px;padding:3px 6px;font-size:11.5px;line-height:1.25;overflow:hidden;cursor:pointer;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 2px 6px -3px rgba(0,0,0,.2);border-left:3px solid currentColor;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
 .wk-ev:hover{transform:scale(1.02);z-index:2}
@@ -1964,11 +1973,15 @@ body.dcut .bg{filter:grayscale(.4)}
   .toast{bottom:96px}
   .mobile-brand .m-settings{margin-left:auto}
 }
+@media (max-width:860px){
+  .cal-listmode .grid>.c4{display:none}
+  .cal-listmode .legend{display:none}
+}
 @media (max-width:600px){
   .clients-grid{grid-template-columns:1fr}
   .form2{grid-template-columns:1fr}
   .cell{min-height:58px;padding:4px}
-  .cell .ev{font-size:0;padding:0;height:5px;border-radius:3px}
+  .cell .ev{font-size:0;padding:0;height:5px;border-radius:3px;display:block}
   .cell .more{display:none}
   .dow{padding:6px 4px;text-align:center}
   .add-task{grid-template-columns:1fr}
@@ -2695,11 +2708,12 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
               <button class="icon-btn" id="calNext" aria-label="Weiter"><svg class="i"><use href="#i-chev"/></svg></button>
               <button class="btn btn-glass sm" id="calToday">Heute</button>
             </div>
-            <div class="seg" id="calMode" role="group" aria-label="Ansicht"><button data-cm="month" aria-pressed="true">Monat</button><button data-cm="week" aria-pressed="false">Woche</button></div>
+            <div class="seg" id="calMode" role="group" aria-label="Ansicht"><button data-cm="month" aria-pressed="true">Monat</button><button data-cm="week" aria-pressed="false">Woche</button><button data-cm="list" aria-pressed="false">Liste</button></div>
           </div>
           <div class="legend" id="legendCal" role="group" aria-label="Arten filtern"></div>
           <div class="month" id="month"></div>
           <div class="wk" id="week7" hidden></div>
+          <div class="agenda" id="calList" hidden></div>
         </section>
         <section class="glass panel c4" aria-labelledby="dayTitle">
           <div class="panel-head"><div><h2 id="dayTitle"></h2><p id="daySub"></p></div><button class="btn btn-primary sm" id="dayAdd"><svg class="i xs"><use href="#i-plus"/></svg>Eintrag</button></div>
@@ -4387,19 +4401,20 @@ function legendHTML(active){
 function taskRow(t){
   const dd=diffDays(t.due,TODAY);
   const cls=t.done?'':dd<0?'over':dd<=2?'soon':'';
-  const label=t.done?'Erledigt':(dd<0?'Überfällig, '+dm(t.due):dd===0?'Heute':dd===1?'Morgen':wd(t.due)+', '+dm(t.due))+(t.time&&!t.done?', '+t.time:'');
+  const label=t.done?'Erledigt':(dd<0?'Überfällig seit '+dm(t.due)+(dd<-1?' ('+(-dd)+' Tage)':''):dd===0?'Heute':dd===1?'Morgen':wd(t.due)+', '+dm(t.due))+(t.time&&!t.done?', '+t.time:'');
   const kd=t.kid?`<button class="kd" data-kopen="${t.kid}"><svg class="i xs"><use href="#i-users"/></svg>${esc(t.kname||'Kunde')}</button>`:`<span class="proj"><i style="background:#8E8E93"></i>Allgemein</span>`;
   return `<div class="task${t.done?' done':''}">
     <input type="checkbox" class="chk" data-task="${t.id}" ${t.done?'checked':''} aria-label="${esc(t.t)} erledigt">
     <div><div class="tt">${esc(t.t)}</div><div class="sub">${kd}${t.by&&t.by!==t.who?`<span class="proj" style="color:var(--ink-3)">von ${esc(NAMES[t.by]||t.by)}</span>`:''}</div></div>
-    <div class="right"><span class="due ${cls}">${label}</span><span class="av us sm" title="${NAMES[t.who]||''}" data-who="${t.who}">${t.who}</span>${t.done?'':`<button class="icon-btn ghost tcal${t.cal?' on':''}" data-tcal="${t.id}" aria-pressed="${!!t.cal}" aria-label="${esc(t.t)} ${t.cal?'aus dem Kalender nehmen':'in den Kalender'}" title="${t.cal?'Steht im Kalender. Klick nimmt sie wieder raus.':'In Kalender'}"><svg class="i sm"><use href="#i-cal"/></svg></button><button class="icon-btn ghost tmv" data-tmove="${t.id}" aria-label="${esc(t.t)} verschieben" title="Verschieben oder übergeben">↪</button>`}<button class="icon-btn ghost del" data-tdel="${t.id}" aria-label="${esc(t.t)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button></div>
+    <div class="right"><span class="due ${cls}">${label}</span><span class="av us sm" title="${NAMES[t.who]||''}" data-who="${t.who}">${t.who}</span>${t.done?'':`<button class="icon-btn ghost tcal${t.inCal?' on':''}" data-tcal="${t.id}" aria-pressed="${!!t.inCal}" aria-label="${esc(t.t)} ${t.inCal?'aus dem Kalender nehmen':'in den Kalender'}" title="${t.inCal?'Steht im Kalender. Klick nimmt sie wieder raus.':'In Kalender'}"><svg class="i sm"><use href="#i-cal"/></svg></button><button class="icon-btn ghost tmv" data-tmove="${t.id}" aria-label="${esc(t.t)} verschieben" title="Verschieben oder übergeben">↪</button>`}<button class="icon-btn ghost del" data-tdel="${t.id}" aria-label="${esc(t.t)} löschen"><svg class="i sm"><use href="#i-trash"/></svg></button></div>
   </div>`;
 }
 /* ---------- Startbühne: Gruß, frecher Spruch, Suche, Vorschläge ---------- */
 let HST_I=-1;
 function hstData(){
   const first=(USER||'').split(' ')[0];
-  const myToday=TASKS.filter(t=>!t.done&&t.who===ME&&t.due<=TODAY);
+  const myToday=TASKS.filter(t=>!t.done&&t.who===ME&&t.due===TODAY);
+  const myOver=TASKS.filter(t=>!t.done&&t.who===ME&&t.due&&t.due<TODAY).sort((a,b)=>a.due.localeCompare(b.due));
   const over=INVOICES.filter(i=>invOverdue(i)>0).sort((a,b)=>invOverdue(b)-invOverdue(a));
   const ev=EVENTS.filter(e=>e.type!=='aufgabe'&&e.d>=TODAY&&e.d<=addDays(TODAY,1)).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||'')))[0];
   const rad=KARTEI_LOADED?radarList().slice(0,3):[];
@@ -4412,6 +4427,8 @@ function hstData(){
     chips.push({ic:'💸',t:`${i.no} anmahnen`,q:`Schreib eine freundliche, aber klare Zahlungserinnerung für Rechnung ${i.no}${who?' an '+who:''} über ${eur(i.amount)}, fällig seit ${dm(invDue(i))} (${d} Tage überfällig). Kurz, auf Deutsch, Sie-Form.`})}
   if(myToday.length){lines.push(myToday.length===1?`Heute steht genau eine Sache an: „${myToday[0].t}“. Machbar.`:`${myToday.length} Aufgaben für heute. Die erste ist „${myToday[0].t.slice(0,48)}“.`);
     chips.push({ic:'✅',t:myToday.length===1?myToday[0].t.slice(0,34):`Meine ${myToday.length} Aufgaben`,go:'#/aufgaben'})}
+  if(myOver.length){lines.push(myOver.length===1?`Überfällig seit ${dm(myOver[0].due)}: „${myOver[0].t.slice(0,48)}“.`:`${myOver.length} Aufgaben sind überfällig, die älteste seit ${dm(myOver[0].due)}.`);
+    chips.push({ic:'⏰',t:myOver.length===1?'Überfällig: '+myOver[0].t.slice(0,26):`${myOver.length} überfällig`,go:'#/aufgaben'})}
   if(ev){const tag=ev.d===TODAY?'Heute':'Morgen';lines.push(`${tag}${ev.time?' um '+ev.time:''}: ${ev.t.slice(0,50)}. Alles parat?`);
     chips.push({ic:'📅',t:`${tag}: ${ev.t.slice(0,28)}`,q:`Was muss ich für „${ev.t}“ am ${dm(ev.d)} wissen und vorbereiten?`})}
   rad.forEach((x,i)=>{const n=x.lt?diffDays(TODAY,x.lt):null;
@@ -4515,7 +4532,7 @@ document.addEventListener('click',e=>{
   askConfirm('Aufgabe „'+t.t+'“ löschen?',()=>safe('tdel',()=>deleteTask(t)),'Löschen');
 });
 async function taskCalToggle(t){
-  try{if(t.cal){await taskFromCal(t);toast('Aus dem Kalender genommen, steht weiter unter Aufgaben')}
+  try{if(t.inCal){await taskFromCal(t);toast('Aus dem Kalender genommen, steht weiter unter Aufgaben')}
     else{await taskToCal(t);toast('Steht jetzt auch im Kalender: '+t.t.slice(0,40))}}
   catch(x){toast('Kalender nicht geändert: '+x.message)}
 }
@@ -4527,7 +4544,8 @@ document.addEventListener('click',e=>{
 
 /* ---------- Kalender ---------- */
 let calMonth=new Date(NOW.getFullYear(),NOW.getMonth(),1),selDay=TODAY,calMode='month';
-try{calMode=localStorage.getItem('lm_calmode')||'month'}catch(_){}
+let listFrom=TODAY;
+try{calMode=localStorage.getItem('lm_calmode2')||(innerWidth<=860?'list':(localStorage.getItem('lm_calmode')||'month'))}catch(_){}
 const calTypes=new Set(Object.keys(TYPES));
 document.getElementById('legendCal').innerHTML=legendHTML(calTypes);
 document.getElementById('legendCal').addEventListener('click',e=>{
@@ -4542,8 +4560,9 @@ function chipHTML(e,cls){
 }
 function renderCal(){
   document.querySelectorAll('#calMode [data-cm]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cm===calMode));
-  $('month').hidden=calMode!=='month';$('week7').hidden=calMode!=='week';
-  if(calMode==='week')renderWeek();else renderMonth();
+  $('month').hidden=calMode!=='month';$('week7').hidden=calMode!=='week';$('calList').hidden=calMode!=='list';
+  const vw=document.querySelector('[data-view="kalender"]');if(vw)vw.classList.toggle('cal-listmode',calMode==='list');
+  if(calMode==='week')renderWeek();else if(calMode==='list')renderList();else renderMonth();
   renderDay();safe('avail',renderAvail);
 }
 function renderMonth(){
@@ -4562,7 +4581,23 @@ function renderMonth(){
   }
   document.getElementById('month').innerHTML=h;
 }
-const WK_H0=7,WK_H1=22,WK_PX=46;
+/* Liste: 14 Tage untereinander, volle Titel. Am Handy die Standardansicht. */
+function renderList(){
+  const days=[...Array(14)].map((_,i)=>addDays(listFrom,i));
+  $('calTitle').textContent=listFrom===TODAY?'Ab heute':dm(days[0])+' – '+dm(days[13]);
+  const nT=TASKS.filter(t=>!t.done&&t.due===TODAY).length,nO=TASKS.filter(t=>!t.done&&t.due&&t.due<TODAY).length;
+  let h='';
+  if(days.includes(TODAY)&&(nT||nO))h+=`<a class="ag-tasks" href="#/aufgaben"><svg class="i sm"><use href="#i-tasks"/></svg><span>${[nT?nT+(nT===1?' Aufgabe':' Aufgaben')+' heute fällig':'',nO?nO+' überfällig':''].filter(Boolean).join(', ')}</span><small>Stehen unter Aufgaben</small><svg class="i xs"><use href="#i-chev"/></svg></a>`;
+  let any=false;
+  days.forEach(ds=>{
+    const evs=onDay(ds,calTypes);if(!evs.length&&ds!==TODAY)return;any=any||evs.length>0;
+    const d=parse(ds),lab=(ds===TODAY?'Heute · ':ds===addDays(TODAY,1)?'Morgen · ':'')+d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
+    h+=`<div class="ag-day${ds===TODAY?' today':''}"><h3>${esc(lab)}</h3>${evs.length?evs.map(dayevHTML).join(''):'<p class="ag-none">Nichts im Kalender.</p>'}</div>`;
+  });
+  if(!any&&!days.includes(TODAY))h+='<p class="empty">Nichts im Kalender in diesen 14 Tagen.</p>';
+  $('calList').innerHTML=h;
+}
+const WK_H0=7,WK_H1=22,WK_PX=56;
 function renderWeek(){
   const sow=startOfWeekOf(selDay),days=[...Array(7)].map((_,i)=>addDays(sow,i));
   const s0=parse(days[0]),s6=parse(days[6]);
@@ -4577,7 +4612,7 @@ function renderWeek(){
     /* Überlappungen nebeneinander */
     const lanes=[];timed.forEach(e=>{const st=toM(e.time),en=e.endTime&&e.endTime>e.time?toM(e.endTime):st+(e.type==='aufgabe'?30:60);e._s=st;e._e=en;let l=lanes.findIndex(x=>x<=st);if(l<0){l=lanes.length;lanes.push(en)}else lanes[l]=en;e._l=l});
     const nl=Math.max(1,lanes.length);
-    cols+=`<div class="wk-col${ds===TODAY?' today':''}" data-wkcol="${ds}">${timed.map(e=>{const top=Math.max(0,(e._s-WK_H0*60)/60*WK_PX),hgt=Math.max(20,(e._e-e._s)/60*WK_PX-2);const a=e.art||e.type;
+    cols+=`<div class="wk-col${ds===TODAY?' today':''}" data-wkcol="${ds}">${timed.map(e=>{const top=Math.max(0,(e._s-WK_H0*60)/60*WK_PX),hgt=Math.max(64,(e._e-e._s)/60*WK_PX-2);const a=e.art||e.type;
       return `<div class="wk-ev t-${a}${e.done?' done':''}" data-entry="${esc(e.gcalId||('t'+e.taskId))}" style="top:${top}px;height:${hgt}px;left:calc(${e._l/nl*100}% + 2px);width:calc(${100/nl}% - 4px)"><b>${e.time}${e.endTime?'–'+e.endTime:''}</b><span>${e.type==='aufgabe'?'<i class="ev-chk'+(e.done?' on':'')+'"></i>':''}${esc(e.t)}</span></div>`}).join('')}${ds===TODAY?`<div class="wk-now" style="top:${(NOW.getHours()*60+NOW.getMinutes()-WK_H0*60)/60*WK_PX}px"></div>`:''}</div>`;
   });
   let gut='';for(let h=WK_H0;h<WK_H1;h++)gut+=`<div class="wk-hr" style="top:${(h-WK_H0)*WK_PX}px">${pad(h)}:00</div>`;
@@ -4586,13 +4621,14 @@ function renderWeek(){
   el.innerHTML=`<div class="wk-head">${head}</div><div class="wk-allrow">${all}</div><div class="wk-scroll"><div class="wk-body" style="height:${(WK_H1-WK_H0)*WK_PX}px"><div class="wk-gut">${gut}</div>${cols}</div></div>`;
   const sc2=el.querySelector('.wk-scroll');sc2.scrollTop=keep!=null?keep:(8-WK_H0)*WK_PX-6;
 }
+function dayevHTML(e){const a=e.art||e.type;return `
+    <button class="dayev de-${a}${e.done?' done':''}" data-entry="${esc(e.gcalId||('t'+e.taskId))}"><time>${e.type==='belegt'?'bis '+dm(e.end||e.d):e.time?e.time+(e.endTime?'<small>'+e.endTime+'</small>':''):'Ganztags'}</time><div><h3>${e.type==='aufgabe'?'<i class="ev-chk'+(e.done?' on':'')+'"></i>':''}${esc(e.t)}</h3><p><span class="ev t-${a}">${artIc(a)}${TYPE_ONE[a]||a}</span>${e.who?`<span class="av us sm" data-who="${e.who}">${e.who}</span>`:''}${e.type==='belegt'&&e.stand!=null?`<span class="day-stand"><i style="width:${e.stand}%"></i></span><small>${e.stand} %</small>`:''}${e.kid?`<span class="proj">${esc(e.p)}</span>`:''}</p>${e.place?`<p class="dpl"><svg class="i xs"><use href="#i-pin"/></svg>${esc(e.place)}</p>`:''}</div></button>`}
 function renderDay(){
   const d=parse(selDay);
   document.getElementById('dayTitle').textContent=d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
   const evs=onDay(selDay,calTypes);
   document.getElementById('daySub').textContent=evs.length?evs.length+(evs.length===1?' Eintrag':' Einträge'):'Nichts geplant';
-  document.getElementById('dayList').innerHTML=evs.length?evs.map(e=>{const a=e.art||e.type;return `
-    <button class="dayev de-${a}${e.done?' done':''}" data-entry="${esc(e.gcalId||('t'+e.taskId))}"><time>${e.type==='belegt'?'bis '+dm(e.end||e.d):e.time?e.time+(e.endTime?'<small>'+e.endTime+'</small>':''):'Ganztags'}</time><div><h3>${e.type==='aufgabe'?'<i class="ev-chk'+(e.done?' on':'')+'"></i>':''}${esc(e.t)}</h3><p><span class="ev t-${a}">${artIc(a)}${TYPE_ONE[a]||a}</span>${e.who?`<span class="av us sm" data-who="${e.who}">${e.who}</span>`:''}${e.type==='belegt'&&e.stand!=null?`<span class="day-stand"><i style="width:${e.stand}%"></i></span><small>${e.stand} %</small>`:''}${e.kid?`<span class="proj">${esc(e.p)}</span>`:''}</p>${e.place?`<p class="dpl"><svg class="i xs"><use href="#i-pin"/></svg>${esc(e.place)}</p>`:''}</div></button>`}).join(''):'<button class="day-empty" data-caladd="'+selDay+'"><svg class="i sm"><use href="#i-plus"/></svg>Frei. Klick hier, um etwas einzutragen.</button>';
+  document.getElementById('dayList').innerHTML=evs.length?evs.map(dayevHTML).join(''):'<button class="day-empty" data-caladd="'+selDay+'"><svg class="i sm"><use href="#i-plus"/></svg>Frei. Klick hier, um etwas einzutragen.</button>';
 }
 /* Termin löschen: erst nachfragen, dann aus dem Google-Kalender entfernen */
 document.addEventListener('click',e=>{
@@ -4626,10 +4662,10 @@ document.getElementById('week7').addEventListener('click',e=>{
   selDay=col.dataset.wkcol;renderDay();
   openEventDialog({date:selDay,time:pad(Math.floor(mins/60))+':'+pad(mins%60),timeEnd:pad(Math.floor(mins/60)+1)+':'+pad(mins%60)});
 });
-document.getElementById('calMode').addEventListener('click',e=>{const b=e.target.closest('[data-cm]');if(!b)return;calMode=b.dataset.cm;try{localStorage.setItem('lm_calmode',calMode)}catch(_){}renderCal()});
-document.getElementById('calPrev').addEventListener('click',()=>{if(calMode==='week'){selDay=addDays(selDay,-7);const d=parse(selDay);calMonth=new Date(d.getFullYear(),d.getMonth(),1)}else calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()-1,1);renderCal()});
-document.getElementById('calNext').addEventListener('click',()=>{if(calMode==='week'){selDay=addDays(selDay,7);const d=parse(selDay);calMonth=new Date(d.getFullYear(),d.getMonth(),1)}else calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+1,1);renderCal()});
-document.getElementById('calToday').addEventListener('click',()=>{calMonth=new Date(NOW.getFullYear(),NOW.getMonth(),1);selDay=TODAY;renderCal()});
+document.getElementById('calMode').addEventListener('click',e=>{const b=e.target.closest('[data-cm]');if(!b)return;calMode=b.dataset.cm;try{localStorage.setItem('lm_calmode2',calMode)}catch(_){}renderCal()});
+document.getElementById('calPrev').addEventListener('click',()=>{if(calMode==='list'){listFrom=addDays(listFrom,-14);renderCal();return}if(calMode==='week'){selDay=addDays(selDay,-7);const d=parse(selDay);calMonth=new Date(d.getFullYear(),d.getMonth(),1)}else calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()-1,1);renderCal()});
+document.getElementById('calNext').addEventListener('click',()=>{if(calMode==='list'){listFrom=addDays(listFrom,14);renderCal();return}if(calMode==='week'){selDay=addDays(selDay,7);const d=parse(selDay);calMonth=new Date(d.getFullYear(),d.getMonth(),1)}else calMonth=new Date(calMonth.getFullYear(),calMonth.getMonth()+1,1);renderCal()});
+document.getElementById('calToday').addEventListener('click',()=>{listFrom=TODAY;calMonth=new Date(NOW.getFullYear(),NOW.getMonth(),1);selDay=TODAY;renderCal()});
 
 /* ---------- Aufgaben ----------
    Seit v.42 stehen Aufgaben nur in Notion „Aufgaben“ (mit wer, Frist, Status). Im LeMatic-Kalender stehen nur echte Termine.
@@ -4663,7 +4699,7 @@ function renderTasks(){
   const html=groups.filter(g=>g[1].length).map(g=>`<p class="grp">${g[0]} <span>${g[1].length}</span></p>${g[1].map(taskRow).join('')}`).join('');
   document.getElementById('taskGroups').innerHTML=html||(GAUTH?(TASKS_LOADED?'<p class="empty">Keine Aufgaben mit diesem Filter.</p>':TASKS_ERR?'<p class="empty">Aufgaben nicht geladen: '+esc(TASKS_ERR)+'</p>':'<p class="empty">Aufgaben werden geladen …</p>'):'<p class="empty">Nach dem Login mit info@lematic.de erscheinen hier die Aufgaben.</p>');
   const open=TASKS.filter(t=>!t.done);
-  const inCal=open.filter(t=>t.cal).length;
+  const inCal=open.filter(t=>t.inCal).length;
   document.getElementById('tSummary').innerHTML=`<b>${open.length} offen</b>${open.filter(t=>t.due<TODAY).length?`, ${open.filter(t=>t.due<TODAY).length} überfällig`:''}${inCal?`, ${inCal} davon im Kalender`:''}.`;
   updateBadges();
 }
@@ -4680,7 +4716,7 @@ function taskFromEvent(it){
   };
 }
 /* ---------- Aufgaben in Notion ---------- */
-let TASKS_LOADED=false,TASKS_ERR='',CAL_REFS=null;
+let TASKS_LOADED=false,TASKS_ERR='',CAL_REFS=null,CAL_REF_BY=null;
 const ART_BEREICH={dreh:'Dreh',schnitt:'Schnitt',akquise:'Akquise'};
 const BEREICH_ART={Dreh:'dreh',Schnitt:'schnitt',Akquise:'akquise'};
 const codeOf=n=>n==='Martin'?'MS':n==='Lennart'?'LP':'';
@@ -4702,7 +4738,7 @@ function taskFromRow(r){
   return{id:r.id,t:title,who:codeOf(r['Wer'])||(/\blennart\b/i.test(title)?'LP':'MS'),by:codeOf(r['Angelegt von']),
     done:r['Status']==='Erledigt',due:dl.due,time:dl.time,kid:k?k.id:'',kname:k?k.name:'',kidRaw:k?[]:kids,
     doneAt:r['Erledigt am']||'',doneBy:codeOf(r['Erledigt von']),art:BEREICH_ART[r['Bereich']]||'aufgabe',note:r['Notiz']||'',
-    cal:String(r['Kalender-ID']||'').trim(),url:r.url||'',_wer:!!r['Wer'],_neu:r['Im Studio']!==true};
+    cal:String(r['Kalender-ID']||'').trim(),inCal:r['In Kalender']===true,url:r.url||'',_wer:!!r['Wer'],_neu:r['Im Studio']!==true};
 }
 /* Nur die angegebenen Felder nach Notion schreiben (keys leer = alle) */
 function taskProps(t,keys){
@@ -4718,6 +4754,7 @@ function taskProps(t,keys){
   if(has('art')&&ART_BEREICH[t.art])p['Bereich']={select:{name:ART_BEREICH[t.art]}};
   if(has('by')&&t.by)p['Angelegt von']={select:{name:NAMES[t.by]}};
   if(has('cal'))p['Kalender-ID']={rich_text:t.cal?[{text:{content:t.cal}}]:[]};
+  if(has('inCal'))p['In Kalender']={checkbox:!!t.inCal};
   return p;
 }
 function notionArchive(db,id,flag){
@@ -4742,10 +4779,11 @@ async function loadTasks(){
   }
   if(n)toast('📥 '+n+(n===1?' neue Aufgabe':' neue Aufgaben')+' übernommen (WhatsApp/Notion)');
   safe('tasksR',renderTasks);safe('homeR',renderHome);safe('kartR',renderKartei);
+  setTimeout(()=>safe('recon',reconcileTaskCal),300);
 }
 async function saveTask(t,keys){
   await notionUpdate('aufgaben',t.id,taskProps(t,keys));
-  if(t.cal&&!(keys&&keys.length===1&&keys[0]==='cal'))safe('taskCal',()=>taskCalSync(t));
+  if(t.cal&&!(keys&&keys.every(k=>k==='cal'||k==='inCal')))safe('taskCal',()=>taskCalSync(t));
 }
 /* ---------- Aufgabe ausdrücklich in den Kalender holen ---------- */
 function taskCalBody(t){
@@ -4754,7 +4792,7 @@ function taskCalBody(t){
     colorId:t.done?TASK_COLOR.done:TASK_COLOR[t.who],transparency:'transparent',
     extendedProperties:{private:{lmTaskRef:t.id,lmArt:'aufgabe',lmWho:t.who,lmKid:t.kid||'',lmKname:(t.kname||'').slice(0,200)}},
     reminders:t.done?{useDefault:false,overrides:[]}:{useDefault:false,overrides:[{method:'popup',minutes:t.time?30:960}]}};
-  if(t.time){const [h,m]=t.time.split(':').map(Number);const end=new Date(2000,0,1,h,m+30);
+  if(t.time){const [h,m]=t.time.split(':').map(Number);const end=new Date(2000,0,1,h,m+60);
     body.start={dateTime:t.due+'T'+t.time+':00',timeZone:'Europe/Berlin'};
     body.end={dateTime:(end.getDate()>1?addDays(t.due,1):t.due)+'T'+pad(end.getHours())+':'+pad(end.getMinutes())+':00',timeZone:'Europe/Berlin'};
   }else{body.start={date:t.due};body.end={date:addDays(t.due,1)}}
@@ -4765,19 +4803,46 @@ async function taskCalSync(t){
   try{await gfetch(calUrl(t.cal),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(taskCalBody(t)),noUndo:true})}
   catch(e){if(/404|410|not found|deleted/i.test(e.message)){t.cal='';syncTaskEvents();await notionUpdate('aufgaben',t.id,taskProps(t,['cal'])).catch(()=>{})}else throw e}
 }
-async function taskToCal(t){
-  if(t.cal)return;
+/* Der Haken „In Kalender“ in Notion entscheidet. Das Studio legt den passenden Google-Termin an oder nimmt ihn raus. */
+async function taskCalCreate(t){
   const body=taskCalBody(t);const em=t.who!==ME?personMail(t.who):'';if(em)body.attendees=[{email:em}];
   const j=await (await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events'+(em?'?sendUpdates=all':''),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
-  t.cal=j.id;if(CAL_REFS)CAL_REFS.add(j.id);
-  try{await saveTask(t,['cal'])}catch(e){await gfetch(calUrl(j.id),{method:'DELETE',noUndo:true}).catch(()=>{});t.cal='';throw e}
+  t.cal=j.id;if(CAL_REFS)CAL_REFS.add(j.id);if(CAL_REF_BY)CAL_REF_BY.set(String(t.id).replace(/-/g,''),{id:j.id,d:t.due,time:t.time,title:body.summary});
+  return j.id;
+}
+async function taskCalDelete(t){
+  const id=t.cal;if(!id)return;
+  try{await gfetch(calUrl(id),{method:'DELETE',noUndo:true})}catch(e){if(!/404|410/.test(e.message))throw e}
+  t.cal='';if(CAL_REFS)CAL_REFS.delete(id);if(CAL_REF_BY)CAL_REF_BY.delete(String(t.id).replace(/-/g,''));
+}
+async function taskToCal(t){
+  const before={inCal:t.inCal,cal:t.cal};t.inCal=true;
+  try{if(!t.cal)await taskCalCreate(t);await saveTask(t,['inCal','cal'])}
+  catch(e){if(t.cal&&!before.cal)await taskCalDelete(t).catch(()=>{});Object.assign(t,before);throw e}
   syncTaskEvents();safe('tasksR',renderTasks);safe('calR',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
 }
 async function taskFromCal(t){
-  if(!t.cal)return;const id=t.cal;
-  try{await gfetch(calUrl(id),{method:'DELETE',noUndo:true})}catch(e){if(!/404|410/.test(e.message))throw e}
-  t.cal='';if(CAL_REFS)CAL_REFS.delete(id);await saveTask(t,['cal']);
+  const before={inCal:t.inCal,cal:t.cal};t.inCal=false;
+  try{await taskCalDelete(t);await saveTask(t,['inCal','cal'])}catch(e){Object.assign(t,before);throw e}
   syncTaskEvents();safe('tasksR',renderTasks);safe('calR',()=>{if(location.hash.slice(2)==='kalender')renderCal()});
+}
+/* Abgleich Notion-Haken ↔ Google-Termin: nach jedem Laden von Aufgaben oder Kalender */
+let RECON_BUSY=false;
+async function reconcileTaskCal(){
+  if(!GAUTH||!TASKS_LOADED||!MY_CAL_LOADED||RECON_BUSY)return;RECON_BUSY=true;let ch=0;
+  try{
+    for(const t of TASKS){
+      const ref=CAL_REF_BY&&CAL_REF_BY.get(String(t.id).replace(/-/g,''));
+      try{
+        if(t.inCal){
+          if(!t.cal&&ref){t.cal=ref.id;await saveTask(t,['cal']);ch++}
+          else if(!t.cal){await taskCalCreate(t);await saveTask(t,['cal']);ch++}
+          else if(ref&&(ref.d!==t.due||(ref.time||null)!==(t.time||null)||ref.title!==taskCalBody(t).summary)){await taskCalSync(t);ref.d=t.due;ref.time=t.time;ref.title=taskCalBody(t).summary;ch++}
+        }else if(t.cal||ref){if(!t.cal&&ref)t.cal=ref.id;await taskCalDelete(t);await saveTask(t,['cal']);ch++}
+      }catch(e){console.warn('Kalender-Abgleich',t.t,e.message)}
+    }
+  }finally{RECON_BUSY=false}
+  if(ch){syncTaskEvents();safe('tasksR',renderTasks);safe('calR',()=>{if(location.hash.slice(2)==='kalender')renderCal()});safe('homeR',renderHome)}
 }
 async function createTask({title,who,due,time,kid,kname,art,note,invite,cal}){
   if(!GAUTH)throw new Error('Bitte zuerst mit info@lematic.de anmelden');
@@ -4814,7 +4879,7 @@ async function deleteTask(t){
 }
 /* Im Kalender stehen nur Aufgaben, die jemand ausdrücklich dorthin geholt hat */
 function syncTaskEvents(){
-  EVENTS=EVENTS.filter(e=>!(e.type==='aufgabe'&&e.taskId)).concat(TASKS.filter(t=>t.cal&&(!CAL_REFS||CAL_REFS.has(t.cal))).map(t=>({d:t.due,time:t.time,t:t.t,type:'aufgabe',art:'aufgabe',p:t.kname||'LeMatic',who:t.who,taskId:t.id,gcalId:t.cal,done:t.done,note:t.note,kid:t.kid})));
+  EVENTS=EVENTS.filter(e=>!(e.type==='aufgabe'&&e.taskId)).concat(TASKS.filter(t=>t.inCal&&t.cal&&(!CAL_REFS||CAL_REFS.has(t.cal))).map(t=>({d:t.due,time:t.time,t:t.t,type:'aufgabe',art:'aufgabe',p:t.kname||'LeMatic',who:t.who,taskId:t.id,gcalId:t.cal,done:t.done,note:t.note,kid:t.kid})));
 }
 /* Einmal aufräumen: alte Aufgaben-Termine (lmTask=1) nach Notion übernehmen und aus dem Kalender nehmen.
    Läuft bei jedem Kalender-Abgleich, findet nach dem ersten Mal nichts mehr (oder Nachzügler aus alten Tabs). */
@@ -5755,12 +5820,15 @@ async function loadMyCalendar(){
       if(!j.nextPageToken)break;pageToken=j.nextPageToken;
     }
     await loadTasks().catch(e=>console.warn('Aufgaben nicht geladen:',e.message));
-    const evs=[];let legacy=0;CAL_REFS=new Set();
+    const evs=[];let legacy=0;CAL_REFS=new Set();CAL_REF_BY=new Map();const dupes=[];
     items.forEach(it=>{
       if(!it.start||it.status==='cancelled')return;
       const x=(it.extendedProperties&&it.extendedProperties.private)||{};
       if(x.lmTask==='1'){legacy++;return}
-      if(x.lmTaskRef){CAL_REFS.add(it.id);if(TASKS.some(t=>idEq(t.id,x.lmTaskRef)))return}
+      if(x.lmTaskRef){const rk=String(x.lmTaskRef).replace(/-/g,'');
+        if(CAL_REF_BY.has(rk)){dupes.push(it.id);return}
+        CAL_REFS.add(it.id);CAL_REF_BY.set(rk,{id:it.id,d:(it.start.dateTime||it.start.date).slice(0,10),time:it.start.dateTime?it.start.dateTime.slice(11,16):null,title:it.summary||''});
+        if(TASKS.some(t=>idEq(t.id,x.lmTaskRef)))return}
       const allDay=!it.start.dateTime;
       const d=(it.start.dateTime||it.start.date).slice(0,10);
       let end=null;
@@ -5776,6 +5844,8 @@ async function loadMyCalendar(){
     EVENTS=evs;syncTaskEvents();
     MY_CAL_LOADED=CAL_LOADED=true;
     setTimeout(()=>safe('migTasks',migrateTaskEvents),legacy?800:4000);
+    dupes.forEach(id=>gfetch(calUrl(id),{method:'DELETE',noUndo:true}).catch(()=>{}));
+    setTimeout(()=>safe('recon',reconcileTaskCal),1500);
     const at=new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
     setHTML('calSync','<svg class="i sm"><use href="#i-check"/></svg>LeMatic-Kalender abgeglichen um '+at+' Uhr');
     if(pill)pill.innerHTML='<span class="pill ok"><i></i>Verbunden</span>';
@@ -5884,7 +5954,7 @@ on('evGo','click',async()=>{
       if(EVD.edit&&EVD.edit.taskId){const t=TASKS.find(x=>x.id===EVD.edit.taskId);if(!t)throw new Error('Aufgabe nicht mehr gefunden');
         const old={...t};Object.assign(t,{t:o.title,who,due:o.date,time:o.time||null,kid:o.kid,kname:o.kname,note:o.note});
         try{await saveTask(t,['t','who','due','kid','note'])}catch(x){Object.assign(t,old);throw x}
-        if($('evCal').checked&&!t.cal)await taskToCal(t);else if(!$('evCal').checked&&t.cal)await taskFromCal(t);
+        if($('evCal').checked&&!t.inCal)await taskToCal(t);else if(!$('evCal').checked&&t.inCal)await taskFromCal(t);
         if(who!==old.who&&who!==ME&&invite)safe('wa',()=>waNotify(who,t.t,fmtWhen(t.due,t.time,true)));
         syncTaskEvents();safe('tasksR',renderTasks);
       }else await createTask({title:o.title,who,due:o.date,time:o.time||null,kid:o.kid,kname:o.kname,art:'aufgabe',note:o.note,invite,cal:$('evCal').checked});
@@ -5956,7 +6026,7 @@ document.addEventListener('click',async ev=>{
   if(ev.target.closest('[data-epdone]')&&t){closeEntryPop();await toggleTask(t,true);syncTaskEvents();safe('calR',renderCal);return}
   if(ev.target.closest('[data-epundo]')&&t){closeEntryPop();await toggleTask(t,false);syncTaskEvents();safe('calR',renderCal);return}
   if(ev.target.closest('[data-epedit]')){closeEntryPop();
-    if(t)openEventDialog({art:'aufgabe',edit:{taskId:t.id},title:t.t,who:t.who,date:t.due,time:t.time,kid:t.kid,note:t.note,cal:!!t.cal,invite:false});
+    if(t)openEventDialog({art:'aufgabe',edit:{taskId:t.id},title:t.t,who:t.who,date:t.due,time:t.time,kid:t.kid,note:t.note,cal:!!t.inCal,invite:false});
     else openEventDialog({art:(e.art||e.type)==='aufgabe'?'termin':(e.art||e.type),edit:{gcalId:e.gcalId,link:e.link},title:e.t,who:e.who,date:e.d,end:e.end||e.d,time:e.time,timeEnd:e.endTime,stand:e.stand,kid:e.kid,ort:e.place,note:e.note,rem:e.rem,invite:false});
     return}
   if(ev.target.closest('[data-epfertig]')){closeEntryPop();try{await patchEvent(e.gcalId,{end:{date:addDays(TODAY,1)},extendedProperties:{private:{lmStand:'100'}}});e.end=TODAY>e.d?TODAY:null;e.stand=100;safe('calR',renderCal);safe('avail',renderAvail);toast('Eingetragen: ab morgen wieder frei')}catch(x){toast('Nicht gespeichert: '+x.message)}return}
@@ -6299,7 +6369,7 @@ function kMiniCard(k){
   return `<button class="kb-card" data-kopen="${k.id}" draggable="true" data-kdrag="${k.id}">
     <span class="kc-move" role="button" tabindex="0" data-kmove="${k.id}" title="Verschieben" aria-label="${esc(k.name)} verschieben"><svg class="i xs"><use href="#i-dots"/></svg></span>
     <span class="kb-top">${kAvatar(k)}<span><b>${esc(k.name.split(/\s[–-]\s/)[0])}</b><small>${esc(k.typ||'')}${kPeople(k)[0]?' · '+esc(kPeople(k)[0].split(/\s*[(,]/)[0]):''}</small></span></span>
-    ${nt?`<span class="kb-next"><svg class="i xs"><use href="#i-check"/></svg>${esc(nt.t.slice(0,60))}<em>${nt.due<=TODAY?'fällig':dm(nt.due)}</em></span>`:nx?`<span class="kb-next"><svg class="i xs"><use href="#i-target"/></svg>${esc(nx.slice(0,70))}</span>`:''}
+    ${nt?`<span class="kb-next"><svg class="i xs"><use href="#i-check"/></svg>${esc(nt.t.slice(0,60))}<em>${nt.due<TODAY?'überfällig seit '+dm(nt.due):nt.due===TODAY?'heute':dm(nt.due)}</em></span>`:nx?`<span class="kb-next"><svg class="i xs"><use href="#i-target"/></svg>${esc(nx.slice(0,70))}</span>`:''}
     <span class="kb-foot"><span class="kb-temp ${tp.c}"><i></i>${esc(tp.label)}</span>${open?`<span class="kb-eur">${eur(open)} offen</span>`:''}${st.termine?`<span class="kb-n" title="Termine"><svg class="i xs"><use href="#i-cal"/></svg>${st.termine}</span>`:''}</span>
   </button>`;
 }
@@ -6489,7 +6559,7 @@ function renderKundeSheet(id){
       <div id="kdKpis">${kKpisHTML(k)}</div>
       <div class="kd-grid">
         <div class="kd-col">
-          ${nx?`<section class="kd-box kd-next"><small>Nächster Schritt</small><b>${esc(nx)}</b>${openT[0]?`<span>Im Kalender: ${esc(openT[0].t.slice(0,60))} · ${NAMES[openT[0].who]||''}, ${openT[0].due<=TODAY?'fällig':dm(openT[0].due)}</span>`:'<span>Noch nicht im Kalender.</span>'}</section>`:''}
+          ${nx?`<section class="kd-box kd-next"><small>Nächster Schritt</small><b>${esc(nx)}</b>${openT[0]?`<span>Aufgabe: ${esc(openT[0].t.slice(0,60))} · ${NAMES[openT[0].who]||''}, ${openT[0].due<TODAY?'überfällig seit '+dm(openT[0].due):openT[0].due===TODAY?'heute':dm(openT[0].due)}</span>`:'<span>Noch keine Aufgabe dazu.</span>'}</section>`:''}
           <section class="kd-box"><h3 id="kdSecFacts">Auf einen Blick</h3>${kFacts(k)}</section>
           <section class="kd-box"><h3>Ansprechpartner &amp; Kontakt</h3>${kContactHTML(k)}</section>
         </div>
@@ -7956,21 +8026,42 @@ function setPrivate(rows){
 const notPrivate=(...xs)=>!xs.some(x=>PRIVATE_RX.test(String(x||'')));
 function agentInvoices(){return INVOICES.filter(i=>notPrivate(i.party,i.note,i.no,i.p))}
 function agentMails(){return MAILS.filter(m=>notPrivate(m.from,m.subj,m.snip,m.client))}
+/* Fester Block „Heute“: genau das, was im Studio auf Heute, unter Aufgaben und im Kalender steht */
+function liHeuteBlock(open){
+  const L=[],cut=(x,n)=>String(x||'').replace(/\s+/g,' ').trim().slice(0,n);
+  const meFirst=(a,b)=>(a.who===ME?0:1)-(b.who===ME?0:1);
+  const evLine=e=>`- ${e.type==='belegt'?'belegt'+(e.end&&e.end!==e.d?' bis '+dm(e.end):''):e.time?e.time+(e.endTime?'–'+e.endTime:''):'ganztags'} · ${cut(e.t,100)} · ${e.type==='aufgabe'?'Aufgabe im Kalender':TYPE_ONE[e.art||e.type]||'Termin'}${e.who?' · für '+NAMES[e.who]:''}${e.place?' · Ort: '+cut(e.place,60):''}`;
+  const evsOn=ds=>EVENTS.filter(e=>e.d<=ds&&(e.end||e.d)>=ds&&notPrivate(e.t,e.place)).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  L.push(`\n## HEUTE, ${wd(TODAY)} ${dm(TODAY)} (für „Was steht heute an?“ und ähnliche Fragen NUR diesen Block nehmen; das ist genau, was im Studio steht)`);
+  L.push('### Termine heute · Quelle: LeMatic-Kalender'+(MY_CAL_LOADED?'':' (Kalender noch nicht geladen, nachfragen statt „keine“ sagen)'));
+  const te=evsOn(TODAY);L.push(te.length?te.map(evLine).join('\n'):'- keine');
+  L.push('### Aufgaben heute fällig · Quelle: Notion „Aufgaben“'+(TASKS_LOADED?'':' (Aufgaben noch nicht geladen, nachfragen)'));
+  const td=open.filter(t=>t.due===TODAY).sort(meFirst);
+  L.push(td.length?td.map(t=>`- ${NAMES[t.who]}: ${cut(t.t,110)}${t.time?' (bis '+t.time+')':''}${t.kname?' · Kunde: '+t.kname:''} [Aufgabe-ID ${t.id}]`).join('\n'):'- keine');
+  L.push('### Überfällige Aufgaben · Quelle: Notion „Aufgaben“');
+  const ov=open.filter(t=>t.due&&t.due<TODAY).sort((a,b)=>meFirst(a,b)||a.due.localeCompare(b.due));
+  L.push(ov.length?ov.map(t=>`- ${NAMES[t.who]}: ${cut(t.t,110)} · überfällig seit ${dm(t.due)} (${diffDays(TODAY,t.due)} Tage)${t.kname?' · Kunde: '+t.kname:''} [Aufgabe-ID ${t.id}]`).join('\n'):'- keine');
+  const tm=evsOn(addDays(TODAY,1));L.push('### Termine morgen · Quelle: LeMatic-Kalender');L.push(tm.length?tm.map(evLine).join('\n'):'- keine');
+  return L.join('\n');
+}
 function agentWissen(){
   const L=[];const cut=(s,n)=>String(s||'').replace(/\s+/g,' ').trim().slice(0,n);
   L.push('## Wo was liegt');
   L.push('- Kundenkartei, Kundengespräche, Akquise, Projekte, Rechnungen & Angebote: Notion (LeMatic OS), im Studio unter Kundenkartei, Akquise, Rechnungen.');
-  L.push('- Aufgaben: als Termine im LeMatic-Google-Kalender (info@lematic.de), im Studio unter Aufgaben und Kalender. Jede Aufgabe hat wer (Lennart/Martin) und Fälligkeit.');
+  L.push('- Aufgaben: Notion-Datenbank „Aufgaben“, im Studio unter Aufgaben und auf Heute. Jede Aufgabe hat wer (Lennart/Martin) und Fälligkeit. Im Kalender steht eine Aufgabe nur mit Haken „In Kalender“.');
+  L.push('- Termine: LeMatic-Google-Kalender (info@lematic.de), im Studio unter Kalender. Dort stehen nur echte Termine.');
+  L.push('- Nicht als Quelle nutzen: Papierkorb, Archiv, Sicherungen, alte Chats, Dateien in _Studio_Daten. Das ist kein aktueller Stand.');
   L.push('- Mails: Postfach info@lematic.de, im Studio unter Mails, automatisch Kunden zugeordnet.');
   L.push('- Dateien, Footage, Rechnungs-PDFs: Google Drive, LeMatic-Ordner, im Studio unter Medien und Archiv. Rechnungsordner Ausgang: '+Object.values(AUSGANG_FOLDERS||{}).map(f=>f.name).filter(n=>notPrivate(n)).join(', '));
   L.push('- Mammutmarsch hat ein eigenes Kundenportal im Studio.');
   const open=TASKS.filter(t=>!t.done&&notPrivate(t.t,t.kname)).sort((a,b)=>(a.due||'').localeCompare(b.due||''));
-  L.push('\n## Offene Aufgaben ('+open.length+')');open.slice(0,60).forEach(t=>L.push(`- fällig ${t.due||'?'}${t.time?' '+t.time:''} · ${NAMES[t.who]||t.who} · ${cut(t.t,120)}${t.kname?' · Kunde: '+t.kname:''}${t.due&&t.due<TODAY?' · ÜBERFÄLLIG':''}${t.cal?' · im Kalender':''} [Aufgabe-ID ${t.id}]`));
+  safe('liHeute',()=>L.push(liHeuteBlock(open)));
+  L.push('\n## Offene Aufgaben ('+open.length+') · Quelle: Notion „Aufgaben“');open.slice(0,60).forEach(t=>L.push(`- fällig ${t.due||'?'}${t.time?' '+t.time:''} · ${NAMES[t.who]||t.who} · ${cut(t.t,120)}${t.kname?' · Kunde: '+t.kname:''}${t.due&&t.due<TODAY?' · ÜBERFÄLLIG':''}${t.inCal?' · im Kalender':''} [Aufgabe-ID ${t.id}]`));
   const done=TASKS.filter(t=>t.done&&notPrivate(t.t,t.kname)&&(t.doneAt||'').slice(0,10)>=addDays(TODAY,-21));
   if(done.length){L.push('\n## Erledigt in den letzten 3 Wochen');done.slice(0,40).forEach(t=>L.push(`- ${(t.doneAt||'').slice(0,10)} ${NAMES[t.doneBy||t.who]||''}: ${cut(t.t,100)}`))}
   const ev=EVENTS.filter(e=>e.type!=='aufgabe'&&(e.end||e.d)>=addDays(TODAY,-14)&&e.d<=addDays(TODAY,75)&&notPrivate(e.t,e.place)).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||'')));
-  if(ev.length){L.push('\n## Termine (letzte 2 Wochen bis in 10 Wochen)');ev.slice(0,80).forEach(e=>{const k=e.kid&&KUNDEN.find(q=>q.id===e.kid);L.push(`- ${e.d}${e.end&&e.end!==e.d?' bis '+e.end:''} ${e.time||''}${e.endTime?'–'+e.endTime:''} ${cut(e.t,90)} (${TYPE_ONE[e.art||e.type]||'Termin'}${e.who?', '+NAMES[e.who]:''}${e.stand!=null&&e.type==='belegt'?', Stand '+e.stand+' %':''})${e.place?' @ '+cut(e.place,50):''}${k?' · Kunde: '+k.name:''}${e.gcalId?' [Termin-ID '+e.gcalId+']':''}`)})}
-  L.push('\n## Kunden ('+KUNDEN.length+', wichtigste zuerst)');
+  if(ev.length){L.push('\n## Termine (letzte 2 Wochen bis in 10 Wochen) · Quelle: LeMatic-Kalender');ev.slice(0,80).forEach(e=>{const k=e.kid&&KUNDEN.find(q=>q.id===e.kid);L.push(`- ${e.d}${e.end&&e.end!==e.d?' bis '+e.end:''} ${e.time||''}${e.endTime?'–'+e.endTime:''} ${cut(e.t,90)} (${TYPE_ONE[e.art||e.type]||'Termin'}${e.who?', '+NAMES[e.who]:''}${e.stand!=null&&e.type==='belegt'?', Stand '+e.stand+' %':''})${e.place?' @ '+cut(e.place,50):''}${k?' · Kunde: '+k.name:''}${e.gcalId?' [Termin-ID '+e.gcalId+']':''}`)})}
+  L.push('\n## Kunden ('+KUNDEN.length+', wichtigste zuerst) · Quelle: Notion Kundenkartei');
   (typeof kSorted==='function'?kSorted(KUNDEN):KUNDEN).filter(k=>notPrivate(k.name)).slice(0,90).forEach(k=>{
     const r=k.raw||{},lt=lastTouch(k);
     L.push(`- ${k.name} [Kunde-ID ${k.id}] | ${k.status||''} | ${k.typ||''}${r['Branche']?' | '+r['Branche']:''} | AP: ${cut(r['Ansprechpartner'],80)||'?'}${k.email?' | Mail: '+k.email:''}${k.billMail?' | Rechnungs-Mail: '+k.billMail:''}${r['Adresse']?' | Adresse: '+cut(r['Adresse'],100):''} | Kanal: ${Array.isArray(r['Bevorzugter Kanal'])?r['Bevorzugter Kanal'].join('/'):''} | Nächster Schritt: ${cut(r['Nächster Schritt'],140)||'-'} | Letzter Kontakt: ${lt||'?'} | Notiz: ${cut(lastNote(k),160)}`);
@@ -7978,7 +8069,7 @@ function agentWissen(){
   const g=GESPR.filter(x=>notPrivate(x.title,x.bedarf)).slice(0,30);
   if(g.length){L.push('\n## Kundengespräche (neueste zuerst)');g.forEach(x=>{const k=KUNDEN.find(q=>x.kids.includes(q.id));L.push(`- ${x.date} ${x.art||''} ${k?k.name:''}: ${cut(x.title,90)} | Bedarf: ${cut(x.bedarf,120)||'-'} | Budget: ${cut(x.budget,40)||'-'} | Chance: ${x.chance||'-'} | Nächster Schritt: ${cut(x.next,100)||'-'}`)})}
   const ms=agentMails().slice(0,45);
-  if(ms.length){L.push('\n## Letzte Mails (info@lematic.de)');ms.forEach(m=>L.push(`- ${m.internal?iso(new Date(m.internal)):''} ${m.sent?'gesendet ':''}${cut(m.from,40)}${m.client?' [Kunde: '+m.client+']':''}: ${cut(m.subj,90)} — ${cut(m.snip,110)}`))}
+  if(ms.length){L.push('\n## Letzte Mails · Quelle: Postfach info@lematic.de');ms.forEach(m=>L.push(`- ${m.internal?iso(new Date(m.internal)):''} ${m.sent?'gesendet ':''}${cut(m.from,40)}${m.client?' [Kunde: '+m.client+']':''}: ${cut(m.subj,90)} — ${cut(m.snip,110)}`))}
   const dw=driveDocsWissen();if(dw)L.push(dw);
   const inv=agentInvoices();
   if(inv.length&&!dw){
@@ -8140,7 +8231,7 @@ function agFormat(text){
 }
 function agMsgHTML(m,mi){
   if(m.role==='user')return `<div class="ag-msg me"><span>${esc(m.text)}</span><small>${esc(NAMES[m.who]||'')}</small></div>`;
-  const src=(m.src||[]).length?`<div class="ag-src"><span>Gefunden in:</span>${m.src.map(s=>`<a href="${esc(s.link)}" target="_blank" rel="noopener" title="${esc(s.where||'')}">${s.ic||'📄'} ${esc(String(s.name).slice(0,42))}</a>`).join('')}</div>`:'';
+  const src=(m.src||[]).length?`<div class="ag-src"><span>Quelle:</span>${m.src.map(s=>`<a href="${esc(s.link)}"${/^#/.test(s.link)?'':' target="_blank" rel="noopener"'} title="${esc(s.where||'')}">${s.ic||'📄'} ${esc(String(s.name).slice(0,42))}</a>`).join('')}</div>`:'';
   return `<div class="ag-msg bot${m.err?' err':''}"><div class="ag-av">LI</div><div class="ag-body">${m.err?esc(m.text):agFormat(m.text)}${liQsHTML(m,mi)}${liActionsHTML(m,mi)}${m.qs&&m.qs.length?'':src}</div></div>`;
 }
 function renderAgent(){
@@ -8169,7 +8260,7 @@ async function liDriveTree(){
     const F='application/vnd.google-apps.folder';
     const l1=await ddList(`'${DRIVE_ROOT_ID}' in parents and trashed=false and mimeType='${F}'`);
     const l2=l1.length?await ddList('('+l1.slice(0,40).map(f=>`'${f.id}' in parents`).join(' or ')+`) and trashed=false and mimeType='${F}'`):[];
-    LI_TREE='## Ordnerstruktur im LeMatic-Drive\n'+l1.filter(f=>notPrivate(f.name)).sort((a,b)=>a.name.localeCompare(b.name)).map(f=>`- ${f.name} (${f.webViewLink})`+l2.filter(c=>(c.parents||[]).includes(f.id)&&notPrivate(c.name)).map(c=>`\n  - ${c.name}`).join('')).join('\n');
+    LI_TREE='## Ordnerstruktur im LeMatic-Drive\n'+l1.filter(f=>notPrivate(f.name)&&!LI_SKIP_RX.test(f.name)).sort((a,b)=>a.name.localeCompare(b.name)).map(f=>`- ${f.name} (${f.webViewLink})`+l2.filter(c=>(c.parents||[]).includes(f.id)&&notPrivate(c.name)).map(c=>`\n  - ${c.name}`).join('')).join('\n');
   }catch(e){LI_TREE=''}
   return LI_TREE;
 }
@@ -8186,17 +8277,21 @@ async function liReadFile(f){
   return '';
 }
 const MIME_IC=m=>/folder/.test(m)?'📁':/pdf/.test(m)?'🧾':/spreadsheet|csv|excel/.test(m)?'📊':/presentation/.test(m)?'📽️':/video/.test(m)?'🎬':/image/.test(m)?'🖼️':'📄';
+/* Nie Papierkorb, Archiv, Sicherungen oder Studio-Daten (Chats, JSON) als Quelle */
+const LI_SKIP_RX=/papierkorb|archiv|trash|backup|sicherung|_studio_daten|whatsapp_ausgang|kontist_umsaetze|angebotsentwuerfe|^lm_|chat/i;
+function liSkipFile(h){return LI_SKIP_RX.test(h.name||'')||/json/.test(h.mimeType||'')||(AG_DIR&&(h.parents||[]).includes(AG_DIR))}
+const LI_SCHED_RX=/\b(heute|morgen|übermorgen|gestern|termin\w*|kalender|aufgabe\w*|to-?dos?|ansteh\w*|steht\s+an|anliegt|woche|wochenende|montag|dienstag|mittwoch|donnerstag|freitag|samstag|sonntag|frei|belegt|überfällig|fällig|erledigen|plan)\b/i;
 async function liDeepSearch(q){
   const {words,kunden}=liKeywords(q);const terms=[...new Set([...kunden,...words])];
   if(!terms.length)return {text:'',src:[]};
   const out=[],src=[];
-  /* Drive */
-  try{
-    const base=" and trashed=false";
+  /* Drive (nicht bei Fragen zu Kalender und Aufgaben: die kommen nur aus den aktuellen Daten) */
+  if(!LI_SCHED_RX.test(q))try{
+    const base=" and trashed=false and not name contains 'Papierkorb' and not name contains 'Archiv' and mimeType != 'application/json'";
     const and2=terms.slice(0,2).map(w=>`fullText contains '${qesc(w)}'`).join(' and ');
     let hits=await ddList(`(${and2})${base}`);
     if(hits.length<3){const or=terms.map(w=>`fullText contains '${qesc(w)}' or name contains '${qesc(w)}'`).join(' or ');const more=await ddList(`(${or})${base}`);hits=hits.concat(more.filter(m=>!hits.some(h=>h.id===m.id)))}
-    hits=hits.filter(h=>notPrivate(h.name)).slice(0,10);
+    hits=hits.filter(h=>notPrivate(h.name)&&!liSkipFile(h)).slice(0,10);
     if(hits.length){
       agWaitText('LeMatic Intelligence liest '+Math.min(4,hits.filter(h=>!/folder|video|image/.test(h.mimeType)).length)+' Dateien aus Drive');
       const readable=hits.filter(h=>!/folder|video|image|audio/.test(h.mimeType)).slice(0,4);
@@ -8240,7 +8335,8 @@ async function agentAsk(q){
     const nw=new Date();const text=await askClaude('agent',{wissen,verlauf,frage:q,user:USER,heute:wd(TODAY)+', '+TODAY+', '+pad(nw.getHours())+':'+pad(nw.getMinutes())+' Uhr'});
     const ex=liExtractActions(text||'');
     AG_CHAT.forEach(x=>{if(x.qs&&x.qs.length)x.qsSent=true});
-    AG_CHAT.push({role:'bot',text:ex.body.trim()||(ex.acts.length?'Das kann ich für dich erledigen:':ex.qs.length?'Kurz nachgefragt:':'(keine Antwort)'),src:found.src,acts:ex.qs.length?[]:ex.acts,qs:ex.qs});
+    const src=LI_SCHED_RX.test(q)?[{name:'LeMatic-Kalender',link:'#/kalender',ic:'📅',where:'Studio'},{name:'Notion „Aufgaben“',link:'#/aufgaben',ic:'✅',where:'Studio'},...found.src]:found.src;
+    AG_CHAT.push({role:'bot',text:ex.body.trim()||(ex.acts.length?'Das kann ich für dich erledigen:':ex.qs.length?'Kurz nachgefragt:':'(keine Antwort)'),src,acts:ex.qs.length?[]:ex.acts,qs:ex.qs});
   }catch(e){AG_CHAT.push({role:'bot',text:e.message,err:true})}
   agBusy=false;document.querySelectorAll('.ag-send').forEach(b=>b.disabled=false);agSave();renderAgent();
 }
@@ -8461,12 +8557,12 @@ function onbSources(){
 }
 function onbBrief(){
   const mine=TASKS.filter(t=>!t.done&&t.who===ME);
-  const today=mine.filter(t=>t.due&&t.due<=TODAY);
+  const today=mine.filter(t=>t.due===TODAY),overT=mine.filter(t=>t.due&&t.due<TODAY).sort((a,b)=>a.due.localeCompare(b.due));
   const nextEv=EVENTS.filter(e=>e.type!=='aufgabe'&&(e.end||e.d)>=TODAY).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||'')))[0];
   const radar=KARTEI_LOADED?radarList()[0]:null;
   const unread=MAILS.filter(m=>m.unread&&inMailBox(m,'inbox'));
   return [
-    ['✅','Für dich fällig',today.length?today.length+(today.length===1?' Aufgabe':' Aufgaben'):'Nichts fällig',today[0]?today[0].t:(mine[0]?'Als Nächstes: '+mine[0].t+' ('+dm(mine[0].due)+')':'Freie Bahn'),'aufgaben'],
+    ['✅','Heute für dich',today.length?today.length+(today.length===1?' Aufgabe':' Aufgaben')+(overT.length?', '+overT.length+' überfällig':''):overT.length?overT.length+' überfällig':'Nichts fällig',today[0]?today[0].t:overT[0]?'Überfällig seit '+dm(overT[0].due)+': '+overT[0].t:(mine[0]?'Als Nächstes: '+mine[0].t+' ('+dm(mine[0].due)+')':'Freie Bahn'),'aufgaben'],
     ['📅','Nächster Termin',nextEv?(nextEv.d===TODAY?'Heute':dm(nextEv.d))+(nextEv.time?' · '+nextEv.time:''):'Keiner geplant',nextEv?nextEv.t:'Kalender ist leer','kalender'],
     ['📞','Nachfassen',radar?radar.k.name:'Alles im grünen Bereich',radar?(radar.lt?'seit '+diffDays(TODAY,radar.lt)+' Tagen still':'noch kein Kontakt erfasst'):'Kein laufender Kunde wartet','kunden'],
     ['✉️','Postfach',unread.length+' ungelesen',unread[0]?unread[0].from+': '+unread[0].subj:'Inbox im Griff','mails']
@@ -8627,7 +8723,7 @@ document.addEventListener('click',e=>{
     {ic:'🗓',label:'In einer Woche',fn:()=>mv(addDays(t.due>TODAY?t.due:TODAY,7))},
     {date:true,label:'Datum wählen',fn:d=>mv(d)},
     {ic:'🤝',label:'An '+NAMES[other]+' übergeben',fn:async()=>{const old=t.who;t.who=other;try{await saveTask(t,['who']);if(other!==ME)safe('wa',()=>waNotify(other,t.t,fmtWhen(t.due,t.time,true)));syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome);toast('Liegt jetzt bei '+NAMES[other],{undo:async()=>{t.who=old;await saveTask(t,['who']);syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome)}})}catch(x){t.who=old;toast('Nicht übergeben: '+x.message)}}},
-    {ic:'📅',label:t.cal?'Aus dem Kalender nehmen':'In den Kalender',fn:()=>taskCalToggle(t)}
+    {ic:'📅',label:t.inCal?'Aus dem Kalender nehmen':'In den Kalender',fn:()=>taskCalToggle(t)}
   ]);
 },true);
 /* Notion-Feld passend zum Typ bauen */
@@ -8673,7 +8769,7 @@ async function liRunAction(a){
   if(a.type==='task_create'){await createTask({title:String(a.title).slice(0,300),who:a.who==='LP'||a.who==='MS'?a.who:ME,due:a.due||addDays(TODAY,1),time:a.time||null,kid:k?k.id:'',kname:k?k.name:'',cal:a.kalender===true||a.kalender==='ja'});return a.kalender===true||a.kalender==='ja'?'angelegt, steht auch im Kalender':'angelegt'}
   if(a.type==='task_kalender'){const t=liFindTask(a);if(!t)throw new Error('Aufgabe nicht gefunden');a.id=t.id;
     if(a.an===false||a.an==='nein'){await taskFromCal(t);return 'aus dem Kalender genommen'}
-    if(t.cal)return 'steht schon im Kalender';await taskToCal(t);return 'steht im Kalender'}
+    if(t.inCal)return 'steht schon im Kalender';await taskToCal(t);return 'steht im Kalender'}
   if(a.type==='task_done'||a.type==='task_delete'||a.type==='task_move'){
     const t=liFindTask(a);if(!t)throw new Error('Aufgabe nicht gefunden');a.id=t.id;
     if(a.type==='task_done'){await toggleTask(t,true);return 'abgehakt'}
@@ -9749,8 +9845,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-02.42';
+const APP_VERSION='2026-11-02.43';
 const CHANGELOG=[
+  {v:'2026-11-02.43',d:'02.11.2026',items:['In den Kalender kommt eine Aufgabe nur mit Haken „In Kalender“ in Notion, den setzt der Kalender-Knopf oder der WhatsApp-Bot bei „Termin anlegen“','Überfällige Aufgaben heißen „überfällig seit …“ und werden nie als heute gezeigt','Kalender-Einträge zeigen den Titel auf zwei Zeilen, in der Woche mindestens zwei Zeilen','Neu: Ansicht „Liste“ mit vollen Titeln, am Handy ist sie Standard','LeMatic Intelligence trennt bei „Was steht heute an?“ Termine und Aufgaben, nennt die Quelle und liest nie Papierkorb oder Archiv']},
   {v:'2026-11-02.42',d:'02.11.2026',items:['Im Kalender stehen nur noch echte Termine: Drehs, Calls, Treffen','Aufgaben stehen nur unter Aufgaben und auf Heute, mit Frist und Häkchen','Neu an jeder Aufgabe: Kalender-Knopf, holt sie bei Bedarf doch in den Kalender','Die bisher automatisch angelegten Aufgaben-Termine räumt das Studio einmal aus dem Kalender, die Aufgaben bleiben']},
   {v:'2026-11-01.41',d:'01.11.2026',items:['Analyse: Die erste Kachel zeigt groß, was wirklich eingenommen wurde','Darunter in Gelb die offenen Rechnungen mit Summe, ein Klick zeigt die Liste','Grau darunter: berechnet gesamt','Die doppelten Kacheln „bezahlt“ und „offen“ sind dafür weg']},
   {v:'2026-11-01.40',d:'01.11.2026',items:['Neuer Punkt „Analyse“ in der Seitenleiste, direkt unter Rechnungen','Oben Monat oder Jahr wählen, das gilt für die ganze Seite','Umsatz, bezahlt, offen und Ausgaben auf einen Blick','Balken pro Monat: bezahlt grün, offen gelb','Angebote-Quote: wie viele Angebote angenommen wurden','Rechnungen zeigt nur noch die Liste und das Hochladen'],tour:[
