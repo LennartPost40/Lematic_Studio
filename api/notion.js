@@ -133,10 +133,11 @@ export default async function handler(req, res) {
               { timestamp: 'last_edited_time', last_edited_time: { on_or_after: since } }
             ] }
           ] };
-        } else if (db === 'aufgaben') body.filter = { and: [
-          { property: 'Im Studio', checkbox: { equals: false } },
-          { timestamp: 'created_time', created_time: { on_or_after: '2026-10-31' } }
-        ] };
+        } else if (db === 'aufgaben') {
+          // Alte Studio-Stände (bis v.41) haben hier jede neue Bot-Aufgabe als Kalendertermin angelegt.
+          // Diese Abfrage liefert ihnen deshalb nichts mehr. Das aktuelle Studio fragt mit ?studio=1.
+          return res.status(200).json({ rows: [] });
+        }
         const r = await fetch(`https://api.notion.com/v1/databases/${dsId}/query`, {
           method: 'POST', headers, body: JSON.stringify(body)
         });

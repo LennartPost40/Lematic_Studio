@@ -9845,8 +9845,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-02.43';
+const APP_VERSION='2026-11-03.44';
 const CHANGELOG=[
+  {v:'2026-11-03.44',d:'03.11.2026',items:['Aufgaben aus WhatsApp landen nicht mehr im Kalender, auch nicht über alte, offene Studio-Fenster','Das Studio lädt neue Versionen jetzt von selbst, sobald gerade nichts getippt wird']},
   {v:'2026-11-02.43',d:'02.11.2026',items:['In den Kalender kommt eine Aufgabe nur mit Haken „In Kalender“ in Notion, den setzt der Kalender-Knopf oder der WhatsApp-Bot bei „Termin anlegen“','Überfällige Aufgaben heißen „überfällig seit …“ und werden nie als heute gezeigt','Kalender-Einträge zeigen den Titel auf zwei Zeilen, in der Woche mindestens zwei Zeilen','Neu: Ansicht „Liste“ mit vollen Titeln, am Handy ist sie Standard','LeMatic Intelligence trennt bei „Was steht heute an?“ Termine und Aufgaben, nennt die Quelle und liest nie Papierkorb oder Archiv']},
   {v:'2026-11-02.42',d:'02.11.2026',items:['Im Kalender stehen nur noch echte Termine: Drehs, Calls, Treffen','Aufgaben stehen nur unter Aufgaben und auf Heute, mit Frist und Häkchen','Neu an jeder Aufgabe: Kalender-Knopf, holt sie bei Bedarf doch in den Kalender','Die bisher automatisch angelegten Aufgaben-Termine räumt das Studio einmal aus dem Kalender, die Aufgaben bleiben']},
   {v:'2026-11-01.41',d:'01.11.2026',items:['Analyse: Die erste Kachel zeigt groß, was wirklich eingenommen wurde','Darunter in Gelb die offenen Rechnungen mit Summe, ein Klick zeigt die Liste','Grau darunter: berechnet gesamt','Die doppelten Kacheln „bezahlt“ und „offen“ sind dafür weg']},
@@ -10103,7 +10104,13 @@ document.addEventListener('click',e=>{
 async function checkUpdate(){
   try{
     const j=await (await fetch('/version.json?t='+Date.now(),{cache:'no-store'})).json();
-    if(j.version&&j.version!==APP_VERSION){$('updBar').hidden=false;$('updDot').hidden=false}
+    if(j.version&&j.version!==APP_VERSION){$('updBar').hidden=false;$('updDot').hidden=false;
+      /* Alte Stände nicht weiterlaufen lassen: neu laden, sobald gerade nichts getippt wird und kein Fenster offen ist */
+      const typing=[...document.querySelectorAll('input:not([type=checkbox]):not([type=radio]),textarea')].some(x=>x.value&&x.offsetParent&&x.id!=='hstQ');
+      const modal=document.querySelector('.modal-wrap.show,#liDrawer.show');
+      if(document.visibilityState==='hidden'||(!typing&&!modal)){try{sessionStorage.setItem('lm_autoreload',j.version)}catch(_){}
+        let done='';try{done=sessionStorage.getItem('lm_autoreloaded')||''}catch(_){}
+        if(done!==j.version){try{sessionStorage.setItem('lm_autoreloaded',j.version)}catch(_){}location.reload()}}}
   }catch(_){}
 }
 setInterval(checkUpdate,5*60000);
