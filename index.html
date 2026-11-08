@@ -3092,10 +3092,10 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-folder"/></svg></span><div><strong>Google Drive</strong><span id="setDriveText">Ordner „LeMatic“, erst nach dem Google-Login verbunden</span></div><span style="display:flex;gap:6px;align-items:center"><span class="pill done" id="setDrivePill"><i></i>Nicht verbunden</span><a class="btn btn-glass sm" data-drivetest href="#" target="_blank" rel="noopener"><svg class="i sm"><use href="#i-open"/></svg>Öffnen</a></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-mail"/></svg></span><div><strong>Mails</strong><span id="setGmailText">info@lematic.de über Google Workspace</span></div><span id="setGmail"><span class="pill done"><i></i>Später</span></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-cal"/></svg></span><div><strong>Google Calendar</strong><span id="setCalText">LeMatic-Kalender von info@lematic.de, nur Termine</span></div><span id="setCalPill"><span class="pill warn"><i></i>Prüfe …</span></span></div>
-          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-receipt"/></svg></span><div><strong>sevDesk</strong><span>Kein API-Zugang, Buchhaltung Pro war es nicht wert — Export und Upload statt Automatik</span></div><span class="pill done"><i></i>Manuell</span></div>
+          <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-receipt"/></svg></span><div><strong>sevDesk</strong><span id="setSevText">Kontobewegungen und Rechnungen, nur lesen</span></div><span style="display:flex;gap:6px;align-items:center"><span id="setSevPill"><span class="pill warn"><i></i>Prüfe …</span></span><button class="btn btn-glass sm" data-sdsync>Abgleichen</button></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-table"/></svg></span><div><strong>Notion — LeMatic OS</strong><span id="setNotionText">Kundenkartei, Rechnungen und Akquise-Pipeline</span></div><span id="setNotionPill"><span class="pill warn"><i></i>Prüfe …</span></span></div>
           <div class="conn"><span class="ic"><svg class="i sm"><use href="#i-ticket"/></svg></span><div><strong>Ticketshop-Tracking Mammutmarsch</strong><span>Nötig für echte Ticketzahlen</span></div><button class="btn btn-glass sm" data-toast="Anfrage an Alex vorbereitet">Zugang anfragen</button></div>
-          <p class="warn-box"><svg class="i sm"><use href="#i-warn"/></svg><span>Der Ordner „LeMatic“ ist aktuell über einen Link erreichbar. Das Tool braucht diese Freigabe nicht, es greift über euren Google-Login zu. Stellt sie auf „Eingeschränkt“, sobald ihr wirklich Rechnungen darin ablegt.</span></p>
+          <p class="aus-hint">Zugriff nur mit Login: Der Ordner „LeMatic“ ist auf drei Konten beschränkt, die Schlüssel für Notion und sevDesk liegen nur in Vercel, sevDesk wird nur gelesen.</p>
         </section>
       </div>
     </section>
@@ -6181,6 +6181,7 @@ async function loadNotion(){
     notionStatus('ok','Live aus dem LeMatic OS: Kundenkartei, '+rech.length+' Rechnungen und Angebote, '+akq.length+' Leads');
     safe('inv',renderInvoices);safe('leads',renderLeads);safe('home',renderHome);
     setTimeout(()=>safe('tipps',()=>tpGenerate(false)),2500);
+    safe('sevdesk',()=>sdSync());
     safe('driveDocs',()=>{if(DD_STATE==='ok')ddMergeStatus();if(DD_STATE!=='busy')scanDriveInvoices()});
   }catch(e){
     NOTION_LIVE=false;
@@ -9253,7 +9254,7 @@ function finSave(){
     const body=JSON.stringify({tx:FIN.tx,cats:FIN.cats,at:FIN.at,by:FIN.by,savedBy:USER,savedAt:new Date().toISOString()});
     if(!FIN_ID){const {dir,f}=await finFile();if(f)FIN_ID=f.id;else{const up=await driveUpload(new File([body],FIN_FILE,{type:'application/json'}),FIN_FILE,dir);FIN_ID=up.id;return}}
     await gfetch('https://www.googleapis.com/upload/drive/v3/files/'+FIN_ID+'?uploadType=media&supportsAllDrives=true',{method:'PATCH',headers:{'Content-Type':'application/json'},body});
-  }catch(e){toast('Kontist-Daten nur auf diesem Gerät gespeichert: '+e.message)}},700);
+  }catch(e){toast('Kontodaten nur auf diesem Gerät gespeichert: '+e.message)}},700);
 }
 async function finImport(tx){
   await finLoad();
@@ -9264,6 +9265,102 @@ async function finImport(tx){
   toast(n?`${n} neue Kontobewegungen für die Analysen übernommen`:'Kontist-Daten waren schon aktuell');
   anaRefreshAll();
 }
+/* ---------- sevDesk (seit v.45, nur lesen) ----------
+   Holt über /api/sevdesk die Buchungen der Bankkonten in sevDesk (Kontist) und die Rechnungen.
+   Buchungen gehen in dieselben Konto-Daten wie früher der Kontist-Export (Analyse, Ausgaben, Abgleich).
+   Rechnungen: bezahlt in sevDesk → in Notion „Bezahlt“; Rechnungen, die in Notion fehlen, stehen in Einstellungen.
+   In sevDesk wird nie etwas gebucht, geändert oder verschickt. */
+let SD={state:'',msg:'',konten:[],inv:[],missing:[],last:0,busy:null,txN:0,paidN:0,version:''};
+try{const s=JSON.parse(localStorage.getItem('lm_sd')||'null');if(s){SD.konten=s.konten||[];SD.last=0;SD.txAt=s.txAt||'';SD.txN=s.txN||0;SD.state=s.state||''}}catch(_){}
+const sdStore=()=>{try{localStorage.setItem('lm_sd',JSON.stringify({konten:SD.konten,txAt:SD.txAt,txN:SD.txN,state:SD.state}))}catch(_){}};
+const sdHasTx=()=>FIN.tx.some(t=>t.sid);
+const finSrcName=()=>sdHasTx()?'Konto über sevDesk':'Kontist-Export';
+const finSrcBtn=()=>sdHasTx()?'<button class="btn btn-glass sm" data-sdsync>Konto abgleichen</button>':'<button class="btn btn-glass sm" data-anacsv>Kontist-CSV laden</button>';
+const sdNr=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+function sdSameNr(a,b){
+  const x=sdNr(a),y=sdNr(b);if(!x||!y)return false;if(x===y)return true;
+  const mx=x.match(/^([A-Z]*)0*(\d+)$/),my=y.match(/^([A-Z]*)0*(\d+)$/);
+  return !!(mx&&my&&mx[1]===my[1]&&mx[2]===my[2]);
+}
+function sdPill(){
+  const pill=$('setSevPill'),txt=$('setSevText');if(!pill||!txt)return;
+  const st=SD.state,cls=st==='ok'?'ok':st==='busy'?'warn':st==='off'?'done':'warn';
+  const lab=st==='ok'?'Live verbunden':st==='busy'?'Gleicht ab …':st==='off'?'Nicht verbunden':st==='err'?'Fehler':'Prüfe …';
+  pill.innerHTML=`<span class="pill ${cls}"><i></i>${lab}</span>`;
+  if(st==='ok'){
+    const k=SD.konten.filter(k=>k.aktiv&&k.typ!=='register').map(k=>k.name+(k.iban?' '+k.iban:'')).join(', ')||'kein Bankkonto in sevDesk';
+    txt.innerHTML=esc(`Konto: ${k} · ${SD.txN} Buchungen · ${SD.inv.filter(i=>i.status>=200).length} Rechnungen`+(SD.txAt?` · abgeglichen ${new Date(SD.txAt).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}`:''))
+      +(SD.missing.length?`<br><b class="warn-t">${SD.missing.length} ${SD.missing.length===1?'Rechnung fehlt':'Rechnungen fehlen'} in Notion:</b> ${esc(SD.missing.slice(0,6).map(i=>i.nr+' ('+(i.kunde||'?')+', '+eur(i.brutto)+')').join(', '))}${SD.missing.length>6?' …':''}`:'');
+  }else if(SD.msg)txt.textContent=SD.msg;
+}
+/* Buchungen aus sevDesk in die Konto-Daten übernehmen. Schon per Kontist-CSV geladene Buchungen
+   (gleicher Betrag, höchstens 2 Tage Abstand, gleicher Name oder gleicher Tag) werden verknüpft statt doppelt gezählt. */
+function sdMergeTx(rows){
+  const bySid=new Map(FIN.tx.filter(t=>t.sid).map(t=>[t.sid,t]));const fresh=[];
+  const nameTok=s=>String(s||'').toLowerCase().replace(/[^a-z0-9äöüß ]+/g,' ').split(' ').filter(w=>w.length>2);
+  rows.forEach(s=>{
+    const note=s.privat?'Privat (in sevDesk als privat markiert)':'';
+    const have=bySid.get(s.sid);
+    if(have){if(note&&!/privat/i.test(have.note||''))have.note=note;return}
+    const twin=FIN.tx.find(t=>!t.sid&&Math.abs((+t.amount)-s.amount)<0.005&&Math.abs(diffDays(t.date,s.date))<=2&&(t.date===s.date||nameTok(t.name).some(w=>nameTok(s.name).includes(w))));
+    if(twin){twin.sid=s.sid;if(note&&!/privat/i.test(twin.note||''))twin.note=note;return}
+    const r={date:s.date,name:s.name,amount:s.amount,purpose:s.purpose,note,sid:s.sid,src:'sevdesk'};r.id='sd'+s.sid;
+    FIN.tx.push(r);bySid.set(s.sid,r);fresh.push(r);
+  });
+  FIN.tx.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  return fresh;
+}
+async function sdPaid(ids,why){
+  let ok=0;
+  for(const inv of ids){try{await notionUpdate('rechnungen',inv.nid,{Status:{select:{name:'Bezahlt'}}});inv.status='bezahlt';inv.rawStatus='Bezahlt';ok++}catch(x){toast(inv.no+': '+x.message)}}
+  if(ok){safe('inv',renderInvoices);safe('home',renderHome);safe('dd',()=>{ddMergeStatus()});safe('kartei',()=>{if(typeof renderKartei==='function')renderKartei()});
+    toast(ok+(ok===1?' Rechnung':' Rechnungen')+' als bezahlt eingetragen ('+why+')')}
+  return ok;
+}
+function sdSync(force){
+  if(!GAUTH)return Promise.resolve();
+  if(SD.busy)return SD.busy;
+  if(!force&&Date.now()-SD.last<15*60000)return Promise.resolve();
+  SD.busy=(async()=>{
+    const was=SD.state;SD.state='busy';sdPill();
+    try{
+      await finLoad();
+      const y0=(+TODAY.slice(0,4)-1)+'-01-01';
+      const lastSd=FIN.tx.filter(t=>t.sid).map(t=>t.date).sort().pop();
+      const from=lastSd?(()=>{const d=new Date(lastSd);d.setDate(d.getDate()-14);const s=d.toISOString().slice(0,10);return s<y0?y0:s})():y0;
+      const [st,u,rq]=await Promise.all([
+        SD.version?Promise.resolve({konten:SD.konten,version:SD.version}):napi('/api/sevdesk?op=status'),
+        napi('/api/sevdesk?op=umsaetze&from='+from),
+        napi('/api/sevdesk?op=rechnungen&from='+y0)]);
+      SD.version=st.version||SD.version;SD.konten=u.konten||st.konten||[];SD.inv=rq.rechnungen||[];
+      /* 1) Buchungen */
+      const fresh=sdMergeTx(u.tx||[]);
+      SD.txN=FIN.tx.filter(t=>t.sid).length;SD.txAt=new Date().toISOString();
+      if(fresh.length){FIN.at=SD.txAt;FIN.by='sevDesk';finSave();anaRefreshAll()}else finStore();
+      /* 2) Rechnungen: bezahlt in sevDesk → Notion */
+      const live=INVOICES.filter(i=>i.kind==='Ausgang'&&i.nid);
+      const paid=[];
+      if(NOTION_LIVE){
+        SD.inv.filter(s=>s.status===1000).forEach(s=>{const i=live.find(i=>sdSameNr(i.no,s.nr));if(i&&i.status!=='bezahlt'&&i.status!=='ersetzt'&&i.status!=='abgelehnt'&&!paid.includes(i))paid.push(i)});
+        /* 3) Eingänge auf dem Konto mit Rechnungsnummer im Verwendungszweck (gleiche Regel wie beim CSV-Abgleich, nur sichere Treffer) */
+        const inc=fresh.filter(t=>t.amount>0);
+        if(inc.length)bankMatch(inc).filter(r=>r.inv&&r.sure&&!r.already&&!paid.includes(r.inv)).forEach(r=>paid.push(r.inv));
+        SD.missing=SD.inv.filter(s=>s.status>=200&&s.status!==50&&!INVOICES.some(i=>sdSameNr(i.no,s.nr)));
+      }
+      if(paid.length)await sdPaid(paid,'laut sevDesk');
+      SD.paidN+=paid.length;
+      SD.state='ok';SD.msg='';SD.last=Date.now();
+      if(fresh.length&&was)toast(fresh.length+(fresh.length===1?' neue Kontobewegung':' neue Kontobewegungen')+' aus sevDesk');
+    }catch(e){
+      const off=/SEVDESK_API_KEY ist in Vercel/.test(e.message);
+      SD.state=off?'off':'err';SD.msg=off?'Noch nicht verbunden: SEVDESK_API_KEY in Vercel hinterlegen':'Nicht erreichbar ('+e.message+')';
+      SD.last=Date.now();
+    }finally{sdStore();sdPill();SD.busy=null;anaRefreshAll()}
+  })();
+  return SD.busy;
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-sdsync]');if(!b)return;e.preventDefault();
+  b.disabled=true;sdSync(true).then(()=>{b.disabled=false;if(SD.state==='ok')toast('sevDesk abgeglichen')})});
 const nrmId=x=>String(x||'').replace(/-/g,'');
 const kOf=i=>{const ids=(i.kids||[]).map(nrmId);return KUNDEN.find(k=>ids.includes(nrmId(k.id)))};
 const invWho=i=>{const k=kOf(i);return k?k.name:(i.party&&i.party!=='—'?i.party:'Ohne Kunde')};
@@ -9376,10 +9473,10 @@ const anaOn=()=>location.hash.startsWith('#/analyse');
 function renderAna(){
   const el=$('invAna');if(!el||el.hidden)return;
   const N=anaNumbers(),F=anaForecast(),r=N.r,isYear=ANA.mode==='jahr';
-  const stand=N.hasFin?`Kontist-Daten ${dm(N.finFrom)} bis ${dm(N.finTo)}`:'Noch keine Kontist-Daten';
+  const stand=N.hasFin?`${finSrcName()} ${dm(N.finFrom)} bis ${dm(N.finTo)}`:SD.state==='busy'?'Konto wird aus sevDesk geladen …':'Noch keine Kontodaten';
   const finGap=N.hasFin&&r.to>N.finTo&&r.from<=TODAY&&diffDays(TODAY,N.finTo)>10;
   const tile=(v,l,cls)=>`<div class="${cls||''}"><strong>${v}</strong><span>${l}</span></div>`;
-  const noFin='<span>Kontist-CSV laden</span>';
+  const noFin='<span>Noch keine Kontodaten</span>';
   const chart={stack:true,title:'Umsatz pro Monat',note:isYear?String(ANA.y):'letzte 12 Monate, markiert: '+MONTHS[ANA.m-1],labels:N.months.map(m=>m.l),hi:isYear?null:11,
     series:[{name:'Bezahlt',cls:'s-in',values:N.months.map(m=>m.bez)},{name:'Offen',cls:'s-open',values:N.months.map(m=>m.off)}]};
   const nA=N.ang.length,nW=N.angWon.length,nL=N.angLost.length,nO=N.angOpen.length,pct=x=>nA?(x/nA*100).toFixed(1)+'%':'0%';
@@ -9399,7 +9496,7 @@ function renderAna(){
     <div class="seg" role="group" aria-label="Zeitraum"><button data-anamode="monat" aria-pressed="${!isYear}">Monat</button><button data-anamode="jahr" aria-pressed="${isYear}">Jahr</button></div>
     <div class="ana-nav"><button class="icon-btn" data-anastep="-1" aria-label="Zurück">‹</button><b>${esc(isYear?String(ANA.y):MONTHS[ANA.m-1]+' '+ANA.y)}</b><button class="icon-btn" data-anastep="1" aria-label="Weiter">›</button></div>
     <span class="sp"></span><small>${esc(stand)}</small>
-    <button class="btn btn-glass sm" data-anacsv>Kontist-CSV laden</button>
+    ${finSrcBtn()}
   </div>
   <div class="kstats ana-k">
     <div class="ana-rev"><strong>${eur0(N.eingenommen)}</strong><span>Eingenommen ${esc(isYear?String(ANA.y):MONTHS[ANA.m-1]+' '+ANA.y)}</span>
@@ -9409,12 +9506,12 @@ function renderAna(){
   </div>
   ${N.open.length?`<section class="glass panel ana-openlist" id="anaOpenList" hidden><h2>Offene Rechnungen</h2><p class="sub">${esc(r.label)}, nach Rechnungsdatum</p>
     ${[...N.open].sort((a,b)=>invOverdue(b)-invOverdue(a)||String(a.date).localeCompare(String(b.date))).map(i=>`<a class="ana-oi" href="#/rechnungen"><span class="num">${dm(i.date)}</span><span class="n">${esc(invWho(i))}<small>${esc(i.no||'ohne Nummer')}${invOverdue(i)>0?' · '+invOverdue(i)+' Tage überfällig':''}</small></span><b>${eur0(i.amount)}</b></a>`).join('')}</section>`:''}
-  ${finGap?`<p class="ana-empty">Hinweis: Die Kontist-Daten reichen nur bis ${dm(N.finTo)}, Ausgaben danach fehlen noch, bitte einen neuen Export laden.</p>`:''}
+  ${finGap?`<p class="ana-empty">Hinweis: Die Kontodaten reichen nur bis ${dm(N.finTo)}, Ausgaben danach fehlen noch${sdHasTx()?', sevDesk hat noch keine neueren Buchungen':', bitte einen neuen Export laden'}.</p>`:''}
   <div class="ana-grid ana-top">${finChartCard(chart)}${quote}</div>
   <section class="glass panel ana-ai" id="anaAI"></section>
   <div class="ana-grid">
-    <section class="glass panel"><h2>Wofür das Geld rausging</h2><p class="sub">${esc(r.label)}${N.hasFin?', laut Kontist':''}</p>
-      ${N.hasFin?finBars(catItems):'<p class="ana-empty">Lade einmal den CSV-Export aus Kontist (Umsätze, als CSV). Danach siehst du hier die Ausgaben nach Kategorie, für euch beide.</p>'}
+    <section class="glass panel"><h2>Wofür das Geld rausging</h2><p class="sub">${esc(r.label)}${N.hasFin?', laut Konto':''}</p>
+      ${N.hasFin?finBars(catItems):'<p class="ana-empty">Noch keine Kontodaten. Sie kommen automatisch aus sevDesk, sobald es verbunden ist (Einstellungen > Verbindungen). Danach siehst du hier die Ausgaben nach Kategorie, für euch beide.</p>'}
       ${outs.length?`<details ${isYear?'':'open'}><summary>${outs.length} Ausgaben${isYear?', größte zuerst':''}</summary><div class="ftx">${outs.slice(0,isYear?60:200).map(txRow).join('')}</div></details>`:''}
     </section>
     <section class="glass panel"><h2>Umsatz nach Kunde</h2><p class="sub">${esc(r.label)}, berechnet</p>${finBars(kItems,'in')}</section>
@@ -9430,9 +9527,9 @@ function renderAna(){
   </section>
   <section class="glass panel ana-how"><details><summary>So rechnet das Studio</summary><ul>
     <li><b>Eingenommen:</b> Rechnungen mit Rechnungsdatum im Zeitraum und Status Bezahlt in Notion. <b>Offen</b> sind die übrigen, <b>Berechnet gesamt</b> ist beides zusammen. Angebote zählen nie, ersetzte und abgelehnte Rechnungen auch nicht. In der Grafik grün und gelb, pro Monat nach Rechnungsdatum.</li>
-    <li><b>Ausgaben:</b> wie im Reiter „Ausgaben“ bei Rechnungen: Abbuchungen aus dem Kontist-Export plus Belege aus Drive, zu denen es keine Abbuchung gibt. Privates zählt nicht.</li>
+    <li><b>Ausgaben:</b> wie im Reiter „Ausgaben“ bei Rechnungen: Abbuchungen vom Konto (über sevDesk, früher Kontist-Export) plus Belege aus Drive, zu denen es keine Abbuchung gibt. Privates zählt nicht.</li>
     <li><b>Angebote-Quote:</b> angenommene und unterschriebene Angebote geteilt durch alle Angebote im Zeitraum (nach Angebotsdatum), ersetzte Fassungen zählen nicht.</li>
-    <li><b>Kontobewegung:</b> aus dem Kontist-Export, nach Buchungsdatum. Überweisungen mit „privat“ im Text zählen nicht als Ausgabe. Die Kategorie setzt das Studio nach dem Empfänger, sie lässt sich pro Buchung ändern.</li>
+    <li><b>Kontobewegung:</b> aus sevDesk (Bankkonto), nach Buchungsdatum, alle 15 Minuten neu. Buchungen, die in sevDesk als privat markiert sind oder „privat“ im Text haben, zählen nicht als Ausgabe. Die Kategorie setzt das Studio nach dem Empfänger, sie lässt sich pro Buchung ändern.</li>
     <li><b>Unterschrieben, noch nicht abgerechnet:</b> Angebot minus allem, was dem Kunden seit dem Angebotsdatum berechnet wurde.</li>
   </ul></details></section>`;
   safe('anaAI',()=>anaAI(false,N,F));
@@ -9441,7 +9538,7 @@ function anaContext(N,F){
   const L=[];
   L.push(`Zeitraum: ${N.r.label}. Umsatzziel ${ANA.y}: ${eur0(GOAL)}.`);
   L.push(`Berechnet: ${eur0(N.berechnet)} (${N.rech.length} Rechnungen). Eingenommen: ${eur0(N.eingenommen)}. Offen: ${eur0(N.offen)}${N.open.length?' ('+N.open.map(i=>invWho(i)+' '+(i.no||'')+' '+eur0(i.amount)+(invOverdue(i)>0?', '+invOverdue(i)+' Tage überfällig':'')).join('; ')+')':''}.`);
-  L.push(N.hasFin?`Konto (Kontist, Daten ${N.finFrom} bis ${N.finTo}): Ausgaben ${eur0(N.ausgaben)}, privat ${eur0(N.privat)}, Geld rein ${eur0(N.rein)}, Saldo der Bewegungen ${eur0(N.saldo)}.`:'Kontist-Daten fehlen noch, Ausgaben unbekannt.');
+  L.push(N.hasFin?`Konto (${sdHasTx()?'über sevDesk':'Kontist-Export'}, Daten ${N.finFrom} bis ${N.finTo}): Ausgaben ${eur0(N.ausgaben)}, privat ${eur0(N.privat)}, Geld rein ${eur0(N.rein)}, Saldo der Bewegungen ${eur0(N.saldo)}.`:'Kontodaten fehlen noch, Ausgaben unbekannt.');
   L.push('Pro Monat (Berechnet / Ausgaben): '+N.months.map(m=>`${m.l} ${eur0(m.ber)} / ${eur0(m.aus)}`).join(', '));
   if(N.hasFin)L.push('Ausgaben nach Kategorie: '+Object.entries(N.cats).sort((a,b)=>b[1]-a[1]).map(([c,v])=>c+' '+eur0(v)).join(', '));
   if(N.hasFin)L.push('Größte Ausgaben: '+[...N.tx.filter(t=>t.amount<0)].sort((a,b)=>a.amount-b.amount).slice(0,8).map(t=>`${t.date} ${t.name} ${eur0(-t.amount)} (${finCat(t)}${t.note?', '+t.note:''})`).join('; '));
@@ -9539,14 +9636,14 @@ function renderAusgaben(){
   const counted=A.rows.filter(x=>x.cat!=='Privat');
   const sum=counted.reduce((a,x)=>a+x.amount,0),offen=counted.filter(x=>x.status==='offen').reduce((a,x)=>a+x.amount,0),chk=counted.filter(x=>x.check).length;
   const priv=A.rows.filter(x=>x.cat==='Privat').reduce((a,x)=>a+x.amount,0);
-  const row=x=>`<div class="aus-r"><span class="num">${dm(x.date)}</span><span class="n">${esc(x.party)}<small>${esc(x.sub)}</small></span>${x.check?'<b class="chk">Betrag prüfen</b>':`<b>${eur2(x.amount)}</b>`}${x.catEdit?`<button class="fcat" data-fincat="${esc(x.key)}">${esc(x.cat)}</button>`:`<span class="fcat ro">${esc(x.cat)}</span>`}<span class="st${x.status==='bezahlt'?'':' off'}" title="${x.status==='bezahlt'?'Abbuchung im Kontist-Export':x.check?'Auf dem Beleg war kein Gesamtbetrag erkennbar':x.status==='offen'?'Keine passende Abbuchung im Kontist-Export gefunden':'Liegt außerhalb der geladenen Kontist-Daten'}"><i></i>${esc(x.status)}</span>${x.link?`<a class="icon-btn bl" href="${esc(x.link)}" target="_blank" rel="noopener" aria-label="Beleg öffnen" title="Beleg öffnen"><svg class="i sm"><use href="#i-open"/></svg></a>`:'<span class="bl"></span>'}</div>`;
+  const row=x=>`<div class="aus-r"><span class="num">${dm(x.date)}</span><span class="n">${esc(x.party)}<small>${esc(x.sub)}</small></span>${x.check?'<b class="chk">Betrag prüfen</b>':`<b>${eur2(x.amount)}</b>`}${x.catEdit?`<button class="fcat" data-fincat="${esc(x.key)}">${esc(x.cat)}</button>`:`<span class="fcat ro">${esc(x.cat)}</span>`}<span class="st${x.status==='bezahlt'?'':' off'}" title="${x.status==='bezahlt'?'Abbuchung auf dem Konto':x.check?'Auf dem Beleg war kein Gesamtbetrag erkennbar':x.status==='offen'?'Keine passende Abbuchung auf dem Konto gefunden':'Liegt außerhalb der geladenen Kontodaten'}"><i></i>${esc(x.status)}</span>${x.link?`<a class="icon-btn bl" href="${esc(x.link)}" target="_blank" rel="noopener" aria-label="Beleg öffnen" title="Beleg öffnen"><svg class="i sm"><use href="#i-open"/></svg></a>`:'<span class="bl"></span>'}</div>`;
   el.innerHTML=`<div class="aus-top">
       <div class="seg" role="group" aria-label="Zeitraum"><button data-anamode="monat" aria-pressed="${!isYear}">Monat</button><button data-anamode="jahr" aria-pressed="${isYear}">Jahr</button></div>
       <div class="ana-nav"><button class="icon-btn" data-anastep="-1" aria-label="Zurück">‹</button><b>${esc(anaPeriodTxt())}</b><button class="icon-btn" data-anastep="1" aria-label="Weiter">›</button></div>
-      <span class="sp" style="flex:1"></span><button class="btn btn-glass sm" data-anacsv>Kontist-CSV laden</button></div>
+      <span class="sp" style="flex:1"></span>${finSrcBtn()}</div>
     <div class="aus-sum"><strong>${eur2(sum)}</strong><span>Ausgaben ${esc(anaPeriodTxt())}, ${counted.length} ${counted.length===1?'Posten':'Posten'}${offen?', davon '+eur2(offen)+' offen':''}${priv?' · '+eur2(priv)+' privat, nicht mitgezählt':''}${chk?` · <b class="warn-t">${chk} ${chk===1?'Beleg':'Belege'}: Betrag prüfen</b>`:''}</span></div>
-    <p class="aus-hint">${A.from?`Kontist-Export ${dm(A.from)} bis ${dm(A.to)} plus Belege aus Drive (Eingangsrechnungen).`:'Noch kein Kontist-Export geladen, darum nur Belege aus Drive.'} Doppelte Buchungen zählen einmal. Ausgaben zählen nie zum Umsatz.</p>
-    ${A.rows.length?`<div class="aus-r h"><span>Datum</span><span>Lieferant</span><span style="text-align:right">Betrag</span><span>Kategorie</span><span>Status</span><span>Beleg</span></div>${A.rows.map(row).join('')}`:`<p class="ana-empty">Keine Ausgaben in ${esc(anaPeriodTxt())}.${A.from?'':' Lade einmal den CSV-Export aus Kontist.'}</p>`}`;
+    <p class="aus-hint">${A.from?`${finSrcName()} ${dm(A.from)} bis ${dm(A.to)} plus Belege aus Drive (Eingangsrechnungen).`:'Noch keine Kontodaten, darum nur Belege aus Drive.'} Doppelte Buchungen zählen einmal. Ausgaben zählen nie zum Umsatz.</p>
+    ${A.rows.length?`<div class="aus-r h"><span>Datum</span><span>Lieferant</span><span style="text-align:right">Betrag</span><span>Kategorie</span><span>Status</span><span>Beleg</span></div>${A.rows.map(row).join('')}`:`<p class="ana-empty">Keine Ausgaben in ${esc(anaPeriodTxt())}.${A.from?'':' Die Kontodaten kommen aus sevDesk, sobald es verbunden ist.'}</p>`}`;
 }
 /* Ablage der Belege: Eingangsrechnungen / <Jahr laut Rechnungsdatum> / <01_Equipment | 02_Domain | 03_Buchhaltung | 04_Programme>.
    Ein neues Jahr bekommt sofort alle vier Unterordner. Nie Kategorie-Ordner ohne Jahr. */
@@ -9845,8 +9942,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-03.44';
+const APP_VERSION='2026-11-08.45';
 const CHANGELOG=[
+  {v:'2026-11-08.45',d:'08.11.2026',items:['sevDesk ist verbunden: Kontobewegungen kommen automatisch, der Kontist-Export ist nicht mehr nötig','Analyse und Ausgaben sind damit immer aktuell','In sevDesk bezahlte Rechnungen stehen in Notion von selbst auf „Bezahlt“, ebenso Geldeingänge mit Rechnungsnummer im Verwendungszweck','In sevDesk als privat markierte Buchungen zählen nicht mit','Einstellungen > Verbindungen zeigt den Stand und Rechnungen aus sevDesk, die in Notion fehlen']},
   {v:'2026-11-03.44',d:'03.11.2026',items:['Aufgaben aus WhatsApp landen nicht mehr im Kalender, auch nicht über alte, offene Studio-Fenster','Das Studio lädt neue Versionen jetzt von selbst, sobald gerade nichts getippt wird']},
   {v:'2026-11-02.43',d:'02.11.2026',items:['In den Kalender kommt eine Aufgabe nur mit Haken „In Kalender“ in Notion, den setzt der Kalender-Knopf oder der WhatsApp-Bot bei „Termin anlegen“','Überfällige Aufgaben heißen „überfällig seit …“ und werden nie als heute gezeigt','Kalender-Einträge zeigen den Titel auf zwei Zeilen, in der Woche mindestens zwei Zeilen','Neu: Ansicht „Liste“ mit vollen Titeln, am Handy ist sie Standard','LeMatic Intelligence trennt bei „Was steht heute an?“ Termine und Aufgaben, nennt die Quelle und liest nie Papierkorb oder Archiv']},
   {v:'2026-11-02.42',d:'02.11.2026',items:['Im Kalender stehen nur noch echte Termine: Drehs, Calls, Treffen','Aufgaben stehen nur unter Aufgaben und auf Heute, mit Frist und Häkchen','Neu an jeder Aufgabe: Kalender-Knopf, holt sie bei Bedarf doch in den Kalender','Die bisher automatisch angelegten Aufgaben-Termine räumt das Studio einmal aus dem Kalender, die Aufgaben bleiben']},
@@ -10837,7 +10935,7 @@ on('invOpenUp','click',()=>invUp(!$('invGrid').classList.contains('up-open')));
 on('invUpClose','click',()=>invUp(false));
 on('invMore','click',e=>popMenu(e.currentTarget,'',[
   {label:'Drive-Ordner öffnen',fn:()=>window.open(RECHNUNGEN_ROOT_URL,'_blank','noopener')},
-  {label:'Geldeingänge abgleichen (Kontist-CSV)',fn:()=>$('bankFile').click()}
+  sdHasTx()?{label:'Konto abgleichen (sevDesk)',fn:()=>sdSync(true).then(()=>{if(SD.state==='ok')toast('sevDesk abgeglichen')})}:{label:'Geldeingänge abgleichen (Kontist-CSV)',fn:()=>$('bankFile').click()}
 ]));
 (function(){
   const view=document.querySelector('[data-view="rechnungen"]');if(!view)return;let t=0;

@@ -146,7 +146,7 @@ ${c.zahlen}`,
   finanz: c => `Du schaust für ${c.user || 'das Team'} auf die Finanzen von LeMatic. Zeitraum: ${c.zeitraum}. Heute ist ${c.heute}.
 Alle Zahlen unten hat das Studio exakt berechnet.
 Rechne nicht neu, erfinde keine Beträge und nenne Zahlen nur so, wie sie unten stehen. Sei ehrlich und konkret:
-Wenn die Datenlage dünn ist (wenige Rechnungen, Kontist-Daten fehlen oder sind alt), sag das in einem Halbsatz.
+Wenn die Datenlage dünn ist (wenige Rechnungen, Kontodaten fehlen oder sind alt), sag das in einem Halbsatz.
 Gib NUR ein JSON-Objekt zurück, ohne Text davor oder danach:
 {"lage":"2-3 Sätze: was im Zeitraum passiert ist (Umsatz, Zahlungseingang, Ausgaben, Auffälligkeiten)",
 "ausblick":"2-3 Sätze: was bis Jahresende noch reinkommt (offene Rechnungen, unterschriebene Angebote) und was die nächsten Schritte bringen, motivierend und konkret",
