@@ -9292,11 +9292,12 @@ function sdInvRows(){
 /* Belege wie in der sevDesk-Übersicht, nach Buchungskonto der Positionen (SKR04):
    Aufwand 5000–7999 und Anlagen 0000–0999 = Ausgaben (eine Einnahme-Buchung darauf, z. B. Erstattung, mindert sie),
    Erlöse 4000–4999 = Einnahmen, alles andere (Durchlaufende Posten 1370, Privat 2xxx) zählt nicht. Ohne Positionen: C = Ausgabe, D = Einnahme. */
-const sdKat=n=>String(n||'').replace(/\s*\(.*$/,'').replace(/^Aufwendungen für /,'').trim()||'Sonstiges';
+const SD_KAT={'5100':'Material & Einkauf','5900':'Fremdleistungen','5700':'Erstattungen','6815':'Bürobedarf & Technik','6837':'Software & Lizenzen','6590':'Kfz-Kosten','6855':'Bankgebühren','6420':'Beiträge'};
+const sdKat=(n,k)=>SD_KAT[String(k)]||String(n||'').replace(/\s*\(.*$/,'').replace(/^Aufwendungen für /,'').split(/ für | zum |,/)[0].trim()||'Sonstiges';
 function sdBelCalc(b){
   let aus=0,ein=0,kat='',kmax=0;
   if(b.pos&&b.pos.length)b.pos.forEach(p=>{const k=+p.konto,v=+p.brutto||0,sg=b.art==='C'?1:-1;
-    if(k<1000||(k>=5000&&k<=7999)){aus+=sg*v;if(Math.abs(v)>kmax){kmax=Math.abs(v);kat=k<1000?'Anlagen & Ausstattung':sdKat(p.kontoName)}}
+    if(k<1000||(k>=5000&&k<=7999)){aus+=sg*v;if(Math.abs(v)>kmax){kmax=Math.abs(v);kat=k<1000?'Anlagen & Ausstattung':sdKat(p.kontoName,p.konto)}}
     else if(k>=4000&&k<=4999)ein-=sg*v});
   else if(b.art==='C'){aus=b.brutto;kat='Sonstiges'}else ein=b.brutto;
   return{aus,ein,kat:kat||'Sonstiges'};
@@ -10021,8 +10022,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-08.47';
+const APP_VERSION='2026-11-08.48';
 const CHANGELOG=[
+  {v:'2026-11-08.48',d:'08.11.2026',items:['Kategorien der Ausgaben mit kurzen Namen (z. B. Software & Lizenzen, Material & Einkauf)']},
   {v:'2026-11-08.47',d:'08.11.2026',items:['Ausgaben und Einnahmen nach dem Buchungskonto in sevDesk, genau wie die sevDesk-Übersicht','Erstattungen mindern die Ausgaben statt als Einnahme zu zählen','Privatentnahmen und durchlaufende Posten zählen nicht','Kategorien kommen aus sevDesk']},
   {v:'2026-11-08.46',d:'08.11.2026',items:['Einnahmen, Ausgaben und Offen kommen nur noch aus sevDesk und stimmen mit der sevDesk-Übersicht überein','Eingenommen zählt zum Datum des Zahlungseingangs, Ausgaben sind die bezahlten Belege in sevDesk','Reiter „Ausgaben“ zeigt die Belege aus sevDesk, dazu Belege aus Drive, die in sevDesk noch fehlen','Notion liefert nur noch Angebote und Kunden']},
   {v:'2026-11-08.45',d:'08.11.2026',items:['sevDesk ist verbunden: Kontobewegungen kommen automatisch, der Kontist-Export ist nicht mehr nötig','Analyse und Ausgaben sind damit immer aktuell','In sevDesk bezahlte Rechnungen stehen in Notion von selbst auf „Bezahlt“, ebenso Geldeingänge mit Rechnungsnummer im Verwendungszweck','In sevDesk als privat markierte Buchungen zählen nicht mit','Einstellungen > Verbindungen zeigt den Stand und Rechnungen aus sevDesk, die in Notion fehlen']},
