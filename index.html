@@ -9289,31 +9289,44 @@ function sdInvRows(){
       date:x.datum,faellig:x.faellig||'',amount:x.brutto,paid,pay:x.bezahltAm||(x.status===1000?x.datum:''),
       status:x.status===1000?'bezahlt':'offen',rawStatus:x.status===1000?'Bezahlt':'Offen',rest:Math.max(0,x.brutto-paid)}});
 }
-function sdBelRows(){
-  return SD.bel.filter(b=>b.status!==50).map(b=>{const paid=b.status===1000?b.brutto:b.status===750?Math.min(b.brutto,b.bezahlt||0):0;
-    return{id:'v'+b.sid,sid:b.sid,art:b.art,name:b.name||'—',nr:b.nr,date:b.datum,pay:b.bezahltAm||(paid?b.datum:''),amount:b.brutto,paid,status:b.status}});
+/* Belege wie in der sevDesk-Übersicht, nach Buchungskonto der Positionen (SKR04):
+   Aufwand 5000–7999 und Anlagen 0000–0999 = Ausgaben (eine Einnahme-Buchung darauf, z. B. Erstattung, mindert sie),
+   Erlöse 4000–4999 = Einnahmen, alles andere (Durchlaufende Posten 1370, Privat 2xxx) zählt nicht. Ohne Positionen: C = Ausgabe, D = Einnahme. */
+const sdKat=n=>String(n||'').replace(/\s*\(.*$/,'').replace(/^Aufwendungen für /,'').trim()||'Sonstiges';
+function sdBelCalc(b){
+  let aus=0,ein=0,kat='',kmax=0;
+  if(b.pos&&b.pos.length)b.pos.forEach(p=>{const k=+p.konto,v=+p.brutto||0,sg=b.art==='C'?1:-1;
+    if(k<1000||(k>=5000&&k<=7999)){aus+=sg*v;if(Math.abs(v)>kmax){kmax=Math.abs(v);kat=k<1000?'Anlagen & Ausstattung':sdKat(p.kontoName)}}
+    else if(k>=4000&&k<=4999)ein-=sg*v});
+  else if(b.art==='C'){aus=b.brutto;kat='Sonstiges'}else ein=b.brutto;
+  return{aus,ein,kat:kat||'Sonstiges'};
 }
-/* Bezahlte Ausgabe-Belege im Format der Kontobewegungen (für Kategorien) */
-const sdBelTx=()=>sdBelRows().filter(b=>b.art==='C'&&b.paid).map(b=>({id:b.id,date:b.pay||b.date,name:b.name,amount:-b.paid,purpose:b.nr,note:b.nr}));
+function sdBelRows(){
+  return SD.bel.filter(b=>b.status!==50).map(b=>{const f=b.status===1000?1:b.status===750&&b.brutto?Math.min(1,(b.bezahlt||0)/b.brutto):0,c=sdBelCalc(b);
+    return{id:'v'+b.sid,sid:b.sid,art:b.art,name:b.name||'—',nr:b.nr,date:b.datum,pay:b.bezahltAm||(f?b.datum:''),amount:b.brutto,paid:f?b.brutto*f:0,f,status:b.status,
+      aus:c.aus,ein:c.ein,kat:c.kat,ausPaid:c.aus*f,einPaid:c.ein*f}});
+}
+/* Bezahlte Ausgaben im Format der Kontobewegungen (Erstattungen negativ) */
+const sdBelTx=()=>sdBelRows().filter(b=>b.f&&Math.abs(b.ausPaid)>0.004).map(b=>({id:b.id,date:b.pay||b.date,name:b.name,amount:-b.ausPaid,purpose:b.nr,note:b.nr,kat:b.kat}));
 function revYearSd(y){
   const all=sdInvRows(),rech=all.filter(i=>String(i.date).startsWith(y));
   const sm=(a,f)=>a.reduce((t,i)=>t+(+i[f]||0),0);
-  const inc=all.filter(i=>i.paid&&String(i.pay).startsWith(y)),dIn=sdBelRows().filter(b=>b.art==='D'&&b.paid&&String(b.pay).startsWith(y));
+  const inc=all.filter(i=>i.paid&&String(i.pay).startsWith(y)),dIn=sdBelRows().filter(b=>b.f&&Math.abs(b.einPaid)>0.004&&String(b.pay).startsWith(y));
   const open=rech.filter(i=>i.rest>0.005),older=all.filter(i=>String(i.date)<y&&i.rest>0.005);
-  return{rech,open,berechnet:sm(rech,'amount'),eingenommen:sm(inc,'paid')+sm(dIn,'paid'),offen:sm(open,'rest'),olderSum:sm(older,'rest'),olderN:older.length,sd:true};
+  return{rech,open,berechnet:sm(rech,'amount'),eingenommen:sm(inc,'paid')+sm(dIn,'einPaid'),offen:sm(open,'rest'),olderSum:sm(older,'rest'),olderN:older.length,sd:true};
 }
 function anaNumbersSd(r){
   const inv=sdInvRows(),bel=sdBelRows(),sm=(a,f)=>a.reduce((t,i)=>t+(+i[f]||0),0);
   const rech=inv.filter(i=>inR(i.date,r));
-  const inc=inv.filter(i=>i.paid&&inR(i.pay,r)),dIn=bel.filter(b=>b.art==='D'&&b.paid&&inR(b.pay,r));
+  const inc=inv.filter(i=>i.paid&&inR(i.pay,r)),dIn=bel.filter(b=>b.f&&Math.abs(b.einPaid)>0.004&&inR(b.pay,r));
   const open=rech.filter(i=>i.rest>0.005);
   const tx=sdBelTx().filter(t=>inR(t.date,r)),ausgaben=-fsum(tx);
-  const cats={};tx.forEach(t=>{const c=finCat(t);cats[c]=(cats[c]||0)-t.amount});
-  const kund={};inc.forEach(i=>{const n=invWho(i);kund[n]=(kund[n]||0)+i.paid});if(dIn.length)kund['Sonstige Einnahmen']=sm(dIn,'paid');
-  const months=anaMonths().map(m=>{const bez=sm(inv.filter(i=>i.paid&&String(i.pay).startsWith(m.k)),'paid')+sm(bel.filter(b=>b.art==='D'&&b.paid&&String(b.pay).startsWith(m.k)),'paid');
+  const cats={};tx.forEach(t=>{const c=t.kat||'Sonstiges';cats[c]=(cats[c]||0)-t.amount});
+  const kund={};inc.forEach(i=>{const n=invWho(i);kund[n]=(kund[n]||0)+i.paid});if(dIn.length)kund['Sonstige Einnahmen']=sm(dIn,'einPaid');
+  const months=anaMonths().map(m=>{const bez=sm(inv.filter(i=>i.paid&&String(i.pay).startsWith(m.k)),'paid')+sm(bel.filter(b=>b.f&&String(b.pay).startsWith(m.k)),'einPaid');
     const off=sm(inv.filter(i=>i.rest>0.005&&String(i.date).startsWith(m.k)),'rest');
     return{...m,ber:bez+off,bez,off,aus:-fsum(sdBelTx().filter(t=>String(t.date).startsWith(m.k)))}});
-  const eingenommen=sm(inc,'paid')+sm(dIn,'paid');
+  const eingenommen=sm(inc,'paid')+sm(dIn,'einPaid');
   return{rech,berechnet:sm(rech,'amount'),eingenommen,offen:sm(open,'rest'),open,tx,out:tx,ausgaben,privat:0,rein:eingenommen,saldo:eingenommen-ausgaben,cats,kund,months,finFrom:'',finTo:'',hasFin:true,sd:true};
 }
 const finSrcBtn=()=>sdReady()||sdHasTx()?'<button class="btn btn-glass sm" data-sdsync>Konto abgleichen</button>':'<button class="btn btn-glass sm" data-anacsv>Kontist-CSV laden</button>';
@@ -9537,7 +9550,7 @@ function renderAna(){
   const catItems=Object.entries(N.cats).sort((a,b)=>b[1]-a[1]).map(([l,v])=>({l,v}));
   const kItems=Object.entries(N.kund).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([l,v])=>({l,v}));
   const outs=[...N.tx.filter(t=>t.amount<0)].sort((a,b)=>isYear?a.amount-b.amount:String(b.date).localeCompare(String(a.date)));
-  const txRow=t=>`<div class="ftx-r"><span class="num">${dm(t.date)}</span><span class="n">${esc(t.name||'—')}<small>${esc(t.note||t.purpose||'')}</small></span><b>${eur(-t.amount)}</b><button class="fcat" data-fincat="${esc(t.id)}" aria-label="Kategorie ändern: ${esc(finCat(t))}">${esc(finCat(t))}</button></div>`;
+  const txRow=t=>`<div class="ftx-r"><span class="num">${dm(t.date)}</span><span class="n">${esc(t.name||'—')}<small>${esc(t.note||t.purpose||'')}</small></span><b>${eur(-t.amount)}</b>${N.sd?`<span class="fcat ro">${esc(t.kat||'Sonstiges')}</span>`:`<button class="fcat" data-fincat="${esc(t.id)}" aria-label="Kategorie ändern: ${esc(finCat(t))}">${esc(finCat(t))}</button>`}</div>`;
   
   el.innerHTML=`
   <div class="ana-bar">
@@ -9578,7 +9591,7 @@ function renderAna(){
     <li><b>Eingenommen:</b> bezahlte Rechnungen und sonstige Einnahme-Belege aus sevDesk, zum Datum des Zahlungseingangs. <b>Offen</b> sind Rechnungen aus sevDesk, die noch nicht (voll) bezahlt sind. <b>Berechnet gesamt</b>: alle Rechnungen mit Rechnungsdatum im Zeitraum. In der Grafik grün nach Zahlungsmonat, gelb nach Rechnungsmonat.</li>
     <li><b>Ausgaben:</b> bezahlte Ausgabe-Belege aus sevDesk, zum Zahlungsdatum. Noch nicht bezahlte Belege stehen extra. Belege aus Drive, die in sevDesk fehlen, werden angezeigt, zählen aber erst, wenn sie in sevDesk gebucht sind.</li>
     <li><b>Angebote-Quote:</b> angenommene und unterschriebene Angebote geteilt durch alle Angebote im Zeitraum (nach Angebotsdatum), ersetzte Fassungen zählen nicht.</li>
-    <li><b>Kategorien:</b> setzt das Studio nach dem Lieferanten, sie lassen sich pro Beleg ändern. Abgleich mit sevDesk alle 15 Minuten.</li>
+    <li><b>Kategorien:</b> das Buchungskonto aus sevDesk. Erstattungen (Einnahme-Buchung auf ein Aufwandskonto) mindern die Ausgaben, Privatentnahmen und durchlaufende Posten zählen nicht. Abgleich mit sevDesk alle 15 Minuten.</li>
     <li><b>Unterschrieben, noch nicht abgerechnet:</b> Angebot minus allem, was dem Kunden seit dem Angebotsdatum berechnet wurde.</li>
   </ul></details></section>`;
   safe('anaAI',()=>anaAI(false,N,F));
@@ -9681,12 +9694,12 @@ function ausRows(){
   return{r,rows,from,to};
 }
 function ausRowsSd(){
-  const r=anaRange(),all=SD.bel.filter(b=>b.art==='C');
-  const rows=all.map(b=>{const paid=b.status===1000?b.brutto:b.status===750?Math.min(b.brutto,b.bezahlt||0):0;
-    const st=b.status===1000?'bezahlt':b.status===750?'teilweise bezahlt':b.status===50?'Entwurf':'offen';
-    const t={id:'v'+b.sid,name:b.name,purpose:b.nr,note:b.nr,amount:-b.brutto};
-    return{key:'v'+b.sid,date:paid&&b.bezahltAm?b.bezahltAm:b.datum,party:b.name||'—',sub:(b.nr?b.nr+' · ':'')+'sevDesk'+(st==='teilweise bezahlt'?' · '+eur2(paid)+' von '+eur2(b.brutto):''),
-      amount:st==='teilweise bezahlt'?paid:b.brutto,cat:finCat(t),catEdit:true,status:st,nc:!paid,src:'sevdesk'}}).filter(x=>inR(x.date,r));
+  const r=anaRange(),all=SD.bel;
+  const rows=sdBelRows().concat(all.filter(b=>b.status===50).map(b=>{const c=sdBelCalc(b);return{id:'v'+b.sid,name:b.name||'—',nr:b.nr,date:b.datum,pay:'',f:0,status:50,aus:c.aus,kat:c.kat,amount:b.brutto}}))
+    .filter(b=>Math.abs(b.aus)>0.004).map(b=>{
+    const st=b.status===1000?'bezahlt':b.status===750?'teilweise bezahlt':b.status===50?'Entwurf':'offen',erst=b.aus<0;
+    return{key:b.id,date:b.f&&b.pay?b.pay:b.date,party:b.name,sub:(b.nr?b.nr+' · ':'')+(erst?'Erstattung, mindert die Ausgaben':'sevDesk')+(st==='teilweise bezahlt'?' · '+eur2(b.ausPaid)+' von '+eur2(b.aus):''),
+      amount:b.f?b.ausPaid:b.aus,cat:b.kat,catEdit:false,status:st,nc:!b.f,src:'sevdesk'}}).filter(x=>inR(x.date,r));
   /* Belege aus Drive, die in sevDesk noch fehlen: gleicher Betrag (bis 60 Tage) oder Lieferant im Beleg (bis 20 Tage) */
   let D={docs:[]};try{D=ausData()}catch(_){}
   D.docs.filter(d=>inR(d.date,r)).forEach(d=>{
@@ -10008,8 +10021,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-08.46';
+const APP_VERSION='2026-11-08.47';
 const CHANGELOG=[
+  {v:'2026-11-08.47',d:'08.11.2026',items:['Ausgaben und Einnahmen nach dem Buchungskonto in sevDesk, genau wie die sevDesk-Übersicht','Erstattungen mindern die Ausgaben statt als Einnahme zu zählen','Privatentnahmen und durchlaufende Posten zählen nicht','Kategorien kommen aus sevDesk']},
   {v:'2026-11-08.46',d:'08.11.2026',items:['Einnahmen, Ausgaben und Offen kommen nur noch aus sevDesk und stimmen mit der sevDesk-Übersicht überein','Eingenommen zählt zum Datum des Zahlungseingangs, Ausgaben sind die bezahlten Belege in sevDesk','Reiter „Ausgaben“ zeigt die Belege aus sevDesk, dazu Belege aus Drive, die in sevDesk noch fehlen','Notion liefert nur noch Angebote und Kunden']},
   {v:'2026-11-08.45',d:'08.11.2026',items:['sevDesk ist verbunden: Kontobewegungen kommen automatisch, der Kontist-Export ist nicht mehr nötig','Analyse und Ausgaben sind damit immer aktuell','In sevDesk bezahlte Rechnungen stehen in Notion von selbst auf „Bezahlt“, ebenso Geldeingänge mit Rechnungsnummer im Verwendungszweck','In sevDesk als privat markierte Buchungen zählen nicht mit','Einstellungen > Verbindungen zeigt den Stand und Rechnungen aus sevDesk, die in Notion fehlen']},
   {v:'2026-11-03.44',d:'03.11.2026',items:['Aufgaben aus WhatsApp landen nicht mehr im Kalender, auch nicht über alte, offene Studio-Fenster','Das Studio lädt neue Versionen jetzt von selbst, sobald gerade nichts getippt wird']},
