@@ -132,7 +132,27 @@ export default async function handler(req, res) {
       if (fromDay) { const d = new Date(fromDay + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() - 90); ts = Math.floor(d.getTime() / 1000); }
       const rows = await all('/Voucher?embed=supplier' + (ts ? '&startDate=' + ts : ''), key);
       const name = v => v.supplierName || (v.supplier && (v.supplier.name || [v.supplier.surename, v.supplier.familyname].filter(Boolean).join(' '))) || '';
+      // Positionen mit Buchungskonto: daraus erkennt das Studio Erstattungen, Anlagen und die Kategorie wie in sevDesk.
+      const pos = new Map();
+      try {
+        const ps = await all('/VoucherPos?embed=accountDatev,accountingType', key);
+        for (const x of ps) {
+          const vid = x.voucher && String(x.voucher.id); if (!vid) continue;
+          const acc = x.accountDatev || x.accountingType || {};
+          const arr = pos.get(vid) || [];
+          arr.push({
+            konto: String(acc.accountNumber || acc.number || acc.accountDatevNumber || ''),
+            kontoName: acc.name || acc.translationCode || '',
+            kontoTyp: acc.type || acc.accountType || '',
+            anlage: x.isAsset === true || x.isAsset === '1' || x.isAsset === 1,
+            netto: +x.sumNet || 0, brutto: +x.sumGross || 0, steuer: +x.sumTax || 0, satz: +x.taxRate || 0
+          });
+          pos.set(vid, arr);
+        }
+      } catch (_) {}
       const bel = rows.filter(v => v.voucherType !== 'RV').map(v => ({
+        pos: pos.get(String(v.id)) || [],
+        netto: Math.abs(+v.sumNet || 0),
         sid: String(v.id),
         art: v.creditDebit === 'D' ? 'D' : 'C',   // C = Ausgabe, D = Einnahme
         status: +v.status || 0,                    // 50 Entwurf, 100 offen, 150 überwiesen, 750 teilweise bezahlt, 1000 bezahlt
