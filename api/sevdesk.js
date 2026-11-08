@@ -1,14 +1,27 @@
 // Vercel Serverless Function: Proxy zwischen LeMatic Studio und sevDesk (nur lesen).
 // Der Token liegt ausschließlich in Vercel (Environment Variable SEVDESK_API_KEY) und geht nie in den Browser.
 // sevDesk-Tokens laufen nie ab und haben alle Rechte des Benutzers. Deshalb kennt dieser Proxy nur feste
-// Lese-Abfragen (?op=status | umsaetze | rechnungen). Nichts wird in sevDesk gebucht, geändert oder verschickt.
+// Lese-Abfragen (?op=status | umsaetze | rechnungen | belege). Nichts wird in sevDesk gebucht, geändert oder verschickt.
 //
 // Zugriffsschutz wie bei Notion: Google-Token der eingeloggten Person im Header, nur lematic.de (plus ALLOWED_EMAILS).
 
 import { checkGoogle } from './_auth.js';
 
 const BASE = 'https://my.sevdesk.de/api/v1';
-const day = s => String(s || '').slice(0, 10);
+// sevDesk liefert Datumswerte als ISO mit Zeitzone, als Unix-Zeit oder als TT.MM.JJJJ. Immer als Berliner Datum zurückgeben.
+function day(v) {
+  if (v == null || v === '') return '';
+  const s = String(v).trim();
+  let m = s.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+  let d;
+  if (/^\d{9,11}$/.test(s)) d = new Date(+s * 1000);
+  else if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  else d = new Date(s);
+  if (isNaN(d)) return s.slice(0, 10);
+  return d.toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+}
+const plusDays = (d, n) => { if (!d || !n) return ''; const x = new Date(d + 'T12:00:00Z'); x.setUTCDate(x.getUTCDate() + (+n || 0)); return x.toISOString().slice(0, 10); };
 
 async function sd(path, key) {
   const r = await fetch(BASE + path, { headers: { Authorization: key, Accept: 'application/json' } });
@@ -100,6 +113,7 @@ export default async function handler(req, res) {
       const name = c => !c ? '' : (c.name || [c.surename, c.familyname].filter(Boolean).join(' ') || '');
       const inv = rows.map(i => ({
         sid: String(i.id),
+        faellig: plusDays(day(i.invoiceDate), i.timeToPay),
         nr: i.invoiceNumber || '',
         status: +i.status || 0,              // 50 deaktiviert, 100 Entwurf, 200 offen, 750 teilweise bezahlt, 1000 bezahlt
         typ: i.invoiceType || '',
@@ -110,6 +124,26 @@ export default async function handler(req, res) {
         kunde: name(i.contact)
       })).filter(i => i.nr && (!fromDay || !i.datum || i.datum >= fromDay));
       return res.status(200).json({ rechnungen: inv });
+    }
+
+    if (op === 'belege') {
+      // Belege (Ausgaben C, sonstige Einnahmen D). Etwas früher anfangen, weil das Zahlungsdatum nach dem Belegdatum liegen kann.
+      let ts = 0;
+      if (fromDay) { const d = new Date(fromDay + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() - 90); ts = Math.floor(d.getTime() / 1000); }
+      const rows = await all('/Voucher?embed=supplier' + (ts ? '&startDate=' + ts : ''), key);
+      const name = v => v.supplierName || (v.supplier && (v.supplier.name || [v.supplier.surename, v.supplier.familyname].filter(Boolean).join(' '))) || '';
+      const bel = rows.filter(v => v.voucherType !== 'RV').map(v => ({
+        sid: String(v.id),
+        art: v.creditDebit === 'D' ? 'D' : 'C',   // C = Ausgabe, D = Einnahme
+        status: +v.status || 0,                    // 50 Entwurf, 100 offen, 150 überwiesen, 750 teilweise bezahlt, 1000 bezahlt
+        datum: day(v.voucherDate),
+        bezahltAm: day(v.payDate),
+        brutto: Math.abs(+v.sumGross || 0),
+        bezahlt: Math.abs(+v.paidAmount || 0),
+        name: name(v),
+        nr: v.description || ''
+      }));
+      return res.status(200).json({ belege: bel });
     }
 
     return res.status(400).json({ error: 'Unbekannte Abfrage: ' + op });
