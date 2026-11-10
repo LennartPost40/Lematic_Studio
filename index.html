@@ -3900,9 +3900,9 @@ const PARTY_SUGGEST={
 };
 document.querySelectorAll('[data-drivetest]').forEach(a=>a.href=DRIVE_ROOT_URL);
 /* Ablage der Ausgaben: Eingangsrechnungen / <Jahr> / <eine von vier Kategorien> (v.38) */
-const EIN_CATS_ORDER=['Equipment','Domain','Buchhaltung','Programme'];
-const EIN_SUB={Equipment:'01_Equipment',Domain:'02_Domain',Buchhaltung:'03_Buchhaltung',Programme:'04_Programme'};
-const EIN_HINT={Equipment:'Kamera, Licht, Ton, Technik',Domain:'Domain, Hosting, Server',Buchhaltung:'Kontist, sevDesk, Steuer, Versicherung',Programme:'Software, Abos, KI-Tools'};
+const EIN_CATS_ORDER=['Equipment','Domain','Buchhaltung','Programme','Freelancer','Fahrtkosten','Beitraege'];
+const EIN_SUB={Equipment:'01_Equipment',Domain:'02_Domain',Buchhaltung:'03_Buchhaltung',Programme:'04_Programme',Freelancer:'05_Freelancer',Fahrtkosten:'06_Fahrtkosten',Beitraege:'07_Beitraege_und_Gebuehren'};
+const EIN_HINT={Equipment:'Kamera, Licht, Ton, Technik',Domain:'Domain, Hosting, Server',Buchhaltung:'Kontist, sevDesk, Steuer, Versicherung',Programme:'Software, Abos, KI-Tools',Freelancer:'Kamera, Schnitt, Assistenz von Freelancern',Fahrtkosten:'Bahn, Tanken, Parken, Taxi, Carsharing',Beitraege:'Beiträge, Mitgliedschaften, Gebühren'};
 document.getElementById('invCat').innerHTML='<option value="">Kategorie wählen</option>'+EIN_CATS_ORDER.map(k=>`<option value="${k}">${EIN_SUB[k]} (${EIN_HINT[k]})</option>`).join('');
 
 const NOW=new Date();
@@ -7770,9 +7770,12 @@ document.addEventListener('click',async e=>{
 /* ---------- Rechnung hochladen: automatisch erkennen und einsortieren ---------- */
 const EIN_CATS={
   Buchhaltung:/steuerberat|buchhaltung|sevdesk|kontist|kontoführung|kontogebühr|bankgebühr|lexoffice|datev|finanzamt|steuer|ihk|handelskammer|versicherung|\bbank\b/i,
+  Freelancer:/freelancer|freiberuf|honorar|kameramann|kamerafrau|cutter|assistenz|second shooter|zweite kamera/i,
   Equipment:/kamera|objektiv|sony|canon|blackmagic|dji|rode|sennheiser|stativ|gimbal|akku|speicherkarte|sd-?karte|ssd|festplatte|mikrofon|licht|leuchte|aputure|godox|calumet|foto ?koch|thomann|technik/i,
   Programme:/artlist|adobe|creative cloud|davinci|software|lizenz|abo(nnement)?\b|subscription|higgsfield|openai|chatgpt|anthropic|claude|elevenlabs|magnific|kling|runway|frame\.io|dropbox|google workspace|microsoft|notion|canva|figma|vercel|github/i,
-  Domain:/domain|hosting|webspace|ionos|strato|hetzner|all-?inkl|netcup|namecheap|godaddy|server/i
+  Domain:/domain|hosting|webspace|ionos|strato|hetzner|all-?inkl|netcup|namecheap|godaddy|server/i,
+  Fahrtkosten:/deutsche bahn|\bdb\b|bahncard|flixbus|fahrkarte|tankstelle|tanken|\baral\b|\bshell\b|\besso\b|\btotal(energies)?\b|parken|parkhaus|apcoa|taxi|uber|free ?now|share ?now|miles mobility|sixt|europcar|maut/i,
+  Beitraege:/beitrag|mitglied|rundfunk|gema|künstlersozialkasse|\bksk\b|vg wort|gebühr/i
 };
 function guessEinCat(t){for(const [k,re] of Object.entries(EIN_CATS))if(re.test(t))return k;return ''}
 const einCatPick=(k,t)=>EIN_SUB[k]&&!(k!=='Buchhaltung'&&EIN_CATS.Buchhaltung.test(t))?k:guessEinCat(t);
@@ -9666,7 +9669,7 @@ const eur2=n=>(+n||0).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFra
 const anaPeriodTxt=()=>ANA.mode==='jahr'?String(ANA.y):MONTHS[ANA.m-1]+' '+ANA.y;
 function ausLabel(){const b=document.querySelector('#invFilter [data-f="ausgaben"]');if(b)b.textContent='Ausgaben '+(ANA.mode==='jahr'?ANA.y:MON[ANA.m-1]+' '+ANA.y);
   const on=invF==='ausgaben';setText('inv-title',on?'Ausgaben':'Alle Rechnungen');setText('inv-sub',on?(sdReady()?'Ausgabe-Belege aus sevDesk. Zählen nie zum Umsatz.':'Belege an LeMatic und Abbuchungen vom Konto. Zählen nie zum Umsatz.'):'Status per Klick auf bezahlt setzen')}
-const EIN2FIN={Equipment:'Equipment & Technik',Programme:'Software & Abos',Domain:'Software & Abos',Buchhaltung:'Bank & Gebühren',Sonstiges:'Sonstiges'};
+const EIN2FIN={Equipment:'Equipment & Technik',Programme:'Software & Abos',Domain:'Software & Abos',Buchhaltung:'Bank & Gebühren',Freelancer:'Freelancer & Dienstleister',Fahrtkosten:'Fahrt & Reise',Beitraege:'Steuern & Abgaben',Sonstiges:'Sonstiges'};
 const einCatOfFolder=f=>{f=String(f||'').toLowerCase();return EIN_CATS_ORDER.find(k=>f.includes(k.toLowerCase()))||'Sonstiges'};
 const AUS_STOP=new Set('gmbh inc ltd llc corp invoice rechnung beleg kartenzahlung lastschrift überweisung www com germany deutschland payment zahlung mit kontist gesendet amazon'.split(' '));
 const ausTok=s=>String(s||'').toLowerCase().replace(/[*.,]/g,' ').split(/[^a-z0-9äöüß]+/).filter(w=>w.length>=4&&!AUS_STOP.has(w)&&!/^\d+$/.test(w));
@@ -9725,7 +9728,7 @@ function renderAusgaben(){
     <p class="aus-hint">${A.sd?'Gebuchte Ausgabe-Belege aus sevDesk, gezählt zum Zahlungsdatum wie in sevDesk. Belege aus Drive, die in sevDesk noch fehlen, stehen dabei, zählen aber erst nach dem Buchen.':A.from?`${finSrcName()} ${dm(A.from)} bis ${dm(A.to)} plus Belege aus Drive (Eingangsrechnungen).`:'Noch keine Kontodaten, darum nur Belege aus Drive.'} ${A.sd?'':'Doppelte Buchungen zählen einmal. '}Ausgaben zählen nie zum Umsatz.</p>
     ${A.rows.length?`<div class="aus-r h"><span>Datum</span><span>Lieferant</span><span style="text-align:right">Betrag</span><span>Kategorie</span><span>Status</span><span>Beleg</span></div>${A.rows.map(row).join('')}`:`<p class="ana-empty">Keine Ausgaben in ${esc(anaPeriodTxt())}.${A.from||A.sd?'':' Die Kontodaten kommen aus sevDesk, sobald es verbunden ist.'}</p>`}`;
 }
-/* Ablage der Belege: Eingangsrechnungen / <Jahr laut Rechnungsdatum> / <01_Equipment | 02_Domain | 03_Buchhaltung | 04_Programme>.
+/* Ablage der Belege: Eingangsrechnungen / <Jahr laut Rechnungsdatum> / <01_Equipment … 07_Beitraege_und_Gebuehren>.
    Ein neues Jahr bekommt sofort alle vier Unterordner. Nie Kategorie-Ordner ohne Jahr. */
 const EINGANG_ROOT_ID='1Z5HED0-jrKsvhZReZlUWzbc0Ky-Fjd6O';
 const einCatFolderName=cat=>EIN_SUB[cat]||'';
@@ -10022,8 +10025,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-08.48';
+const APP_VERSION='2026-11-11.49';
 const CHANGELOG=[
+  {v:'2026-11-11.49',d:'11.11.2026',items:['Ausgaben: alle sieben Kategorien wählbar, neu 05 Freelancer, 06 Fahrtkosten und 07 Beiträge & Gebühren']},
   {v:'2026-11-08.48',d:'08.11.2026',items:['Kategorien der Ausgaben mit kurzen Namen (z. B. Software & Lizenzen, Material & Einkauf)']},
   {v:'2026-11-08.47',d:'08.11.2026',items:['Ausgaben und Einnahmen nach dem Buchungskonto in sevDesk, genau wie die sevDesk-Übersicht','Erstattungen mindern die Ausgaben statt als Einnahme zu zählen','Privatentnahmen und durchlaufende Posten zählen nicht','Kategorien kommen aus sevDesk']},
   {v:'2026-11-08.46',d:'08.11.2026',items:['Einnahmen, Ausgaben und Offen kommen nur noch aus sevDesk und stimmen mit der sevDesk-Übersicht überein','Eingenommen zählt zum Datum des Zahlungseingangs, Ausgaben sind die bezahlten Belege in sevDesk','Reiter „Ausgaben“ zeigt die Belege aus sevDesk, dazu Belege aus Drive, die in sevDesk noch fehlen','Notion liefert nur noch Angebote und Kunden']},
