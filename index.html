@@ -2643,10 +2643,6 @@ html.theme-dark .skel span{background:rgba(255,255,255,.09)}
       <a href="#/kunden" data-route="kunden"><svg class="i"><use href="#i-users"/></svg>Kundenkartei</a>
     </nav>
     <div class="nav-edit-bar" id="navEditBar" hidden><span>Ziehen zum Sortieren, Auge zum Ausblenden</span><div><button class="btn btn-glass xs" type="button" id="navReset">Zurücksetzen</button><button class="btn btn-primary xs" type="button" id="navDone">Fertig</button></div></div>
-    <p class="side-label" data-navopt="clients">Kunden im Fokus</p>
-    <div class="clients" id="sideClients">
-      <a href="#/kunde" data-route="kunde"><i></i>Mammutmarsch Portal</a>
-    </div>
     <div class="side-bottom">
       <div class="fun-side" id="funSide"></div>
       <button class="nav-reload" id="appReload" title="Studio neu laden und alles aktualisieren"><span>↻</span>Neu laden<em id="updDot" hidden>Update</em></button>
@@ -10142,8 +10138,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-13.51';
+const APP_VERSION='2026-11-13.52';
 const CHANGELOG=[
+  {v:'2026-11-13.52',d:'13.11.2026',items:['Seitenleiste aufgeräumt: „Kunden im Fokus“ ist raus, Kunden findest du in der Kundenkartei']},
   {v:'2026-11-13.51',d:'13.11.2026',items:['Dialoge und Menüs gehen weich auf und zu, am Handy fährt das Blatt nach unten raus','Aufgabe abhaken: Haken, durchgestrichen, dann klappt die Zeile zu','Beim Laden stehen Platzhalter statt „wird geladen“','Kalender schiebt beim Blättern in die Richtung','Seitenwechsel springt sofort nach oben, die Balken in der Analyse wachsen nur noch einmal']},
   {v:'2026-11-12.50',d:'12.11.2026',items:['Kalender: mehrere Drehs am selben Tag für dieselbe Person – keine Warnung mehr, solange sich die Uhrzeiten nicht überschneiden']},
   {v:'2026-11-11.49',d:'11.11.2026',items:['Ausgaben: alle sieben Kategorien wählbar, neu 05 Freelancer, 06 Fahrtkosten und 07 Beiträge & Gebühren'],tour:[
