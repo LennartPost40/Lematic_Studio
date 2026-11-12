@@ -13,8 +13,9 @@ const aufgaben = [['Angebot Hafenwerk nachfassen', -3, 'Lennart', 'k1'], ['Rohsc
   .map(([t, o, w, k], i) => ({ id: 't' + i, url: '', Aufgabe: t, Wer: w, Deadline: day(o), Status: 'Nicht begonnen', Kunde: k ? [k] : [], 'Im Studio': true, 'In Kalender': i === 4, 'Angelegt von': 'Lennart' }));
 const rechnungen = [['RE-2001', 'k1', 2400, 'Bezahlt', -40], ['RE-2002', 'k4', 1800, 'Bezahlt', -25], ['RE-2003', 'k2', 950, 'Offen', -20], ['RE-2004', 'k6', 3200, 'Offen', -6], ['LM-2026-0101', 'k3', 4100, 'Angenommen', -10], ['RE-2005', 'k1', 600, 'Bezahlt', -70], ['RE-2006', 'k4', 1250, 'Bezahlt', -100], ['RE-2007', 'k2', 700, 'Bezahlt', -130]]
   .map(([no, k, a, s, o], i) => ({ id: 'r' + i, url: '', Nummer: no, Name: no, Art: no.startsWith('RE') ? 'Rechnung' : 'Angebot', Status: s, Betrag: a, Datum: day(o), 'Fällig am': day(o + 14), Leistung: 'Demo-Leistung', Kunde: [k] }));
-const ev = (id, sum, o, h, dur, art, loc) => ({ id, summary: sum, status: 'confirmed', htmlLink: '', location: loc || '', start: h == null ? { date: day(o) } : { dateTime: day(o) + 'T' + pad(h) + ':00:00+01:00' }, end: h == null ? { date: day(o + 1) } : { dateTime: day(o) + 'T' + pad(h + dur) + ':00:00+01:00' }, extendedProperties: { private: { lmArt: art, lmWho: 'LP' } } });
-const termine = [ev('e1', 'Dreh Hafenwerk Imagefilm', 0, 9, 6, 'dreh', 'Hamburg Hafen'), ev('e2', 'Call Nordlicht Events', 0, 16, 1, 'termin', 'Zoom'), ev('e3', 'Schnitt Messefilm', 1, 10, 4, 'schnitt', ''), ev('e4', 'Pitch Studio Elbe', 3, 14, 1, 'akquise', 'Altona'), ev('e5', 'Dreh Kranbau', 6, 8, 8, 'dreh', 'Geesthacht'), ev('e6', 'Belegt: Urlaub', 10, null, 0, 'belegt', '')];
+// who: 'LP', 'MS' oder '' für beide (seit v.53 sichtbar an jedem Termin)
+const ev = (id, sum, o, h, dur, art, loc, who = 'LP') => ({ id, summary: sum, status: 'confirmed', htmlLink: '', location: loc || '', start: h == null ? { date: day(o) } : { dateTime: day(o) + 'T' + pad(h) + ':00:00+01:00' }, end: h == null ? { date: day(o + 1) } : { dateTime: day(o) + 'T' + pad(h + dur) + ':00:00+01:00' }, extendedProperties: { private: { lmArt: art, lmWho: who } } });
+const termine = [ev('e1', 'Dreh Hafenwerk Imagefilm', 0, 9, 6, 'dreh', 'Hamburg Hafen'), ev('e2', 'Call Nordlicht Events', 0, 16, 1, 'termin', 'Zoom', ''), ev('e3', 'Schnitt Messefilm', 1, 10, 4, 'schnitt', ''), ev('e4', 'Pitch Studio Elbe', 3, 14, 1, 'akquise', 'Altona'), ev('e5', 'Dreh Kranbau', 6, 8, 8, 'dreh', 'Geesthacht'), ev('e6', 'Belegt: Urlaub', 10, null, 0, 'belegt', '')];
 
 // Optionen: W/H Fenstergröße, mobile (Handy 390 × 844), theme 'light'|'dark', delay ms Netz-Verzögerung, reduced „Weniger Bewegung“
 export async function start({ W = 1440, H = 900, mobile = false, theme = 'light', delay = 0, reduced = false } = {}) {
@@ -39,7 +40,11 @@ export async function start({ W = 1440, H = 900, mobile = false, theme = 'light'
   await page.route(/googleapis\.com|accounts\.google\.com|frankfurter|gstatic/, r => {
     const url = r.request().url();
     if (url.includes('gsi/client')) return r.fulfill({ contentType: 'text/javascript', body: 'window.google={accounts:{oauth2:{initTokenClient:()=>({requestAccessToken(){}}),revoke(){}},id:{initialize(){},renderButton(){}}}};' });
-    const body = url.includes('/calendar/') ? { items: termine } : { items: [], files: [], messages: [], name: 'LeMatic', id: 'x' };
+    const m = r.request().method();
+    // Kalender: Suche nach alten Aufgaben-Terminen (lmTask=1) ist leer, Anlegen und Ändern antworten mit einem Termin
+    const body = url.includes('/calendar/')
+      ? (m === 'POST' || m === 'PATCH' ? { id: 'neu' + Date.now(), htmlLink: '' } : url.includes('lmTask') ? { items: [] } : { items: termine })
+      : { items: [], files: [], messages: [], name: 'LeMatic', id: 'x' };
     setTimeout(() => r.fulfill({ contentType: 'application/json', body: JSON.stringify(body) }), delay);
   });
   await page.addInitScript(t => { try { localStorage.setItem('lm_person', 'LP'); localStorage.setItem('lm_theme', t) } catch (_) { } }, theme);

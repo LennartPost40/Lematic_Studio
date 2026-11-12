@@ -2525,6 +2525,12 @@ html.theme-dark .skel span{background:rgba(255,255,255,.09)}
   html{scroll-behavior:auto}
 }
 /* MOTION-END */
+/* WHO-START: wer steht im Termin (seit v.53). Ein Kalender für beide, bei jedem Termin stehen die Kürzel. */
+.who2{display:inline-flex;align-items:center;vertical-align:middle;flex:none}
+.who2 .av+.av{margin-left:-9px}
+.who2 .av[data-who="MS"]{background:#FCD717;color:#073D30}
+.wk-ev em{font-style:normal;opacity:.6;font-size:10px}
+/* WHO-END */
 </style>
 <script>(function(){try{var t=localStorage.getItem('lm_theme')||'auto';var d=t==='dark'||(t==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('theme-dark')}catch(e){}})()</script>
 </head>
@@ -3132,7 +3138,7 @@ html.theme-dark .skel span{background:rgba(255,255,255,.09)}
             <button class="btn btn-primary sm" id="csGo">Freigeben</button>
           </div>
           <p class="form-err" id="csMsg" role="status"></p>
-          <label class="chkline wa-set"><input type="checkbox" id="waNotifySet" checked><span><b>Hinweis in die WhatsApp-Gruppe „01_LeMatic_Allgemein“</b><small>Wer für den anderen einen Termin oder eine Aufgabe einträgt, schickt automatisch „Neu für …“ in die Gruppe. Diese Adressen oben bekommen außerdem die Kalender-Einladung. Gesendet wird über euren WhatsApp-Bot auf Lennarts Mac; die Nachrichten warten in Drive unter _Studio_Daten/WhatsApp_Ausgang.</small></span></label>
+          <label class="chkline wa-set"><input type="checkbox" id="waNotifySet" checked><span><b>Hinweis in die WhatsApp-Gruppe „01_LeMatic_Allgemein“</b><small>Wer für den anderen oder für beide einen Termin einträgt oder dem anderen eine Aufgabe gibt, schickt automatisch „Neu für …“ in die Gruppe. Kalender-Einladungen gibt es nicht mehr, ihr seht beide denselben Kalender. Gesendet wird über euren WhatsApp-Bot auf Lennarts Mac; die Nachrichten warten in Drive unter _Studio_Daten/WhatsApp_Ausgang.</small></span></label>
         </section>
         <section class="glass panel c12" aria-labelledby="look-title">
           <div class="panel-head"><div><h2 id="look-title">Dein Studio</h2><p>Ansicht und Look gelten nur für dich (pro Person und Gerät gemerkt)</p></div></div>
@@ -3458,7 +3464,6 @@ html.theme-dark .skel span{background:rgba(255,255,255,.09)}
       <label id="evKundeL">Kunde<select id="evKunde"></select></label>
       <label class="full" id="evOrtL">Ort oder Link<input type="text" id="evOrt" placeholder="Adresse, Teams- oder Meet-Link"></label>
       <label class="full">Notiz<textarea class="input" id="evNote" rows="2" placeholder="Was muss der andere wissen?"></textarea></label>
-      <label class="full chkline" id="evInvL"><input type="checkbox" id="evInvite" checked><span id="evInvTxt">Per Kalender-Einladung erinnern</span></label>
       <label class="full chkline" id="evCalL" hidden><input type="checkbox" id="evCal"><span>Auch in den Kalender eintragen</span></label>
     </div>
     <div class="ev-warn" id="evWarn" hidden></div>
@@ -4659,9 +4664,15 @@ document.getElementById('legendCal').addEventListener('click',e=>{
   b.setAttribute('aria-pressed',calTypes.has(k));renderCal();
 });
 const startOfWeekOf=ds=>{const d=parse(ds);const dow=(d.getDay()+6)%7;return addDays(ds,-dow)};
+/* Wer steht im Termin: LP, MS oder leer für beide (seit v.53) */
+const whoList=w=>w==='LP'||w==='MS'?[w]:['LP','MS'];
+const whoTxt=w=>whoList(w).join(' · ');
+function whoHTML(w){const ws=whoList(w);return `<span class="who2" role="img" aria-label="${ws.map(x=>NAMES[x]).join(' und ')}">${ws.map(x=>`<span class="av us sm" data-who="${x}" aria-hidden="true">${x}</span>`).join('')}</span>`}
+/* Bei „für beide“ bekommt der andere den WhatsApp-Hinweis */
+const otherOf=w=>w==='LP'?'MS':'LP';
 function chipHTML(e,cls){
   const a=e.art||e.type,id=e.gcalId||('t'+e.taskId);
-  return `<span class="ev t-${a}${e.done?' done':''}${cls?' '+cls:''}" data-entry="${esc(id)}" title="${esc(e.t)}">${e.type==='aufgabe'?`<i class="ev-chk${e.done?' on':''}"></i>`:''}${e.time&&!cls?'<b>'+e.time+'</b> ':''}${e.type==='belegt'?esc(NAMES[e.who]||'')+': ':''}${esc(e.t)}${e.type==='aufgabe'&&e.who?' <em>'+e.who+'</em>':''}</span>`;
+  return `<span class="ev t-${a}${e.done?' done':''}${cls?' '+cls:''}" data-entry="${esc(id)}" title="${esc(e.t)}">${e.type==='aufgabe'?`<i class="ev-chk${e.done?' on':''}"></i>`:''}${e.time&&!cls?'<b>'+e.time+'</b> ':''}${e.type==='belegt'?esc(NAMES[e.who]||'')+': ':''}${esc(e.t)}${e.type==='aufgabe'?(e.who?' <em>'+e.who+'</em>':''):e.type==='belegt'?'':' <em>'+whoTxt(e.who)+'</em>'}</span>`;
 }
 function renderCal(){
   document.querySelectorAll('#calMode [data-cm]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cm===calMode));
@@ -4718,7 +4729,7 @@ function renderWeek(){
     const lanes=[];timed.forEach(e=>{const st=toM(e.time),en=e.endTime&&e.endTime>e.time?toM(e.endTime):st+(e.type==='aufgabe'?30:60);e._s=st;e._e=en;let l=lanes.findIndex(x=>x<=st);if(l<0){l=lanes.length;lanes.push(en)}else lanes[l]=en;e._l=l});
     const nl=Math.max(1,lanes.length);
     cols+=`<div class="wk-col${ds===TODAY?' today':''}" data-wkcol="${ds}">${timed.map(e=>{const top=Math.max(0,(e._s-WK_H0*60)/60*WK_PX),hgt=Math.max(64,(e._e-e._s)/60*WK_PX-2);const a=e.art||e.type;
-      return `<div class="wk-ev t-${a}${e.done?' done':''}" data-entry="${esc(e.gcalId||('t'+e.taskId))}" style="top:${top}px;height:${hgt}px;left:calc(${e._l/nl*100}% + 2px);width:calc(${100/nl}% - 4px)"><b>${e.time}${e.endTime?'–'+e.endTime:''}</b><span>${e.type==='aufgabe'?'<i class="ev-chk'+(e.done?' on':'')+'"></i>':''}${esc(e.t)}</span></div>`}).join('')}${ds===TODAY?`<div class="wk-now" style="top:${(NOW.getHours()*60+NOW.getMinutes()-WK_H0*60)/60*WK_PX}px"></div>`:''}</div>`;
+      return `<div class="wk-ev t-${a}${e.done?' done':''}" data-entry="${esc(e.gcalId||('t'+e.taskId))}" style="top:${top}px;height:${hgt}px;left:calc(${e._l/nl*100}% + 2px);width:calc(${100/nl}% - 4px)"><b>${e.time}${e.endTime?'–'+e.endTime:''}</b><span>${e.type==='aufgabe'?'<i class="ev-chk'+(e.done?' on':'')+'"></i>':''}${esc(e.t)}${e.type==='aufgabe'||e.type==='belegt'?'':' <em>'+whoTxt(e.who)+'</em>'}</span></div>`}).join('')}${ds===TODAY?`<div class="wk-now" style="top:${(NOW.getHours()*60+NOW.getMinutes()-WK_H0*60)/60*WK_PX}px"></div>`:''}</div>`;
   });
   let gut='';for(let h=WK_H0;h<WK_H1;h++)gut+=`<div class="wk-hr" style="top:${(h-WK_H0)*WK_PX}px">${pad(h)}:00</div>`;
   const el=$('week7');
@@ -4727,7 +4738,7 @@ function renderWeek(){
   const sc2=el.querySelector('.wk-scroll');sc2.scrollTop=keep!=null?keep:(8-WK_H0)*WK_PX-6;
 }
 function dayevHTML(e){const a=e.art||e.type;return `
-    <button class="dayev de-${a}${e.done?' done':''}" data-entry="${esc(e.gcalId||('t'+e.taskId))}"><time>${e.type==='belegt'?'bis '+dm(e.end||e.d):e.time?e.time+(e.endTime?'<small>'+e.endTime+'</small>':''):'Ganztags'}</time><div><h3>${e.type==='aufgabe'?'<i class="ev-chk'+(e.done?' on':'')+'"></i>':''}${esc(e.t)}</h3><p><span class="ev t-${a}">${artIc(a)}${TYPE_ONE[a]||a}</span>${e.who?`<span class="av us sm" data-who="${e.who}">${e.who}</span>`:''}${e.type==='belegt'&&e.stand!=null?`<span class="day-stand"><i style="width:${e.stand}%"></i></span><small>${e.stand} %</small>`:''}${e.kid?`<span class="proj">${esc(e.p)}</span>`:''}</p>${e.place?`<p class="dpl"><svg class="i xs"><use href="#i-pin"/></svg>${esc(e.place)}</p>`:''}</div></button>`}
+    <button class="dayev de-${a}${e.done?' done':''}" data-entry="${esc(e.gcalId||('t'+e.taskId))}"><time>${e.type==='belegt'?'bis '+dm(e.end||e.d):e.time?e.time+(e.endTime?'<small>'+e.endTime+'</small>':''):'Ganztags'}</time><div><h3>${e.type==='aufgabe'?'<i class="ev-chk'+(e.done?' on':'')+'"></i>':''}${esc(e.t)}</h3><p><span class="ev t-${a}">${artIc(a)}${TYPE_ONE[a]||a}</span>${e.type==='aufgabe'?(e.who?`<span class="av us sm" data-who="${e.who}">${e.who}</span>`:''):whoHTML(e.who)}${e.type==='belegt'&&e.stand!=null?`<span class="day-stand"><i style="width:${e.stand}%"></i></span><small>${e.stand} %</small>`:''}${e.kid?`<span class="proj">${esc(e.p)}</span>`:''}</p>${e.place?`<p class="dpl"><svg class="i xs"><use href="#i-pin"/></svg>${esc(e.place)}</p>`:''}</div></button>`}
 function renderDay(){
   const d=parse(selDay);
   document.getElementById('dayTitle').textContent=d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
@@ -4911,8 +4922,8 @@ async function taskCalSync(t){
 }
 /* Der Haken „In Kalender“ in Notion entscheidet. Das Studio legt den passenden Google-Termin an oder nimmt ihn raus. */
 async function taskCalCreate(t){
-  const body=taskCalBody(t);const em=t.who!==ME?personMail(t.who):'';if(em)body.attendees=[{email:em}];
-  const j=await (await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events'+(em?'?sendUpdates=all':''),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
+  const body=taskCalBody(t);
+  const j=await (await gfetch('https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
   t.cal=j.id;if(CAL_REFS)CAL_REFS.add(j.id);if(CAL_REF_BY)CAL_REF_BY.set(String(t.id).replace(/-/g,''),{id:j.id,d:t.due,time:t.time,title:body.summary});
   return j.id;
 }
@@ -5997,10 +6008,6 @@ function evRenderArt(){
 }
 function evCheck(){
   const who=$('evWho').value,date=$('evDate').value,end=$('evEnd').value||date,a=EVD.art;
-  /* Einladung nur, wenn es für den anderen ist */
-  const other=who&&who!==ME,em=other?personMail(who):'';
-  $('evInvL').hidden=!(other&&a!=='belegt'&&(em||(a==='aufgabe'&&!$('evCal').checked&&waNotifyOn())));
-  $('evInvTxt').textContent=a==='aufgabe'&&!$('evCal').checked?NAMES[who]+' benachrichtigen: Hinweis in der WhatsApp-Gruppe':NAMES[who]+' benachrichtigen: Kalender-Einladung an '+em+(waNotifyOn()?' und Hinweis in der WhatsApp-Gruppe':'');
   const w=$('evWarn');const t0=$('evTime').value,t1=$('evTimeEnd').value;
   /* Mehrere Drehs am selben Tag sind normal: nur warnen, wenn sich die Uhrzeiten überschneiden oder einer ganztags ist */
   const hits=a==='belegt'?[]:busyFor(who||'',date,a==='aufgabe'?date:end).filter(b=>!EVD.edit||b.gcalId!==EVD.edit.gcalId).filter(b=>!timesApart(t0,t1,b));
@@ -6016,7 +6023,6 @@ function openEventDialog(pre){
   $('evStand').value=pre.stand||0;$('evStandV').textContent=(pre.stand||0)+' %';
   $('evKunde').innerHTML='<option value="">Kein Kunde</option>'+kSorted(KUNDEN.filter(k=>k.status!=='Archiv'&&notPrivate(k.name))).map(k=>`<option value="${k.id}">${esc(k.name)}</option>`).join('');
   $('evKunde').value=pre.kid||'';$('evOrt').value=pre.ort||'';$('evNote').value=pre.note||'';
-  $('evInvite').checked=pre.invite!=null?pre.invite:true;
   $('evCal').checked=pre.cal!=null?!!pre.cal:location.hash.slice(2)==='kalender';
   evRemOptions(!!pre.time,pre.rem);
   evRenderArt();
@@ -6057,7 +6063,6 @@ on('evGo','click',async()=>{
   if(o.art==='belegt'&&!o.who){err.textContent='Bitte wählen, wer belegt ist.';return}
   if(o.end&&o.end<o.date){err.textContent='Das Enddatum liegt vor dem Startdatum.';return}
   if(o.time&&o.timeEnd&&o.timeEnd<=o.time&&o.art!=='aufgabe'){err.textContent='Die Endzeit liegt vor der Startzeit.';return}
-  const invite=!$('evInvL').hidden&&$('evInvite').checked;
   err.textContent='';btn.disabled=true;const lbl=btn.textContent;btn.textContent='Wird gespeichert …';
   const cal='https://www.googleapis.com/calendar/v3/calendars/'+encodeURIComponent(CAL_ID)+'/events';
   try{
@@ -6067,21 +6072,20 @@ on('evGo','click',async()=>{
         const old={...t};Object.assign(t,{t:o.title,who,due:o.date,time:o.time||null,kid:o.kid,kname:o.kname,note:o.note});
         try{await saveTask(t,['t','who','due','kid','note'])}catch(x){Object.assign(t,old);throw x}
         if($('evCal').checked&&!t.inCal)await taskToCal(t);else if(!$('evCal').checked&&t.inCal)await taskFromCal(t);
-        if(who!==old.who&&who!==ME&&invite)safe('wa',()=>waNotify(who,t.t,fmtWhen(t.due,t.time,true)));
+        if(who!==old.who&&who!==ME)safe('wa',()=>waNotify(who,t.t,fmtWhen(t.due,t.time,true)));
         syncTaskEvents();safe('tasksR',renderTasks);
-      }else await createTask({title:o.title,who,due:o.date,time:o.time||null,kid:o.kid,kname:o.kname,art:'aufgabe',note:o.note,invite,cal:$('evCal').checked});
+      }else await createTask({title:o.title,who,due:o.date,time:o.time||null,kid:o.kid,kname:o.kname,art:'aufgabe',note:o.note,cal:$('evCal').checked});
       toast(EVD.edit?'Aufgabe gespeichert':'Aufgabe für '+NAMES[who]+' angelegt'+($('evCal').checked?', steht auch im Kalender':''));
     }else{
-      const body=evBody(o);const em=invite&&o.who?personMail(o.who):'';
-      if(em)body.attendees=[{email:em}];
+      const body=evBody(o);
       if(EVD.edit&&EVD.edit.gcalId){
-        await gfetch(cal+'/'+encodeURIComponent(EVD.edit.gcalId)+(em?'?sendUpdates=all':''),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        await gfetch(cal+'/'+encodeURIComponent(EVD.edit.gcalId),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
         EVENTS=EVENTS.filter(x=>x.gcalId!==EVD.edit.gcalId);
         EVENTS.push(evFromBody(o,EVD.edit.gcalId,EVD.edit.link));
       }else{
-        const j=await (await gfetch(cal+(em?'?sendUpdates=all':''),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
+        const j=await (await gfetch(cal,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
         EVENTS.push(evFromBody(o,j.id,j.htmlLink));track('act','Termin angelegt');
-        if(invite&&o.who&&o.who!==ME&&o.art!=='belegt')safe('wa',()=>waNotify(o.who,o.title,fmtWhen(o.date,o.time)));
+        if(o.who!==ME&&o.art!=='belegt')safe('wa',()=>waNotify(o.who||otherOf(ME),o.title,fmtWhen(o.date,o.time)));
       }
       toast(o.art==='belegt'?(EVD.edit?'Belegung aktualisiert':'Eingetragen: '+NAMES[o.who]+' ist belegt bis '+dm(o.end||o.date)):(EVD.edit?'Gespeichert: ':'Im Kalender: ')+o.title);
     }
@@ -8901,14 +8905,13 @@ async function liRunAction(a){
     const o=liEventObj(a);
     if(!o.title)throw new Error('Kein Titel');
     if(!/^\d{4}-\d{2}-\d{2}$/.test(o.date))throw new Error('Datum fehlt');
-    const body=evBody(o);const em=o.who&&o.who!==ME&&o.art!=='belegt'?personMail(o.who):'';
-    if(em)body.attendees=[{email:em}];
+    const body=evBody(o);
     body.description=(body.description||'').replace('im LeMatic Studio','über LeMatic Intelligence');
-    const j=await (await gfetch(cal+(em?'?sendUpdates=all':''),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
+    const j=await (await gfetch(cal,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})).json();
     EVENTS.push(evFromBody(o,j.id,j.htmlLink));track('act','Termin angelegt');
-    if(o.who&&o.who!==ME&&o.art!=='belegt')safe('wa',()=>waNotify(o.who,o.title,fmtWhen(o.date,o.time)));
+    if(o.who!==ME&&o.art!=='belegt')safe('wa',()=>waNotify(o.who||otherOf(ME),o.title,fmtWhen(o.date,o.time)));
     safe('calR',renderCal);safe('homeR',renderHome);safe('avail',renderAvail);
-    return em?'angelegt, Einladung ist raus':'angelegt';
+    return 'angelegt';
   }
   if(a.type==='event_create_alt'){
     const date=a.date||TODAY,time=a.time||'',dur=+a.dauer_min||60;let body;
@@ -8983,14 +8986,13 @@ async function liRunAction(a){
       }else{const days=ev.start.date?Math.max(1,diffDays(ev.end.date,ev.start.date)):1;const date=a.date||ev.start.date||ev.start.dateTime.slice(0,10);patch.start={date};patch.end={date:addDays(date,days)}}
     }
     patch.extendedProperties={private:priv};
-    const inv=(a.who==='LP'||a.who==='MS')&&a.who!==ME?personMail(a.who):'';
-    if(inv){const at=(ev.attendees||[]).filter(x=>x.email!==inv);patch.attendees=[...at,{email:inv}]}
-    await gfetch(cal+'/'+encodeURIComponent(e.gcalId)+(inv?'?sendUpdates=all':''),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(patch)});
+    const inv=(a.who==='LP'||a.who==='MS')&&a.who!==ME;
+    await gfetch(cal+'/'+encodeURIComponent(e.gcalId),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(patch)});
     if(a.title)e.t=String(a.title);if(art){e.art=art;e.type=art}if(a.who!==undefined&&a.who!==null)e.who=a.who;if(a.ort)e.place=a.ort;if(a.notiz)e.note=a.notiz;if(k){e.kid=k.id;e.p=k.name}
     if(patch.start){e.d=(patch.start.date||patch.start.dateTime.slice(0,10));e.time=patch.start.dateTime?patch.start.dateTime.slice(11,16):null;e.endTime=patch.end.dateTime?patch.end.dateTime.slice(11,16):null}
     if(patch.reminders)e.rem=String(a.erinnerung_min);
     if(inv&&a.who!==ME)safe('wa',()=>waNotify(a.who,e.t,fmtWhen(e.d,e.time)));
-    safe('calR',renderCal);safe('homeR',renderHome);return inv?'geändert, Einladung ist raus':'geändert';
+    safe('calR',renderCal);safe('homeR',renderHome);return 'geändert';
   }
   if(a.type==='kunde_create'){
     if(!KARTEI_LOADED||!KSCHEMA)throw new Error('Kundenkartei lädt noch');
@@ -10138,8 +10140,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-13.52';
+const APP_VERSION='2026-11-13.53';
 const CHANGELOG=[
+  {v:'2026-11-13.53',d:'13.11.2026',items:['Ein Kalender für beide: an jedem Termin steht, wer drin ist, LP, MS oder beide','Keine Kalender-Einladung mehr per Mail, wer für den anderen oder für beide einträgt, schickt nur den Hinweis in die WhatsApp-Gruppe']},
   {v:'2026-11-13.52',d:'13.11.2026',items:['Seitenleiste aufgeräumt: „Kunden im Fokus“ ist raus, Kunden findest du in der Kundenkartei']},
   {v:'2026-11-13.51',d:'13.11.2026',items:['Dialoge und Menüs gehen weich auf und zu, am Handy fährt das Blatt nach unten raus','Aufgabe abhaken: Haken, durchgestrichen, dann klappt die Zeile zu','Beim Laden stehen Platzhalter statt „wird geladen“','Kalender schiebt beim Blättern in die Richtung','Seitenwechsel springt sofort nach oben, die Balken in der Analyse wachsen nur noch einmal']},
   {v:'2026-11-12.50',d:'12.11.2026',items:['Kalender: mehrere Drehs am selben Tag für dieselbe Person – keine Warnung mehr, solange sich die Uhrzeiten nicht überschneiden']},
