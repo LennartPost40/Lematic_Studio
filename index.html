@@ -5865,6 +5865,10 @@ let EVD={art:'termin',edit:null};
 function personMail(code){const el=$(code==='MS'?'csMS':'csLP');const v=(el&&el.value||'').trim();return /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v)?v:''}
 /* Belegt zählt ein Eintrag „Belegt“ und jeder Drehtag. Ein Dreh für „Beide“ belegt beide. */
 function busyFor(who,from,to){to=to||from;return EVENTS.filter(e=>(e.type==='belegt'||e.type==='dreh')&&(!who||e.who===who||(e.type==='dreh'&&!e.who))&&e.d<=to&&(e.end||e.d)>=from)}
+function tMin(t){const m=/^(\d{1,2}):(\d{2})/.exec(t||'');return m?(+m[1])*60+(+m[2]):null}
+/* true = beide haben Uhrzeiten und überschneiden sich nicht (ohne Endzeit: 2 Stunden angenommen) */
+function timesApart(t0,t1,b){if(b.type==='belegt'||(b.end&&b.end!==b.d))return false;const a0=tMin(t0),b0=tMin(b.time);if(a0==null||b0==null)return false;
+  const a1=tMin(t1)!=null&&tMin(t1)>a0?tMin(t1):a0+120,b1=tMin(b.endTime)!=null&&tMin(b.endTime)>b0?tMin(b.endTime):b0+120;return a1<=b0||b1<=a0}
 function busyText(b){return (b.who?NAMES[b.who]+' ist':'Ihr seid beide')+(b.type==='dreh'?' beim Dreh':' belegt')+(b.end&&b.end!==b.d?' bis '+wd(b.end)+' '+dm(b.end):' am '+dm(b.d))+': '+b.t+(b.stand!=null?' ('+b.stand+' %)':'')}
 function evRemOptions(timed,cur){
   const o=timed?[['','Keine'],['10','10 Min. vorher'],['30','30 Min. vorher'],['60','1 Std. vorher'],['1440','1 Tag vorher']]:[['','Keine'],['960','Am Vortag, 8 Uhr'],['360','Am Vortag, 18 Uhr'],['2400','2 Tage vorher, 8 Uhr']];
@@ -5892,7 +5896,9 @@ function evCheck(){
   const other=who&&who!==ME,em=other?personMail(who):'';
   $('evInvL').hidden=!(other&&a!=='belegt'&&(em||(a==='aufgabe'&&!$('evCal').checked&&waNotifyOn())));
   $('evInvTxt').textContent=a==='aufgabe'&&!$('evCal').checked?NAMES[who]+' benachrichtigen: Hinweis in der WhatsApp-Gruppe':NAMES[who]+' benachrichtigen: Kalender-Einladung an '+em+(waNotifyOn()?' und Hinweis in der WhatsApp-Gruppe':'');
-  const w=$('evWarn');const hits=a==='belegt'?[]:busyFor(who||'',date,a==='aufgabe'?date:end).filter(b=>!EVD.edit||b.gcalId!==EVD.edit.gcalId);
+  const w=$('evWarn');const t0=$('evTime').value,t1=$('evTimeEnd').value;
+  /* Mehrere Drehs am selben Tag sind normal: nur warnen, wenn sich die Uhrzeiten überschneiden oder einer ganztags ist */
+  const hits=a==='belegt'?[]:busyFor(who||'',date,a==='aufgabe'?date:end).filter(b=>!EVD.edit||b.gcalId!==EVD.edit.gcalId).filter(b=>!timesApart(t0,t1,b));
   w.hidden=!hits.length;w.innerHTML=hits.length?`<svg class="i sm"><use href="#i-warn"/></svg><span>${hits.map(b=>esc(busyText(b))).join('<br>')}${hits.length?'<br><small>Trotzdem anlegen geht, '+(who?NAMES[who]:'die Person')+' sieht es dann als Hinweis.</small>':''}</span>`:'';
 }
 function openEventDialog(pre){
@@ -5919,7 +5925,7 @@ on('dayAdd','click',()=>{if(!GAUTH){toast('Dafür bitte zuerst mit Google anmeld
 on('evCancel','click',closeEventDialog);
 document.addEventListener('click',e=>{const b=e.target.closest('[data-evart]');if(!b)return;EVD.art=b.dataset.evart;evRenderArt()});
 on('evCal','change',()=>evCheck());
-['evWho','evDate','evEnd'].forEach(id=>on(id,'change',()=>{if(id==='evDate'&&$('evEnd').value<$('evDate').value)$('evEnd').value=$('evDate').value;evCheck()}));
+['evWho','evDate','evEnd','evTime','evTimeEnd'].forEach(id=>on(id,'change',()=>{if(id==='evDate'&&$('evEnd').value<$('evDate').value)$('evEnd').value=$('evDate').value;evCheck()}));
 on('evTime','change',()=>{const t=$('evTime').value;evRemOptions(!!t,$('evRem').value);if(t&&!$('evTimeEnd').value){const [h,m]=t.split(':').map(Number);$('evTimeEnd').value=pad(Math.min(23,h+1))+':'+pad(m)}});
 on('evStand','input',()=>{$('evStandV').textContent=$('evStand').value+' %'});
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='evTitle'){e.preventDefault();$('evGo').click()}});
@@ -10025,8 +10031,9 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-11.49';
+const APP_VERSION='2026-11-12.50';
 const CHANGELOG=[
+  {v:'2026-11-12.50',d:'12.11.2026',items:['Kalender: mehrere Drehs am selben Tag für dieselbe Person – keine Warnung mehr, solange sich die Uhrzeiten nicht überschneiden']},
   {v:'2026-11-11.49',d:'11.11.2026',items:['Ausgaben: alle sieben Kategorien wählbar, neu 05 Freelancer, 06 Fahrtkosten und 07 Beiträge & Gebühren'],tour:[
     {img:'whatsnew/v49-ausgaben.jpg',t:'Alle sieben Ausgaben-Ordner',txt:'Beim Hochladen von Ausgaben stehen jetzt alle Kategorien aus dem Drive zur Wahl, nicht mehr nur vier.',
      steps:['Neu: 05 Freelancer, 06 Fahrtkosten, 07 Beiträge & Gebühren','Bahn, Tanken, Parken und Taxi landen automatisch in Fahrtkosten','Honorare von Freelancern landen automatisch in Freelancer','Passt die Zuordnung nicht, einfach von Hand die richtige Kategorie wählen']}]},
