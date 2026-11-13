@@ -2265,6 +2265,7 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
 }
 /* MOBILE-START: eigene Handy-Oberfläche (bis 860px) */
 .more-wrap{display:none}
+.calm,.t-filt,.kmob{display:none}
 @media (max-width:860px){
   html,body{overflow-x:clip}
   html{-webkit-text-size-adjust:100%}
@@ -2430,6 +2431,127 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
   .hst-mbar .mark{visibility:hidden}
   .cell{min-height:52px}
   .dow{font-size:12px}
+
+  /* ===== Seit v.55: Handy neu. Kalender · Aufgaben · Plus · Kunden · Mehr ===== */
+  .mobile-brand{display:none!important}
+  .pop-menu .pm-ic{display:none}
+  .tabbar .tb-plus .tb-orb{width:56px;height:56px;margin:-30px 0 0;border-radius:19px}
+  .tabbar .tb-plus .tb-orb .i{width:26px;height:26px}
+  .tabbar .tb-plus.active,.tabbar .tb-plus:hover{background:none}
+
+  /* Kalender: Tag groß, Wochenstreifen, Termine als Karten */
+  .view[data-view="kalender"]>.topbar{display:none}
+  .calm{display:block;margin:2px 0 14px}
+  .calm-top{display:flex;align-items:flex-end;gap:4px;margin-bottom:14px}
+  .calm-top>div{flex:1;min-width:0}
+  .calm-date{font-size:14px;font-weight:600;color:var(--ink-2);margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .calm-title{font-size:34px;line-height:1.08;letter-spacing:-.025em;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .calm-top .icon-btn{width:44px;height:44px;min-width:44px;flex:none}
+  .calm-mon{height:44px;min-height:44px;padding:0 14px;flex:none;margin-left:4px}
+  .calm-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;touch-action:pan-y}
+  .calm-d{position:relative;height:66px;padding:0;border:0;border-radius:16px;background:var(--glass);color:var(--ink);font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;box-shadow:0 1px 0 rgba(7,40,32,.04),0 6px 16px -12px rgba(7,40,32,.35);cursor:pointer}
+  .calm-d span{font-size:11.5px;font-weight:600;color:var(--ink-2)}
+  .calm-d b{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;margin-bottom:6px}
+  .calm-d i{position:absolute;bottom:9px;width:5px;height:5px;border-radius:50%;background:var(--brand)}
+  .calm-d i[hidden]{display:none}
+  .calm-d.today:not(.sel) b{color:var(--brand)}
+  .calm-d.sel{background:var(--brand);color:#fff}
+  .calm-d.sel span{color:rgba(255,255,255,.78)}
+  .calm-d.sel i{background:#FCD717}
+  .view[data-view="kalender"] .cal-main{padding:0;background:none!important;box-shadow:none!important;border:0!important}
+  .view[data-view="kalender"] .cal-main>.panel-head,.view[data-view="kalender"] #legendCal,.view[data-view="kalender"] .grid>.c4{display:none}
+  #calList{gap:8px}
+  #calList .ag-tasks{min-height:48px;padding:12px 14px;border-radius:16px;font-size:14.5px;text-decoration:none}
+  #calList .ag-tasks small{display:none}
+  #calList .ag-tasks .i.xs{margin-left:auto}
+  #calList .ag-day{display:flex;flex-direction:column;gap:8px}
+  #calList .ag-day>h3{font-size:14px;padding:12px 4px 0}
+  #calList .ag-none{padding:0 4px;font-size:14px}
+  #calList .dayev{position:relative;grid-template-columns:70px minmax(0,1fr);gap:10px;padding:14px 64px 14px 14px;border-radius:18px;background:var(--glass);box-shadow:0 1px 0 rgba(7,40,32,.04),0 8px 20px -14px rgba(7,40,32,.35)}
+  #calList .dayev+.dayev{border-top:0}
+  #calList .dayev time{font-size:15px}
+  #calList .dayev time small{font-size:13px;margin-top:2px}
+  #calList .dayev h3{font-size:17px;line-height:1.3}
+  #calList .dayev p{font-size:13px;gap:6px 8px}
+  #calList .dayev .who2,#calList .dayev p>.av.us{position:absolute;top:13px;right:12px}
+  #calList .day-empty{min-height:64px;font-size:15px}
+  .calmon-head{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+  .calmon-head h2{flex:1;text-align:center;font-size:19px;margin:0}
+  .calmon-head .icon-btn{width:44px;height:44px;min-width:44px}
+  .month.calmon{gap:4px}
+  .calmon .cell{min-height:50px;cursor:pointer;align-items:center}
+  .calmon .ev,.calmon .more,.calmon .cell-add{display:none!important}
+  .calmon .cell:has(.ev)::after{content:"";display:block;width:5px;height:5px;border-radius:50%;background:var(--brand);margin:3px auto 0}
+  .calmon .cell.sel::after{background:#FCD717}
+
+  /* Aufgaben: angelegt wird über Plus, Zeilen als Karten, Filter hinter einem Knopf */
+  .view[data-view="aufgaben"] #addTask{display:none}
+  .view[data-view="aufgaben"] .panel{padding:0;background:none!important;box-shadow:none!important;border:0!important}
+  .view[data-view="aufgaben"] .filters{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 4px}
+  .view[data-view="aufgaben"] .filters:not(.f-open)>#tProj,.view[data-view="aufgaben"] .filters:not(.f-open)>.toggle-line,.view[data-view="aufgaben"] .filters:not(.f-open)>.prem-chip{display:none}
+  .view[data-view="aufgaben"] .filters.f-open>#tProj{flex:1 1 100%}
+  .view[data-view="aufgaben"] #tWho button{min-height:40px}
+  .t-filt{display:inline-flex;align-items:center;gap:6px;margin-left:auto;min-height:44px}
+  .t-filt small{min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--brand);color:#fff;font-size:11.5px;font-weight:700;display:grid;place-items:center}
+  [data-view="aufgaben"] .task{grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:4px 12px;padding:12px 14px 12px 10px;margin-bottom:8px;border-radius:18px;background:var(--glass);box-shadow:0 1px 0 rgba(7,40,32,.04),0 8px 20px -14px rgba(7,40,32,.35);cursor:pointer}
+  [data-view="aufgaben"] .task+.task{border-top:0}
+  [data-view="aufgaben"] .task .chk{width:24px;height:24px;margin:0 0 0 3px}
+  [data-view="aufgaben"] .task .tt{font-size:16px;line-height:1.3}
+  [data-view="aufgaben"] .task .right{grid-column:3;grid-row:1;flex-direction:column;align-items:flex-end;gap:6px;max-width:38vw;font-size:12.5px;text-align:right}
+  [data-view="aufgaben"] .task .right .icon-btn{display:none}
+  [data-view="aufgaben"] .task .due{white-space:normal}
+
+  /* Kunden: Liste statt Board */
+  .view[data-view="kunden"]>.topbar{flex-direction:row;align-items:center;padding-bottom:12px}
+  .view[data-view="kunden"]>.topbar .actions{flex:none}
+  .view[data-view="kunden"]>.topbar #kNew{width:48px;height:48px;min-height:48px;padding:0;justify-content:center}
+  .view[data-view="kunden"] .topbar .intern,#kSummary,#kOverview,#kView,#kFilterSel{display:none!important}
+  .kmlist{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .km-row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;min-height:64px;padding:10px 12px;border:0;border-radius:18px;background:var(--glass);box-shadow:0 1px 0 rgba(7,40,32,.04),0 8px 20px -14px rgba(7,40,32,.35);font:inherit;color:inherit;text-align:left;cursor:pointer}
+  .km-row .kav{width:44px;height:44px;border-radius:13px;font-size:14px}
+  .km-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .km-main b{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .km-main small{font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .km-main small.km-today{color:var(--brand);font-weight:600}
+  .km-row .pill{font-size:12px;white-space:nowrap}
+
+  /* Kundenkarte am Handy: das Wichtigste zuerst, alles andere über „Alles anzeigen“ */
+  #kdSheet.kd-m>:not(.kmob){display:none!important}
+  #kdSheet.kd-m>.kmob{display:block}
+  .km-id{display:flex;gap:14px;align-items:center;margin:4px 56px 16px 0}
+  .km-id h2{font-size:24px;line-height:1.15;letter-spacing:-.02em;margin:0 0 6px;word-break:break-word}
+  .km-id p{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:14px;color:var(--ink-2);margin:0}
+  .km-acts{display:flex;gap:8px;margin:0 0 20px}
+  .km-act{flex:1 1 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:66px;border-radius:18px;background:var(--glass);color:var(--brand);font-size:13.5px;font-weight:600;text-decoration:none;box-shadow:0 1px 0 rgba(7,40,32,.04),0 8px 20px -14px rgba(7,40,32,.35)}
+  .km-act .i{width:22px;height:22px}
+  .km-sec{margin:0 0 20px}
+  .km-sec>h3{font-size:13px;font-weight:700;color:var(--ink-2);margin:0 0 8px 2px}
+  .km-ev{display:flex;flex-direction:column;gap:2px;width:100%;min-height:52px;margin:0 0 6px;padding:11px 14px;border:0;border-radius:16px;background:var(--glass);font:inherit;color:inherit;text-align:left;cursor:pointer}
+  .km-ev time{font-size:12.5px;font-weight:600;color:var(--brand)}
+  .km-ev b{font-size:15.5px;font-weight:600}
+  .km-none{font-size:14px;color:var(--ink-3);margin:0 2px 8px}
+  .km-note{margin:0 0 10px;padding:12px 14px;border-radius:16px;background:var(--glass);font-size:15px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+  .kmob .task{padding:10px 4px}
+  .kmob .task .right .icon-btn{display:none}
+  #kmNote{width:100%;min-height:76px;resize:vertical}
+  .km-nrow{display:flex;gap:8px;margin-top:8px}
+  .km-nrow .btn{flex:1 1 0;min-height:48px}
+  .kmob .li-mic.km-mic{width:auto;height:auto;font-size:15px;border-radius:999px}
+  .km-all{display:flex;align-items:center;gap:10px;width:100%;min-height:60px;margin:0 0 8px;padding:12px 14px;border:0;border-radius:18px;background:var(--glass);font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+  .km-all span{flex:1;display:flex;flex-direction:column;font-size:15.5px;font-weight:600}
+  .km-all small{font-size:12.5px;font-weight:400;color:var(--ink-2)}
+
+  /* Mehr: schlichte Liste */
+  .more-list{display:flex;flex-direction:column;gap:6px}
+  .mrow{display:flex;align-items:center;gap:14px;width:100%;min-height:60px;padding:8px 12px;border:0;border-radius:18px;background:#fff;color:var(--ink);font:inherit;font-size:16px;font-weight:600;text-align:left;text-decoration:none;cursor:pointer;box-shadow:0 1px 0 rgba(7,40,32,.04),0 6px 16px -12px rgba(7,40,32,.35)}
+  .mrow .mi{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;flex:none;background:rgba(7,61,48,.07);color:var(--brand)}
+  .mrow .ml{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+  .mrow .ml small{font-size:13px;font-weight:400;color:var(--ink-2)}
+  .mrow em{min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:#D70015;color:#fff;font-style:normal;font-size:12px;font-weight:700;display:grid;place-items:center}
+  .mrow .mchev{color:var(--ink-3);flex:none}
+  .mrow.active{box-shadow:inset 0 0 0 2px var(--brand)}
+  .mrow.prem .mi{background:linear-gradient(135deg,#FCD717,#E0B400);color:#073D30}
+  .mrow-q{background:none;box-shadow:none;font-weight:500;color:var(--ink-2)}
 }
 @media (max-width:860px){
   html.theme-dark .tabbar{background:rgba(24,31,28,.97)!important;box-shadow:0 12px 32px -12px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.06)}
@@ -2443,6 +2565,17 @@ html.theme-dark button.li-mic.on{background:#E5484D;color:#fff}
   html.theme-dark .more-grid a.active{box-shadow:inset 0 0 0 2px #62C7A2}
   html.theme-dark .more-grab,html.theme-dark .modal-wrap .sheet::before,html.theme-dark .note-panel::before{background:rgba(255,255,255,.2)}
   html.theme-dark .modal-wrap:not(.kd-wrap):not(.tour-wrap) .sheet{background:#151C19}
+  html.theme-dark .mrow{background:#1F2825;box-shadow:none}
+  html.theme-dark .mrow-q{background:none}
+  html.theme-dark .mrow .mi{background:rgba(98,199,162,.12);color:#62C7A2}
+  html.theme-dark .mrow.prem .mi{background:linear-gradient(135deg,#FCD717,#E0B400);color:#073D30}
+  html.theme-dark .mrow.active{box-shadow:inset 0 0 0 2px #62C7A2}
+  html.theme-dark .calm-d,html.theme-dark #calList .dayev,html.theme-dark [data-view="aufgaben"] .task,html.theme-dark .km-row,html.theme-dark .km-act,html.theme-dark .km-ev,html.theme-dark .km-note,html.theme-dark .km-all{box-shadow:none}
+  html.theme-dark .calm-d.sel{background:#0C5543;color:#fff}
+  html.theme-dark .calm-d i,html.theme-dark .calmon .cell:has(.ev)::after{background:#62C7A2}
+  html.theme-dark .calm-d.sel i,html.theme-dark .calmon .cell.sel::after{background:#FCD717}
+  html.theme-dark .calm-d.today:not(.sel) b,html.theme-dark .km-act,html.theme-dark .km-ev time,html.theme-dark .km-main small.km-today{color:#62C7A2}
+  html.theme-dark .t-filt small{background:#62C7A2;color:#0E1412}
 }
 /* MOBILE-END */
 /* MOTION-START: ein Bewegungssystem fürs ganze Studio (seit v.51).
@@ -2848,6 +2981,15 @@ html.theme-dark .qs-time input{background:none!important;border:0!important}
           <button class="btn btn-primary" id="openEvent"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Eintrag</span></button>
         </div>
       </header>
+      <div class="calm" id="calM" aria-label="Tag und Woche">
+        <div class="calm-top">
+          <div><p class="calm-date" id="calMDate"></p><h1 class="calm-title" id="calMTitle">Heute</h1></div>
+          <button type="button" class="icon-btn" id="calMPrev" aria-label="Vorige Woche"><svg class="i"><use href="#i-chevl"/></svg></button>
+          <button type="button" class="icon-btn" id="calMNext" aria-label="Nächste Woche"><svg class="i"><use href="#i-chev"/></svg></button>
+          <button type="button" class="btn btn-glass calm-mon" id="calMMon" aria-haspopup="dialog">Monat</button>
+        </div>
+        <div class="calm-days" id="calMDays" role="group" aria-label="Woche, wischen wechselt die Woche"></div>
+      </div>
       <div class="grid">
         <section class="glass panel c8 cal-main" aria-label="Kalender">
           <div class="panel-head">
@@ -2897,6 +3039,7 @@ html.theme-dark .qs-time input{background:none!important;border:0!important}
               <button aria-pressed="false" data-who="LP">Lennart</button>
               <button aria-pressed="false" data-who="MS">Martin</button>
             </div>
+            <button type="button" class="btn btn-glass t-filt" id="tFilt" aria-expanded="false">Filter</button>
             <select class="input" id="tProj" aria-label="Nach Kunde filtern"></select>
             <label class="toggle-line"><input type="checkbox" class="chk" id="tDone">Erledigte zeigen</label>
             <button class="prem prem-chip" data-premium="reminders">🔔 Handy-Erinnerungen <span class="lock"><svg class="i xs"><use href="#i-lockk"/></svg></span></button>
@@ -3089,7 +3232,7 @@ html.theme-dark .qs-time input{background:none!important;border:0!important}
           <p class="summary" id="kSummary">Wird nach dem Login geladen …</p>
         </div>
         <div class="actions">
-          <button class="btn btn-primary" id="kNew"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Kunde anlegen</span></button>
+          <button class="btn btn-primary" id="kNew" aria-label="Kunde anlegen"><svg class="i sm"><use href="#i-plus"/></svg><span class="label">Kunde anlegen</span></button>
         </div>
       </header>
       <div id="kOverview"></div>
@@ -3471,9 +3614,9 @@ html.theme-dark .qs-time input{background:none!important;border:0!important}
 
 <!-- Mobile Tab-Leiste -->
 <nav class="tabbar glass" aria-label="Navigation">
-  <a href="#/heute" data-route="heute"><svg class="i"><use href="#i-home"/></svg><span>Heute</span></a>
   <a href="#/kalender" data-route="kalender"><svg class="i"><use href="#i-cal"/></svg><span>Kalender</span></a>
-  <a href="#/agent" data-route="agent" class="tb-li"><span class="tb-orb"><svg class="i"><use href="#i-sparkle"/></svg></span><span>Intelligence</span></a>
+  <a href="#/aufgaben" data-route="aufgaben"><svg class="i"><use href="#i-tasks"/></svg><span>Aufgaben</span></a>
+  <button type="button" class="tb-plus" id="tbPlus" aria-label="Neu eintragen" aria-haspopup="dialog"><span class="tb-orb"><svg class="i"><use href="#i-plus"/></svg></span></button>
   <a href="#/kunden" data-route="kunden"><svg class="i"><use href="#i-users"/></svg><span>Kunden</span></a>
   <button type="button" class="tb-more" id="tbMore" aria-haspopup="dialog" aria-controls="moreWrap"><svg class="i"><use href="#i-apps"/></svg><span>Mehr</span><i class="tb-dot" id="tbMoreDot" hidden></i></button>
 </nav>
@@ -3481,8 +3624,15 @@ html.theme-dark .qs-time input{background:none!important;border:0!important}
   <div class="more-scrim" data-moreclose></div>
   <div class="more-sheet" role="dialog" aria-modal="true" aria-label="Alle Bereiche">
     <i class="more-grab" data-moreclose></i>
-    <div class="more-grid" id="moreGrid"></div>
-    <div class="more-foot"><a class="btn btn-glass" href="#/einstellungen"><svg class="i sm"><use href="#i-gear"/></svg>Einstellungen</a><button type="button" class="btn btn-glass" data-appreload><svg class="i sm"><use href="#i-undo"/></svg>Neu laden</button></div>
+    <div class="more-list" id="moreGrid"></div>
+  </div>
+</div>
+
+<!-- Handy: Monat als Blatt (seit v.55) -->
+<div class="modal-wrap" id="calMonWrap" aria-hidden="true">
+  <div class="glass sheet calmon-sheet" role="dialog" aria-modal="true" aria-labelledby="calMonT">
+    <div class="calmon-head"><button type="button" class="icon-btn" id="calMonPrev" aria-label="Voriger Monat"><svg class="i"><use href="#i-chevl"/></svg></button><h2 id="calMonT"></h2><button type="button" class="icon-btn" id="calMonNext" aria-label="Nächster Monat"><svg class="i"><use href="#i-chev"/></svg></button><button type="button" class="icon-btn" id="calMonX" aria-label="Schließen"><svg class="i sm"><use href="#i-x"/></svg></button></div>
+    <div class="month calmon" id="calMonGrid"></div>
   </div>
 </div>
 
@@ -4283,6 +4433,7 @@ function go(route){
   const parts=String(route||'').split('?')[0].split('/');route=parts[0];
   if(route==='kunden'&&parts[1])setTimeout(()=>openKunde(parts[1]),30);
   const v=[...views].some(x=>x.dataset.view===route)?route:'heute';
+  if(v==='heute'&&onPhone()){location.replace('#/kalender');return} /* Am Handy gibt es „Heute“ nicht mehr, Start ist der Kalender (seit v.55) */
   views.forEach(x=>x.classList.toggle('active',x.dataset.view===v));
   const navV=v==='archiv'?'medien':v==='premium'?'einstellungen':v;document.querySelectorAll('[data-route]').forEach(a=>a.classList.toggle('active',a.dataset.route===navV));
   if(v==='kalender')safe('cal',renderCal);
@@ -4761,7 +4912,7 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------- Kalender ---------- */
-let calMonth=new Date(NOW.getFullYear(),NOW.getMonth(),1),selDay=TODAY,calMode='month';
+let calMonth=new Date(NOW.getFullYear(),NOW.getMonth(),1),selDay=TODAY,calMode='month',CAL_DESK='';
 let listFrom=TODAY;
 try{calMode=localStorage.getItem('lm_calmode2')||(innerWidth<=860?'list':(localStorage.getItem('lm_calmode')||'month'))}catch(_){}
 const calTypes=new Set(Object.keys(TYPES));
@@ -4846,15 +4997,17 @@ function chipHTML(e,cls){
   return `<span class="ev t-${a}${e.done?' done':''}${cls?' '+cls:''}" data-entry="${esc(id)}" title="${esc(e.t)}">${e.type==='aufgabe'?`<i class="ev-chk${e.done?' on':''}"></i>`:''}${e.time&&!cls?'<b>'+e.time+'</b> ':''}${e.type==='belegt'?esc(NAMES[e.who]||'')+': ':''}${esc(e.t)}${e.type==='aufgabe'?(e.who?' <em>'+e.who+'</em>':''):e.type==='belegt'?'':' <em>'+whoTxt(e.who)+'</em>'}</span>`;
 }
 function renderCal(){
+  /* Am Handy immer Liste (Tag und Folgetag), die Wahl am Rechner bleibt erhalten */
+  const ph=onPhone();if(ph&&calMode!=='list'){CAL_DESK=calMode;calMode='list'}else if(!ph&&CAL_DESK){calMode=CAL_DESK;CAL_DESK=''}
   document.querySelectorAll('#calMode [data-cm]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cm===calMode));
   $('month').hidden=calMode!=='month';$('week7').hidden=calMode!=='week';$('calList').hidden=calMode!=='list';
   const vw=document.querySelector('[data-view="kalender"]');if(vw)vw.classList.toggle('cal-listmode',calMode==='list');
   if(calMode==='week')renderWeek();else if(calMode==='list')renderList();else renderMonth();
-  renderDay();safe('avail',renderAvail);
+  renderDay();safe('avail',renderAvail);if(ph)safe('calm',calmHead);
 }
-function renderMonth(){
-  const y=calMonth.getFullYear(),m=calMonth.getMonth();
-  document.getElementById('calTitle').textContent=MONTHS[m]+' '+y;
+function renderMonth(el,mon){
+  const M=mon||calMonth,y=M.getFullYear(),m=M.getMonth();
+  if(!el)document.getElementById('calTitle').textContent=MONTHS[m]+' '+y;
   const first=new Date(y,m,1),offset=(first.getDay()+6)%7;
   const start=iso(new Date(y,m,1-offset));
   const daysIn=new Date(y,m+1,0).getDate();const cells=Math.ceil((offset+daysIn)/7)*7;
@@ -4866,10 +5019,11 @@ function renderMonth(){
       ${evs.slice(0,3).map(e=>chipHTML(e,'mc')).join('')}${evs.length>3?`<span class="more">+${evs.length-3}</span>`:''}
     </div>`;
   }
-  document.getElementById('month').innerHTML=h;
+  (el||document.getElementById('month')).innerHTML=h;
 }
 /* Liste: 14 Tage untereinander, volle Titel. Am Handy die Standardansicht. */
 function renderList(){
+  if(onPhone())return renderListPhone();
   const days=[...Array(14)].map((_,i)=>addDays(listFrom,i));
   $('calTitle').textContent=listFrom===TODAY?'Ab heute':dm(days[0])+' – '+dm(days[13]);
   const nT=TASKS.filter(t=>!t.done&&t.due===TODAY).length,nO=TASKS.filter(t=>!t.done&&t.due&&t.due<TODAY).length;
@@ -4978,6 +5132,7 @@ document.getElementById('tProj').addEventListener('change',renderTasks);
 document.getElementById('tDone').addEventListener('change',renderTasks);
 function renderTasks(){
   const pj=document.getElementById('tProj').value,showDone=document.getElementById('tDone').checked,eow=endOfWeek();
+  safe('twho',tWhoLabels);const nf=(pj!=='all'?1:0)+(showDone?1:0),tf=$('tFilt');if(tf)tf.innerHTML='Filter'+(nf?'<small>'+nf+'</small>':'');
   const list=TASKS.filter(t=>(tWho==='all'||t.who===tWho)&&(pj==='all'||(pj==='none'?!t.kid:t.kid===pj))).sort((a,b)=>(a.due+(a.time||'')).localeCompare(b.due+(b.time||'')));
   const groups=[
     ['Überfällig',list.filter(t=>!t.done&&t.due<TODAY)],
@@ -6517,6 +6672,148 @@ async function qsAskAI(said){
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('qsWrap')&&$('qsWrap').classList.contains('show'))qsClose()});
 on('qsWrap','click',e=>{if(e.target.id==='qsWrap')qsClose()});
 /* ENTRY-END */
+/* HANDY-START: Handy-Oberfläche (seit v.55). Nur bis 860 px, am Rechner ändert sich nichts.
+   Tab-Leiste Kalender · Aufgaben · Plus · Kunden · Mehr. Kalender mit Wochenstreifen, Tag und Folgetag als Karten,
+   Monat als Blatt. Aufgaben als Karten, Tippen auf die Karte öffnet das Menü. Kunden als Liste, eigene Kurzkarte.
+   „Heute“ und die Intelligence haben am Handy keinen Tab, #/agent bleibt aufrufbar. Test: tests/handy.mjs */
+function onPhone(){return !!(window.matchMedia&&matchMedia('(max-width:860px)').matches)}
+function notesUnread(){try{return notesGet().filter(x=>!x.read&&x.kind!=='info').length}catch(_){return 0}}
+/* Beim Wechsel zwischen Handy- und Rechnerbreite die Seite neu zeichnen */
+try{matchMedia('(max-width:860px)').addEventListener('change',()=>{if(location.hash.startsWith('#/'))safe('mq',()=>go(location.hash.slice(2)))})}catch(_){}
+/* Glocke steht am Handy unter „Mehr“: der rote Punkt dort zählt Mitteilungen mit */
+{const _rB=renderBell;renderBell=function(){_rB();safe('tbsync',()=>typeof tbSync==='function'&&tbSync())}}
+
+/* ----- Plus: Blatt zum Eintragen. Auf „Aufgaben“ gleich als Aufgabe, im Kalender für den gewählten Tag, in der Kundenkarte mit Kunde ----- */
+on('tbPlus','click',()=>{const r=curRoute(),kid=kOpen||'';openEntry(r==='aufgaben'?{art:'aufgabe',kid}:{date:r==='kalender'?selDay:TODAY,kid})});
+
+/* ----- Kalender: Kopf und Wochenstreifen ----- */
+var CALM_SWIPE=0,CALMON=null;
+function calmHead(){
+  const d=parse(selDay),sow=startOfWeekOf(selDay);
+  const rel=selDay===TODAY?'Heute':selDay===addDays(TODAY,1)?'Morgen':selDay===addDays(TODAY,-1)?'Gestern':'';
+  $('calMTitle').textContent=rel||d.toLocaleDateString('de-DE',{weekday:'long'});
+  $('calMDate').textContent=rel?d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'}):d.toLocaleDateString('de-DE',{day:'numeric',month:'long',year:'numeric'});
+  $('calMDays').innerHTML=[...Array(7)].map((_,i)=>{
+    const ds=addDays(sow,i),x=parse(ds),n=onDay(ds,calTypes).length;
+    return `<button type="button" class="calm-d${ds===selDay?' sel':''}${ds===TODAY?' today':''}" data-calm="${ds}" aria-pressed="${ds===selDay}" aria-label="${x.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'})}, ${n?n+(n===1?' Eintrag':' Einträge'):'frei'}"><span>${['So','Mo','Di','Mi','Do','Fr','Sa'][x.getDay()]}</span><b>${x.getDate()}</b><i${n?'':' hidden'}></i></button>`;
+  }).join('');
+}
+/* Am Handy: der gewählte Tag, darunter der Folgetag */
+function renderListPhone(){
+  const d0=selDay,d1=addDays(selDay,1);
+  const nT=TASKS.filter(t=>!t.done&&t.due===TODAY).length,nO=TASKS.filter(t=>!t.done&&t.due&&t.due<TODAY).length;
+  let h='';
+  if(d0===TODAY&&(nT||nO))h+=`<a class="ag-tasks" href="#/aufgaben"><svg class="i sm"><use href="#i-tasks"/></svg><span>${[nT?nT+(nT===1?' Aufgabe':' Aufgaben')+' heute fällig':'',nO?nO+' überfällig':''].filter(Boolean).join(', ')}</span><svg class="i xs"><use href="#i-chev"/></svg></a>`;
+  const e0=onDay(d0,calTypes),e1=onDay(d1,calTypes);
+  h+=`<div class="ag-day ag-first${d0===TODAY?' today':''}">${e0.length?e0.map(dayevHTML).join(''):`<button type="button" class="day-empty" data-caladd="${d0}"><svg class="i sm"><use href="#i-plus"/></svg>Frei. Hier tippen, um etwas einzutragen.</button>`}</div>`;
+  const lab=(d1===TODAY?'Heute · ':d1===addDays(TODAY,1)?'Morgen · ':'')+parse(d1).toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
+  h+=`<div class="ag-day${d1===TODAY?' today':''}"><h3>${esc(lab)}</h3>${e1.length?e1.map(dayevHTML).join(''):'<p class="ag-none">Nichts im Kalender.</p>'}</div>`;
+  $('calList').innerHTML=h;
+}
+function calmPick(ds){selDay=ds;const d=parse(ds);calMonth=new Date(d.getFullYear(),d.getMonth(),1);renderCal()}
+function calmWeek(dir){calmPick(addDays(selDay,7*dir));mPlay($('calMDays'),dir>0?'m-next':'m-prev');calMove(dir)}
+on('calMDays','click',e=>{const b=e.target.closest('[data-calm]');if(!b||Date.now()-CALM_SWIPE<400)return;if(b.dataset.calm===selDay)return;calmPick(b.dataset.calm);calMove(0)});
+on('calMPrev','click',()=>calmWeek(-1));
+on('calMNext','click',()=>calmWeek(1));
+(function(){const el=$('calMDays');if(!el)return;let x0=null,y0=0;
+  el.addEventListener('touchstart',e=>{const t=e.touches[0];x0=t.clientX;y0=t.clientY},{passive:true});
+  el.addEventListener('touchend',e=>{if(x0==null)return;const t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;x0=null;
+    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5){CALM_SWIPE=Date.now();calmWeek(dx<0?1:-1)}},{passive:true});
+})();
+/* Monat als Blatt: Tippen auf einen Tag wählt ihn und schließt das Blatt */
+function calMonPaint(){renderMonth($('calMonGrid'),CALMON);$('calMonT').textContent=MONTHS[CALMON.getMonth()]+' '+CALMON.getFullYear()}
+function calMonOpen(){const d=parse(selDay);CALMON=new Date(d.getFullYear(),d.getMonth(),1);calMonPaint();const w=$('calMonWrap');w.classList.add('show');w.setAttribute('aria-hidden','false')}
+function calMonClose(){const w=$('calMonWrap');if(!w||!w.classList.contains('show'))return;w.classList.remove('show');w.setAttribute('aria-hidden','true')}
+on('calMMon','click',calMonOpen);
+on('calMonPrev','click',()=>{CALMON=new Date(CALMON.getFullYear(),CALMON.getMonth()-1,1);calMonPaint();mPlay($('calMonGrid'),'m-prev')});
+on('calMonNext','click',()=>{CALMON=new Date(CALMON.getFullYear(),CALMON.getMonth()+1,1);calMonPaint();mPlay($('calMonGrid'),'m-next')});
+on('calMonX','click',calMonClose);
+on('calMonWrap','click',e=>{
+  if(e.target.id==='calMonWrap'){calMonClose();return}
+  const c=e.target.closest('#calMonGrid [data-cal]');if(!c)return;
+  e.preventDefault();e.stopPropagation();calMonClose();calmPick(c.dataset.cal);calMove(0);
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')calMonClose()});
+
+/* ----- Aufgaben: „Ich | Martin | Alle“, Filter hinter einem Knopf, Tippen auf die Karte öffnet das Menü ----- */
+function tWhoLabels(){
+  const g=$('tWho');if(!g)return;const ph=onPhone();
+  g.querySelectorAll('[data-who]').forEach(b=>{const w=b.dataset.who;b.textContent=w==='all'?'Alle':ph&&w===ME?'Ich':NAMES[w];b.style.order=ph?String(w===ME?0:w==='all'?2:1):''});
+}
+on('tFilt','click',()=>{const f=$('tFilt').closest('.filters');const o=!f.classList.contains('f-open');f.classList.toggle('f-open',o);$('tFilt').setAttribute('aria-expanded',String(o))});
+document.addEventListener('click',e=>{
+  if(!onPhone())return;
+  const row=e.target.closest('[data-view="aufgaben"] .task');if(!row||e.target.closest('input,button,a,label,select'))return;
+  const c=row.querySelector('[data-task]'),t=c&&TASKS.find(x=>x.id===c.dataset.task);if(!t)return;
+  /* Linker Rand der Karte zählt zum Haken: so ist die Tippfläche mindestens 44 px */
+  if(e.clientX-row.getBoundingClientRect().left<52){c.click();return}
+  popMenu(row,t.t.slice(0,60),[
+    ...(t.done?[]:[{label:'Verschieben oder übergeben',fn:()=>taskMoveMenu(t,row)},{label:t.inCal?'Aus dem Kalender nehmen':'In den Kalender',fn:()=>taskCalToggle(t)}]),
+    {label:'Bearbeiten',fn:()=>openEventDialog({art:'aufgabe',edit:{taskId:t.id},title:t.t,who:t.who,date:t.due,time:t.time,kid:t.kid,note:t.note,cal:!!t.inCal,invite:false})},
+    {label:'Löschen',danger:true,fn:()=>askConfirm('Aufgabe „'+t.t+'“ löschen?',()=>safe('tdel',()=>deleteTask(t)),'Löschen')}
+  ]);
+});
+
+/* ----- Kunden: Zeile mit Kürzel, Name, Status und dem Termin heute ----- */
+function kTodayEv(k){return EVENTS.filter(e=>e.kid===k.id&&e.type!=='aufgabe'&&e.type!=='belegt'&&e.d<=TODAY&&(e.end||e.d)>=TODAY).sort((a,b)=>(a.time||'').localeCompare(b.time||''))[0]}
+function kMobRow(k){
+  const e=kTodayEv(k),ap=(kPeople(k)[0]||'').split(/\s*\(/)[0];
+  const sub=e?(TYPE_ONE[e.art||e.type]||'Termin')+' heute'+(e.time?' '+e.time:''):ap||k.typ||'';
+  return `<button type="button" class="km-row" data-kopen="${k.id}">${kAvatar(k)}<span class="km-main"><b>${esc(k.name)}</b>${sub?`<small${e?' class="km-today"':''}>${esc(sub)}</small>`:''}</span>${kPill(k.status)}</button>`;
+}
+/* Kundenkarte am Handy: Name, Status, Ansprechpartner, Anrufen/Mail/Route, Termine, Aufgaben, letzte Notiz, Notiz diktieren.
+   „Alles anzeigen“ öffnet die volle Karte mit allen Reitern. */
+var KD_ALL=false;
+{const _oK=openKunde;openKunde=function(id){if(kOpen!==id)KD_ALL=false;_oK(id)}}
+{const _rKS=renderKundeSheet;renderKundeSheet=function(id){
+  const old=$('kmNote'),keep=old&&kOpen===id?old.value:'';
+  _rKS(id);safe('kmob',()=>kmPaint(id,keep));
+}}
+function kmPaint(id,keep){
+  const sh=$('kdSheet'),k=KUNDEN.find(x=>x.id===id);if(!sh||!k)return;
+  const on=onPhone()&&!KD_ALL;sh.classList.toggle('kd-m',on);if(!on)return;
+  const r=k.raw||{},tel=String(r['Telefon']||'').trim(),adr=String(r['Adresse']||'').split('(')[0].trim(),ap=(kPeople(k)[0]||'').split(/\s*\(/)[0];
+  const evs=EVENTS.filter(e=>e.kid===k.id&&e.type!=='aufgabe'&&(e.end||e.d)>=TODAY).sort((a,b)=>(a.d+(a.time||'')).localeCompare(b.d+(b.time||''))).slice(0,3);
+  const ts=TASKS.filter(t=>t.kid===k.id&&!t.done).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,4);
+  const note=lastNote(k),ic=n=>`<svg class="i"><use href="#i-${n}"/></svg>`;
+  const when=e=>(e.d===TODAY?'Heute':e.d===addDays(TODAY,1)?'Morgen':wd(e.d)+', '+dm(e.d))+(e.time?' · '+e.time+(e.endTime?'–'+e.endTime:''):'');
+  sh.insertAdjacentHTML('afterbegin',`<div class="kmob">
+    <div class="km-id">${kAvatar(k,true)}<div><h2>${esc(k.name)}</h2><p><button type="button" class="kpill-btn" data-kmove="${k.id}" title="Status ändern">${kPill(k.status)}<span class="kpb-c">▾</span></button>${ap?`<span>${esc(ap)}</span>`:''}</p></div></div>
+    ${tel||k.email||adr?`<div class="km-acts">${tel?`<a class="km-act" href="tel:${esc(tel.replace(/[^\d+]/g,''))}">${ic('phone')}Anrufen</a>`:''}${k.email?`<a class="km-act" href="mailto:${esc(k.email)}">${ic('mail')}Mail</a>`:''}${adr?`<a class="km-act" href="https://maps.apple.com/?daddr=${encodeURIComponent(adr)}" target="_blank" rel="noopener">${ic('pin')}Route</a>`:''}</div>`:''}
+    <section class="km-sec"><h3>Termine</h3>${evs.length?evs.map(e=>`<button type="button" class="km-ev" data-entry="${esc(e.gcalId||'')}"><time>${esc(when(e))}</time><b>${esc(e.t)}</b></button>`).join(''):'<p class="km-none">Kein Termin geplant.</p>'}</section>
+    <section class="km-sec"><h3>Aufgaben</h3>${ts.length?ts.map(taskRow).join(''):'<p class="km-none">Nichts offen.</p>'}</section>
+    <section class="km-sec"><h3>Letzte Notiz</h3>${note?`<p class="km-note">${esc(note.slice(0,500))}</p>`:'<p class="km-none">Noch keine Notiz.</p>'}
+      <textarea class="input" id="kmNote" rows="2" placeholder="Neue Notiz tippen oder diktieren" aria-label="Neue Notiz"></textarea>
+      <div class="km-nrow"><button type="button" class="btn btn-glass li-mic km-mic" data-for="kmNote" data-mt="Notiz diktieren"><svg class="i sm"><use href="#i-mic"/></svg><span class="mt">Notiz diktieren</span></button><button type="button" class="btn btn-primary" id="kmNoteGo" disabled>Speichern</button></div>
+      <p class="form-err" id="kmNoteErr" role="alert"></p>
+    </section>
+    <button type="button" class="km-all" data-kmall><span>Alles anzeigen<small>Verlauf, Geld &amp; Projekte, Dateien</small></span><svg class="i sm"><use href="#i-chev"/></svg></button>
+  </div>`);
+  const ta=$('kmNote');if(keep){ta.value=keep;$('kmNoteGo').disabled=false}
+  /* Läuft gerade das Diktat, schreibt es ins neue Feld weiter */
+  if(LIV&&LIV.inp&&LIV.inp.id==='kmNote'&&!LIV.inp.isConnected){LIV.inp=ta;LIV.btn=sh.querySelector('.km-mic');liTalkUi(LIV,true)}
+}
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='kmNote'){const g=$('kmNoteGo');if(g)g.disabled=!e.target.value.trim()}});
+document.addEventListener('click',async e=>{
+  if(e.target.closest('[data-kmall]')){KD_ALL=true;if(kOpen)renderKundeSheet(kOpen);const w=$('kdWrap');if(w)w.scrollTop=0;return}
+  const g=e.target.closest('#kmNoteGo');if(!g)return;
+  const ta=$('kmNote'),text=(ta&&ta.value||'').trim(),id=kOpen;if(!text||!id)return;
+  if(LIV)liTalkStop();
+  g.disabled=true;g.textContent='Speichert …';$('kmNoteErr').textContent='';
+  try{
+    await liRunAction({type:'note_add',kunde_id:id,text});
+    const n=$('kmNote');if(n)n.value='';const b=$('kmNoteGo');if(b){b.disabled=true;b.textContent='Speichern'}
+    toast('Notiz gespeichert');
+  }catch(x){const b=$('kmNoteGo');if(b){b.disabled=false;b.textContent='Speichern'}const er=$('kmNoteErr');if(er)er.textContent='Nicht gespeichert: '+x.message}
+});
+
+/* ----- Mehr: Mitteilungen und Zuletzt gelöscht ----- */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-moreact]');if(!b)return;
+  const a=b.dataset.moreact;closeMore();
+  if(a==='notes')openNotes();else if(a==='trash'){const t=$('openTrash');if(t)t.click()}
+});
+/* HANDY-END */
 
 function evFromBody(o,id,link){
   const art=o.art,end=(art==='belegt'||o.end&&o.end>o.date)?(o.end&&o.end>o.date?o.end:null):null;
@@ -6823,6 +7120,8 @@ async function loadKartei(){
     rebuildMailMap();
     fillKundenSelects();
     renderKartei();renderSideClients();
+    /* Aufgaben, die vor der Kartei geladen wurden, bekommen ihren Kunden nachträglich (seit v.55) */
+    safe('taskKid',()=>{let n=0;TASKS.forEach(t=>{if(!t.kid&&(t.kidRaw||[]).length){const k=KUNDEN.find(q=>t.kidRaw.some(x=>idEq(x,q.id)));if(k){t.kid=k.id;t.kname=k.name;t.kidRaw=[];n++}}});if(n){safe('tasksR',renderTasks);safe('calR',renderCal)}});
     safe('ana',()=>{if(anaOn())renderAna()});
     if(GMAIL){safe('mailsR',renderMails)}
     if(kOpen&&$('kdWrap').classList.contains('show'))renderKundeSheet(kOpen);
@@ -6926,6 +7225,7 @@ function renderKartei(){
   const fs=$('kFilterSel');if(fs){fs.innerHTML=`<option value="">Weitere Filter …</option>`+more.map(([v,l])=>`<option value="${esc(v)}">${esc(l)} (${cnt(v)})</option>`).join('');fs.value=more.some(([v])=>v===kf)?kf:'';fs.classList.toggle('on',!!fs.value)}
   const q=($('kSearch').value||'').trim().toLowerCase();
   const list=kSorted(KUNDEN.filter(k=>kMatch(k,kf)&&(!q||[k.name,k.ap,k.email,k.notes,k.typ].join(' ').toLowerCase().includes(q))));
+  if(onPhone()){grid.className='kmlist';grid.innerHTML=list.length?list.map(kMobRow).join(''):'<p class="empty">Keine Kunden mit diesem Filter.</p>';return}
   grid.className=KVIEW==='list'?'klist':'kboard';
   if(!list.length){grid.innerHTML='<p class="empty">Keine Kunden mit diesem Filter.</p>'}
   else if(KVIEW==='list'){
@@ -9256,6 +9556,9 @@ document.addEventListener('click',e=>{
   const b=e.target.closest('[data-tmove]');if(!b)return;
   e.preventDefault();e.stopPropagation();
   const t=TASKS.find(x=>x.id===b.dataset.tmove);if(!t)return;
+  taskMoveMenu(t,b);
+},true);
+function taskMoveMenu(t,b){
   const mv=due=>liRunAction({type:'task_move',id:t.id,due}).then(()=>toast('„'+t.t.slice(0,40)+'“ → '+(due===addDays(TODAY,1)?'morgen':wd(due)+', '+dm(due)))).catch(x=>toast('Nicht verschoben: '+x.message));
   const other=t.who==='MS'?'LP':'MS';
   popMenu(b,'Verschieben',[
@@ -9267,7 +9570,7 @@ document.addEventListener('click',e=>{
     {ic:'🤝',label:'An '+NAMES[other]+' übergeben',fn:async()=>{const old=t.who;t.who=other;try{await saveTask(t,['who']);if(other!==ME)safe('wa',()=>waNotify(other,t.t,fmtWhen(t.due,t.time,true)));syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome);toast('Liegt jetzt bei '+NAMES[other],{undo:async()=>{t.who=old;await saveTask(t,['who']);syncTaskEvents();safe('tasksR',renderTasks);safe('homeR',renderHome)}})}catch(x){t.who=old;toast('Nicht übergeben: '+x.message)}}},
     {ic:'📅',label:t.inCal?'Aus dem Kalender nehmen':'In den Kalender',fn:()=>taskCalToggle(t)}
   ]);
-},true);
+}
 /* Notion-Feld passend zum Typ bauen */
 function nProp(type,v){
   if(v==null)return null;
@@ -9509,7 +9812,7 @@ let LIV=null;
 const liJoin=(...p)=>p.map(x=>String(x||'').trim()).filter(Boolean).join(' ');
 function liTalkUi(S,on){
   S.btn.classList.toggle('on',on);
-  const l=S.btn.querySelector('.mt');if(l)l.textContent=on?'Fertig':'Sprechen';
+  const l=S.btn.querySelector('.mt');if(l)l.textContent=on?'Fertig':(S.btn.dataset.mt||'Sprechen');
   const f=S.inp.form;if(f)f.classList.toggle('listening',on);
   if(on){S.ph=S.inp.placeholder;S.inp.placeholder='Ich höre zu … drück „Fertig“, wenn du fertig bist'}else if(S.ph!=null)S.inp.placeholder=S.ph;
 }
@@ -10561,8 +10864,11 @@ window.addEventListener('hashchange',()=>{const w=$('payWrap');if(w&&w.classList
 
 
 /* ---------- Version, Neu laden, „Was ist neu“ ---------- */
-const APP_VERSION='2026-11-13.54';
+const APP_VERSION='2026-11-13.55';
 const CHANGELOG=[
+  {v:'2026-11-13.55',d:'13.11.2026',items:['Handy neu: unten Kalender, Aufgaben, Plus, Kunden und Mehr','Start am Handy ist der Kalender: oben der Tag groß, darunter die Woche zum Antippen oder Wischen, „Monat“ zeigt den ganzen Monat','Plus in der Mitte öffnet das Blatt zum Eintragen, auf „Aufgaben“ gleich als Aufgabe','Aufgaben als Karten: links abhaken, Karte antippen zum Verschieben, für den Kalender oder zum Löschen','Kunden als Liste mit dem Termin von heute, die Karte hat Anrufen, Mail, Route und „Notiz diktieren“','Unter „Mehr“ als Liste: Mitteilungen, Rechnungen, Analyse, Mails, Dateien, Angebotsrechner, Zuletzt gelöscht, Einstellungen','Die Intelligence-Seite hat am Handy keinen Platz mehr, gesprochen wird beim Eintragen','Am Rechner bleibt alles, wie es ist. Aufgaben zeigen ihren Kunden jetzt auch, wenn die Kartei erst später lädt'],tour:[
+    {img:'whatsnew/v55-handy.webp',t:'Das Handy ist neu',txt:'Am Handy geht es jetzt um Termine, Aufgaben und Kunden. Alles andere steht eine Ebene tiefer unter „Mehr“.',
+     steps:['Start ist der Kalender: Tag antippen oder die Woche wischen','Plus in der Mitte: Termin oder Aufgabe eintragen, auch per Sprechen','Aufgaben: links abhaken, Karte antippen für Verschieben und Löschen','Kunden: Anrufen, Mail, Route und Notiz diktieren direkt in der Karte']}]},
   {v:'2026-11-13.54',d:'13.11.2026',items:['Eintragen in einer Zeile: am Rechner Klick auf einen Tag, tippen wie „Dreh Hafenwerk 9-15 Uhr“, Enter','Das Studio zeigt sofort, was es verstanden hat: Art, Tag, Uhrzeit, für wen, Kunde','Am Handy ein neues Blatt für Termin und Aufgabe, mit Heute, Morgen, Uhrzeit und Dauer zum Antippen','Sprechen: sagen, prüfen, Anlegen. Es wird nichts eingetragen, bevor du auf Anlegen tippst','„Mehr Angaben“ öffnet wie bisher den großen Dialog']},
   {v:'2026-11-13.53',d:'13.11.2026',items:['Ein Kalender für beide: an jedem Termin steht, wer drin ist, LP, MS oder beide','Keine Kalender-Einladung mehr per Mail, wer für den anderen oder für beide einträgt, schickt nur den Hinweis in die WhatsApp-Gruppe']},
   {v:'2026-11-13.52',d:'13.11.2026',items:['Seitenleiste aufgeräumt: „Kunden im Fokus“ ist raus, Kunden findest du in der Kundenkartei']},
@@ -11537,21 +11843,29 @@ window.addEventListener('unhandledrejection',e=>{console.error('Offener Fehler:'
 
 
 /* ---------- Handy: Tab-Leiste mit „Mehr“, Glocke im Kopf ---------- */
-const TB_ROUTES=['heute','kalender','agent','kunden'];
+const TB_ROUTES=['kalender','aufgaben','kunden'];
 const curRoute=()=>{const r=(location.hash.slice(2)||'heute').split(/[/?]/)[0];return r==='archiv'?'medien':r};
 function moreBuild(){
+  /* Seit v.55 eine schlichte Liste: Mitteilungen, die Bereiche aus der Seitenleiste (neue erscheinen von selbst), Zuletzt gelöscht, Einstellungen */
   const g=$('moreGrid');if(!g)return;const cur=curRoute();
-  const links=[...document.querySelectorAll('.sidebar .nav>a[data-route]')].filter(a=>!a.classList.contains('nav-hid')&&!a.hidden&&!TB_ROUTES.includes(a.dataset.route));
-  g.innerHTML=links.map(a=>{const r=a.dataset.route,u=a.querySelector(':scope>svg.i use'),ic=u?u.getAttribute('href'):'#i-sparkle',c=a.querySelector('.count:not([hidden])'),ct=c?c.textContent.trim():'';
-    const label=[...a.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join('').trim()||r;
-    return `<a href="#/${r}" data-route="${r}" class="${r===cur?'active':''}${a.classList.contains('prem')?' prem':''}"><span class="mi"><svg class="i"><use href="${ic}"/></svg></span><span class="ml">${esc(label)}</span>${ct&&ct!=='0'?`<em>${esc(ct)}</em>`:''}</a>`}).join('');
+  const ic=h=>`<span class="mi"><svg class="i"><use href="${h}"/></svg></span>`,chev='<svg class="i sm mchev"><use href="#i-chev"/></svg>',cnt=n=>n&&String(n)!=='0'?`<em>${esc(String(n))}</em>`:'';
+  const SUB={angebot:'Am Rechner bequemer'};
+  const links=[...document.querySelectorAll('.sidebar .nav>a[data-route]')].filter(a=>!a.classList.contains('nav-hid')&&!a.hidden&&!TB_ROUTES.includes(a.dataset.route)&&a.dataset.route!=='heute'&&a.dataset.route!=='agent');
+  const nN=notesUnread();
+  g.innerHTML=`<button type="button" class="mrow" data-moreact="notes">${ic('#i-bell')}<span class="ml">Mitteilungen</span>${cnt(nN>9?'9+':nN)}${chev}</button>`
+    +links.map(a=>{const r=a.dataset.route,u=a.querySelector(':scope>svg.i use'),h=u?u.getAttribute('href'):'#i-sparkle',c=a.querySelector('.count:not([hidden])'),ct=c?c.textContent.trim():'';
+      const label=[...a.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join('').trim()||r;
+      return `<a href="#/${r}" data-route="${r}" class="mrow${r===cur?' active':''}${a.classList.contains('prem')?' prem':''}">${ic(h)}<span class="ml">${esc(label)}${SUB[r]?`<small>${SUB[r]}</small>`:''}</span>${cnt(ct)}${chev}</a>`}).join('')
+    +`<button type="button" class="mrow" data-moreact="trash">${ic('#i-trash')}<span class="ml">Zuletzt gelöscht<small>Einträge der letzten 30 Tage</small></span>${chev}</button>`
+    +`<a href="#/einstellungen" data-route="einstellungen" class="mrow${cur==='einstellungen'||cur==='premium'?' active':''}">${ic('#i-gear')}<span class="ml">Einstellungen</span>${chev}</a>`
+    +`<button type="button" class="mrow mrow-q" data-appreload>${ic('#i-undo')}<span class="ml">Neu laden<small>Holt den neuesten Stand</small></span></button>`;
 }
 function openMore(){moreBuild();const w=$('moreWrap');w.classList.add('show');w.setAttribute('aria-hidden','false');$('tbMore').classList.add('open');$('tbMore').setAttribute('aria-expanded','true')}
 function closeMore(){const w=$('moreWrap');if(!w||!w.classList.contains('show'))return;w.classList.remove('show');w.setAttribute('aria-hidden','true');$('tbMore').classList.remove('open');$('tbMore').setAttribute('aria-expanded','false')}
 function tbSync(){const cur=curRoute(),b=$('tbMore');if(b)b.classList.toggle('active',!TB_ROUTES.includes(cur));
-  const d=$('tbMoreDot');if(d)d.hidden=![...document.querySelectorAll('.sidebar .nav>a[data-route]:not(.nav-hid) .count:not(.prem-count)')].some(c=>!c.hidden&&c.textContent.trim()!=='0'&&!TB_ROUTES.includes(c.closest('a').dataset.route))}
+  const d=$('tbMoreDot');if(d)d.hidden=!([...document.querySelectorAll('.sidebar .nav>a[data-route]:not(.nav-hid) .count:not(.prem-count)')].some(c=>!c.hidden&&c.textContent.trim()!=='0'&&!TB_ROUTES.includes(c.closest('a').dataset.route))||notesUnread()>0)}
 on('tbMore','click',()=>$('moreWrap').classList.contains('show')?closeMore():openMore());
-document.addEventListener('click',e=>{if(e.target.closest('[data-moreclose]'))closeMore();else if(e.target.closest('#moreGrid a,.more-foot a'))setTimeout(closeMore,0)});
+document.addEventListener('click',e=>{if(e.target.closest('[data-moreclose]'))closeMore();else if(e.target.closest('#moreGrid a'))setTimeout(closeMore,0)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMore()});
 window.addEventListener('hashchange',()=>{closeMore();tbSync()});
 document.querySelectorAll('.mobile-brand').forEach(mb=>{if(mb.querySelector('.m-bell'))return;const b=document.createElement('button');b.type='button';b.className='icon-btn m-bell';b.setAttribute('aria-label','Mitteilungen');b.innerHTML='<svg class="i"><use href="#i-bell"/></svg><em class="m-belln" hidden>0</em>';const st=mb.querySelector('.m-settings');st?mb.insertBefore(b,st):mb.append(b)});

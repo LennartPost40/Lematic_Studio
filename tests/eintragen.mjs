@@ -66,7 +66,7 @@ const since = (w, n) => w.slice(n).filter(x => x.m !== 'DELETE');
 { console.log('Handy 390 × 844: Blatt');
   const h = await boot({ mobile: true }), p = h.page, w = spy(p);
   const T = await p.evaluate(() => ({ today: TODAY, morgen: addDays(TODAY, 1) }));
-  await h.go('kalender'); await h.tidy(); await p.click('#openEvent'); await wait(p, 500);
+  await h.go('kalender'); await h.tidy(); await p.click('#tbPlus'); await wait(p, 500);
   ok(await p.evaluate(() => document.getElementById('qsWrap').classList.contains('show') && !document.getElementById('eventWrap').classList.contains('show')), 'Plus öffnet das neue Blatt');
   const geo = await p.evaluate(() => {
     const sh = document.querySelector('#qsWrap .sheet'), vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden' };
@@ -91,7 +91,7 @@ const since = (w, n) => w.slice(n).filter(x => x.m !== 'DELETE');
   ok(await p.evaluate(() => !document.getElementById('qsWrap').classList.contains('show')), 'Blatt ist danach zu');
 
   // Aufgabe: ein POST an Notion, keiner an den Kalender
-  await h.tidy(); await p.click('#openEvent'); await wait(p, 400);
+  await h.tidy(); await p.click('#tbPlus'); await wait(p, 400);
   await p.click('[data-qsmode="aufgabe"]'); await wait(p, 80);
   ok(await p.evaluate(() => !$('qsCalL').hidden && !$('qsCal').checked && $('qsTimes').hidden && !document.querySelector('[data-qswho=""]')), 'Aufgabe: Schalter „Auch in den Kalender“ aus, keine Zeiten, kein „Beide“');
   await p.fill('#qsText', 'Rechnung Studio Elbe schreiben'); const n1 = w.length; await p.click('#qsGo'); await wait(p, 700);
@@ -99,7 +99,7 @@ const since = (w, n) => w.slice(n).filter(x => x.m !== 'DELETE');
   ok(r1.length === 1 && r1[0].to === 'notion' && r1[0].m === 'POST', 'Aufgabe: ein POST an /api/notion, keiner an den Kalender', r1.map(x => x.to + ' ' + x.m).join(','));
 
   // Mehr Angaben klappt im selben Blatt auf
-  await h.tidy(); await p.click('#openEvent'); await wait(p, 400); await p.click('#qsMoreBtn'); await wait(p, 80);
+  await h.tidy(); await p.click('#tbPlus'); await wait(p, 400); await p.click('#qsMoreBtn'); await wait(p, 80);
   ok(await p.evaluate(() => !$('qsMore').hidden && !!document.querySelector('#qsArts [data-qsart="belegt"]') && !$('qsOrtL').hidden && !$('qsKundeL').hidden), '„Mehr Angaben“ zeigt Art, Ort, Kunde, Notiz im Blatt');
 
   // Sprechen: „Verstanden als“, angelegt wird erst mit Anlegen
@@ -112,7 +112,7 @@ const since = (w, n) => w.slice(n).filter(x => x.m !== 'DELETE');
   ok(since(w, n2).length === 1 && since(w, n2)[0].to === 'kal', 'Nach „Anlegen“ genau ein Termin');
 
   // Ohne Datum fragt das Blatt einmal die Intelligence; ohne Antwort bleibt das eigene Ergebnis
-  await h.tidy(); await p.click('#openEvent'); await wait(p, 400);
+  await h.tidy(); await p.click('#tbPlus'); await wait(p, 400);
   const n3 = w.length; await p.evaluate(() => qsUnderstood('Hofladen anrufen')); await wait(p, 600);
   const c2 = await p.evaluate(() => ({ txt: $('qsCard').textContent, act: !$('qsVAct').hidden }));
   ok(c2.act && /Hofladen anrufen/.test(c2.txt) && /Aufgabe/.test(c2.txt) && since(w, n3).length === 0, 'Ohne Antwort der Intelligence bleibt das eigene Ergebnis stehen', c2.txt.replace(/\s+/g, ' ').slice(0, 120));
